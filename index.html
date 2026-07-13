@@ -1,0 +1,1894 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luna de miel · China 2027 — Itinerario hora por hora</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#20272b;--ink-soft:#4a555b;
+    --paper:#e6e0d1;--paper-2:#ded7c5;
+    --card:#f3efe4;--card-2:#eee9db;
+    --line:#c9c0ab;--line-soft:#d8d0bd;
+    --seal:#a63a2a;--seal-deep:#8a2f22;--jade:#3e6152;
+    --c1:#2e7d6b;--c2:#5a8c4e;--c3:#4a7a99;--c4:#c08a2e;--c5:#b0563a;--c6:#55507f;--copt:#7d7361;
+    --t-tour:#a63a2a;--t-sight:#3e6152;--t-food:#c08a2e;--t-bar:#55507f;--t-transfer:#7d7361;--t-free:#9a917d;--t-rest:#7f97a8;--t-hotel:#5f7d8a;
+    --shadow:0 1px 0 rgba(255,255,255,.6),0 6px 22px rgba(32,39,43,.09);
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;
+    font-family:"Inter",system-ui,-apple-system,sans-serif;
+    background:
+      radial-gradient(1200px 600px at 78% -8%,rgba(85,80,127,.08),transparent 60%),
+      radial-gradient(900px 500px at -8% 108%,rgba(46,125,107,.08),transparent 55%),var(--paper);}
+  .wrap{max-width:1120px;margin:0 auto;padding:28px 20px 90px}
+
+  header.masthead{position:relative;border:1px solid var(--line);border-radius:var(--radius);
+    background:linear-gradient(180deg,var(--card),var(--card-2));padding:26px 28px 22px;
+    box-shadow:var(--shadow);overflow:hidden}
+  .masthead::before{content:"印";position:absolute;right:20px;top:12px;font-family:"Cormorant Garamond",serif;
+    font-size:120px;line-height:1;color:var(--seal);opacity:.06;pointer-events:none}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.24em;
+    text-transform:uppercase;color:var(--seal-deep);font-weight:500}
+  h1{font-family:"Cormorant Garamond",serif;font-weight:600;font-style:italic;
+    font-size:clamp(32px,6vw,56px);line-height:1.02;margin:.12em 0 .1em}
+  h1 .amp{color:var(--seal);font-style:normal}
+  .subline{color:var(--ink-soft);font-size:15px;max-width:66ch}
+  .datestrip{display:flex;flex-wrap:wrap;gap:8px 24px;margin-top:14px;
+    font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--ink-soft)}
+  .datestrip b{color:var(--ink);font-weight:600}
+  .countdown{color:var(--seal-deep)}
+
+  .summary{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:16px 0 6px}
+  .chip{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;box-shadow:var(--shadow)}
+  .chip .n{font-family:"Cormorant Garamond",serif;font-size:30px;font-weight:600;line-height:1}
+  .chip .l{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--ink-soft);margin-top:4px}
+  .chip.warn{border-color:var(--seal);background:#f6e6df}
+  .chip.warn .n{color:var(--seal-deep)}
+
+  .sec{margin-top:34px}
+  .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:14px}
+  .sec-head h2{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:27px;margin:0;font-style:italic}
+  .sec-head .rule{flex:1;height:1px;background:var(--line)}
+  .sec-head .hint{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft)}
+
+  .mappanel{border:1px solid var(--line);border-radius:var(--radius);
+    background:linear-gradient(180deg,#f4f0e6,#ebe5d6);box-shadow:var(--shadow);padding:8px}
+  .mappanel svg{width:100%;height:auto;display:block;border-radius:9px}
+  .legend{display:flex;flex-wrap:wrap;gap:12px 18px;padding:12px 14px 8px;
+    font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-soft)}
+  .legend .k{display:inline-flex;align-items:center;gap:7px}
+  .legend .dot{width:11px;height:11px;border-radius:50%}
+  .legend .seg{width:22px;border-top:2px solid var(--ink)}
+  .legend .seg.air{border-top:2px dashed var(--seal)}
+
+  .leg{position:relative;padding-left:34px}
+  .leg::before{content:"";position:absolute;left:12px;top:0;bottom:0;width:2px;background:var(--line-soft)}
+  .leg:first-child::before{top:26px}
+  .node{position:absolute;left:4px;top:22px;width:18px;height:18px;border-radius:50%;
+    border:3px solid var(--paper);box-shadow:0 0 0 1px var(--line);z-index:2}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);margin:10px 0}
+  .card.off{opacity:.55;filter:grayscale(.4)}
+  .card-head{display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap;padding:16px 18px;cursor:pointer}
+  .seal{flex:none;width:34px;height:34px;border-radius:7px;background:var(--seal);color:#fff;
+    font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:15px;display:flex;
+    align-items:center;justify-content:center;box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
+  .card.off .seal{background:var(--copt)}
+  .titlecol{flex:1;min-width:170px}
+  .titlecol h3{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:25px;margin:0;line-height:1.05}
+  .region{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--ink-soft);margin-top:3px}
+  .datecol{font-family:"IBM Plex Mono",monospace;font-size:12.5px;text-align:right;color:var(--ink-soft);min-width:150px}
+  .datecol .dr{color:var(--ink);font-weight:600;font-size:13.5px}
+  .basecost{color:var(--jade);font-weight:600;margin-top:3px}
+  .chev{font-family:"IBM Plex Mono",monospace;color:var(--ink-soft);align-self:center;font-size:13px}
+
+  .card-ctl{display:flex;align-items:center;flex-wrap:wrap;gap:12px;padding:0 18px 14px}
+  .nightsctl{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:9px;
+    overflow:hidden;background:var(--card-2)}
+  .nightsctl button{border:0;background:transparent;width:30px;height:30px;cursor:pointer;font-size:17px;color:var(--ink)}
+  .nightsctl button:hover{background:var(--paper-2)}
+  .nightsctl .val{min-width:64px;text-align:center;font-family:"IBM Plex Mono",monospace;font-size:12.5px;padding:0 6px}
+  .nightsctl .val b{font-size:15px}
+  .toggle{display:inline-flex;align-items:center;gap:8px;cursor:pointer;
+    font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft);user-select:none}
+  .switch{width:38px;height:22px;border-radius:12px;background:var(--line);position:relative;transition:background .15s}
+  .switch::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;
+    background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:left .15s}
+  .toggle.on .switch{background:var(--jade)}
+  .toggle.on .switch::after{left:18px}
+
+  .detail{border-top:1px solid var(--line-soft);padding:14px 18px 18px}
+  .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+  .tab{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.05em;
+    border:1px solid var(--line);background:var(--card-2);border-radius:20px;padding:6px 13px;cursor:pointer;color:var(--ink-soft)}
+  .tab.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .hint2{font-size:12px;color:var(--ink-soft);margin:0 0 12px;font-style:italic}
+
+  .daybar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;align-items:center}
+  .daychip{font-family:"IBM Plex Mono",monospace;font-size:11px;border:1px solid var(--line);
+    border-radius:8px;padding:5px 11px;cursor:pointer;background:var(--card-2);color:var(--ink-soft)}
+  .daychip.active{background:var(--jade);color:#fff;border-color:var(--jade)}
+  .daychip .dt{opacity:.7;margin-left:4px}
+  .startwrap{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-soft);
+    display:inline-flex;align-items:center;gap:6px}
+
+  .typekey{display:flex;flex-wrap:wrap;gap:8px 14px;font-family:"IBM Plex Mono",monospace;
+    font-size:10px;color:var(--ink-soft);margin-bottom:8px}
+  .typekey .k{display:inline-flex;align-items:center;gap:5px}
+  .typekey .dot{width:8px;height:8px;border-radius:50%}
+
+  .row{display:flex;gap:9px;align-items:flex-start;padding:8px 0;border-bottom:1px dashed var(--line-soft)}
+  .rows .row:last-of-type{border-bottom:0}
+  .tdot{width:9px;height:9px;border-radius:50%;flex:none;margin-top:5px}
+  .trange{width:96px;flex:none;font-family:"IBM Plex Mono",monospace;font-size:11.5px;font-weight:600;padding-top:2px}
+  .trange.warn{color:var(--seal-deep)}
+  .rmain{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+  .rname{font-size:13.5px;font-weight:500;line-height:1.3}
+  .rnote2{font-size:11.5px;color:var(--ink-soft)}
+  input.itemnote{width:100%;margin-top:5px;font-size:12px;color:var(--ink);
+    border:1px dashed var(--line);background:rgba(255,255,255,.4)}
+  input.itemnote:focus{border-style:solid;border-color:var(--jade);background:#fff}
+  input.itemnote::placeholder{color:#a99f88}
+  .placelink{display:flex;align-items:center;gap:7px;margin-top:5px;flex-wrap:wrap}
+  .placelink .pin{font-size:12px;flex:none}
+  select.placesel{font-size:12.5px;max-width:230px;border-color:var(--t-hotel);
+    background:rgba(95,125,138,.06);color:var(--ink);font-weight:500}
+  select.placesel:focus{border-color:var(--jade);background:#fff}
+  .placelink .linknote{font-size:11.5px;color:var(--ink-soft);font-style:italic}
+  .rrow2{display:flex;gap:8px 12px;flex-wrap:wrap;align-items:center}
+  input.f,select.f{font-family:"Inter",sans-serif;font-size:13px;color:var(--ink);
+    border:1px solid var(--line-soft);background:rgba(255,255,255,.5);border-radius:8px;padding:6px 8px}
+  input.f:focus,select.f:focus{outline:none;border-color:var(--jade);background:#fff}
+  .mini{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-soft);
+    display:inline-flex;align-items:center;gap:5px}
+  input.durinp{width:60px;text-align:center;padding:4px 4px;font-family:"IBM Plex Mono",monospace;font-size:12px}
+  input[type="time"].f{padding:4px 6px;font-family:"IBM Plex Mono",monospace;font-size:11px}
+  .src{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.05em;color:var(--seal-deep);
+    border:1px solid var(--seal);border-radius:5px;padding:1px 6px;white-space:nowrap;vertical-align:1px}
+  .rowbtns{display:flex;flex-direction:column;gap:1px;flex:none}
+  .updn{border:0;background:transparent;cursor:pointer;color:var(--ink-soft);font-size:10px;
+    width:24px;height:15px;line-height:1;border-radius:4px}
+  .updn:hover{color:var(--jade);background:var(--card-2)}
+  .del{border:0;background:transparent;color:var(--ink-soft);cursor:pointer;font-size:15px;
+    width:24px;height:20px;border-radius:5px;flex:none;line-height:1}
+  .del:hover{background:#f0e0dc;color:var(--seal-deep)}
+  .gap{font-family:"IBM Plex Mono",monospace;font-size:10px;color:#9a917d;text-align:center;padding:1px 0}
+  .addrow{display:flex;gap:8px;margin-top:12px;align-items:center}
+  .addrow select{flex:1;min-width:0}
+  .addbtn{font-family:"IBM Plex Mono",monospace;font-size:11.5px;border:1px dashed var(--line);
+    background:transparent;color:var(--ink-soft);border-radius:9px;padding:8px 12px;cursor:pointer}
+  .addbtn:hover{border-color:var(--jade);color:var(--jade)}
+  .addbtn.block{width:100%;margin-top:10px}
+
+  .plist{display:flex;flex-direction:column;gap:9px}
+  .pcard{display:flex;gap:11px;align-items:flex-start;border:1px solid var(--line-soft);
+    background:rgba(255,255,255,.4);border-radius:10px;padding:10px 12px}
+  .pcard.chosen{border-color:var(--jade);background:rgba(62,97,82,.07)}
+  .star{border:0;background:transparent;cursor:pointer;font-size:17px;color:var(--line);flex:none;line-height:1;margin-top:1px}
+  .pcard.chosen .star{color:var(--jade)}
+  .pbody{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+  .pnote{font-size:12.5px;color:var(--ink-soft)}
+  input.pnote.edit{width:100%}
+  input.rtitle{width:100%;font-weight:500}
+  select.rtype{font-family:"IBM Plex Mono",monospace;font-size:11px;padding:5px 6px}
+  .usage{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--ink-soft)}
+
+  /* ---------- costos (compacto) ---------- */
+  details.costs{margin-top:6px}
+  details.costs>summary{list-style:none;cursor:pointer;font-family:"IBM Plex Mono",monospace;
+    font-size:11px;color:var(--ink-soft);display:inline-flex;align-items:center;gap:8px;
+    padding:3px 8px;border:1px solid var(--line-soft);border-radius:8px;background:rgba(255,255,255,.35);width:fit-content}
+  details.costs>summary::-webkit-details-marker{display:none}
+  details.costs>summary:hover{border-color:var(--jade);color:var(--jade)}
+  details.costs>summary b{color:var(--ink)}
+  details.costs[open]>summary{background:var(--card-2);border-color:var(--line)}
+  .costgrid{margin-top:8px;display:flex;flex-direction:column;gap:6px}
+  .costrow{display:flex;gap:7px;align-items:center}
+  .costrow input.clabel{flex:1;min-width:0}
+  .costrow input.camt{width:96px;text-align:right;font-family:"IBM Plex Mono",monospace;font-size:12px}
+  .costrow .cxlbl{font-family:"IBM Plex Mono",monospace;font-size:9px;color:var(--ink-soft);width:96px;text-align:right}
+  .costhead{font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink-soft);display:flex;gap:7px}
+  .costhead .cxlbl{width:96px;text-align:right}
+  .costtag{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--jade);
+    border:1px solid var(--line-soft);border-radius:5px;padding:0 6px;margin-left:6px;white-space:nowrap}
+
+  /* ---------- sección presupuesto ---------- */
+  details.budget{border:1px solid var(--line);border-radius:var(--radius);background:var(--card);
+    box-shadow:var(--shadow);overflow:hidden}
+  details.budget>summary{list-style:none;cursor:pointer;padding:16px 18px;display:flex;align-items:center;
+    gap:14px;flex-wrap:wrap}
+  details.budget>summary::-webkit-details-marker{display:none}
+  details.budget>summary:hover{background:var(--card-2)}
+  details.budget>summary h2{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:23px;
+    margin:0;font-style:italic}
+  .budget .tot{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-soft);margin-left:auto;
+    display:flex;gap:16px;flex-wrap:wrap}
+  .budget .tot b{color:var(--ink);font-size:14px}
+  .budget .tot .dif.up{color:var(--seal-deep)}
+  .budget .tot .dif.down{color:var(--jade)}
+  .budget .body{padding:2px 18px 18px;border-top:1px solid var(--line-soft)}
+  .bcurrency{display:flex;align-items:center;gap:8px;margin:12px 0;font-family:"IBM Plex Mono",monospace;
+    font-size:11px;color:var(--ink-soft)}
+  .bglobal{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid var(--line-soft)}
+  .bblock{padding:11px 0;border-bottom:1px solid var(--line-soft)}
+  .bblock:last-child{border-bottom:0}
+  .bblock .bh{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:7px}
+  .bblock .bh .bn{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:18px}
+  .bblock .bh .bsub{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft);margin-left:auto}
+  .bline{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-soft);padding:3px 0}
+  .bline .blabel{flex:1;min-width:0}
+  .bline .ro{font-family:"IBM Plex Mono",monospace;font-size:12px;width:110px;text-align:right;color:var(--ink)}
+  .bline input.bamt{width:110px;text-align:right;font-family:"IBM Plex Mono",monospace;font-size:12px}
+  .bline .cxlbl{font-family:"IBM Plex Mono",monospace;font-size:9px;color:var(--ink-soft);width:110px;text-align:right}
+  .budget:hover{box-shadow:0 12px 30px rgba(32,39,43,.13)}
+
+  /* ---------- controles de base ---------- */
+  .basetools{display:inline-flex;gap:3px}
+  .btool{border:1px solid var(--line);background:var(--card-2);border-radius:7px;width:31px;height:31px;
+    cursor:pointer;font-size:12px;color:var(--ink-soft);transition:transform .15s,background .15s,color .15s,border-color .15s}
+  .btool:hover{border-color:var(--jade);color:var(--jade);transform:translateY(-1px)}
+  .btool.danger:hover{border-color:var(--seal);color:var(--seal-deep);background:#f6e6df}
+  details.basemeta{width:100%}
+  details.basemeta>summary{list-style:none;cursor:pointer;font-family:"IBM Plex Mono",monospace;font-size:11px;
+    color:var(--ink-soft);padding:5px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card-2);width:fit-content}
+  details.basemeta>summary::-webkit-details-marker{display:none}
+  details.basemeta>summary:hover{border-color:var(--jade);color:var(--jade)}
+  .metagrid{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .metagrid input.mname{flex:1;min-width:150px;font-weight:500}
+  .metagrid input.mregion{flex:1;min-width:120px}
+  .addbase{width:100%;margin-top:10px;font-family:"IBM Plex Mono",monospace;font-size:12.5px;letter-spacing:.03em;
+    border:1px dashed var(--seal);color:var(--seal-deep);background:transparent;border-radius:12px;padding:13px;cursor:pointer;
+    transition:transform .15s,background .15s}
+  .addbase:hover{background:#f6e6df;transform:translateY(-1px)}
+
+  /* ---------- diálogo de confirmación ---------- */
+  .confirmov{position:fixed;inset:0;background:rgba(32,39,43,.45);z-index:9999;
+    display:flex;align-items:center;justify-content:center;padding:20px;
+    animation:cffade .15s ease}
+  @keyframes cffade{from{opacity:0}to{opacity:1}}
+  .confirmbox{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:0 20px 60px rgba(0,0,0,.3);max-width:420px;width:100%;padding:22px 22px 18px}
+  .confirmbox p{margin:0 0 18px;font-size:15px;color:var(--ink);line-height:1.5}
+  .confirmbtns{display:flex;gap:10px;justify-content:flex-end}
+  .confirmbtns .btn{padding:9px 16px}
+  .confirmbtns .cbyes{background:var(--seal);color:#fff;border-color:var(--seal)}
+  .confirmbtns .cbyes:hover{background:var(--seal-deep)}
+
+  .xfer{padding:8px 0 8px 2px;font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-soft);
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .xfer .mode{font-weight:600;color:var(--ink)}
+  .xfer .badge{border-radius:6px;padding:1px 8px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;border:1px solid}
+  .xfer .badge.rail{color:var(--jade);border-color:var(--jade)}
+  .xfer .badge.air{color:var(--seal-deep);border-color:var(--seal)}
+  .xfer .badge.road{color:#7a6a3a;border-color:#b79a4e}
+  .xfer .time{color:var(--ink);font-weight:600}
+  .xfer .arrow{color:var(--line)}
+
+  .grid2{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+  .checkcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 18px}
+  .checkcard h4{font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:600;font-size:21px;margin:0 0 4px}
+  .checkcard .grp{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--seal-deep);margin:16px 0 8px}
+  .checkcard .grp:first-of-type{margin-top:10px}
+  .item{display:flex;gap:11px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--line-soft)}
+  .item:last-child{border-bottom:0}
+  .item input{margin:3px 0 0;width:17px;height:17px;accent-color:var(--jade);flex:none;cursor:pointer}
+  .item label{font-size:13px;cursor:pointer}
+  .item .sub{display:block;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft);margin-top:1px}
+  .item.done label{text-decoration:line-through;color:#9a917d}
+  .progress{height:6px;border-radius:4px;background:var(--line-soft);overflow:hidden;margin-top:6px}
+  .progress i{display:block;height:100%;background:var(--jade);border-radius:4px}
+  .pcount{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft);margin-top:6px}
+
+  .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:22px}
+  .btn{font-family:"IBM Plex Mono",monospace;font-size:12px;border:1px solid var(--line);background:var(--card);
+    color:var(--ink);border-radius:9px;padding:9px 14px;cursor:pointer;box-shadow:var(--shadow)}
+  .btn:hover{background:var(--card-2)}
+  .btn.danger{color:var(--seal-deep);border-color:var(--seal)}
+  .saved{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--jade);opacity:0;transition:opacity .3s}
+  .saved.show{opacity:1}
+  .syncstat{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft);
+    border:1px solid var(--line-soft);border-radius:8px;padding:5px 10px;background:var(--card)}
+  .syncstat.pending{color:#fff;background:var(--seal);border-color:var(--seal);cursor:pointer;
+    animation:pulsesync 1.4s ease-in-out infinite}
+  @keyframes pulsesync{0%,100%{box-shadow:0 0 0 0 rgba(166,58,42,.4)}50%{box-shadow:0 0 0 5px rgba(166,58,42,0)}}
+  .foot{margin-top:26px;font-size:12px;color:var(--ink-soft);border-top:1px solid var(--line);padding-top:14px;font-style:italic}
+
+  /* ---------- transiciones + hover global ---------- */
+  .chip,.card,.tab,.daychip,.pcard,.btn,.del,.updn,.addbtn,.star,.seal,.switch,.src,.item,
+  .nightsctl button,.node,.dhandle,.legend .k,.toggle{transition:transform .16s ease,box-shadow .16s ease,
+    background .16s ease,color .16s ease,border-color .16s ease,opacity .16s ease}
+  .chip:hover{transform:translateY(-2px);box-shadow:0 1px 0 rgba(255,255,255,.6),0 10px 26px rgba(32,39,43,.14)}
+  .card:hover{box-shadow:0 1px 0 rgba(255,255,255,.6),0 12px 30px rgba(32,39,43,.14)}
+  .card-head:hover .chev{color:var(--seal-deep)}
+  .card-head:hover h3{color:var(--seal-deep)}
+  .seal{cursor:pointer}
+  .card-head:hover .seal{transform:rotate(-4deg) scale(1.06)}
+  .tab:hover{background:var(--paper-2);transform:translateY(-1px)}
+  .tab.active:hover{background:var(--ink)}
+  .daychip:hover{transform:translateY(-1px);border-color:var(--jade);color:var(--jade)}
+  .daychip.active:hover{color:#fff}
+  .daychip.chipdrop{background:var(--seal);color:#fff;border-color:var(--seal);
+    box-shadow:0 0 0 3px rgba(166,58,42,.2);transform:translateY(-2px)}
+  .pcard:hover{transform:translateX(2px);box-shadow:0 4px 14px rgba(32,39,43,.10);border-color:var(--line)}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 1px 0 rgba(255,255,255,.6),0 8px 20px rgba(32,39,43,.13)}
+  .btn:active{transform:translateY(0)}
+  .btn.danger:hover{background:#f6e6df}
+  .addbtn:hover{transform:translateY(-1px)}
+  .star:hover{transform:scale(1.25) rotate(8deg);color:var(--jade)}
+  .del:hover{transform:scale(1.12)}
+  .updn:hover{transform:scale(1.2)}
+  .nightsctl button:hover{color:var(--seal-deep)}
+  .toggle:hover .switch{box-shadow:0 0 0 3px rgba(62,97,82,.18)}
+  .src:hover{background:var(--seal);color:#fff}
+  .item:hover{background:rgba(255,255,255,.35);border-radius:6px}
+  .legend .k:hover{color:var(--ink)}
+  .row:hover{background:rgba(255,255,255,.4);border-radius:8px}
+  .row:hover .rname{color:var(--seal-deep)}
+
+  /* ---------- drag & drop ---------- */
+  .dhandle{cursor:grab;color:var(--line);font-size:15px;flex:none;padding-top:2px;user-select:none;line-height:1}
+  .dhandle:hover{color:var(--jade);transform:scale(1.15)}
+  .row.dragging{opacity:.45;cursor:grabbing}
+  .row.dragover{box-shadow:inset 0 2px 0 var(--jade);background:rgba(62,97,82,.06);border-radius:8px}
+  .row[draggable="true"]{cursor:default}
+
+  /* ---------- traslados editables ---------- */
+  .xfer.edit{flex-direction:column;align-items:stretch;gap:8px;background:var(--card);
+    border:1px solid var(--line);border-radius:11px;padding:11px 13px;box-shadow:var(--shadow)}
+  .xfer.edit:hover{box-shadow:0 6px 18px rgba(32,39,43,.12);transform:translateY(-1px)}
+  .xfer .line1{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .xfer .line2{display:flex;align-items:center;gap:8px 14px;flex-wrap:wrap}
+  .xfer input[type="time"].f{padding:4px 6px;font-family:"IBM Plex Mono",monospace;font-size:11px}
+  .xfer input.legnote{flex:1;min-width:160px;font-size:12px}
+  .xfer .lbl{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--ink-soft)}
+  .intlrib .badge.intl{color:#3a5a8a;border-color:#3a5a8a}
+
+  /* ---------- mapa hover ---------- */
+  .mapnode{cursor:pointer}
+  .mapnode circle.dotmark{transition:r .18s ease,stroke-width .18s ease}
+  .mapnode:hover circle.dotmark{r:12;stroke-width:3.5}
+  .mapnode rect.sealmark{transition:transform .18s ease}
+  .mapnode:hover rect.sealmark{transform:translateY(-3px)}
+  .mapnode text.mlabel{transition:font-size .18s ease}
+  .mapnode:hover text.mlabel{font-size:19px;font-weight:600}
+  .mapnode .halo{opacity:0;transition:opacity .2s ease}
+  .mapnode:hover .halo{opacity:.32}
+  .maproute{transition:stroke-width .18s ease,opacity .18s ease}
+  .mappanel:hover .maproute{opacity:.9}
+
+  @media (max-width:820px){.summary{grid-template-columns:repeat(3,1fr)}.grid2{grid-template-columns:1fr}
+    .datecol{text-align:left;min-width:0}}
+  @media (max-width:520px){.summary{grid-template-columns:repeat(2,1fr)}.wrap{padding:18px 12px 60px}
+    .trange{width:82px;font-size:10.5px}.startwrap{margin-left:0}}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="eyebrow">05 – 29 mayo 2027 · 24 días</div>
+    <h1>Luna de miel <span class="amp">·</span> China</h1>
+    <p class="subline">Itinerario con motor de horarios: cada actividad vive en un <b>catálogo</b> con su duración; el día se encadena solo (fin de una = inicio de la siguiente) y las horas fijas anclan shows, vuelos y trenes. Cambia una duración y todo el día se recorre.</p>
+    <div class="datestrip">
+      <span>Salida <b>5 may</b> GDL → Tokio (NRT)</span>
+      <span>Llegada <b>7 may</b> Tokio · luego vuelo a Hong Kong</span>
+      <span>Regreso <b>29 may</b> PVG → GDL <em>(mismo día, noche)</em></span>
+      <span class="countdown" id="countdown"></span>
+      <span class="countdown">👥 Tiempo real: 2 personas</span>
+    </div>
+  </header>
+
+  <div class="summary" id="summary"></div>
+
+  <section class="sec">
+    <div class="sec-head"><h2>Mapa de clústeres</h2><span class="rule"></span>
+      <span class="hint">tinta = tren · rojo punteado = vuelo</span></div>
+    <div class="mappanel"><div id="mapholder"></div><div class="legend" id="legend"></div></div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head"><h2>Itinerario</h2><span class="rule"></span>
+      <span class="hint">toca una base para abrir su plan</span></div>
+    <div id="cards"></div>
+  </section>
+
+  <section class="sec">
+    <details class="budget" id="budgetSection"></details>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head"><h2>Reservas</h2><span class="rule"></span>
+      <span class="hint">trenes: reservar ~30 días antes</span></div>
+    <div class="grid2">
+      <div class="checkcard" id="transportCard"></div>
+      <div class="checkcard" id="essentialsCard"></div>
+    </div>
+  </section>
+
+  <div class="controls">
+    <button class="btn" id="printBtn">Imprimir / PDF</button>
+    <button class="btn" id="syncBtn">Sincronizar ahora</button>
+    <span class="syncstat" id="syncStatus">🟢 En vivo</span>
+    <span class="saved" id="savedFlag">Guardado ✓</span>
+  </div>
+
+  <p class="foot">Tours, hoteles y restaurantes son sugerencias con buena reputación (GetYourGuide, Viator, Tripadvisor, guías locales y Michelin); confirma precios, horarios y disponibilidad antes de reservar. Los tiempos son estimados editables. Tus cambios se guardan y sincronizan automáticamente en la nube.</p>
+</div>
+
+<!-- ============ Configuración Supabase + capa de almacenamiento ============
+     Rellena las 2 constantes de abajo con los datos de tu proyecto Supabase:
+       • SUPABASE_URL       → Project Settings › API › Project URL   (https://xxxxx.supabase.co)
+       • SUPABASE_ANON_KEY  → Project Settings › API › Project API keys › anon / public
+     Antes de configurarlas la app guarda solo en este dispositivo (localStorage).
+     Configuradas, sincroniza en la nube entre dispositivos (tú y tu pareja). -->
+<script>
+  const SUPABASE_URL="__SUPABASE_URL__";
+  const SUPABASE_ANON_KEY="__SUPABASE_ANON_KEY__";
+
+  const SB_TABLE="itinerario_estado";
+  const SB_BASE=(SUPABASE_URL||"").replace(/\/+$/,"");
+  const SB_READY=/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(SB_BASE)&&(SUPABASE_ANON_KEY||"").length>20;
+
+  /* window.storage: misma interfaz que usaba el artifact (get/set con promesas).
+     Backend: Supabase (PostgREST) con respaldo en localStorage. Si Supabase no está
+     configurado o no responde, usa localStorage para que la app siga funcionando. */
+  window.storage={
+    async get(key){
+      if(SB_READY){
+        try{
+          const r=await fetch(SB_BASE+"/rest/v1/"+SB_TABLE+"?clave=eq."+encodeURIComponent(key)+"&select=valor",
+            {headers:{apikey:SUPABASE_ANON_KEY,Authorization:"Bearer "+SUPABASE_ANON_KEY}});
+          if(r.ok){
+            const rows=await r.json();
+            if(rows&&rows.length){try{localStorage.setItem(key,rows[0].valor);}catch(_){}
+              return{value:rows[0].valor};}
+            return null;                               // aún no hay fila en la nube
+          }
+        }catch(e){/* red caída → respaldo local */}
+        const v=localStorage.getItem(key);
+        if(v!==null)return{value:v};
+        throw new Error("sin conexión con Supabase");   // la app marcará "offline"
+      }
+      const v=localStorage.getItem(key);
+      return v!==null?{value:v}:null;
+    },
+    async set(key,value){
+      try{localStorage.setItem(key,value);}catch(_){}   // espejo local siempre
+      if(SB_READY){
+        const r=await fetch(SB_BASE+"/rest/v1/"+SB_TABLE,{
+          method:"POST",
+          headers:{apikey:SUPABASE_ANON_KEY,Authorization:"Bearer "+SUPABASE_ANON_KEY,
+            "Content-Type":"application/json",Prefer:"resolution=merge-duplicates,return=minimal"},
+          body:JSON.stringify({clave:key,valor:value,actualizado:new Date().toISOString()})
+        });
+        if(!r.ok)throw new Error("Supabase set "+r.status); // la app lo captura → "offline"
+      }
+    }
+  };
+</script>
+
+<script>
+/* ===================== Constantes ===================== */
+const TRIP_START=new Date(2027,4,7), AVAILABLE_NIGHTS=22;
+const MESES=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+const fmt=d=>d.getDate()+" "+MESES[d.getMonth()];
+const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x;};
+
+const CLUSTERS={jp:{name:"Japón",color:"#9a5b7d"},
+  1:{name:"Puerta sur",color:"var(--c1)"},2:{name:"Guangxi",color:"var(--c2)"},
+  3:{name:"Hunan",color:"var(--c3)"},4:{name:"Sichuan",color:"var(--c4)"},
+  5:{name:"Shaanxi",color:"var(--c5)"},6:{name:"Norte y costa",color:"var(--c6)"},opt:{name:"Opcional",color:"var(--copt)"}};
+
+const TYPES={tour:{l:"Tour",c:"var(--t-tour)"},sight:{l:"Visita",c:"var(--t-sight)"},
+  food:{l:"Comida",c:"var(--t-food)"},bar:{l:"Bar",c:"var(--t-bar)"},
+  hotel:{l:"Hotel",c:"var(--t-hotel)"},
+  rest:{l:"Descanso",c:"var(--t-rest)"},transfer:{l:"Traslado",c:"var(--t-transfer)"},
+  free:{l:"Libre",c:"var(--t-free)"}};
+
+/* ===================== Tiempo ===================== */
+const toMin=s=>{const m=/^(\d{1,2}):(\d{2})$/.exec((s||"").trim());return m?(+m[1])*60+(+m[2]):null;};
+const toHM=min=>{min=((min%1440)+1440)%1440;const h=Math.floor(min/60),mm=min%60;
+  return String(h).padStart(2,"0")+":"+String(mm).padStart(2,"0");};
+const fmtDur=min=>{min=+min||0;const h=Math.floor(min/60),m=min%60;
+  return (h?h+" h ":"")+(m?m+" m":(h?"":"0 m"));};
+
+/* ===================== Bases y traslados ===================== */
+const DEFAULT_BASES=[
+  {id:"hk",name:"Hong Kong",region:"Puerta sur",cluster:1,nights:3,included:true,optional:false,x:552,y:472,ldx:14,ldy:4,anchor:"start"},
+  {id:"yangshuo",name:"Yangshuo",region:"Guangxi · Guilin",cluster:2,nights:3,included:true,optional:false,x:430,y:432,ldx:-14,ldy:4,anchor:"end"},
+  {id:"zjj",name:"Zhangjiajie",region:"Hunan",cluster:3,nights:3,included:true,optional:false,x:462,y:322,ldx:-14,ldy:0,anchor:"end"},
+  {id:"chongqing",name:"Chongqing",region:"Sichuan",cluster:4,nights:1,included:true,optional:true,x:362,y:292,ldx:0,ldy:20,anchor:"middle"},
+  {id:"chengdu",name:"Chengdu",region:"Sichuan",cluster:4,nights:2,included:true,optional:false,x:300,y:264,ldx:-14,ldy:0,anchor:"end"},
+  {id:"xian",name:"Xi'an",region:"Shaanxi",cluster:5,nights:2,included:true,optional:false,x:470,y:216,ldx:0,ldy:-12,anchor:"middle"},
+  {id:"beijing",name:"Pekín",region:"Capital",cluster:6,nights:3,included:true,optional:false,x:604,y:132,ldx:14,ldy:0,anchor:"start"},
+  {id:"huangshan",name:"Huangshan",region:"Anhui",cluster:"opt",nights:2,included:false,optional:true,x:612,y:332,ldx:14,ldy:0,anchor:"start"},
+  {id:"shanghai",name:"Shanghái",region:"Costa este",cluster:6,nights:3,included:true,optional:false,x:686,y:278,ldx:14,ldy:0,anchor:"start"},
+  {id:"osaka",name:"Osaka",region:"Japón · Kansai",cluster:"jp",nights:2,included:true,optional:true,x:734,y:238,ldx:-13,ldy:2,anchor:"end"},
+  {id:"kyoto",name:"Kyoto",region:"Japón · Kansai",cluster:"jp",nights:2,included:true,optional:true,x:756,y:206,ldx:-13,ldy:-2,anchor:"end"},
+  {id:"tokyo",name:"Tokio",region:"Japón · regreso",cluster:"jp",nights:2,included:true,optional:true,x:780,y:174,ldx:-13,ldy:-2,anchor:"end"}
+];
+const STOP_FURONG={name:"Furong (parada ½ día)",x:414,y:346};
+const XFER={
+  "tokyo|hk":{mode:"Vuelo",detail:"Tokio (NRT/HND) → Hong Kong (HKG)",time:"≈4.5–5 h",type:"air"},
+  "shanghai|osaka":{mode:"Vuelo",detail:"Shanghái (PVG) → Osaka (KIX)",time:"≈2 h",type:"air"},
+  "osaka|kyoto":{mode:"Tren",detail:"Osaka → Kyoto (JR / Hankyu)",time:"≈15 min",type:"rail"},
+  "kyoto|tokyo":{mode:"Tren bala",detail:"Kyoto → Tokio (Shinkansen Nozomi)",time:"≈2 h 15",type:"rail"},
+  "hk|yangshuo":{mode:"Tren bala",detail:"West Kowloon → Yangshuo",time:"3.5–4 h",type:"rail"},
+  "yangshuo|zjj":{mode:"Tren bala",detail:"Transbordo Guilin o Huaihua",time:"3.5–4.5 h",type:"rail"},
+  "zjj|chongqing":{mode:"Vuelo",detail:"Zhangjiajie (DYG) → Chongqing (CKG)",time:"≈1 h",type:"air"},
+  "zjj|fenghuang":{mode:"Auto / bus",detail:"Parada en Furong Town en el camino",time:"≈4 h c/parada",type:"road"},
+  "fenghuang|chongqing":{mode:"Vuelo",detail:"Tongren (TEN) → Chongqing (CKG)",time:"≈1 h",type:"air"},
+  "chongqing|chengdu":{mode:"Tren bala",detail:"CKG → CTU",time:"1–1.5 h",type:"rail"},
+  "chengdu|xian":{mode:"Tren bala",detail:"Chengdu Este → Xi'an Norte",time:"3.5–4 h",type:"rail"},
+  "xian|beijing":{mode:"Tren bala",detail:"Xi'an N → Pekín O (vuelo ≈2 h)",time:"4.5–6 h",type:"rail"},
+  "beijing|shanghai":{mode:"Tren bala",detail:"Pekín S → Shanghái Hongqiao (vuelo ≈2.5 h)",time:"4.5–6 h",type:"rail"},
+  "zjj|chengdu":{mode:"Vuelo",detail:"Zhangjiajie (DYG) → Chengdu (CTU)",time:"≈1.5 h",type:"air"},
+  "fenghuang|chengdu":{mode:"Vuelo",detail:"Tongren (TEN) → Chengdu (CTU)",time:"≈1.5 h",type:"air"},
+  "chengdu|beijing":{mode:"Tren bala",detail:"Chengdu → Pekín (vuelo ≈2.5 h)",time:"7–8 h",type:"rail"},
+  "xian|shanghai":{mode:"Tren bala",detail:"Xi'an N → Shanghái Hongqiao",time:"6–7 h",type:"rail"},
+  "beijing|huangshan":{mode:"Tren bala",detail:"Pekín → Huangshan Norte",time:"6–7 h",type:"rail"},
+  "huangshan|shanghai":{mode:"Tren bala",detail:"Huangshan → Shanghái Hongqiao",time:"≈3 h",type:"rail"}
+};
+const getXfer=(a,b)=>XFER[a+"|"+b]||{mode:"Tren bala / vuelo",detail:"Verificar conexión",time:"—",type:"rail"};
+
+/* ===================== Catálogos + días por defecto =====================
+   A(cid, nombre, tipo, duración_min, nota, fuente)
+   R(cid_referencia, hora_fija_opcional "HH:MM")                          */
+function A(cid,name,type,dur,note,src){return{cid,name,type,dur,note:note||"",src:src||""};}
+const R=(r,f)=>({r,f:f||null});
+const GENERICS=[
+  A("g-breakfast","Desayuno","food",60),
+  A("g-lunch","Comida","food",75),
+  A("g-dinner","Cena","food",90),
+  A("g-hotel","Hotel / check-in","hotel",30),
+  A("g-rest","Descanso","rest",90),
+  A("g-free","Tiempo libre","free",120)
+];
+
+const DEFAULT_PLAN={
+osaka:{catalog:[
+  A("os-arrive","Vuelo Shanghái → Osaka + tren al hotel","transfer",150,"KIX → Namba/Umeda; check-in"),
+  A("os-dotonbori","Dotonbori: neón y comida callejera","sight",120,"Glico, canal, Kani Doraku"),
+  A("os-namba","Bares de Namba / Amerikamura","bar",120),
+  A("os-castle","Castillo de Osaka + jardines","sight",120),
+  A("os-kuromon","Mercado Kuromon Ichiba","food",90,"Marisco, wagyu, fruta"),
+  A("os-umeda","Umeda Sky Building (mirador flotante)","sight",75),
+  A("os-shinsekai","Shinsekai + Tsutenkaku (kushikatsu)","sight",90,"Ambiente retro"),
+  A("os-nara","Excursión a Nara (ciervos + Todai-ji)","tour",300,"Gran Buda y ciervos libres","Viator"),
+  A("os-usj","Universal Studios Japan","tour",600,"Super Nintendo World (opcional)","GetYourGuide")
+],days:[
+  [R("os-arrive","14:00"),R("g-rest"),R("os-dotonbori"),R("g-dinner"),R("os-namba")],
+  [R("os-castle","09:00"),R("os-kuromon"),R("os-umeda"),R("os-shinsekai"),R("g-dinner")]
+],hotels:[
+  {name:"Conrad Osaka",area:"Nakanoshima",note:"Vistas de la ciudad, alta gama"},
+  {name:"The St. Regis Osaka",area:"Honmachi / Midosuji",note:"Elegante y céntrico"},
+  {name:"Swissôtel Nankai Osaka",area:"Namba",note:"Sobre la estación, súper conveniente"}
+],food:[
+  {name:"Takoyaki / okonomiyaki (Dotonbori)",kind:"rest",note:"Los clásicos de Osaka"},
+  {name:"Kushikatsu Daruma",kind:"rest",note:"Brochetas empanizadas de Shinsekai"},
+  {name:"Kuromon Ichiba",kind:"rest",note:"Mercado gastronómico"},
+  {name:"Bares de Amerikamura / Namba",kind:"bar",note:"Vida nocturna"}
+]},
+kyoto:{catalog:[
+  A("ky-arrive","Tren Osaka → Kyoto + hotel","transfer",60,"JR/Hankyu ~15 min; check-in"),
+  A("ky-fushimi","Fushimi Inari Taisha (miles de torii)","sight",120,"Ir temprano o al atardecer"),
+  A("ky-pontocho","Pontocho: cena y bares junto al río","bar",120,"Callejón atmosférico"),
+  A("ky-kinkakuji","Kinkaku-ji (Pabellón Dorado)","sight",75),
+  A("ky-arashiyama","Arashiyama: bosque de bambú + Tenryu-ji","sight",150,"+ puente Togetsukyo"),
+  A("ky-gion","Gion: barrio de geishas (Hanamikoji)","sight",90,"Al atardecer"),
+  A("ky-kiyomizu","Kiyomizu-dera + Higashiyama","sight",120,"Calles Ninenzaka/Sannenzaka"),
+  A("ky-nishiki","Mercado Nishiki","food",75,"'La cocina de Kyoto'"),
+  A("ky-tea","Ceremonia del té / kimono","tour",120,"Experiencia cultural","GetYourGuide")
+],days:[
+  [R("ky-arrive","12:30"),R("g-rest"),R("ky-fushimi","15:30"),R("g-dinner"),R("ky-pontocho")],
+  [R("ky-kinkakuji","09:00"),R("ky-arashiyama"),R("ky-nishiki"),R("ky-gion"),R("ky-kiyomizu"),R("g-dinner")]
+],hotels:[
+  {name:"The Ritz-Carlton Kyoto",area:"Río Kamogawa",note:"Lujo junto al río, muy romántico"},
+  {name:"HOSHINOYA Kyoto",area:"Arashiyama (ribera)",note:"Ryokan de lujo, se llega en barca"},
+  {name:"Four Seasons Kyoto",area:"Higashiyama",note:"Estanque histórico, refinado"}
+],food:[
+  {name:"Kaiseki (alta cocina de Kyoto)",kind:"rest",note:"Menú degustación tradicional"},
+  {name:"Yudofu en Nanzenji",kind:"rest",note:"Tofu hervido, especialidad local"},
+  {name:"Nishiki Market",kind:"rest",note:"Snacks y dulces de matcha"},
+  {name:"Pontocho / Kiyamachi",kind:"bar",note:"Bares junto al canal"}
+]},
+tokyo:{catalog:[
+  A("tk-arrive","Tren bala Kyoto → Tokio + hotel","transfer",90,"Shinkansen ~2h15; check-in"),
+  A("tk-shibuya","Cruce de Shibuya + estatua de Hachikō","sight",60,"El cruce peatonal más famoso del mundo"),
+  A("tk-shibuyasky","Shibuya Sky (mirador)","sight",75,"Vista 360° del atardecer","GetYourGuide"),
+  A("tk-izakaya","Cena en izakaya (Omoide Yokocho)","food",90,"Yakitori y sake en callejones"),
+  A("tk-sensoji","Senso-ji + Nakamise (Asakusa)","sight",90,"Templo más antiguo; llegar antes de las 8"),
+  A("tk-skytree","Tokyo Skytree","sight",75,"Torre de 634 m con mirador"),
+  A("tk-teamlab","teamLab Planets","tour",120,"Arte digital inmersivo, descalzo","GetYourGuide"),
+  A("tk-meiji","Santuario Meiji + Harajuku (Takeshita)","sight",120,"Bosque urbano + moda juvenil"),
+  A("tk-shinjuku","Shinjuku de noche (Golden Gai)","bar",120,"Callejones de bares diminutos"),
+  A("tk-tsukiji","Tsukiji Outer Market (sushi callejero)","food",90,"Desayuno/almuerzo de mariscos"),
+  A("tk-ginza","Ginza + jardines del Palacio Imperial","sight",120,"Lujo y jardines Edo"),
+  A("tk-fuji","Excursión al Monte Fuji / Hakone (día completo)","tour",540,"Día completo con guía","Viator"),
+  A("tk-sushi","Cena de sushi omakase","food",120,"Experiencia gastronómica")
+],days:[
+  [R("tk-arrive","16:00"),R("g-rest"),R("tk-shibuya"),R("tk-shibuyasky","18:00"),R("tk-izakaya")],
+  [R("tk-sensoji","08:00"),R("tk-skytree"),R("g-lunch"),R("tk-teamlab"),R("tk-meiji"),R("g-dinner"),R("tk-shinjuku")],
+  [R("tk-fuji","08:00"),R("g-dinner"),R("tk-sushi","20:00")]
+],hotels:[
+  {name:"Park Hyatt Tokyo",area:"Shinjuku",note:"Icónico ('Lost in Translation'), vistas y New York Bar"},
+  {name:"Aman Tokyo",area:"Otemachi",note:"Lujo zen minimalista, muy romántico"},
+  {name:"Hoshinoya Tokyo",area:"Otemachi",note:"Ryokan de lujo urbano con onsen"}
+],food:[
+  {name:"Sushi Saito / Sushi-ya (omakase)",kind:"rest",note:"Sushi de alta gama (reservar con antelación)"},
+  {name:"Ichiran / Afuri (ramen)",kind:"rest",note:"Ramen icónico"},
+  {name:"Tsukiji Outer Market",kind:"rest",note:"Sushi y mariscos callejeros"},
+  {name:"Omoide Yokocho / Golden Gai",kind:"bar",note:"Callejones de izakayas y bares diminutos"},
+  {name:"New York Bar (Park Hyatt)",kind:"bar",note:"Cócteles con vista, jazz en vivo"}
+]},
+hk:{catalog:[
+  A("hk-arrive","Vuelo Tokio → Hong Kong + traslado al hotel","transfer",90,"Escala en Tokio al llegar de GDL"),
+  A("hk-rest0","Descanso y desayuno en el hotel","rest",120,"Early check-in o dejar maletas; listos a las 9"),
+  A("hk-peak","Victoria Peak: Peak Tram + Sky Terrace 428","tour",150,"Vista icónica de la bahía","GetYourGuide"),
+  A("hk-timho","Dim sum en Tim Ho Wan","food",75,"Michelin económico"),
+  A("hk-manmo","Man Mo Temple + Hollywood Road","sight",90,"Sheung Wan, anticuarios y galerías"),
+  A("hk-soho","Mid-Levels Escalator + SoHo","sight",75),
+  A("hk-ferry","Star Ferry a Tsim Sha Tsui","transfer",30,"El cruce más bonito de la bahía"),
+  A("hk-aos","Avenue of Stars + Clock Tower","sight",45),
+  A("hk-dinner-tst","Cena en Tsim Sha Tsui","food",75),
+  A("hk-sol","Symphony of Lights (malecón)","sight",30,"Show de luces, todos los días a las 20:00"),
+  A("hk-temple","Temple Street Night Market","sight",60,"Paseo nocturno"),
+  A("hk-lantau","Ngong Ping 360 + Big Buddha (Lantau)","tour",210,"Teleférico + Tian Tan Buddha + Po Lin","GetYourGuide"),
+  A("hk-polin","Almuerzo vegetariano en Po Lin","food",60),
+  A("hk-taio","Pueblo pesquero Tai O","sight",105,"Casas sobre pilotes"),
+  A("hk-back","Regreso a la ciudad","transfer",75),
+  A("hk-aqua","Aqua Luna: junk al atardecer","tour",45,"Velero rojo por Victoria Harbour","Viator"),
+  A("hk-seafood","Cena de mariscos","food",90),
+  A("hk-ozone","Copas en Ozone (ICC, piso 118)","bar",90),
+  A("hk-nanlian","Nan Lian Garden + Chi Lin Nunnery","sight",120,"Jardín clásico, tranquilo"),
+  A("hk-mongkok","Mercados de Mong Kok","sight",120,"Ladies' Market, Flower Market"),
+  A("hk-repulse","Repulse Bay o compras","free",150)
+],days:[
+  [R("hk-arrive"),R("hk-rest0"),R("hk-peak"),R("hk-timho"),R("hk-manmo"),R("hk-soho"),R("g-rest"),R("hk-ferry"),R("hk-aos"),R("hk-dinner-tst"),R("hk-sol","20:00"),R("hk-temple")],
+  [R("hk-lantau"),R("hk-polin"),R("hk-taio"),R("hk-back"),R("g-rest"),R("hk-aqua","18:45"),R("hk-seafood"),R("hk-ozone")],
+  [R("hk-nanlian"),R("hk-mongkok"),R("g-lunch"),R("hk-repulse"),R("g-rest"),R("g-dinner")]
+],hotels:[
+  {name:"The Peninsula Hong Kong",area:"Tsim Sha Tsui",note:"El clásico legendario, alta gama"},
+  {name:"Rosewood Hong Kong",area:"Victoria Dockside",note:"Vistas de la bahía, muy romántico"},
+  {name:"The Upper House",area:"Admiralty",note:"Minimalista, refinado, ideal pareja"}
+],food:[
+  {name:"Lung King Heen (Four Seasons)",kind:"rest",note:"Cantonés 3 estrellas Michelin"},
+  {name:"Tim Ho Wan",kind:"rest",note:"Dim sum Michelin, precio accesible"},
+  {name:"Kam's Roast Goose",kind:"rest",note:"Ganso asado, 1 Michelin"},
+  {name:"Ozone @ Ritz-Carlton",kind:"bar",note:"Bar más alto de la ciudad, piso 118"},
+  {name:"Temple Street Night Market",kind:"rest",note:"Dai pai dong y ambiente callejero"}
+]},
+
+yangshuo:{catalog:[
+  A("ys-arrive","Llegada en tren + traslado al hotel","transfer",60),
+  A("ys-west","Paseo por West Street","sight",90,"Calle peatonal, cafés, tiendas"),
+  A("ys-beerfish","Cena: pescado a la cerveza (beer fish)","food",90,"Especialidad local"),
+  A("ys-li","Crucero por el Río Li (desde Guilin)","tour",300,"Incluye traslado a Guilin + 4 h de crucero; paisaje del billete de 20 CNY","GetYourGuide"),
+  A("ys-yulong","Balsa de bambú por el Río Yulong","sight",120,"Aguas tranquilas, búfalos, arrozales"),
+  A("ys-impression","Espectáculo Impression Sanjie Liu","tour",75,"Zhang Yimou, 600 actores sobre el río","GetYourGuide"),
+  A("ys-bike","Bici por el campo (Ten-Mile Gallery)","sight",150,"Arrozales y picos, ritmo lento"),
+  A("ys-xianggong","Mirador Xianggong Hill","sight",90,"Panorámica del Li"),
+  A("ys-cooking","Clase de cocina local o Tai Chi","tour",150),
+  A("ys-bars","Bares de West Street","bar",90)
+],days:[
+  [R("ys-arrive","13:00"),R("g-rest"),R("ys-west"),R("g-free"),R("ys-beerfish","19:00")],
+  [R("ys-li","08:20"),R("g-lunch"),R("ys-yulong"),R("g-rest"),R("g-dinner"),R("ys-impression","20:00")],
+  [R("ys-bike"),R("ys-xianggong"),R("g-lunch"),R("ys-cooking"),R("g-rest"),R("g-dinner"),R("ys-bars")]
+],hotels:[
+  {name:"Alila Yangshuo",area:"Campo · antigua fábrica de azúcar",note:"Diseño premiado, piscina entre picos"},
+  {name:"Yangshuo Mountain Retreat",area:"Río Yulong",note:"Tranquilo, vistas al río, romántico"},
+  {name:"Boutique en West Street",area:"Centro",note:"Cómodo para vida nocturna"}
+],food:[
+  {name:"Beer Fish (pescado a la cerveza)",kind:"rest",note:"Plato estrella de Yangshuo"},
+  {name:"Fideos de arroz de Guilin",kind:"rest",note:"Desayuno local clásico"},
+  {name:"West Street cafés & bars",kind:"bar",note:"Zona de copas nocturna"}
+]},
+
+zjj:{catalog:[
+  A("zjj-arrive","Llegada en tren + traslado a Wulingyuan","transfer",90),
+  A("zjj-towers","72 Odd Towers (centro)","sight",90,"Si se alojan en el centro; desde Wulingyuan mejor descansar"),
+  A("zjj-tujia","Cena cocina Tujia","food",90,"Picante estilo Hunan"),
+  A("zjj-avatar","Parque Nacional: Bailong + Yuanjiajie (Avatar) + Tianzi","tour",540,"Tour privado día completo; ascensor de cristal, Hallelujah Mtn, Golden Whip","Viator"),
+  A("zjj-tianmen","Montaña Tianmen: teleférico + Puerta del Cielo + skywalk","tour",300,"Teleférico más largo del mundo, 99 curvas","GetYourGuide"),
+  A("zjj-glass","Gran Cañón + Puente de Cristal","tour",240,"Puente de cristal de 430 m","Viator")
+],days:[
+  [R("zjj-arrive","13:30"),R("g-rest"),R("zjj-towers"),R("zjj-tujia")],
+  [R("zjj-avatar","07:30"),R("g-rest"),R("g-dinner")],
+  [R("zjj-tianmen","08:00"),R("g-lunch"),R("zjj-glass"),R("g-dinner")]
+],hotels:[
+  {name:"Crowne Plaza Wulingyuan",area:"Wulingyuan (junto al parque)",note:"Cómodo para entrar temprano"},
+  {name:"Pullman Zhangjiajie",area:"Centro",note:"Buen estándar internacional"},
+  {name:"Homestay con vista a los picos",area:"Wulingyuan",note:"Amanecer entre las montañas"}
+],food:[
+  {name:"Cocina Tujia",kind:"rest",note:"Sabores ahumados y picantes de Hunan"},
+  {name:"Sour fish / three-cup local",kind:"rest",note:"Especialidades de la zona"}
+]},
+
+fenghuang:{catalog:[
+  A("fh-road1","Salida de Zhangjiajie hacia Furong","transfer",90),
+  A("fh-furong","Furong Town: pueblo sobre la cascada","sight",120,"Hibiscus Town, pasarela tras la cascada"),
+  A("fh-road2","Furong → Fenghuang + check-in","transfer",120,"Hotel junto al río Tuo"),
+  A("fh-oldtown","Casco antiguo + Puente Hong (Rainbow)","sight",120,"Casas colgantes diaojiaolou"),
+  A("fh-boat","Barca nocturna por el río Tuo","sight",60,"Luces y reflejos, muy romántico"),
+  A("fh-bars","Bares junto al río","bar",90),
+  A("fh-shen","Casa de Shen Congwen + murallas","sight",120),
+  A("fh-stones","Piedras saltarinas + orilla del Tuo","sight",90),
+  A("fh-miao","Excursión a aldea Miao","tour",210),
+  A("fh-photos","Fotos nocturnas del casco antiguo","sight",60)
+],days:[
+  [R("fh-road1","09:00"),R("fh-furong"),R("g-lunch"),R("fh-road2"),R("fh-oldtown"),R("g-dinner"),R("fh-boat","19:30"),R("fh-bars")],
+  [R("fh-shen"),R("fh-stones"),R("g-lunch"),R("fh-miao"),R("g-rest"),R("g-dinner"),R("fh-photos")]
+],hotels:[
+  {name:"Boutique con balcón sobre el Tuo",area:"Río Tuo",note:"Vista al agua y a las casas colgantes"},
+  {name:"Hotel dentro del casco antiguo",area:"Casco antiguo",note:"Cerca de todo, ambiente nocturno"}
+],food:[
+  {name:"Pato con jengibre (blood duck)",kind:"rest",note:"Plato típico de Fenghuang"},
+  {name:"Sopa agria de pescado",kind:"rest",note:"Especialidad Miao"},
+  {name:"Bares junto al río Tuo",kind:"bar",note:"Música y vistas al río iluminado"}
+]},
+
+chongqing:{catalog:[
+  A("cq-arrive","Vuelo TEN→CKG + traslado al hotel","transfer",90,"Base en Jiefangbei / Yuzhong"),
+  A("cq-liziba","Liziba: tren que atraviesa el edificio","sight",45),
+  A("cq-cable","Yangtze River Cableway","sight",60,"Teleférico sobre el río, vistas 8D"),
+  A("cq-hotpot","Hotpot de Chongqing","food",90,"La cuna del hotpot picante"),
+  A("cq-hongya","Hongyadong iluminado","sight",60,"Luces desde ~19:30, tipo 'El viaje de Chihiro'"),
+  A("cq-cruise","Crucero nocturno por los dos ríos","tour",90,"Skyline iluminado","Viator")
+],days:[
+  [R("cq-arrive","13:00"),R("g-rest"),R("cq-liziba"),R("cq-cable"),R("cq-hotpot"),R("cq-hongya"),R("cq-cruise","21:00")]
+],hotels:[
+  {name:"Niccolo Chongqing",area:"Jiefangbei (rascacielos)",note:"Vistas de los dos ríos, lujo"},
+  {name:"InterContinental Chongqing",area:"Yuzhong",note:"Céntrico, buen estándar"},
+  {name:"Raffles City Chongqing",area:"Chaotianmen",note:"Icónico, vista del cruce de ríos"}
+],food:[
+  {name:"Hotpot (Liuyishou / 9-grid local)",kind:"rest",note:"Imprescindible, muy picante"},
+  {name:"Chongqing xiaomian",kind:"rest",note:"Fideos picantes de desayuno"},
+  {name:"Shua Lounge (Niccolo 43F)",kind:"bar",note:"Cócteles con vista panorámica"}
+]},
+
+chengdu:{catalog:[
+  A("cd-arrive","Tren CKG→CTU + traslado al hotel","transfer",150),
+  A("cd-kuanzhai","Kuanzhai Alley + casa de té en People's Park","sight",150,"Té y mahjong, muy local"),
+  A("cd-opera","Ópera de Sichuan (cambio de máscaras)","tour",90,"Shu Feng Ya Yun, bianlian","GetYourGuide"),
+  A("cd-pandas","Base de pandas gigantes","tour",210,"Llegar temprano: pandas activos al desayuno","GetYourGuide"),
+  A("cd-leshan","Gran Buda de Leshan (medio día)","tour",330,"71 m, UNESCO — opcional; o regresar y descansar","Viator"),
+  A("cd-jinli","Wuhou Shrine + Jinli Ancient Street","sight",120),
+  A("cd-taikoo","Taikoo Li + río Jin de noche","bar",120)
+],days:[
+  [R("cd-arrive","11:30"),R("cd-kuanzhai"),R("g-rest"),R("g-dinner"),R("cd-opera","20:00")],
+  [R("cd-pandas","07:30"),R("cd-leshan"),R("cd-jinli"),R("g-dinner"),R("cd-taikoo")]
+],hotels:[
+  {name:"The Temple House (Swire)",area:"Taikoo Li",note:"Chic, céntrico, muy romántico"},
+  {name:"The Ritz-Carlton Chengdu",area:"Centro",note:"Lujo clásico"},
+  {name:"Niccolo Chengdu",area:"Centro",note:"Torre moderna, vistas"}
+],food:[
+  {name:"Chen Mapo Tofu (original)",kind:"rest",note:"El mapo tofu original"},
+  {name:"Hotpot (Shu Da Xia / Xiaolongkan)",kind:"rest",note:"Hotpot de Chengdu"},
+  {name:"Long Chao Shou",kind:"rest",note:"Wontons y snacks clásicos"},
+  {name:"Bares en Taikoo Li",kind:"bar",note:"Zona de copas moderna"}
+]},
+
+xian:{catalog:[
+  A("xa-arrive","Tren CTU→Xi'an + traslado al hotel","transfer",90,"Cerca de la Torre de la Campana"),
+  A("xa-wall","Muralla Ming en bicicleta","sight",120,"14 km sobre la muralla"),
+  A("xa-belldrum","Bell & Drum Tower iluminadas","sight",45),
+  A("xa-muslim","Barrio Musulmán: street food + Gran Mezquita","food",120,"Roujiamo, biangbiang noodles"),
+  A("xa-terracota","Ejército de Terracota (tour privado)","tour",300,"8ª maravilla, tumba de Qin Shi Huang","GetYourGuide"),
+  A("xa-shaanxi","Museo de Historia de Shaanxi o Palacio Huaqing","sight",120),
+  A("xa-pagoda","Gran Pagoda del Ganso Salvaje + fuente","sight",90),
+  A("xa-tang","Show Dinastía Tang + cena de dumplings","tour",150,"Danza y banquete","GetYourGuide")
+],days:[
+  [R("xa-arrive","13:30"),R("g-rest"),R("xa-wall"),R("xa-belldrum"),R("xa-muslim")],
+  [R("xa-terracota","08:30"),R("g-lunch"),R("xa-shaanxi"),R("xa-pagoda"),R("xa-tang","19:30")]
+],hotels:[
+  {name:"Sofitel Legend People's Grand",area:"Renmin Square",note:"Histórico, elegante"},
+  {name:"The Ritz-Carlton Xi'an",area:"Centro",note:"Lujo moderno"},
+  {name:"W Xi'an",area:"Qujiang",note:"Diseño llamativo"}
+],food:[
+  {name:"Yangrou paomo (Lao Sun Jia)",kind:"rest",note:"Sopa de cordero con pan"},
+  {name:"Roujiamo + biangbiang noodles",kind:"rest",note:"En el Barrio Musulmán"},
+  {name:"Street food del Barrio Musulmán",kind:"rest",note:"Brochetas, dulces de caqui"}
+]},
+
+beijing:{catalog:[
+  A("bj-arrive","Tren Xi'an→Pekín + traslado al hotel","transfer",90),
+  A("bj-temple","Templo del Cielo","sight",120,"Parque y arquitectura imperial"),
+  A("bj-duck","Pato laqueado de Pekín","food",105,"Dadong / Siji Minfu / Quanjude"),
+  A("bj-qianmen","Qianmen / Wangfujing de noche","sight",75),
+  A("bj-wall","Gran Muralla de Mutianyu (tour privado)","tour",540,"Teleférico + tobogán, menos gente que Badaling","GetYourGuide"),
+  A("bj-acro","Show acrobático de Pekín","tour",75),
+  A("bj-forbidden","Plaza Tiananmen + Ciudad Prohibida","sight",240,"Llegar temprano, es enorme"),
+  A("bj-jingshan","Colina Jingshan (vista de la Ciudad Prohibida)","sight",60),
+  A("bj-hutong","Hutongs de Houhai en rickshaw + patio","tour",120,"Visita a un siheyuan"),
+  A("bj-houhai","Bares de Houhai","bar",90)
+],days:[
+  [R("bj-arrive","14:00"),R("bj-temple"),R("g-rest"),R("bj-duck","19:00"),R("bj-qianmen")],
+  [R("bj-wall","07:30"),R("g-rest"),R("g-dinner"),R("bj-acro","19:45")],
+  [R("bj-forbidden","08:30"),R("g-lunch"),R("bj-jingshan"),R("bj-hutong"),R("g-rest"),R("g-dinner"),R("bj-houhai")]
+],hotels:[
+  {name:"The Peninsula Beijing",area:"Wangfujing",note:"Lujo céntrico"},
+  {name:"Waldorf Astoria Beijing",area:"Wangfujing",note:"Con casas de hutong privadas"},
+  {name:"Aman at Summer Palace",area:"Palacio de Verano",note:"Romántico, junto al palacio"}
+],food:[
+  {name:"Dadong Roast Duck",kind:"rest",note:"Pato laqueado moderno"},
+  {name:"Siji Minfu",kind:"rest",note:"Pato muy valorado, cola habitual"},
+  {name:"Jing-A / Great Leap",kind:"bar",note:"Cerveza artesanal en hutong"}
+]},
+
+huangshan:{catalog:[
+  A("hs-up","Tren/traslado + teleférico de subida","transfer",240,"Montañas Amarillas"),
+  A("hs-trails","Senderos de cumbres (Xihai Grand Canyon)","sight",240),
+  A("hs-sunset","Atardecer en mirador","sight",60),
+  A("hs-sunrise","Amanecer sobre el mar de nubes","sight",90,"El momento estrella"),
+  A("hs-down","Más senderos + bajada","sight",240),
+  A("hs-hongcun","Pueblo antiguo de Hongcun","sight",180,"UNESCO, arquitectura Huizhou")
+],days:[
+  [R("hs-up","08:00"),R("g-lunch"),R("hs-trails"),R("hs-sunset","18:45"),R("g-dinner")],
+  [R("hs-sunrise","05:00"),R("g-breakfast"),R("hs-down"),R("g-lunch"),R("hs-hongcun")]
+],hotels:[
+  {name:"Hotel en la cumbre (Beihai/Xihai)",area:"Cima de Huangshan",note:"Reservar con mucha antelación"},
+  {name:"Boutique en Tunxi Old Street",area:"Base de la montaña",note:"Si prefieren dormir abajo"}
+],food:[
+  {name:"Cocina Huizhou",kind:"rest",note:"Tofu apestoso, pescado mandarín"}
+]},
+
+shanghai:{catalog:[
+  A("sh-arrive","Tren Pekín→Shanghái + traslado al hotel","transfer",90,"Bund o Concesión Francesa"),
+  A("sh-bund","El Bund al atardecer","sight",90,"Malecón histórico + skyline de Pudong"),
+  A("sh-xlb","Cena: xiaolongbao","food",90,"Jia Jia Tang Bao / Din Tai Fung"),
+  A("sh-rooftop","Rooftop: Bar Rouge / Flair","bar",90),
+  A("sh-yu","Jardín Yu (Yuyuan) + bazar","sight",120,"Llegar antes de las 10 por la gente"),
+  A("sh-jade","Templo del Buda de Jade","sight",90),
+  A("sh-tower","Shanghai Tower (mirador piso 118)","sight",90,"El más alto de China"),
+  A("sh-nanjing","Nanjing Road a pie","sight",75),
+  A("sh-cruise","Crucero nocturno por el Huangpu","tour",60,"","GetYourGuide"),
+  A("sh-zhu","Zhujiajiao: pueblo de agua (medio día)","tour",300,"'Venecia oriental', barca por canales","Viator"),
+  A("sh-fcc","Concesión Francesa: Tianzifang + Xintiandi","sight",180,"Calles arboladas, cafés, boutiques"),
+  A("sh-farewell","Cena de despedida","food",120)
+],days:[
+  [R("sh-arrive","15:00"),R("g-rest"),R("sh-bund"),R("sh-xlb"),R("sh-rooftop")],
+  [R("sh-yu"),R("sh-jade"),R("g-lunch"),R("sh-tower"),R("sh-nanjing"),R("g-rest"),R("g-dinner"),R("sh-cruise","20:00")],
+  [R("sh-zhu","09:00"),R("sh-fcc"),R("g-free"),R("sh-farewell")]
+],hotels:[
+  {name:"Fairmont Peace Hotel",area:"El Bund",note:"Art Déco icónico sobre el malecón"},
+  {name:"The Peninsula Shanghai",area:"El Bund",note:"Lujo con vista a Pudong"},
+  {name:"Bulgari Hotel Shanghai",area:"Suzhou Creek",note:"Elegante y romántico"}
+],food:[
+  {name:"Jia Jia Tang Bao",kind:"rest",note:"Xiaolongbao de culto"},
+  {name:"Ultraviolet (Paul Pairet)",kind:"rest",note:"3 Michelin, experiencia única (splurge)"},
+  {name:"Fu 1088",kind:"rest",note:"Shanghainés refinado en mansión"},
+  {name:"Bar Rouge / Mr & Mrs Bund",kind:"bar",note:"Rooftop con vista al skyline"},
+  {name:"Speak Low",kind:"bar",note:"Speakeasy premiado"}
+]}
+};
+
+/* ===== Costos por defecto (MXN, totales para la pareja, promedio alto) =====
+   Estimados en pesos con TC ~17.5 MXN/USD y ~2.45 MXN/CNY (jul 2026); editables. */
+const DEFAULT_COSTS={
+  "g-breakfast":[["Desayuno (2)",300]],
+  "g-lunch":[["Comida (2)",550]],
+  "g-dinner":[["Cena (2)",850]],
+  // Vuelos/trenes de conexión de la ruta (tus tarifas ×2 personas)
+  "os-arrive":[["Vuelo Shanghái → Osaka (2)",8630]],
+  "ky-arrive":[["Tren Osaka → Kyoto (2)",130]],
+  // Osaka
+  "os-dotonbori":[["Comida callejera Dotonbori (2)",700]],
+  "os-namba":[["Bares de Namba (2)",700]],
+  "os-castle":[["Castillo de Osaka (2)",300]],
+  "os-kuromon":[["Mercado Kuromon (2)",600]],
+  "os-umeda":[["Umeda Sky (2)",350]],
+  "os-shinsekai":[["Kushikatsu Shinsekai (2)",600]],
+  "os-nara":[["Excursión a Nara (2)",1500]],
+  "os-usj":[["Universal Studios Japan (2)",2000]],
+  // Kyoto
+  "ky-fushimi":[["Fushimi Inari (2)",0]],
+  "ky-pontocho":[["Cena/copas Pontocho (2)",900]],
+  "ky-kinkakuji":[["Kinkaku-ji (2)",120]],
+  "ky-arashiyama":[["Arashiyama / Tenryu-ji (2)",150]],
+  "ky-kiyomizu":[["Kiyomizu-dera (2)",120]],
+  "ky-nishiki":[["Nishiki snacks (2)",400]],
+  "ky-tea":[["Ceremonia del té / kimono (2)",1200]],
+  // Tokio (TC ~0.113 MXN/JPY)
+  "tk-arrive":[["Tren bala Kyoto → Tokio (2)",3300]],
+  "tk-shibuyasky":[["Shibuya Sky (2)",600]],
+  "tk-izakaya":[["Cena izakaya (2)",900]],
+  "tk-skytree":[["Tokyo Skytree (2)",700]],
+  "tk-teamlab":[["teamLab Planets (2)",1000]],
+  "tk-shinjuku":[["Copas Golden Gai (2)",700]],
+  "tk-tsukiji":[["Sushi callejero Tsukiji (2)",600]],
+  "tk-fuji":[["Excursión Fuji / Hakone (2)",4200]],
+  "tk-sushi":[["Cena sushi omakase (2)",2800]],
+  // Hong Kong
+  "hk-arrive":[["Vuelo Tokio → Hong Kong (2)",10600]],
+  "hk-peak":[["Peak Tram + Sky Terrace (2)",700]],
+  "hk-timho":[["Dim sum Tim Ho Wan (2)",520]],
+  "hk-ferry":[["Star Ferry (2)",60]],
+  "hk-dinner-tst":[["Cena en TST (2)",800]],
+  "hk-lantau":[["Ngong Ping 360 crystal (2)",1200],["Entradas / bus (2)",250]],
+  "hk-polin":[["Almuerzo vegetariano (2)",450]],
+  "hk-taio":[["Paseo en bote Tai O (2)",200]],
+  "hk-aqua":[["Aqua Luna atardecer (2)",1350]],
+  "hk-seafood":[["Cena de mariscos (2)",1050]],
+  "hk-ozone":[["Cócteles Ozone (2)",850]],
+  // Yangshuo
+  "ys-beerfish":[["Beer fish (2)",500]],
+  "ys-li":[["Crucero Río Li (2)",1500]],
+  "ys-yulong":[["Balsa Río Yulong (2)",500]],
+  "ys-impression":[["Impression Sanjie Liu (2)",1200]],
+  "ys-bike":[["Renta de bicis (2)",150]],
+  "ys-xianggong":[["Mirador Xianggong (2)",300]],
+  "ys-cooking":[["Clase de cocina (2)",750]],
+  "ys-bars":[["Bares West Street (2)",400]],
+  // Zhangjiajie
+  "zjj-tujia":[["Cena Tujia (2)",500]],
+  "zjj-avatar":[["Entrada parque nacional (2)",1150],["Teleféricos + ascensor Bailong (2)",900],["Guía privado + transporte",1500]],
+  "zjj-tianmen":[["Tianmen: teleférico + entrada (2)",1300]],
+  "zjj-glass":[["Gran Cañón + Puente de Cristal (2)",700]],
+  // Fenghuang
+  "fh-furong":[["Entrada Furong Town (2)",500]],
+  "fh-oldtown":[["Boleto combinado casco antiguo (2)",600]],
+  "fh-boat":[["Barca nocturna río Tuo (2)",300]],
+  "fh-bars":[["Bares del río (2)",400]],
+  "fh-miao":[["Excursión aldea Miao (2)",500]],
+  // Chongqing
+  "cq-cable":[["Teleférico Yangtze (2)",150]],
+  "cq-hotpot":[["Hotpot Chongqing (2)",700]],
+  "cq-cruise":[["Crucero dos ríos (2)",750]],
+  // Chengdu
+  "cd-kuanzhai":[["Casa de té (2)",250]],
+  "cd-opera":[["Ópera de Sichuan (2)",900]],
+  "cd-pandas":[["Entradas base de pandas (2)",300],["Tour + transporte",1200]],
+  "cd-leshan":[["Gran Buda de Leshan tour (2)",2100]],
+  "cd-taikoo":[["Copas en Taikoo Li (2)",600]],
+  // Xi'an
+  "xa-wall":[["Muralla + bici (2)",500]],
+  "xa-belldrum":[["Torre Campana / Tambor (2)",250]],
+  "xa-muslim":[["Street food Barrio Musulmán (2)",400]],
+  "xa-terracota":[["Entradas Terracota (2)",600],["Tour privado guía + chofer",2600]],
+  "xa-shaanxi":[["Museo / Palacio Huaqing (2)",500]],
+  "xa-pagoda":[["Gran Pagoda del Ganso (2)",250]],
+  "xa-tang":[["Show Tang + cena dumplings (2)",1800]],
+  // Pekín
+  "bj-temple":[["Templo del Cielo (2)",200]],
+  "bj-duck":[["Pato laqueado (2)",1200]],
+  "bj-wall":[["Tour privado guía + chofer",2800],["Teleférico + tobogán (2)",700],["Entradas Muralla (2)",350]],
+  "bj-acro":[["Show acrobático (2)",1000]],
+  "bj-forbidden":[["Ciudad Prohibida (2)",300]],
+  "bj-jingshan":[["Colina Jingshan (2)",50]],
+  "bj-hutong":[["Rickshaw hutong + patio (2)",900]],
+  "bj-houhai":[["Bares de Houhai (2)",500]],
+  // Huangshan
+  "hs-up":[["Entrada + teleférico Huangshan (2)",1350]],
+  "hs-hongcun":[["Entrada Hongcun (2)",500]],
+  // Shanghái
+  "sh-xlb":[["Xiaolongbao (2)",500]],
+  "sh-rooftop":[["Cócteles rooftop (2)",1000]],
+  "sh-yu":[["Jardín Yu (2)",200]],
+  "sh-jade":[["Templo Buda de Jade (2)",100]],
+  "sh-tower":[["Shanghai Tower mirador (2)",900]],
+  "sh-cruise":[["Crucero río Huangpu (2)",600]],
+  "sh-zhu":[["Excursión Zhujiajiao (2)",1750]],
+  "sh-farewell":[["Cena de despedida (2)",2000]]
+};
+function costsFor(cid){return (DEFAULT_COSTS[cid]||[]).map(([label,est])=>({id:uid(),label,est,real:0}));}
+
+const ESSENTIALS=[
+  {id:"ess-jp",t:"Japón: Visit Japan Web + boleto de salida",s:"mexicanos sin visa (exención de turista)"},
+  {id:"ess-visa",t:"Visa de turista China (L)",s:"tramitar 1–2 meses antes"},
+  {id:"ess-pass",t:"Pasaporte 6+ meses de vigencia",s:"revisar ambos"},
+  {id:"ess-ins",t:"Seguro de viaje / gastos médicos",s:"cobertura internacional"},
+  {id:"ess-sim",t:"eSIM o roaming + VPN",s:"VPN para China; en Japón no hace falta"},
+  {id:"ess-pay",t:"Alipay + WeChat Pay",s:"vincular tarjeta internacional (China)"},
+  {id:"ess-suica",t:"Suica / Pasmo (IC card) para Tokio",s:"transporte y pagos en Japón"},
+  {id:"ess-app",t:"App Trip.com / 12306",s:"para trenes bala en China"},
+  {id:"ess-wall",t:"Reservar Muralla (Mutianyu) y Terracota",s:"cupo limitado y por horario"},
+  {id:"ess-show",t:"Reservar teamLab, Impression Sanjie Liu y show Tang",s:"se agotan"},
+  {id:"ess-cash",t:"Efectivo RMB para pueblos",s:"Yangshuo / Zhangjiajie"}
+];
+
+/* ===================== Estado ===================== */
+const STORE_KEY="china-honeymoon-v4";
+let state=null,_id=0;
+const uid=()=>"i"+(++_id)+"_"+Date.now().toString(36)+Math.floor(Math.random()*999);
+
+function seedBase(b){
+  const plan=DEFAULT_PLAN[b.id]||{catalog:[],days:[[]],hotels:[],food:[]};
+  const catalog=GENERICS.concat(plan.catalog).map(a=>({...a,costs:costsFor(a.cid)}));
+  const schedule={},dayStart={};
+  plan.days.forEach((day,di)=>{schedule[di]=day.map(x=>({id:uid(),ref:x.r,fixed:x.f||null}));dayStart[di]="09:00";});
+  return{id:b.id,name:b.name,region:b.region,cluster:String(b.cluster),x:b.x,y:b.y,
+    ldx:b.ldx,ldy:b.ldy,anchor:b.anchor,optional:b.optional,
+    nights:b.nights,included:b.included,
+    catalog,schedule,dayStart,
+    budget:{lodgingEst:0,lodgingReal:0,miscEst:0,miscReal:0},
+    hotels:(plan.hotels||[]).map(h=>({id:uid(),name:h.name,area:h.area||"",note:h.note||"",chosen:false})),
+    food:(plan.food||[]).map(f=>({id:uid(),name:f.name,kind:f.kind||"rest",note:f.note||"",chosen:false})),
+    expanded:false,tab:"plan",day:0};
+}
+// nueva base personalizada, con posición y catálogo genérico
+function seedCustomBase(name,idx){
+  const id="cust_"+uid();
+  const catalog=GENERICS.map(a=>({...a,costs:[]}));
+  const g=r=>({id:uid(),ref:r,fixed:null});
+  const schedule={0:[g("g-free"),g("g-lunch"),g("g-free"),g("g-dinner")]};
+  const dayStart={0:"09:00"};
+  // posición por defecto, desplazada para no encimar
+  const px=380+(idx%4)*70, py=250+Math.floor(idx/4)*60;
+  return{id,name:name||"Nueva parada",region:"Personalizada",cluster:"opt",
+    x:px,y:py,ldx:14,ldy:4,anchor:"start",optional:true,
+    nights:2,included:true,catalog,schedule,dayStart,
+    budget:{lodgingEst:0,lodgingReal:0,miscEst:0,miscReal:0},
+    hotels:[],food:[],expanded:true,tab:"plan",day:0};
+}
+function defaultLegs(){return{"_arrive":{dep:"",arr:"05:45",note:""},"_depart":{dep:"",arr:"",note:""}};}
+function freshState(){const bases={},order=[];DEFAULT_BASES.forEach(b=>{bases[b.id]=seedBase(b);order.push(b.id);});
+  return{bases,order,checks:{},legs:defaultLegs(),currency:"MXN",budget:{flightsEst:0,flightsReal:0},costsSeeded:true,tokyoSwap:true,japanRoute:true};}
+
+async function load(){
+  let raw=null;
+  try{const r=await window.storage.get(STORE_KEY,true);if(r&&r.value)raw=r.value;}catch(e){}
+  if(!raw){ // migrar desde almacenamiento individual (versión previa) si existe
+    try{const r2=await window.storage.get(STORE_KEY);if(r2&&r2.value)raw=r2.value;}catch(e){}
+  }
+  if(raw){try{state=JSON.parse(raw);}catch(e){state=null;}}
+  if(!state||!state.bases)state=freshState();
+  DEFAULT_BASES.forEach(b=>{if(!state.bases[b.id]||!state.bases[b.id].catalog)state.bases[b.id]=seedBase(b);});
+  if(!state.checks)state.checks={};
+  if(!state.legs)state.legs=defaultLegs();
+  Object.entries(defaultLegs()).forEach(([k,v])=>{if(!state.legs[k])state.legs[k]=v;});
+  if(!state.currency)state.currency="MXN";
+  if(!state.budget)state.budget={flightsEst:0,flightsReal:0};
+  // migrar metadatos a cada base (antes vivían en DEFAULT_BASES)
+  const META={};DEFAULT_BASES.forEach(b=>META[b.id]=b);
+  Object.entries(state.bases).forEach(([id,st])=>{
+    const m=META[id];
+    if(m){["name","region","cluster","x","y","ldx","ldy","anchor","optional"].forEach(k=>{if(st[k]===undefined)st[k]=m[k];});}
+    st.id=st.id||id;
+    if(st.cluster!==undefined)st.cluster=String(st.cluster);
+    if(st.catalog)st.catalog.forEach(a=>{if(!a.costs)a.costs=[];});
+    if(st.catalog&&!st.catalog.some(a=>a.cid==="g-hotel"))
+      st.catalog.push({cid:"g-hotel",name:"Hotel / check-in",type:"hotel",dur:30,note:"",src:"",costs:[]});
+    if(!st.budget)st.budget={lodgingEst:0,lodgingReal:0,miscEst:0,miscReal:0};
+  });
+  // sembrar costos por defecto una sola vez (para planes guardados antes de esta versión)
+  if(!state.costsSeeded){
+    Object.values(state.bases).forEach(st=>{
+      (st.catalog||[]).forEach(a=>{if((!a.costs||!a.costs.length)&&DEFAULT_COSTS[a.cid])a.costs=costsFor(a.cid);});
+    });
+    state.costsSeeded=true;
+  }
+  // orden: construir si falta, y agregar cualquier base nueva
+  if(!Array.isArray(state.order)||!state.order.length)
+    state.order=DEFAULT_BASES.map(b=>b.id);
+  state.order=state.order.filter(id=>state.bases[id]);            // limpia ids borrados
+  Object.keys(state.bases).forEach(id=>{if(!state.order.includes(id))state.order.push(id);});
+  // migración única: sustituir Fenghuang por Tokio al inicio
+  if(!state.tokyoSwap){
+    if(state.bases.fenghuang){delete state.bases.fenghuang;state.order=state.order.filter(id=>id!=="fenghuang");}
+    if(!state.bases.tokyo){const td=DEFAULT_BASES.find(b=>b.id==="tokyo");if(td)state.bases.tokyo=seedBase(td);}
+    state.order=state.order.filter(id=>id!=="tokyo");
+    state.order.unshift("tokyo");
+    state.tokyoSwap=true;
+  }
+  // migración única: ruta B1 con Osaka + Kyoto (llega Tokio, arranca HK, termina Tokio)
+  if(!state.japanRoute){
+    ["osaka","kyoto"].forEach(id=>{if(!state.bases[id]){const d=DEFAULT_BASES.find(b=>b.id===id);if(d)state.bases[id]=seedBase(d);}});
+    const POS={
+      tokyo:{x:780,y:174,ldx:-13,ldy:-2,anchor:"end",cluster:"jp",region:"Japón · regreso"},
+      kyoto:{x:756,y:206,ldx:-13,ldy:-2,anchor:"end",cluster:"jp",region:"Japón · Kansai"},
+      osaka:{x:734,y:238,ldx:-13,ldy:2,anchor:"end",cluster:"jp",region:"Japón · Kansai"}
+    };
+    Object.entries(POS).forEach(([id,p])=>{if(state.bases[id])Object.assign(state.bases[id],p);});
+    const desired=["hk","yangshuo","zjj","chongqing","chengdu","xian","beijing","shanghai","osaka","kyoto","tokyo"];
+    const newOrder=desired.filter(id=>state.bases[id]);
+    state.order.forEach(id=>{if(!newOrder.includes(id)&&state.bases[id])newOrder.push(id);});
+    state.order=newOrder;
+    // costo de conexión en las actividades de llegada existentes (tus tarifas ×2)
+    const setArrCost=(bid,cid,label,est)=>{const st=state.bases[bid];if(!st||!st.catalog)return;
+      const a=st.catalog.find(x=>x.cid===cid);if(a)a.costs=[{id:uid(),label,est,real:0}];};
+    setArrCost("hk","hk-arrive","Vuelo Tokio → Hong Kong (2)",10600);
+    setArrCost("tokyo","tk-arrive","Tren bala Kyoto → Tokio (2)",3300);
+    if(state.budget&&!state.budget.flightsEst)state.budget.flightsEst=56000;
+    state.japanRoute=true;
+  }
+}
+/* ===================== Colaboración en tiempo casi real ===================== */
+const CLIENT_ID=Math.random().toString(36).slice(2,9);
+let lastRev=0, pendingRemote=null, lastLocalEdit=0, pollTimer=null;
+const isTyping=()=>{const a=document.activeElement;return !!a&&/^(INPUT|SELECT|TEXTAREA)$/.test(a.tagName||"");};
+const busy=()=>isTyping()||(Date.now()-lastLocalEdit<2500);
+
+let saveTimer=null;
+async function save(){
+  try{
+    state._rev=Date.now();state._by=CLIENT_ID;lastRev=state._rev;lastLocalEdit=Date.now();
+    await window.storage.set(STORE_KEY,JSON.stringify(state),true);
+    flashSaved();setSync("saved");
+  }catch(e){setSync("offline");}
+}
+function saveDebounced(){clearTimeout(saveTimer);lastLocalEdit=Date.now();saveTimer=setTimeout(save,500);}
+function flashSaved(){const f=document.getElementById("savedFlag");if(!f)return;f.classList.add("show");
+  clearTimeout(f._t);f._t=setTimeout(()=>f.classList.remove("show"),1200);}
+
+// conserva la navegación local (qué base está abierta, pestaña, día) al recibir cambios remotos
+function preserveLocalUI(remote){
+  if(remote&&remote.bases&&state&&state.bases){
+    for(const id in remote.bases){const loc=state.bases[id];
+      if(loc)["expanded","tab","day"].forEach(k=>{if(loc[k]!==undefined)remote.bases[id][k]=loc[k];});}
+  }
+  if(state&&state.budgetOpen!==undefined)remote.budgetOpen=state.budgetOpen;
+}
+function applyRemote(remote){
+  preserveLocalUI(remote);
+  state=remote;lastRev=remote._rev||Date.now();pendingRemote=null;
+  renderAll();setSync("updated");
+}
+async function poll(){
+  let val=null;
+  try{const r=await window.storage.get(STORE_KEY,true);if(r&&r.value)val=r.value;}catch(e){setSync("offline");return;}
+  if(!val){setSync("live");return;}
+  let remote;try{remote=JSON.parse(val);}catch(e){return;}
+  const rrev=remote._rev||0;
+  if(rrev>lastRev && remote._by!==CLIENT_ID && remote.bases){
+    if(busy()){pendingRemote=remote;setSync("pending");}
+    else applyRemote(remote);
+  }else if(!pendingRemote){setSync("live");}
+}
+function startCollab(){
+  if(pollTimer)clearInterval(pollTimer);
+  pollTimer=setInterval(poll,4000);
+  document.addEventListener("visibilitychange",()=>{if(!document.hidden)poll();});
+}
+function setSync(mode){
+  const el=document.getElementById("syncStatus");if(!el)return;
+  el.classList.remove("pending");el.onclick=null;
+  const t=new Date().toLocaleTimeString("es-MX",{hour:"2-digit",minute:"2-digit"});
+  if(mode==="pending"){
+    el.classList.add("pending");
+    el.textContent="🔔 Cambios de tu pareja — toca para aplicar";
+    el.onclick=()=>{if(pendingRemote)applyRemote(pendingRemote);};
+  }else if(mode==="updated"){el.textContent="🔄 Actualizado con cambios de tu pareja · "+t;}
+  else if(mode==="saved"){el.textContent="🟢 En vivo · guardado "+t;}
+  else if(mode==="offline"){el.textContent="🟡 Sin conexión de sincronía — reintentando…";}
+  else {el.textContent="🟢 En vivo · al día "+t;}
+}
+
+/* ===================== Derivados ===================== */
+const orderedBases=()=>(state.order||[]).map(id=>{const st=state.bases[id];
+  return{def:{id,name:st.name,region:st.region,cluster:st.cluster,x:st.x,y:st.y,
+    ldx:st.ldx,ldy:st.ldy,anchor:st.anchor,optional:st.optional},st};});
+const activeBases=()=>orderedBases().filter(o=>o.st.included);
+const totalNights=()=>activeBases().reduce((s,o)=>s+o.st.nights,0);
+function withDates(){let c=new Date(TRIP_START);return activeBases().map(o=>{
+  const ci=new Date(c),co=addDays(c,o.st.nights);c=co;return{...o,checkin:ci,checkout:co};});}
+
+/* ---- Costos ---- */
+const openCost=new Set(); // qué actividades tienen el editor de costos abierto (sesión)
+const CURR={MXN:{s:"$",c:"MXN"},USD:{s:"US$",c:"USD"},EUR:{s:"€",c:"EUR"},CNY:{s:"¥",c:"CNY"}};
+function curSym(){return (CURR[state.currency]||CURR.MXN).s;}
+function fmtMoney(n){n=Math.round(+n||0);return curSym()+n.toLocaleString("es-MX");}
+const actEst=a=>(a.costs||[]).reduce((s,c)=>s+(+c.est||0),0);
+const actReal=a=>(a.costs||[]).reduce((s,c)=>s+(+c.real||0),0);
+function baseActCosts(st){let est=0,real=0;const nd=Math.max(1,st.nights),counts={};
+  for(let d=0;d<nd;d++)(st.schedule[d]||[]).forEach(it=>{counts[it.ref]=(counts[it.ref]||0)+1;});
+  (st.catalog||[]).forEach(a=>{const u=counts[a.cid]||0;if(u){est+=actEst(a)*u;real+=actReal(a)*u;}});
+  return{est,real};}
+function baseTotals(st){const ac=baseActCosts(st),bg=st.budget||{};
+  const est=ac.est+(+bg.lodgingEst||0)+(+bg.miscEst||0);
+  const real=ac.real+(+bg.lodgingReal||0)+(+bg.miscReal||0);
+  return{est,real,act:ac};}
+function tripTotals(){const g=state.budget||{};let est=+g.flightsEst||0,real=+g.flightsReal||0;
+  activeBases().forEach(o=>{const t=baseTotals(o.st);est+=t.est;real+=t.real;});return{est,real};}
+
+/* Motor de horarios: encadena actividades; "fixed" ancla la hora */
+function computeDay(st,d){
+  const list=st.schedule[d]||[];
+  let cur=toMin((st.dayStart&&st.dayStart[d])||"09:00");if(cur===null)cur=540;
+  const out=[];
+  for(const it of list){
+    const act=st.catalog.find(a=>a.cid===it.ref);
+    if(!act)continue;
+    const fixedMin=it.fixed?toMin(it.fixed):null;
+    const s=fixedMin!==null?fixedMin:cur;
+    const e=s+(+act.dur||60);
+    out.push({it,act,s,e,warn:fixedMin!==null&&out.length>0&&fixedMin<cur,gap:fixedMin!==null&&fixedMin>cur?fixedMin-cur:0});
+    cur=e;
+  }
+  return out;
+}
+
+/* ===================== Resumen ===================== */
+function renderSummary(){
+  const active=activeBases();
+  const flights=2+active.slice(0,-1).filter((o,i)=>getXfer(o.def.id,active[i+1].def.id).type==="air").length;
+  const tn=totalNights(),over=tn>AVAILABLE_NIGHTS,under=tn<AVAILABLE_NIGHTS;
+  const bal=over?(tn-AVAILABLE_NIGHTS)+" de más":under?(AVAILABLE_NIGHTS-tn)+" libres":"cuadra perfecto";
+  const chips=[{n:"24",l:"días totales"},
+    {n:tn+" / "+AVAILABLE_NIGHTS,l:"noches · "+bal,cls:(over||under)?"warn":""},
+    {n:active.length,l:"bases"},
+    {n:new Set(active.map(o=>o.def.cluster)).size,l:"clústeres"},
+    {n:flights,l:"vuelos (2 intl + internos)"}];
+  document.getElementById("summary").innerHTML=chips.map(c=>
+    `<div class="chip ${c.cls||''}"><div class="n">${c.n}</div><div class="l">${c.l}</div></div>`).join("");
+}
+
+/* ===================== Mapa ===================== */
+const clusterColor=c=>CLUSTERS[c]?CLUSTERS[c].color:"var(--copt)";
+function renderMap(){
+  const active=withDates(),W=800,H=560;
+  let s=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ruta por China">`;
+  s+=`<g opacity="0.5">
+    <path d="M40,300 q60,-70 120,-20 q50,-60 120,-15 q70,-55 140,-5" fill="none" stroke="#9aa39a" stroke-width="1.4" opacity="0.33"/>
+    <path d="M300,150 q70,-50 140,-10 q60,-45 150,0" fill="none" stroke="#9aa39a" stroke-width="1.4" opacity="0.3"/>
+    <path d="M470,430 q60,-45 130,-8 q50,-40 130,-2" fill="none" stroke="#9aa39a" stroke-width="1.4" opacity="0.3"/></g>`;
+  for(let i=0;i<active.length-1;i++){const a=active[i].def,b=active[i+1].def,air=getXfer(a.id,b.id).type==="air";
+    s+=`<line class="maproute" x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="${air?'var(--seal)':'var(--ink)'}"
+      stroke-width="${air?2:2.4}" stroke-linecap="round" ${air?'stroke-dasharray="2 7"':'opacity="0.72"'}/>`;}
+  const ids=active.map(o=>o.def.id),zi=ids.indexOf("zjj"),fi=ids.indexOf("fenghuang");
+  if(zi>=0&&fi===zi+1){s+=`<circle cx="${STOP_FURONG.x}" cy="${STOP_FURONG.y}" r="5" fill="none" stroke="var(--ink)" stroke-width="1.6" opacity="0.7"/>
+    <text x="${STOP_FURONG.x-9}" y="${STOP_FURONG.y+3}" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="10" fill="var(--ink-soft)">${STOP_FURONG.name}</text>`;}
+  active.forEach((o,i)=>{const b=o.def,col=clusterColor(b.cluster);
+    const nn=o.st.nights, acts=Object.values(o.st.schedule).reduce((n,day)=>n+day.length,0);
+    s+=`<g class="mapnode">
+      <title>${b.name} · ${nn} noche${nn===1?'':'s'} · ${fmt(o.checkin)}–${fmt(o.checkout)} · ${acts} actividades</title>
+      <circle class="halo" cx="${b.x}" cy="${b.y}" r="17" fill="${col}"/>
+      <circle class="dotmark" cx="${b.x}" cy="${b.y}" r="8.5" fill="${col}" stroke="#f4f0e6" stroke-width="2.5"/>
+      <rect class="sealmark" x="${b.x-20}" y="${b.y-22}" width="17" height="17" rx="3.5" fill="var(--seal)"/>
+      <text x="${b.x-11.5}" y="${b.y-9.5}" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="11" font-weight="600" fill="#fff" style="pointer-events:none">${i+1}</text>
+      <text class="mlabel" x="${b.x+(b.ldx||12)}" y="${b.y+(b.ldy||4)}" text-anchor="${b.anchor||'start'}" font-family="Cormorant Garamond,serif" font-weight="600" font-size="16" fill="var(--ink)">${b.name}</text>
+      <text x="${b.x+(b.ldx||12)}" y="${b.y+(b.ldy||4)+13}" text-anchor="${b.anchor||'start'}" font-family="IBM Plex Mono,monospace" font-size="9" fill="var(--ink-soft)">${fmt(o.checkin)}–${fmt(o.checkout)}</text>
+    </g>`;});
+  s+=`</svg>`;
+  document.getElementById("mapholder").innerHTML=s;
+  const used=[...new Set(active.map(o=>o.def.cluster))];
+  document.getElementById("legend").innerHTML=
+    used.map(c=>`<span class="k"><span class="dot" style="background:${clusterColor(c)}"></span>${CLUSTERS[c].name}</span>`).join("")
+    +`<span class="k"><span class="seg"></span>tren</span><span class="k"><span class="seg air"></span>vuelo</span>`;
+}
+
+/* ===================== Tarjetas ===================== */
+const esc=s=>(s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+
+function renderCards(){
+  const dated=withDates(),byId={};dated.forEach(o=>byId[o.def.id]=o);
+  const firstActiveId=dated.length?dated[0].def.id:null;
+  const holder=document.getElementById("cards");holder.innerHTML="";
+  let seq=0;
+  orderedBases().forEach(o=>{
+    const b=o.def,st=o.st,on=st.included;if(on)seq++;
+    const col=clusterColor(b.cluster),dd=byId[b.id];
+    const leg=document.createElement("div");leg.className="leg";
+    leg.innerHTML=`
+      <span class="node" style="background:${on?col:'var(--copt)'}"></span>
+      <div class="card ${on?'':'off'}">
+        <div class="card-head" data-act="expand" data-bid="${b.id}">
+          <div class="seal">${on?seq:'·'}</div>
+          <div class="titlecol"><h3>${b.name}</h3><div class="region">${b.region}</div></div>
+          <div class="datecol">${on&&dd?`<div class="dr">${fmt(dd.checkin)} → ${fmt(dd.checkout)}</div><div>${st.nights} noche${st.nights===1?'':'s'}</div>`:`<div class="dr">— fuera del plan —</div>`}<div class="basecost">≈ ${fmtMoney(baseTotals(st).est)}</div></div>
+          <div class="chev">${st.expanded?'▲':'▼'}</div>
+        </div>
+        <div class="card-ctl">
+          <div class="nightsctl" ${on?'':'style="opacity:.4;pointer-events:none"'}>
+            <button data-act="dec" data-bid="${b.id}">–</button>
+            <span class="val"><b>${st.nights}</b> noche${st.nights===1?'':'s'}</span>
+            <button data-act="inc" data-bid="${b.id}">+</button>
+          </div>
+          <div class="toggle ${on?'on':''}" data-act="toggle" data-bid="${b.id}"><span class="switch"></span><span>${on?'en el viaje':'excluida'}</span></div>
+          <div class="basetools">
+            <button class="btool" data-act="baseup" data-bid="${b.id}" title="Subir">▲</button>
+            <button class="btool" data-act="basedown" data-bid="${b.id}" title="Bajar">▼</button>
+            <button class="btool danger" data-act="delbase" data-bid="${b.id}" title="Borrar esta base">🗑</button>
+          </div>
+          <details class="basemeta">
+            <summary>✎ editar base</summary>
+            <div class="metagrid">
+              <input class="f mname metafield" data-fld="name" data-bid="${b.id}" value="${esc(b.name)}" placeholder="Nombre">
+              <input class="f mregion metafield" data-fld="region" data-bid="${b.id}" value="${esc(b.region)}" placeholder="Región">
+              <select class="f metafield" data-fld="cluster" data-bid="${b.id}">
+                ${Object.keys(CLUSTERS).map(c=>`<option value="${c}" ${String(b.cluster)===String(c)?'selected':''}>${CLUSTERS[c].name}</option>`).join("")}
+              </select>
+            </div>
+          </details>
+        </div>
+        ${st.expanded?renderDetail(b,st):''}
+      </div>`;
+    // vuelo internacional de llegada, antes de la primera base activa
+    if(on&&dd&&b.id===firstActiveId)
+      holder.appendChild(makeRibbon(xferRibbonHTML("_arrive","intl","Vuelo internacional",
+        "Guadalajara (GDL) → Tokio (escala) → "+b.name,"5 may → 7 may")));
+    holder.appendChild(leg);
+    if(on&&dd){const nx=dated[dated.indexOf(dd)+1];
+      if(nx){const x=getXfer(b.id,nx.def.id);
+        holder.appendChild(makeRibbon(xferRibbonHTML(b.id+"|"+nx.def.id,x.type,x.mode,x.detail,x.time)));}
+      else // última base activa → vuelo internacional de salida
+        holder.appendChild(makeRibbon(xferRibbonHTML("_depart","intl","Vuelo internacional",
+          b.name+" → Guadalajara (GDL)","29 may · mismo día (noche)")));
+    }
+  });
+  const addLeg=document.createElement("div");addLeg.className="leg";
+  addLeg.innerHTML=`<span class="node" style="background:transparent;border-color:transparent;box-shadow:none"></span>
+    <button class="addbase" data-act="addbase">＋ Agregar base / parada nueva</button>`;
+  holder.appendChild(addLeg);
+  wireCardEvents();
+}
+function makeRibbon(html){const rib=document.createElement("div");rib.className="leg";
+  rib.innerHTML=`<span class="node" style="background:transparent;border-color:transparent;box-shadow:none"></span>`+html;return rib;}
+function xferRibbonHTML(key,type,mode,detail,estTime){
+  const L=(state.legs&&state.legs[key])||{dep:"",arr:"",note:""};
+  const badgeLabel=type==='air'?'vuelo':type==='road'?'carretera':type==='intl'?'internacional':'tren';
+  const cls=type==='intl'?'intl':type;
+  return `<div class="xfer edit${type==='intl'?' intlrib':''}">
+    <div class="line1"><span class="badge ${cls}">${badgeLabel}</span>
+      <span class="mode">${esc(mode)}</span><span class="arrow">→</span><span>${esc(detail)}</span>
+      <span class="arrow">·</span><span class="time">${esc(estTime)}</span></div>
+    <div class="line2">
+      <span class="lbl">salida</span><input type="time" class="f legfield" data-key="${key}" data-fld="dep" value="${esc(L.dep)}">
+      <span class="lbl">llegada</span><input type="time" class="f legfield" data-key="${key}" data-fld="arr" value="${esc(L.arr)}">
+      <input class="f legnote legfield" data-key="${key}" data-fld="note" value="${esc(L.note)}" placeholder="N.º de tren/vuelo, andén, notas…">
+    </div>
+  </div>`;
+}
+
+function renderDetail(b,st){
+  const tab=st.tab||"plan";
+  let inner="";
+  if(tab==="plan")inner=renderPlan(b,st);
+  else if(tab==="catalog")inner=renderCatalog(b,st);
+  else if(tab==="hotels")inner=renderHotels(b,st);
+  else inner=renderFood(b,st);
+  return `<div class="detail">
+    <div class="tabs">
+      <span class="tab ${tab==='plan'?'active':''}" data-act="tab" data-bid="${b.id}" data-tab="plan">🕑 Día a día</span>
+      <span class="tab ${tab==='catalog'?'active':''}" data-act="tab" data-bid="${b.id}" data-tab="catalog">🗂 Catálogo</span>
+      <span class="tab ${tab==='hotels'?'active':''}" data-act="tab" data-bid="${b.id}" data-tab="hotels">🏨 Hoteles</span>
+      <span class="tab ${tab==='food'?'active':''}" data-act="tab" data-bid="${b.id}" data-tab="food">🍜 Comida y bares</span>
+    </div>${inner}</div>`;
+}
+
+function usageCount(st,cid){let n=0;Object.values(st.schedule).forEach(day=>day.forEach(it=>{if(it.ref===cid)n++;}));return n;}
+
+function placeListFor(st,type){
+  if(type==="hotel")return st.hotels||[];
+  if(type==="bar")return (st.food||[]).filter(f=>f.kind==="bar");
+  if(type==="food")return (st.food||[]).filter(f=>f.kind==="rest");
+  return null;
+}
+function placeLinkHTML(st,type,it,bid,cur){
+  const list=placeListFor(st,type);
+  if(!list)return "";                       // solo comida/bar/hotel
+  const tabIcon=type==="hotel"?"🏨":"🍜";
+  const linked=list.find(p=>p.id===it.place);
+  const opts=['<option value="">— vincular lugar —</option>']
+    .concat(list.map(p=>`<option value="${p.id}" ${it.place===p.id?'selected':''}>${esc(p.name)||'(sin nombre)'}</option>`));
+  // si el lugar vinculado ya no existe en la lista
+  if(it.place&&!linked)opts.push(`<option value="${esc(it.place)}" selected>(lugar eliminado)</option>`);
+  const empty=list.length===0;
+  return `<div class="placelink">
+    <span class="pin">📍</span>
+    <select class="f placesel" data-bid="${bid}" data-day="${cur}" data-item="${it.id}" ${empty?'disabled':''}>${opts.join("")}</select>
+    ${empty?`<span class="linknote">agrega lugares en la pestaña ${tabIcon}</span>`:(linked&&linked.note?`<span class="linknote">${esc(linked.note)}</span>`:'')}
+  </div>`;
+}
+function renderPlan(b,st){
+  const nDays=Math.max(1,st.nights);
+  let cur=st.day||0;if(cur>=nDays)cur=nDays-1;
+  const dated=withDates().find(o=>o.def.id===b.id);
+  let bar='<div class="daybar">';
+  for(let d=0;d<nDays;d++){
+    const dt=dated?fmt(addDays(dated.checkin,d)):"";
+    bar+=`<span class="daychip ${d===cur?'active':''}" data-act="day" data-bid="${b.id}" data-day="${d}">Día ${d+1}<span class="dt">${dt}</span></span>`;
+  }
+  bar+=`<span class="startwrap">inicio <input type="time" class="f startinp" data-bid="${b.id}" data-day="${cur}" value="${esc((st.dayStart&&st.dayStart[cur])||'09:00')}"></span></div>`;
+
+  const typekey=`<div class="typekey">${Object.keys(TYPES).map(t=>`<span class="k"><span class="dot" style="background:${TYPES[t].c}"></span>${TYPES[t].l}</span>`).join("")}</div>`;
+
+  const comp=computeDay(st,cur);
+  let rows="";
+  comp.forEach(r=>{
+    if(r.gap>0)rows+=`<div class="gap">— ${fmtDur(r.gap)} libres —</div>`;
+    const c=(TYPES[r.act.type]||TYPES.free).c;
+    rows+=`<div class="row" draggable="false" data-drag="${r.it.id}" data-bid="${b.id}" data-day="${cur}">
+      <span class="dhandle" title="Arrastra para reordenar">⠿</span>
+      <span class="tdot" style="background:${c}"></span>
+      <span class="trange ${r.warn?'warn':''}" data-tr="${r.it.id}">${toHM(r.s)}–${toHM(r.e)}${r.warn?' ⚠':''}</span>
+      <div class="rmain">
+        <div class="rname">${esc(r.act.name)||'(sin nombre)'} ${r.act.src?`<span class="src">${esc(r.act.src)}</span>`:''}${actEst(r.act)?`<span class="costtag">${fmtMoney(actEst(r.act))}</span>`:''}</div>
+        ${r.act.note?`<div class="rnote2">${esc(r.act.note)}</div>`:''}
+        ${placeLinkHTML(st,r.act.type,r.it,b.id,cur)}
+        <div class="rrow2">
+          <label class="mini">⏱ <input type="number" class="f durinp" data-bid="${b.id}" data-cid="${r.act.cid}" min="5" max="900" step="5" value="${r.act.dur}"> min</label>
+          <label class="mini">fijo <input type="time" class="f fixedinp" data-bid="${b.id}" data-day="${cur}" data-item="${r.it.id}" value="${r.it.fixed||''}"></label>
+        </div>
+        <input class="f itemnote" data-bid="${b.id}" data-day="${cur}" data-item="${r.it.id}" value="${esc(r.it.note||'')}" placeholder="✎ Nota para este día (reservar, llevar efectivo, confirmar hora…)">
+      </div>
+      <div class="rowbtns">
+        <button class="updn" data-act="moveup" data-bid="${b.id}" data-day="${cur}" data-item="${r.it.id}" title="Subir">▲</button>
+        <button class="updn" data-act="movedown" data-bid="${b.id}" data-day="${cur}" data-item="${r.it.id}" title="Bajar">▼</button>
+        <button class="del" data-act="delitem" data-bid="${b.id}" data-day="${cur}" data-item="${r.it.id}" title="Quitar del día">×</button>
+      </div>
+    </div>`;
+  });
+  if(!comp.length)rows='<p style="color:var(--ink-soft);font-size:13px">Día vacío: añade actividades del catálogo abajo.</p>';
+
+  const groups={};st.catalog.forEach(a=>{(groups[a.type]=groups[a.type]||[]).push(a);});
+  const opts=Object.keys(TYPES).filter(t=>groups[t]).map(t=>
+    `<optgroup label="${TYPES[t].l}">`+groups[t].map(a=>
+      `<option value="${a.cid}">${esc(a.name)||'(sin nombre)'} · ${fmtDur(a.dur)}</option>`).join("")+`</optgroup>`).join("");
+
+  return bar+typekey
+    +`<p class="hint2">Los horarios se encadenan solos desde el inicio del día. «Fijo» ancla una hora (shows, trenes, vuelos); si se encima con lo anterior verás ⚠. Arrastra por el asa ⠿ para reordenar, o suéltala en otra pestaña de día para moverla ahí; con ▲▼ en el borde también salta al día anterior o siguiente.</p>`
+    +`<div class="rows">${rows}</div>
+    <div class="addrow">
+      <select class="f" data-addsel="${b.id}">${opts}</select>
+      <button class="addbtn" data-act="additem" data-bid="${b.id}" data-day="${cur}">＋ Añadir al día</button>
+    </div>`;
+}
+
+function costEditorHTML(b,a){
+  const est=actEst(a),real=actReal(a);
+  const concepts=(a.costs||[]).map(cc=>`
+    <div class="costrow">
+      <input class="f clabel cfield" data-bid="${b.id}" data-cid="${a.cid}" data-ccid="${cc.id}" data-fld="label" value="${esc(cc.label)}" placeholder="Concepto (entrada, guía, transporte…)">
+      <input type="number" class="f camt cfield" data-bid="${b.id}" data-cid="${a.cid}" data-ccid="${cc.id}" data-fld="est" min="0" step="50" value="${cc.est||''}" placeholder="0">
+      <input type="number" class="f camt cfield" data-bid="${b.id}" data-cid="${a.cid}" data-ccid="${cc.id}" data-fld="real" min="0" step="50" value="${cc.real||''}" placeholder="0">
+      <button class="del" data-act="delcost" data-bid="${b.id}" data-cid="${a.cid}" data-ccid="${cc.id}">×</button>
+    </div>`).join("");
+  return `<details class="costs" ${openCost.has(a.cid)?'open':''} data-costdet="${a.cid}">
+    <summary>💰 <span>presup.</span> <b>${fmtMoney(est)}</b> · real <b>${fmtMoney(real)}</b></summary>
+    <div class="costgrid">
+      ${a.costs&&a.costs.length?`<div class="costhead"><span style="flex:1">concepto</span><span class="cxlbl">presupuesto</span><span class="cxlbl">real</span><span style="width:24px"></span></div>`:''}
+      ${concepts}
+      <button class="addbtn" data-act="addcost" data-bid="${b.id}" data-cid="${a.cid}">＋ Añadir concepto de costo</button>
+    </div>
+  </details>`;
+}
+function renderCatalog(b,st){
+  const rows=st.catalog.map(a=>{
+    const c=(TYPES[a.type]||TYPES.free).c,use=usageCount(st,a.cid);
+    const topts=Object.keys(TYPES).map(t=>`<option value="${t}" ${a.type===t?'selected':''}>${TYPES[t].l}</option>`).join("");
+    return `<div class="pcard">
+      <span class="tdot" style="background:${c};margin-top:11px"></span>
+      <div class="pbody">
+        <div class="rrow2">
+          <select class="f rtype catfield" data-fld="type" data-bid="${b.id}" data-cid="${a.cid}">${topts}</select>
+          <input class="f rtitle catfield" style="flex:1;min-width:140px" data-fld="name" data-bid="${b.id}" data-cid="${a.cid}" value="${esc(a.name)}" placeholder="Nombre de la actividad">
+        </div>
+        <div class="rrow2">
+          <label class="mini">⏱ <input type="number" class="f durinp" data-bid="${b.id}" data-cid="${a.cid}" min="5" max="900" step="5" value="${a.dur}"> min</label>
+          <input class="f pnote edit catfield" style="max-width:170px" data-fld="src" data-bid="${b.id}" data-cid="${a.cid}" value="${esc(a.src)}" placeholder="Fuente (GetYourGuide…)">
+          <span class="usage">${use?('×'+use+' en el plan'):'sin usar'}</span>
+        </div>
+        <input class="f pnote edit catfield" data-fld="note" data-bid="${b.id}" data-cid="${a.cid}" value="${esc(a.note)}" placeholder="Nota">
+        ${costEditorHTML(b,a)}
+      </div>
+      <button class="del" data-act="delcat" data-bid="${b.id}" data-cid="${a.cid}">×</button>
+    </div>`;
+  }).join("");
+  return `<p class="hint2">Define cada actividad, su duración y —al abrir 💰— los conceptos de costo (presupuesto y real). Los montos alimentan la sección Presupuesto de abajo.</p>
+    <div class="plist">${rows}</div>
+    <button class="addbtn block" data-act="addcat" data-bid="${b.id}">＋ Nueva actividad en el catálogo</button>`;
+}
+
+function renderHotels(b,st){
+  const list=st.hotels.map(h=>`
+    <div class="pcard ${h.chosen?'chosen':''}">
+      <button class="star" data-act="choosehotel" data-bid="${b.id}" data-item="${h.id}" title="Elegir">${h.chosen?'★':'☆'}</button>
+      <div class="pbody">
+        <input class="f rtitle hfield" data-list="hotels" data-fld="name" data-bid="${b.id}" data-item="${h.id}" value="${esc(h.name)}" placeholder="Hotel">
+        <input class="f pnote edit hfield" data-list="hotels" data-fld="area" data-bid="${b.id}" data-item="${h.id}" value="${esc(h.area)}" placeholder="Zona">
+        <input class="f pnote edit hfield" data-list="hotels" data-fld="note" data-bid="${b.id}" data-item="${h.id}" value="${esc(h.note)}" placeholder="Nota">
+      </div>
+      <button class="del" data-act="delhotel" data-bid="${b.id}" data-item="${h.id}">×</button>
+    </div>`).join("");
+  return `<div class="plist">${list||'<p style="color:var(--ink-soft);font-size:13px">Sin hoteles aún.</p>'}</div>
+    <button class="addbtn block" data-act="addhotel" data-bid="${b.id}">＋ Añadir hotel</button>`;
+}
+
+function renderFood(b,st){
+  const list=st.food.map(f=>`
+    <div class="pcard ${f.chosen?'chosen':''}">
+      <button class="star" data-act="choosefood" data-bid="${b.id}" data-item="${f.id}">${f.chosen?'★':'☆'}</button>
+      <div class="pbody">
+        <div class="rrow2">
+          <input class="f rtitle hfield" style="flex:1" data-list="food" data-fld="name" data-bid="${b.id}" data-item="${f.id}" value="${esc(f.name)}" placeholder="Restaurante o bar">
+          <select class="f rtype hfield" data-list="food" data-fld="kind" data-bid="${b.id}" data-item="${f.id}">
+            <option value="rest" ${f.kind==='rest'?'selected':''}>Restaurante</option>
+            <option value="bar" ${f.kind==='bar'?'selected':''}>Bar</option>
+          </select>
+        </div>
+        <input class="f pnote edit hfield" data-list="food" data-fld="note" data-bid="${b.id}" data-item="${f.id}" value="${esc(f.note)}" placeholder="Nota">
+      </div>
+      <button class="del" data-act="delfood" data-bid="${b.id}" data-item="${f.id}">×</button>
+    </div>`).join("");
+  return `<div class="plist">${list||'<p style="color:var(--ink-soft);font-size:13px">Sin lugares aún.</p>'}</div>
+    <button class="addbtn block" data-act="addfood" data-bid="${b.id}">＋ Añadir restaurante / bar</button>`;
+}
+
+/* ===================== Actualización en vivo de horas ===================== */
+function refreshVisibleTimes(bid){
+  const st=state.bases[bid];const d=Math.min(st.day||0,Math.max(1,st.nights)-1);
+  computeDay(st,d).forEach(r=>{
+    const el=document.querySelector(`[data-tr="${r.it.id}"]`);
+    if(el)el.textContent=toHM(r.s)+"–"+toHM(r.e)+(r.warn?" ⚠":"");
+  });
+}
+function refreshCostSummary(bid,cid){
+  const act=state.bases[bid].catalog.find(a=>a.cid===cid);if(!act)return;
+  const det=document.querySelector(`details.costs[data-costdet="${cid}"]`);if(!det)return;
+  const bs=det.querySelectorAll("summary b");
+  if(bs.length>=2){bs[0].textContent=fmtMoney(actEst(act));bs[1].textContent=fmtMoney(actReal(act));}
+  const card=det.closest(".card");
+  if(card){const bc=card.querySelector(".basecost");if(bc)bc.textContent="≈ "+fmtMoney(baseTotals(state.bases[bid]).est);}
+  refreshBudgetTotals();
+}
+
+/* diálogo de confirmación propio (los iframes de artefactos bloquean confirm()) */
+function customConfirm(message,onYes){
+  const ov=document.createElement("div");ov.className="confirmov";
+  ov.innerHTML=`<div class="confirmbox"><p>${message}</p>
+    <div class="confirmbtns"><button class="btn cbcancel">Cancelar</button>
+    <button class="btn danger cbyes">Sí, borrar</button></div></div>`;
+  document.body.appendChild(ov);
+  const close=()=>{ov.remove();};
+  ov.querySelector(".cbcancel").addEventListener("click",close);
+  ov.querySelector(".cbyes").addEventListener("click",()=>{close();try{onYes();}catch(e){}});
+  ov.addEventListener("click",e=>{if(e.target===ov)close();});
+}
+/* ===================== Eventos ===================== */
+function wireCardEvents(){
+  const holder=document.getElementById("cards");
+  const find=(arr,id)=>arr.find(x=>x.id===id);
+
+  holder.querySelectorAll("[data-act]").forEach(el=>{
+    el.addEventListener("click",e=>{
+      const a=el.dataset.act,bid=el.dataset.bid,st=state.bases[bid];
+      if(a==="expand"){st.expanded=!st.expanded;save();renderCards();return;}
+      e.stopPropagation();
+      if(a==="inc"){st.nights=Math.min(14,st.nights+1);save();renderAll();return;}
+      if(a==="dec"){st.nights=Math.max(1,st.nights-1);save();renderAll();return;}
+      if(a==="toggle"){st.included=!st.included;save();renderAll();return;}
+      if(a==="baseup"||a==="basedown"){
+        const arr=state.order,i=arr.indexOf(bid),j=a==="baseup"?i-1:i+1;
+        if(i>=0&&j>=0&&j<arr.length){[arr[i],arr[j]]=[arr[j],arr[i]];save();renderAll();}
+        return;}
+      if(a==="delbase"){
+        customConfirm(`¿Borrar “${st.name}” y todo su plan (días, catálogo, costos)? Esto no se puede deshacer.`,()=>{
+          state.order=state.order.filter(x=>x!==bid);delete state.bases[bid];save();renderAll();});
+        return;}
+      if(a==="addbase"){
+        const nb=seedCustomBase("Nueva parada",Object.keys(state.bases).length);
+        state.bases[nb.id]=nb;state.order.push(nb.id);save();renderAll();
+        setTimeout(()=>{const c=document.querySelector(`.card [data-bid="${nb.id}"]`);if(c&&c.scrollIntoView)c.scrollIntoView({behavior:"smooth",block:"center"});},60);
+        return;}
+      if(a==="tab"){st.tab=el.dataset.tab;save();renderCards();return;}
+      if(a==="day"){st.day=+el.dataset.day;save();renderCards();return;}
+      if(a==="additem"){
+        const sel=holder.querySelector(`[data-addsel="${bid}"]`);
+        if(sel&&sel.value){const d=+el.dataset.day;(st.schedule[d]=st.schedule[d]||[]).push({id:uid(),ref:sel.value,fixed:null});save();renderCards();}
+        return;}
+      if(a==="delitem"){const d=+el.dataset.day;st.schedule[d]=(st.schedule[d]||[]).filter(x=>x.id!==el.dataset.item);save();renderCards();return;}
+      if(a==="moveup"||a==="movedown"){
+        const d=+el.dataset.day,arr=st.schedule[d]||[],i=arr.findIndex(x=>x.id===el.dataset.item);
+        if(i<0)return;
+        const j=a==="moveup"?i-1:i+1;
+        if(j>=0&&j<arr.length){[arr[i],arr[j]]=[arr[j],arr[i]];save();renderCards();return;}
+        // en el borde: pasar al día anterior/siguiente
+        const nd=Math.max(1,st.nights),td=a==="moveup"?d-1:d+1;
+        if(td>=0&&td<nd){
+          const [moved]=arr.splice(i,1);
+          st.schedule[td]=st.schedule[td]||[];
+          if(a==="moveup")st.schedule[td].push(moved);      // al final del día anterior
+          else st.schedule[td].unshift(moved);              // al inicio del día siguiente
+          st.day=td;                                        // seguir a la actividad
+          save();renderCards();
+        }
+        return;}
+      if(a==="addcat"){st.catalog.push({cid:uid(),name:"",type:"sight",dur:60,note:"",src:"",costs:[]});save();renderCards();return;}
+      if(a==="delcat"){
+        const cid=el.dataset.cid,use=usageCount(st,cid);
+        const doDel=()=>{st.catalog=st.catalog.filter(x=>x.cid!==cid);
+          Object.keys(st.schedule).forEach(d=>{st.schedule[d]=st.schedule[d].filter(x=>x.ref!==cid);});
+          save();renderCards();};
+        if(use)customConfirm(`Esta actividad se usa ${use} vez/veces en el plan. ¿Borrarla también del itinerario?`,doDel);
+        else doDel();
+        return;}
+      if(a==="addcost"){const act=st.catalog.find(x=>x.cid===el.dataset.cid);
+        if(act){act.costs=act.costs||[];act.costs.push({id:uid(),label:"",est:0,real:0});openCost.add(el.dataset.cid);save();renderCards();}return;}
+      if(a==="delcost"){const act=st.catalog.find(x=>x.cid===el.dataset.cid);
+        if(act){act.costs=(act.costs||[]).filter(c=>c.id!==el.dataset.ccid);openCost.add(el.dataset.cid);save();renderCards();}return;}
+      if(a==="addhotel"){st.hotels.push({id:uid(),name:"",area:"",note:"",chosen:false});save();renderCards();return;}
+      if(a==="delhotel"){st.hotels=st.hotels.filter(x=>x.id!==el.dataset.item);save();renderCards();return;}
+      if(a==="choosehotel"){const h=find(st.hotels,el.dataset.item);h.chosen=!h.chosen;save();renderCards();return;}
+      if(a==="addfood"){st.food.push({id:uid(),name:"",kind:"rest",note:"",chosen:false});save();renderCards();return;}
+      if(a==="delfood"){st.food=st.food.filter(x=>x.id!==el.dataset.item);save();renderCards();return;}
+      if(a==="choosefood"){const f=find(st.food,el.dataset.item);f.chosen=!f.chosen;save();renderCards();return;}
+    });
+  });
+
+  /* duración: en vivo + reflujo del día */
+  holder.querySelectorAll("input.durinp").forEach(el=>{
+    el.addEventListener("input",()=>{
+      const st=state.bases[el.dataset.bid],act=st.catalog.find(a=>a.cid===el.dataset.cid);
+      const v=parseInt(el.value,10);
+      if(act&&!isNaN(v)&&v>0){act.dur=v;saveDebounced();refreshVisibleTimes(el.dataset.bid);}
+    });
+    el.addEventListener("change",()=>{
+      const st=state.bases[el.dataset.bid],act=st.catalog.find(a=>a.cid===el.dataset.cid);
+      if(act){let v=parseInt(el.value,10);if(isNaN(v)||v<5)v=5;if(v>900)v=900;act.dur=v;}
+      save();renderCards();
+    });
+  });
+  /* hora fija */
+  holder.querySelectorAll("input.fixedinp").forEach(el=>{
+    el.addEventListener("change",()=>{
+      const st=state.bases[el.dataset.bid],d=+el.dataset.day;
+      const it=(st.schedule[d]||[]).find(x=>x.id===el.dataset.item);
+      if(it){it.fixed=el.value||null;save();renderCards();}
+    });
+  });
+  /* nota por actividad (por día), sin re-render para no perder foco */
+  holder.querySelectorAll("input.itemnote").forEach(el=>{
+    el.addEventListener("input",()=>{
+      const st=state.bases[el.dataset.bid],d=+el.dataset.day;
+      const it=(st.schedule[d]||[]).find(x=>x.id===el.dataset.item);
+      if(it){it.note=el.value;saveDebounced();}
+    });
+  });
+  /* vincular lugar (hotel / restaurante / bar) desde las pestañas */
+  holder.querySelectorAll("select.placesel").forEach(el=>{
+    el.addEventListener("change",()=>{
+      const st=state.bases[el.dataset.bid],d=+el.dataset.day;
+      const it=(st.schedule[d]||[]).find(x=>x.id===el.dataset.item);
+      if(it){it.place=el.value||null;save();renderCards();}
+    });
+  });
+  /* inicio del día */
+  holder.querySelectorAll("input.startinp").forEach(el=>{
+    el.addEventListener("change",()=>{
+      const st=state.bases[el.dataset.bid],d=+el.dataset.day;
+      st.dayStart=st.dayStart||{};st.dayStart[d]=el.value||"09:00";save();renderCards();
+    });
+  });
+  /* catálogo: nombre / nota / fuente / tipo */
+  holder.querySelectorAll(".catfield").forEach(el=>{
+    const ev=el.tagName==="SELECT"?"change":"input";
+    el.addEventListener(ev,()=>{
+      const st=state.bases[el.dataset.bid],act=st.catalog.find(a=>a.cid===el.dataset.cid);
+      if(!act)return;act[el.dataset.fld]=el.value;
+      if(el.tagName==="SELECT"){save();renderCards();}else saveDebounced();
+    });
+  });
+  /* conceptos de costo por actividad */
+  holder.querySelectorAll(".cfield").forEach(el=>{
+    el.addEventListener("input",()=>{
+      const act=state.bases[el.dataset.bid].catalog.find(a=>a.cid===el.dataset.cid);
+      if(!act)return;const cc=(act.costs||[]).find(c=>c.id===el.dataset.ccid);if(!cc)return;
+      cc[el.dataset.fld]=el.dataset.fld==="label"?el.value:(+el.value||0);
+      saveDebounced();refreshCostSummary(el.dataset.bid,el.dataset.cid);
+    });
+  });
+  holder.querySelectorAll("details.costs").forEach(d=>{
+    d.addEventListener("toggle",()=>{const cid=d.dataset.costdet;d.open?openCost.add(cid):openCost.delete(cid);});
+  });
+  /* editar base: nombre / región / clúster */
+  holder.querySelectorAll(".metafield").forEach(el=>{
+    const ev=el.tagName==="SELECT"?"change":"input";
+    el.addEventListener(ev,()=>{
+      const st=state.bases[el.dataset.bid];if(!st)return;
+      st[el.dataset.fld]=el.value;
+      if(el.dataset.fld==="cluster"){save();renderAll();return;}
+      // actualización en vivo del encabezado sin re-render
+      const card=el.closest(".card");
+      if(card){const h=card.querySelector(".titlecol h3"),rg=card.querySelector(".titlecol .region");
+        if(el.dataset.fld==="name"&&h)h.textContent=el.value;
+        if(el.dataset.fld==="region"&&rg)rg.textContent=el.value;}
+      saveDebounced();
+    });
+  });
+  /* hoteles / comida */
+  holder.querySelectorAll(".hfield").forEach(el=>{
+    const ev=el.tagName==="SELECT"?"change":"input";
+    el.addEventListener(ev,()=>{
+      const st=state.bases[el.dataset.bid];
+      const arr=el.dataset.list==="hotels"?st.hotels:st.food;
+      const it=arr.find(x=>x.id===el.dataset.item);
+      if(!it)return;it[el.dataset.fld]=el.value;
+      if(el.tagName==="SELECT")save();else saveDebounced();
+    });
+  });
+  /* traslados: trenes / vuelos editables */
+  holder.querySelectorAll(".legfield").forEach(el=>{
+    const ev=el.type==="time"?"change":"input";
+    el.addEventListener(ev,()=>{
+      const k=el.dataset.key;state.legs[k]=state.legs[k]||{dep:"",arr:"",note:""};
+      state.legs[k][el.dataset.fld]=el.value;
+      el.type==="time"?save():saveDebounced();
+    });
+  });
+  /* drag & drop para reordenar actividades del día (inicia desde el asa) */
+  let dragId=null,dragBid=null,dragDay=null;
+  holder.querySelectorAll(".dhandle").forEach(h=>{
+    const row=h.closest(".row");if(!row)return;
+    h.addEventListener("mousedown",()=>{row.setAttribute("draggable","true");});
+    h.addEventListener("touchstart",()=>{row.setAttribute("draggable","true");},{passive:true});
+  });
+  holder.querySelectorAll(".row[data-drag]").forEach(row=>{
+    row.addEventListener("dragstart",e=>{
+      dragId=row.dataset.drag;dragBid=row.dataset.bid;dragDay=+row.dataset.day;
+      row.classList.add("dragging");e.dataTransfer.effectAllowed="move";
+      try{e.dataTransfer.setData("text/plain",dragId);}catch(_){}
+    });
+    row.addEventListener("dragend",()=>{
+      row.classList.remove("dragging");row.setAttribute("draggable","false");
+      holder.querySelectorAll(".row.dragover").forEach(r=>r.classList.remove("dragover"));
+      dragId=null;
+    });
+    row.addEventListener("dragover",e=>{
+      if(dragId&&row.dataset.bid===dragBid&&+row.dataset.day===dragDay&&row.dataset.drag!==dragId){
+        e.preventDefault();e.dataTransfer.dropEffect="move";row.classList.add("dragover");
+      }
+    });
+    row.addEventListener("dragleave",()=>row.classList.remove("dragover"));
+    row.addEventListener("drop",e=>{
+      e.preventDefault();
+      const targetId=row.dataset.drag;
+      if(!dragId||dragId===targetId||row.dataset.bid!==dragBid||+row.dataset.day!==dragDay)return;
+      const arr=state.bases[dragBid].schedule[dragDay];
+      const from=arr.findIndex(x=>x.id===dragId),to=arr.findIndex(x=>x.id===targetId);
+      if(from<0||to<0)return;
+      const [moved]=arr.splice(from,1);arr.splice(to,0,moved);
+      save();renderCards();
+    });
+  });
+  /* soltar sobre una pestaña de día → mover la actividad a ese día */
+  holder.querySelectorAll('.daychip[data-act="day"]').forEach(chip=>{
+    chip.addEventListener("dragover",e=>{
+      if(dragId&&chip.dataset.bid===dragBid&&+chip.dataset.day!==dragDay){
+        e.preventDefault();e.dataTransfer.dropEffect="move";chip.classList.add("chipdrop");
+      }
+    });
+    chip.addEventListener("dragleave",()=>chip.classList.remove("chipdrop"));
+    chip.addEventListener("drop",e=>{
+      e.preventDefault();chip.classList.remove("chipdrop");
+      const td=+chip.dataset.day;
+      if(!dragId||chip.dataset.bid!==dragBid||td===dragDay)return;
+      const st=state.bases[dragBid],from=st.schedule[dragDay];
+      const i=from.findIndex(x=>x.id===dragId);if(i<0)return;
+      const [moved]=from.splice(i,1);
+      st.schedule[td]=st.schedule[td]||[];st.schedule[td].push(moved);
+      st.day=td;                       // seguir a la actividad al nuevo día
+      save();renderCards();
+    });
+  });
+}
+function buildTransportItems(){
+  const active=activeBases();const items=[{grp:"Vuelos internacionales"},
+    {id:"fl-intl-out",t:"Guadalajara (GDL) → Tokio (NRT/HND)",s:"sale 5 may · llega 7 may"},
+    {id:"fl-intl-ret",t:"Shanghái (PVG) → Guadalajara (GDL)",s:"sale 29 may · llega mismo día (noche)"}];
+  const air=[],rail=[],road=[];
+  for(let i=0;i<active.length-1;i++){const a=active[i].def,b=active[i+1].def,x=getXfer(a.id,b.id);
+    const row={id:"tr-"+a.id+"-"+b.id,t:`${a.name} → ${b.name}`,s:`${x.mode} · ${x.detail} · ${x.time}`};
+    (x.type==="air"?air:x.type==="road"?road:rail).push(row);}
+  if(air.length){items.push({grp:"Vuelos internos"});air.forEach(r=>items.push(r));}
+  if(rail.length){items.push({grp:"Trenes bala · reservar ~30 días antes"});rail.forEach(r=>items.push(r));}
+  if(road.length){items.push({grp:"Carretera / privado"});road.forEach(r=>items.push(r));}
+  return items;
+}
+function renderChecklist(el,title,items){
+  let done=0,total=0,html=`<h4>${title}</h4>`;
+  items.forEach(it=>{if(it.grp){html+=`<div class="grp">${it.grp}</div>`;return;}
+    total++;const on=!!state.checks[it.id];if(on)done++;
+    html+=`<div class="item ${on?'done':''}"><input type="checkbox" data-ck="${it.id}" ${on?'checked':''}>
+      <label>${it.t}${it.s?`<span class="sub">${it.s}</span>`:''}</label></div>`;});
+  const pct=total?Math.round(done/total*100):0;
+  html+=`<div class="progress"><i style="width:${pct}%"></i></div><div class="pcount">${done} / ${total} listo</div>`;
+  el.innerHTML=html;
+  el.querySelectorAll("[data-ck]").forEach(cb=>cb.addEventListener("change",()=>{
+    state.checks[cb.dataset.ck]=cb.checked;save();renderChecklist(el,title,items);}));
+}
+function renderChecklists(){
+  renderChecklist(document.getElementById("transportCard"),"Traslados",buildTransportItems());
+  renderChecklist(document.getElementById("essentialsCard"),"Esenciales",[{grp:"Antes de salir"},...ESSENTIALS]);
+}
+
+/* ===================== Presupuesto ===================== */
+function renderBudget(){
+  const el=document.getElementById("budgetSection");
+  const t=tripTotals(),dif=t.real-t.est;
+  const g=state.budget||{};
+  const curOpts=Object.keys(CURR).map(k=>`<option value="${k}" ${state.currency===k?'selected':''}>${CURR[k].c} (${CURR[k].s})</option>`).join("");
+
+  const bases=activeBases().map(o=>{
+    const st=o.st,tot=baseTotals(st),bg=st.budget||{};
+    return `<div class="bblock">
+      <div class="bh"><span class="bn">${o.def.name}</span>
+        <span class="bsub">presup. <b style="color:var(--ink)">${fmtMoney(tot.est)}</b> · real <b style="color:var(--ink)">${fmtMoney(tot.real)}</b></span></div>
+      <div class="bline"><span class="blabel">Actividades <span class="usage">(de sus costos)</span></span>
+        <span class="ro">${fmtMoney(tot.act.est)}</span><span class="ro">${fmtMoney(tot.act.real)}</span></div>
+      <div class="bline"><span class="blabel">Hospedaje (${st.nights} noche${st.nights===1?'':'s'})</span>
+        <input type="number" class="f bamt bfield" data-bid="${o.def.id}" data-fld="lodgingEst" min="0" step="100" value="${bg.lodgingEst||''}" placeholder="0">
+        <input type="number" class="f bamt bfield" data-bid="${o.def.id}" data-fld="lodgingReal" min="0" step="100" value="${bg.lodgingReal||''}" placeholder="0"></div>
+      <div class="bline"><span class="blabel">Traslados locales / otros</span>
+        <input type="number" class="f bamt bfield" data-bid="${o.def.id}" data-fld="miscEst" min="0" step="100" value="${bg.miscEst||''}" placeholder="0">
+        <input type="number" class="f bamt bfield" data-bid="${o.def.id}" data-fld="miscReal" min="0" step="100" value="${bg.miscReal||''}" placeholder="0"></div>
+    </div>`;
+  }).join("");
+
+  el.innerHTML=`
+    <summary>
+      <h2>Presupuesto del viaje</h2>
+      <span class="tot">
+        <span>presupuesto <b>${fmtMoney(t.est)}</b></span>
+        <span>real <b>${fmtMoney(t.real)}</b></span>
+        <span class="dif ${dif>0?'up':'down'}">${dif>0?'▲ +':dif<0?'▼ ':''}${fmtMoney(Math.abs(dif))} ${dif>0?'sobre':dif<0?'bajo':''}</span>
+      </span>
+    </summary>
+    <div class="body">
+      <div class="bcurrency">moneda
+        <select class="f" id="currencySel">${curOpts}</select>
+        <span style="opacity:.8">· montos totales para la pareja · edita presupuesto y real por concepto en 🗂 Catálogo</span>
+      </div>
+      <div class="costhead" style="padding-right:0"><span style="flex:1"></span><span class="cxlbl" style="width:110px">presupuesto</span><span class="cxlbl" style="width:110px">real</span></div>
+      <div class="bglobal"><span class="blabel" style="flex:1">✈ Vuelos internacionales (GDL ⇄ China)</span>
+        <input type="number" class="f bamt gfield" data-fld="flightsEst" min="0" step="500" value="${g.flightsEst||''}" placeholder="0">
+        <input type="number" class="f bamt gfield" data-fld="flightsReal" min="0" step="500" value="${g.flightsReal||''}" placeholder="0"></div>
+      ${bases}
+      <div class="bglobal" style="border-bottom:0;border-top:2px solid var(--line);margin-top:4px">
+        <span class="blabel" style="flex:1;font-weight:600;color:var(--ink)">TOTAL</span>
+        <span class="ro" style="width:110px;font-weight:600">${fmtMoney(t.est)}</span>
+        <span class="ro" style="width:110px;font-weight:600">${fmtMoney(t.real)}</span></div>
+    </div>`;
+  el.open=!!state.budgetOpen;
+
+  el.querySelectorAll(".gfield").forEach(inp=>inp.addEventListener("input",()=>{
+    state.budget=state.budget||{};state.budget[inp.dataset.fld]=+inp.value||0;saveDebounced();refreshBudgetTotals();}));
+  el.querySelectorAll(".bfield").forEach(inp=>inp.addEventListener("input",()=>{
+    const st=state.bases[inp.dataset.bid];st.budget=st.budget||{};st.budget[inp.dataset.fld]=+inp.value||0;
+    saveDebounced();refreshBudgetTotals();}));
+  const cs=el.querySelector("#currencySel");
+  if(cs)cs.addEventListener("change",()=>{state.currency=cs.value;save();renderAll();});
+  if(!el._tw){el._tw=true;el.addEventListener("toggle",()=>{state.budgetOpen=el.open;saveDebounced();});}
+}
+/* actualiza solo los totales de la sección presupuesto sin re-render completo */
+function refreshBudgetTotals(){
+  const el=document.getElementById("budgetSection");if(!el)return;
+  const t=tripTotals(),dif=t.real-t.est;
+  const tot=el.querySelector("summary .tot");
+  if(tot)tot.innerHTML=`<span>presupuesto <b>${fmtMoney(t.est)}</b></span>
+    <span>real <b>${fmtMoney(t.real)}</b></span>
+    <span class="dif ${dif>0?'up':'down'}">${dif>0?'▲ +':dif<0?'▼ ':''}${fmtMoney(Math.abs(dif))} ${dif>0?'sobre':dif<0?'bajo':''}</span>`;
+  const ros=el.querySelectorAll(".body>div:last-child .ro");
+  if(ros.length===2){ros[0].textContent=fmtMoney(t.est);ros[1].textContent=fmtMoney(t.real);}
+}
+
+/* ===================== Countdown + maestro ===================== */
+function renderCountdown(){const now=new Date(),dep=new Date(2027,4,5);
+  document.getElementById("countdown").textContent="⏳ "+Math.max(0,Math.ceil((dep-now)/86400000))+" días para despegar";}
+function renderAll(){renderSummary();renderMap();renderCards();renderBudget();renderChecklists();}
+
+document.getElementById("printBtn").addEventListener("click",()=>window.print());
+document.getElementById("syncBtn").addEventListener("click",()=>{setSync("live");poll();});
+
+(async function init(){
+  renderCountdown();
+  await load();
+  lastRev=state._rev||0;
+  renderAll();
+  if(!state._rev){await save();}      // primer guardado a compartido (sella _rev)
+  else setSync("live");
+  startCollab();
+})();
+</script>
+</body>
+</html>
