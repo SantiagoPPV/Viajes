@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Salud · Macros y micronutrientes — Calculadora, diario y alimentos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#20272b;--ink-soft:#4a555b;
+    --paper:#e6e0d1;--paper-2:#ded7c5;
+    --card:#f3efe4;--card-2:#eee9db;
+    --line:#c9c0ab;--line-soft:#d8d0bd;
+    --seal:#a63a2a;--seal-deep:#8a2f22;--jade:#3e6152;--jade-deep:#2f4c40;
+    --gold:#c08a2e;--muted:#a9a08c;
+    --shadow:0 1px 0 rgba(255,255,255,.6),0 6px 22px rgba(32,39,43,.09);
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;
+    font-family:"Inter",system-ui,-apple-system,sans-serif;
+    background:
+      radial-gradient(1200px 600px at 78% -8%,rgba(62,97,82,.10),transparent 60%),
+      radial-gradient(900px 500px at -8% 108%,rgba(192,138,46,.07),transparent 55%),var(--paper);}
+  .wrap{max-width:1120px;margin:0 auto;padding:28px 20px 90px}
+
+  /* ---------- navegación entre apps (Viajes · Salud) ---------- */
+  .topnav{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+  .topnav .brand{font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:600;
+    font-size:20px;color:var(--ink);margin-right:auto;letter-spacing:.01em}
+  .topnav .brand .amp{color:var(--jade);font-style:normal}
+  .topnav a.navlink{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.14em;
+    text-transform:uppercase;text-decoration:none;color:var(--ink-soft);border:1px solid var(--line);
+    background:var(--card);border-radius:20px;padding:8px 16px;box-shadow:var(--shadow);
+    transition:transform .16s ease,background .16s ease,color .16s ease,border-color .16s ease}
+  .topnav a.navlink:hover{transform:translateY(-1px);border-color:var(--jade);color:var(--jade)}
+  .topnav a.navlink.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .topnav a.navlink.active:hover{color:var(--paper)}
+
+  header.masthead{position:relative;border:1px solid var(--line);border-radius:var(--radius);
+    background:linear-gradient(180deg,var(--card),var(--card-2));padding:26px 28px 22px;
+    box-shadow:var(--shadow);overflow:hidden}
+  .masthead::before{content:"康";position:absolute;right:20px;top:8px;font-family:"Cormorant Garamond",serif;
+    font-size:120px;line-height:1;color:var(--jade);opacity:.07;pointer-events:none}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.24em;
+    text-transform:uppercase;color:var(--jade-deep);font-weight:500}
+  h1{font-family:"Cormorant Garamond",serif;font-weight:600;font-style:italic;
+    font-size:clamp(32px,6vw,56px);line-height:1.02;margin:.12em 0 .1em}
+  h1 .amp{color:var(--jade);font-style:normal}
+  .subline{color:var(--ink-soft);font-size:15px;max-width:70ch}
+
+  .summary{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:16px 0 6px}
+  .chip{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;box-shadow:var(--shadow)}
+  .chip .n{font-family:"Cormorant Garamond",serif;font-size:28px;font-weight:600;line-height:1;white-space:nowrap}
+  .chip .n small{font-size:15px;color:var(--ink-soft)}
+  .chip .l{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--ink-soft);margin-top:4px}
+  .chip.warn{border-color:var(--seal);background:#f6e6df}
+  .chip.warn .n{color:var(--seal-deep)}
+
+  /* ---------- pestañas de página ---------- */
+  .pagetabs{display:flex;gap:8px;margin:22px 0 4px;flex-wrap:wrap}
+  .ptab{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.06em;
+    border:1px solid var(--line);background:var(--card);border-radius:11px;padding:9px 16px;
+    cursor:pointer;color:var(--ink-soft);box-shadow:var(--shadow)}
+  .ptab.active{background:var(--jade);color:#fff;border-color:var(--jade)}
+  .ptab:not(.active):hover{border-color:var(--jade);color:var(--jade);transform:translateY(-1px)}
+
+  .sec{margin-top:24px}
+  .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+  .sec-head h2{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:27px;margin:0;font-style:italic}
+  .sec-head .rule{flex:1;height:1px;background:var(--line)}
+  .sec-head .hint{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft)}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);margin:10px 0;padding:16px 18px}
+  .card h4{font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:600;font-size:21px;margin:0 0 8px}
+  .card .csub{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft);margin:-4px 0 10px}
+  .grid2{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+  .grid2 .card{margin:0}
+
+  input.f,select.f,textarea.f{font-family:"Inter",sans-serif;font-size:13px;color:var(--ink);
+    border:1px solid var(--line-soft);background:rgba(255,255,255,.5);border-radius:8px;padding:7px 9px}
+  input.f:focus,select.f:focus,textarea.f:focus{outline:none;border-color:var(--jade);background:#fff}
+  input.f::placeholder{color:#a99f88}
+  input.num{font-family:"IBM Plex Mono",monospace;font-size:12.5px;text-align:right;width:86px}
+  .mini{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-soft);
+    display:inline-flex;align-items:center;gap:5px}
+
+  .btn{font-family:"IBM Plex Mono",monospace;font-size:12px;border:1px solid var(--line);background:var(--card);
+    color:var(--ink);border-radius:9px;padding:9px 14px;cursor:pointer;box-shadow:var(--shadow)}
+  .btn:hover{background:var(--card-2);transform:translateY(-1px)}
+  .btn.primary{background:var(--jade);color:#fff;border-color:var(--jade)}
+  .btn.primary:hover{background:var(--jade-deep)}
+  .btn.danger{color:var(--seal-deep);border-color:var(--seal)}
+  .btn.danger:hover{background:#f6e6df}
+  .addbtn{font-family:"IBM Plex Mono",monospace;font-size:11.5px;border:1px dashed var(--line);
+    background:transparent;color:var(--ink-soft);border-radius:9px;padding:8px 12px;cursor:pointer}
+  .addbtn:hover{border-color:var(--jade);color:var(--jade)}
+  .addbtn.block{width:100%;margin-top:10px}
+  .del{border:0;background:transparent;color:var(--ink-soft);cursor:pointer;font-size:15px;
+    width:26px;height:22px;border-radius:5px;flex:none;line-height:1}
+  .del:hover{background:#f0e0dc;color:var(--seal-deep)}
+
+  /* ---------- barra de fecha ---------- */
+  .datebar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .datebar .dnav{border:1px solid var(--line);background:var(--card);border-radius:9px;width:34px;height:34px;
+    cursor:pointer;font-size:14px;color:var(--ink-soft);box-shadow:var(--shadow)}
+  .datebar .dnav:hover{border-color:var(--jade);color:var(--jade)}
+  .datebar input[type="date"]{font-family:"IBM Plex Mono",monospace;font-size:12.5px;padding:6px 8px}
+  .datebar .dlabel{font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:600;font-size:22px;margin-left:4px}
+
+  /* ---------- medidores ---------- */
+  .macrogrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .mtile{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;box-shadow:var(--shadow)}
+  .mtile .mt-name{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--ink-soft)}
+  .mtile .mt-val{font-family:"Cormorant Garamond",serif;font-size:30px;font-weight:600;line-height:1.1;margin-top:2px}
+  .mtile .mt-val small{font-size:15px;color:var(--ink-soft);font-family:"IBM Plex Mono",monospace}
+  .mtile .mt-sub{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-soft);margin-top:2px}
+  .bar{height:8px;border-radius:5px;background:var(--line-soft);overflow:hidden;margin-top:8px}
+  .bar i{display:block;height:100%;border-radius:5px;background:var(--jade);transition:width .3s ease}
+  .warn .bar i,.bar i.warn{background:var(--gold)}
+  .over .bar i,.bar i.over{background:var(--seal)}
+  .low .bar i,.bar i.low{background:var(--muted)}
+  .statustag{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+    border:1px solid var(--line);border-radius:5px;padding:1px 6px;white-space:nowrap;color:var(--ink-soft)}
+  .statustag.ok{color:var(--jade);border-color:var(--jade)}
+  .statustag.warn{color:#8a6420;border-color:var(--gold)}
+  .statustag.over{color:var(--seal-deep);border-color:var(--seal)}
+
+  .microrow{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px dashed var(--line-soft);font-size:12.5px}
+  .microrow:last-child{border-bottom:0}
+  .microrow .mn{width:150px;flex:none;font-weight:500}
+  .microrow .mn small{display:block;font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:var(--ink-soft);font-weight:400}
+  .microrow .bar{flex:1;margin-top:0}
+  .microrow .mv{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft);width:150px;text-align:right;flex:none}
+  .microrow .mv b{color:var(--ink)}
+  .grptitle{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--jade-deep);margin:16px 0 6px;font-weight:500}
+  .grptitle:first-child{margin-top:2px}
+
+  /* ---------- semana ---------- */
+  .weekwrap{position:relative;padding:16px 6px 0}
+  .week{display:flex;gap:10px;align-items:flex-end;height:88px}
+  .wday{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:0;height:100%;cursor:pointer}
+  .wbar{width:100%;max-width:38px;background:var(--jade);border-radius:4px 4px 0 0;min-height:2px;opacity:.75;transition:opacity .16s}
+  .wday:hover .wbar{opacity:1}
+  .wday.today .wbar{opacity:1;box-shadow:inset 0 0 0 2px var(--jade-deep)}
+  .wlbl{font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:var(--ink-soft);margin-top:5px;text-align:center}
+  .goalline{position:absolute;left:6px;right:6px;border-top:2px dashed var(--line);pointer-events:none}
+  .goaltag{position:absolute;right:8px;transform:translateY(-100%);font-family:"IBM Plex Mono",monospace;
+    font-size:9px;color:var(--ink-soft);background:var(--card);padding:0 4px;border-radius:4px}
+
+  /* ---------- comidas del diario ---------- */
+  .meal{margin:12px 0}
+  .meal .mealhead{display:flex;align-items:baseline;gap:10px;margin-bottom:4px}
+  .meal .mealhead h4{margin:0}
+  .meal .mealkcal{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft);margin-left:auto}
+  .ditem{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px dashed var(--line-soft)}
+  .ditem .dname{flex:1;min-width:0;font-size:13.5px}
+  .ditem .dname small{color:var(--ink-soft);font-size:11.5px}
+  .ditem input.dg{width:72px}
+  .ditem .dmac{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-soft);width:200px;text-align:right;flex:none}
+  .addline{display:flex;gap:8px;margin-top:9px;align-items:center;flex-wrap:wrap}
+
+  /* ---------- combobox de alimentos ---------- */
+  .combo{position:relative;flex:1;min-width:210px}
+  .combo input{width:100%}
+  .sugg{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--card);border:1px solid var(--line);
+    border-radius:10px;box-shadow:0 12px 32px rgba(32,39,43,.22);z-index:60;max-height:290px;overflow:auto;display:none}
+  .sugg.open{display:block}
+  .sug{padding:8px 12px;cursor:pointer;font-size:13px;display:flex;gap:8px;align-items:center}
+  .sug:hover,.sug.sel{background:var(--card-2)}
+  .sug .scat{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--ink-soft);margin-left:auto;white-space:nowrap}
+  .sug .skcal{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--jade);white-space:nowrap}
+
+  /* ---------- agua ---------- */
+  .aguabar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:6px}
+  .aguabar .bar{flex:1;margin-top:0;min-width:120px}
+  .aguabar .bar i{background:#4a7a99}
+
+  /* ---------- catálogo de alimentos ---------- */
+  .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+  .catchips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+  .catchip{font-family:"IBM Plex Mono",monospace;font-size:11px;border:1px solid var(--line);
+    border-radius:8px;padding:5px 11px;cursor:pointer;background:var(--card-2);color:var(--ink-soft)}
+  .catchip.active{background:var(--jade);color:#fff;border-color:var(--jade)}
+  .catchip:not(.active):hover{border-color:var(--jade);color:var(--jade)}
+  .frow{border:1px solid var(--line-soft);border-radius:10px;background:rgba(255,255,255,.4);padding:10px 12px;margin:8px 0}
+  .frow:hover{border-color:var(--line);box-shadow:0 4px 14px rgba(32,39,43,.08)}
+  .fhead{display:flex;gap:10px;align-items:center;flex-wrap:wrap;cursor:pointer}
+  .fhead .fname{font-weight:500;font-size:14px}
+  .fhead .fnote{font-size:11.5px;color:var(--ink-soft)}
+  .fhead .fmac{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-soft);margin-left:auto;white-space:nowrap}
+  .fhead .custom{font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.08em;color:var(--gold);
+    border:1px solid var(--gold);border-radius:5px;padding:0 5px;text-transform:uppercase}
+  .feditor{border-top:1px dashed var(--line-soft);margin-top:10px;padding-top:12px}
+  .fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:8px 10px}
+  .fgrid label{font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--ink-soft);display:flex;flex-direction:column;gap:3px}
+  .fgrid label input,.fgrid label select{width:100%}
+  .fgrid .span2{grid-column:span 2}
+  .fkcalchk{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--ink-soft);margin-top:8px}
+  .fbtns{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+  .grphead{font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:600;font-size:20px;margin:18px 0 2px;
+    display:flex;align-items:baseline;gap:10px}
+  .grphead .cnt{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-soft)}
+
+  /* ---------- suplementos ---------- */
+  .srow{display:flex;gap:9px;align-items:center;flex-wrap:wrap;padding:9px 0;border-bottom:1px dashed var(--line-soft)}
+  .srow .sname{flex:1;min-width:180px}
+  .srow select.smoment{font-family:"IBM Plex Mono",monospace;font-size:11px}
+
+  /* ---------- guía ---------- */
+  details.nut{border:1px solid var(--line-soft);border-radius:10px;background:rgba(255,255,255,.4);margin:7px 0;overflow:hidden}
+  details.nut>summary{list-style:none;cursor:pointer;padding:10px 14px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  details.nut>summary::-webkit-details-marker{display:none}
+  details.nut>summary:hover{background:var(--card-2)}
+  details.nut>summary .nname{font-weight:500;font-size:14px}
+  details.nut>summary .nrda{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-soft);margin-left:auto;white-space:nowrap}
+  details.nut .nbody{padding:2px 14px 13px;font-size:13px;color:var(--ink-soft);border-top:1px dashed var(--line-soft)}
+  details.nut .nbody p{margin:8px 0 0}
+  details.nut .nbody b{color:var(--ink);font-weight:600}
+  .tipslist{margin:0;padding-left:20px;font-size:13.5px}
+  .tipslist li{margin:7px 0}
+
+  /* ---------- diálogo de confirmación ---------- */
+  .confirmov{position:fixed;inset:0;background:rgba(32,39,43,.45);z-index:9999;
+    display:flex;align-items:center;justify-content:center;padding:20px;animation:cffade .15s ease}
+  @keyframes cffade{from{opacity:0}to{opacity:1}}
+  .confirmbox{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:0 20px 60px rgba(0,0,0,.3);max-width:420px;width:100%;padding:22px 22px 18px}
+  .confirmbox p{margin:0 0 18px;font-size:15px;color:var(--ink);line-height:1.5}
+  .confirmbtns{display:flex;gap:10px;justify-content:flex-end}
+  .confirmbtns .cbyes{background:var(--seal);color:#fff;border-color:var(--seal)}
+  .confirmbtns .cbyes:hover{background:var(--seal-deep)}
+
+  .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:22px}
+  .saved{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--jade);opacity:0;transition:opacity .3s}
+  .saved.show{opacity:1}
+  .syncstat{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft);
+    border:1px solid var(--line-soft);border-radius:8px;padding:5px 10px;background:var(--card)}
+  .syncstat.pending{color:#fff;background:var(--seal);border-color:var(--seal);cursor:pointer;
+    animation:pulsesync 1.4s ease-in-out infinite}
+  @keyframes pulsesync{0%,100%{box-shadow:0 0 0 0 rgba(166,58,42,.4)}50%{box-shadow:0 0 0 5px rgba(166,58,42,0)}}
+  .foot{margin-top:26px;font-size:12px;color:var(--ink-soft);border-top:1px solid var(--line);padding-top:14px;font-style:italic}
+
+  .chip,.card,.ptab,.catchip,.btn,.del,.addbtn,.frow,.mtile,.dnav{transition:transform .16s ease,box-shadow .16s ease,
+    background .16s ease,color .16s ease,border-color .16s ease,opacity .16s ease}
+  .chip:hover{transform:translateY(-2px);box-shadow:0 1px 0 rgba(255,255,255,.6),0 10px 26px rgba(32,39,43,.14)}
+  .mtile:hover{transform:translateY(-2px);box-shadow:0 1px 0 rgba(255,255,255,.6),0 10px 26px rgba(32,39,43,.14)}
+
+  @media (max-width:900px){.macrogrid{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}}
+  @media (max-width:820px){.summary{grid-template-columns:repeat(3,1fr)}}
+  @media (max-width:560px){.summary{grid-template-columns:repeat(2,1fr)}.wrap{padding:18px 12px 60px}
+    .microrow .mn{width:110px}.microrow .mv{width:110px}.ditem .dmac{display:none}}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <nav class="topnav" aria-label="Secciones">
+    <span class="brand">Mi panel <span class="amp">·</span> personal</span>
+    <a class="navlink" href="index.html">✈ Viajes</a>
+    <a class="navlink active" href="salud.html" aria-current="page">🌿 Salud</a>
+  </nav>
+
+  <header class="masthead">
+    <div class="eyebrow">Macros · micronutrientes · suplementación</div>
+    <h1>Salud <span class="amp">·</span> nutrición</h1>
+    <p class="subline">Calculadora de macros con seguimiento de <b>vitaminas y minerales</b> (calcio, potasio, magnesio, sodio, cloro, selenio, zinc, yodo y más). Define tus <b>objetivos</b>, registra tu comida del día desde un <b>catálogo de alimentos configurable</b> y lleva tu <b>suplementación</b>. Todo se guarda y sincroniza en la nube.</p>
+  </header>
+
+  <div class="summary" id="summary"></div>
+
+  <div class="pagetabs" id="pagetabs">
+    <button class="ptab active" data-view="diario">📔 Diario</button>
+    <button class="ptab" data-view="objetivos">🎯 Objetivos</button>
+    <button class="ptab" data-view="alimentos">🥗 Alimentos</button>
+    <button class="ptab" data-view="supl">💊 Suplementos</button>
+    <button class="ptab" data-view="guia">📖 Guía</button>
+  </div>
+
+  <!-- ==================== DIARIO ==================== -->
+  <section class="sec view" id="view-diario">
+    <div class="sec-head">
+      <h2>Diario del día</h2><span class="rule"></span>
+      <div class="datebar">
+        <button class="dnav" id="dayPrev" title="Día anterior">◀</button>
+        <input type="date" class="f" id="dayInput">
+        <button class="dnav" id="dayNext" title="Día siguiente">▶</button>
+        <button class="btn" id="dayToday">Hoy</button>
+      </div>
+    </div>
+
+    <div class="macrogrid" id="macroTiles"></div>
+
+    <div class="grid2" style="margin-top:14px">
+      <div>
+        <div id="mealsHolder"></div>
+        <div class="card">
+          <h4>Agua</h4>
+          <div class="aguabar">
+            <button class="btn" id="aguaMinus">− vaso</button>
+            <button class="btn" id="aguaPlus">＋ vaso (250 ml)</button>
+            <div class="bar"><i id="aguaBar"></i></div>
+            <span class="mini" id="aguaLbl"></span>
+          </div>
+        </div>
+        <div class="card">
+          <h4>Nota del día</h4>
+          <textarea class="f" id="dayNote" rows="2" style="width:100%" placeholder="¿Cómo te sentiste? ¿Entrenaste? ¿Digestión, energía, sueño…?"></textarea>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h4>Micronutrientes de hoy</h4>
+          <div class="csub">consumo vs. tu objetivo diario · ▲ = supera el límite superior (UL)</div>
+          <div id="microPanel"></div>
+        </div>
+        <div class="card">
+          <h4>Últimos 7 días</h4>
+          <div class="csub">kcal por día vs. objetivo (línea punteada)</div>
+          <div class="weekwrap" id="weekStrip"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== OBJETIVOS ==================== -->
+  <section class="sec view" id="view-objetivos" hidden>
+    <div class="sec-head"><h2>Objetivos y perfil</h2><span class="rule"></span>
+      <span class="hint">Mifflin-St Jeor · RDA por sexo y edad</span></div>
+    <div class="grid2">
+      <div class="card">
+        <h4>Tu perfil</h4>
+        <div class="csub">con esto se calculan tus calorías y macros objetivo</div>
+        <div class="fgrid" id="profileForm"></div>
+        <div class="fkcalchk" id="profileHint"></div>
+      </div>
+      <div class="card">
+        <h4>Resultado</h4>
+        <div class="csub">objetivo diario calculado</div>
+        <div id="targetsPanel"></div>
+      </div>
+    </div>
+    <div class="card">
+      <h4>Objetivos de micronutrientes</h4>
+      <div class="csub">por defecto usa la RDA/IA para tu sexo (fuente: NIH). Puedes personalizar cualquiera; vacío = automático.</div>
+      <div id="microTargets"></div>
+      <div class="fbtns"><button class="btn" id="resetOverrides">Restaurar automáticos</button></div>
+    </div>
+  </section>
+
+  <!-- ==================== ALIMENTOS ==================== -->
+  <section class="sec view" id="view-alimentos" hidden>
+    <div class="sec-head"><h2>Catálogo de alimentos</h2><span class="rule"></span>
+      <span class="hint">valores por 100 g · edita o agrega los tuyos</span></div>
+    <div class="toolbar">
+      <input class="f" id="foodSearch" placeholder="Buscar alimento…" style="flex:1;min-width:180px">
+      <button class="btn primary" id="newFood">＋ Nuevo alimento</button>
+      <button class="btn" id="reseedFoods" title="Vuelve a agregar los alimentos del catálogo base que hayas borrado">Restaurar catálogo base</button>
+    </div>
+    <div class="catchips" id="catChips"></div>
+    <div id="foodList"></div>
+  </section>
+
+  <!-- ==================== SUPLEMENTOS ==================== -->
+  <section class="sec view" id="view-supl" hidden>
+    <div class="sec-head"><h2>Mi suplementación</h2><span class="rule"></span>
+      <span class="hint">tu stack diario; agrégalo al diario con un clic</span></div>
+    <div class="grid2">
+      <div class="card">
+        <h4>Stack habitual</h4>
+        <div class="csub">qué tomas, cuánto y cuándo. Las dosis son en gramos de producto (1 cápsula ≈ 1 g salvo que indique otra cosa).</div>
+        <div id="stackList"></div>
+        <div class="addline">
+          <div class="combo" id="stackCombo"><input class="f" placeholder="Busca un suplemento o alimento…"><div class="sugg"></div></div>
+          <button class="btn primary" id="stackAddBtn">Añadir</button>
+        </div>
+        <button class="addbtn block" id="stackToDiary">📔 Añadir todo mi stack al diario de hoy</button>
+      </div>
+      <div class="card">
+        <h4>Lo que aporta tu stack al día</h4>
+        <div class="csub">suma de nutrientes de todas las dosis vs. tu objetivo diario</div>
+        <div id="stackContrib"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== GUÍA ==================== -->
+  <section class="sec view" id="view-guia" hidden>
+    <div class="sec-head"><h2>Guía de nutrientes</h2><span class="rule"></span>
+      <span class="hint">RDA hombre/mujer adulto · UL = límite superior tolerable</span></div>
+    <div class="card">
+      <h4>Mejores prácticas para tu dieta</h4>
+      <ol class="tipslist" id="tipsList"></ol>
+    </div>
+    <div id="nutGuide"></div>
+  </section>
+
+  <div class="controls">
+    <button class="btn" id="printBtn">Imprimir / PDF</button>
+    <button class="btn" id="syncBtn">Sincronizar ahora</button>
+    <span class="syncstat" id="syncStatus">🟢 En vivo</span>
+    <span class="saved" id="savedFlag">Guardado ✓</span>
+  </div>
+
+  <p class="foot">Los valores nutricionales provienen de bases públicas (USDA FoodData Central) y son aproximados; las RDA/UL son las del NIH para adultos sanos. Esta herramienta es informativa y no sustituye el consejo de un médico o nutriólogo, especialmente si tienes alguna condición de salud. Tus cambios se guardan y sincronizan automáticamente en la nube.</p>
+</div>
+
+<!-- ============ Configuración Supabase + capa de almacenamiento ============
+     Misma infraestructura que el planificador de viajes (index.html), pero con
+     su propia tabla: salud_estado (ver supabase/salud_estado.sql). -->
+<script>
+  const SUPABASE_URL="https://waxyoduhhydsgysaruto.supabase.co";
+  const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndheHlvZHVoaHlkc2d5c2FydXRvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM4OTk3MTksImV4cCI6MjA5OTQ3NTcxOX0.wVl2WOa-Hew3KcToQv2RCBugs-g-5xHH3iqGQTTO7bU";
+
+  const SB_TABLE="salud_estado";
+  const SB_BASE=(SUPABASE_URL||"").replace(/\/+$/,"");
+  const SB_READY=/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(SB_BASE)&&(SUPABASE_ANON_KEY||"").length>20;
+
+  window.storage={
+    async get(key){
+      if(SB_READY){
+        try{
+          const r=await fetch(SB_BASE+"/rest/v1/"+SB_TABLE+"?clave=eq."+encodeURIComponent(key)+"&select=valor",
+            {headers:{apikey:SUPABASE_ANON_KEY,Authorization:"Bearer "+SUPABASE_ANON_KEY}});
+          if(r.ok){
+            const rows=await r.json();
+            if(rows&&rows.length){try{localStorage.setItem(key,rows[0].valor);}catch(_){}
+              return{value:rows[0].valor};}
+            return null;
+          }
+        }catch(e){}
+        const v=localStorage.getItem(key);
+        if(v!==null)return{value:v};
+        throw new Error("sin conexión con Supabase");
+      }
+      const v=localStorage.getItem(key);
+      return v!==null?{value:v}:null;
+    },
+    async set(key,value){
+      try{localStorage.setItem(key,value);}catch(_){}
+      if(SB_READY){
+        const r=await fetch(SB_BASE+"/rest/v1/"+SB_TABLE,{
+          method:"POST",
+          headers:{apikey:SUPABASE_ANON_KEY,Authorization:"Bearer "+SUPABASE_ANON_KEY,
+            "Content-Type":"application/json",Prefer:"resolution=merge-duplicates,return=minimal"},
+          body:JSON.stringify({clave:key,valor:value,actualizado:new Date().toISOString()})
+        });
+        if(!r.ok)throw new Error("Supabase set "+r.status);
+      }
+    }
+  };
+</script>
+
+<script>
+/* ===================== Datos: catálogo base de alimentos =====================
+   Valores por 100 g (USDA FoodData Central / BEDCA, verificados).
+   Unidades: kcal; macros g; vA µg RAE; vC mg; vD µg; vE mg; vK µg; b1/b2/b3/b6 mg;
+   b9 µg DFE; b12 µg; ca/fe/mg/p/k/na/cl mg; zn/cu/mn mg; se/iod µg. null = sin dato. */
+const SEED_VER=1;
+const DEFAULT_FOODS=[
+/*@@FOODS@@*/
+];
+
+/* ============ Referencia de nutrientes (RDA/IA, UL, funciones — NIH) ============ */
+const NUTRIENTS=[
+/*@@NUTRIENTS@@*/
+];
+
+/* ============ Mejores prácticas (guía) ============ */
+const TIPS=[
+/*@@TIPS@@*/
+];
+
+/* ===================== Constantes ===================== */
+const CATS={
+  carnes:{n:"Carnes y aves",e:"🥩"},
+  pescados:{n:"Pescados y mariscos",e:"🐟"},
+  "huevos-lacteos":{n:"Huevos y lácteos",e:"🥚"},
+  legumbres:{n:"Legumbres",e:"🫘"},
+  cereales:{n:"Cereales, granos y tubérculos",e:"🌾"},
+  verduras:{n:"Verduras y hortalizas",e:"🥦"},
+  frutas:{n:"Frutas",e:"🍎"},
+  "frutos-secos":{n:"Frutos secos y semillas",e:"🥜"},
+  grasas:{n:"Aceites y grasas",e:"🫒"},
+  suplementos:{n:"Suplementos",e:"💊"},
+  otros:{n:"Otros",e:"🍫"}
+};
+const CAT_ORDER=Object.keys(CATS);
+const MEALS=[["des","🌅 Desayuno"],["com","🍽 Comida"],["cen","🌙 Cena"],["snk","🍎 Snacks"],["sup","💊 Suplementos"]];
+const MOMENTS=["En ayunas","Con el desayuno","Pre-entreno","Post-entreno","Con la comida","Con la cena","Antes de dormir"];
+const ACTIVIDADES=[
+  [1.2,"Sedentario (oficina, sin ejercicio)"],
+  [1.375,"Ligero (1–3 días de ejercicio/sem)"],
+  [1.55,"Moderado (3–5 días/sem)"],
+  [1.725,"Intenso (6–7 días/sem)"],
+  [1.9,"Muy intenso (2×/día o trabajo físico)"]
+];
+const OBJETIVOS=[
+  [-0.20,"Déficit fuerte (−20%)"],
+  [-0.10,"Déficit moderado (−10%)"],
+  [0,"Mantenimiento"],
+  [0.10,"Superávit ligero (+10%)"],
+  [0.15,"Superávit (+15%)"]
+];
+
+const NUTRIMAP={};NUTRIENTS.forEach(n=>{if(n.key)NUTRIMAP[n.key]=n;});
+const MICRO_KEYS=NUTRIENTS.filter(n=>n.key).map(n=>n.key);
+const MICRO_GROUPS=[
+  ["Vitaminas",NUTRIENTS.filter(n=>n.key&&n.tipo==="vitamina")],
+  ["Minerales mayores",NUTRIENTS.filter(n=>n.key&&n.tipo==="mineral")],
+  ["Minerales traza",NUTRIENTS.filter(n=>n.key&&n.tipo==="traza")]
+];
+const TRACK_FIELDS=["kcal","prot","fat","sat","carb","fib","sug"].concat(MICRO_KEYS);
+const FOOD_NUM_FIELDS=["serv_g","kcal","prot","fat","sat","carb","fib","sug"].concat(MICRO_KEYS);
+
+/* ===================== Utilidades ===================== */
+const esc=s=>(s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+let _id=0;
+const uid=()=>"i"+(++_id)+"_"+Date.now().toString(36)+Math.floor(Math.random()*999);
+const norm=s=>(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+const MESES=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+const DIAS=["dom","lun","mar","mié","jue","vie","sáb"];
+function dkey(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function parseKey(k){const [y,m,dd]=k.split("-").map(Number);return new Date(y,m-1,dd);}
+function fmtNum(v,dec){
+  if(v==null||!isFinite(v))return "—";
+  if(dec!=null)return (+v).toFixed(dec);
+  const a=Math.abs(v);
+  if(a>=100)return String(Math.round(v));
+  if(a>=10)return (+v).toFixed(1).replace(/\.0$/,"");
+  return (+v).toFixed(a>=1?1:2).replace(/\.?0+$/,"")||"0";
+}
+
+/* ===================== Estado ===================== */
+const STORE_KEY="salud-nutricion-v1";
+let state=null;
+let curDate=dkey(new Date());     // día visible del diario (no se sincroniza)
+let view="diario";                // pestaña visible (no se sincroniza)
+let catFilter="todas";            // filtro del catálogo (no se sincroniza)
+const openEditors=new Set();      // editores de alimento abiertos (sesión)
+
+function defaultProfile(){return{sexo:"h",edad:30,peso:78,estatura:175,actividad:1.55,objetivo:0,prot_gkg:1.8,grasa_pct:25,kcalCustom:null};}
+function defaultStack(){
+  const mk=(foodId,g,momento)=>({id:uid(),foodId,g,momento,nota:""});
+  const s=[];
+  if(DEFAULT_FOODS.some(f=>f.id==="creatina-monohidratada"))s.push(mk("creatina-monohidratada",5,"Post-entreno"));
+  if(DEFAULT_FOODS.some(f=>f.id==="omega-3-aceite-pescado"))s.push(mk("omega-3-aceite-pescado",2,"Con la comida"));
+  if(DEFAULT_FOODS.some(f=>f.id==="vitamina-d3-2000-ui"))s.push(mk("vitamina-d3-2000-ui",1,"Con el desayuno"));
+  return s;
+}
+function blankDay(){const meals={};MEALS.forEach(([k])=>meals[k]=[]);return{meals,agua:0,nota:""};}
+function freshState(){
+  const foods={};DEFAULT_FOODS.forEach(f=>foods[f.id]={...f});
+  return{profile:defaultProfile(),overrides:{},foods,removed:[],diary:{},stack:defaultStack(),foodsVer:SEED_VER};
+}
+
+async function load(){
+  let raw=null;
+  try{const r=await window.storage.get(STORE_KEY);if(r&&r.value)raw=r.value;}catch(e){}
+  if(raw){try{state=JSON.parse(raw);}catch(e){state=null;}}
+  if(!state||!state.foods)state=freshState();
+  // asegurar estructura + defaults nuevos
+  state.profile=Object.assign(defaultProfile(),state.profile||{});
+  if(!state.overrides)state.overrides={};
+  if(!Array.isArray(state.removed))state.removed=[];
+  if(!state.diary)state.diary={};
+  if(!Array.isArray(state.stack))state.stack=[];
+  // sembrar alimentos del catálogo base que falten (salvo que el usuario los haya borrado)
+  DEFAULT_FOODS.forEach(f=>{
+    if(!state.foods[f.id]&&!state.removed.includes(f.id))state.foods[f.id]={...f};
+  });
+  Object.values(state.foods).forEach(f=>{if(!CATS[f.cat])f.cat="otros";});
+  Object.values(state.diary).forEach(d=>{
+    if(!d.meals)d.meals={};
+    MEALS.forEach(([k])=>{if(!Array.isArray(d.meals[k]))d.meals[k]=[];});
+    if(d.agua==null)d.agua=0;
+  });
+  state.foodsVer=SEED_VER;
+}
+
+/* ===================== Colaboración (idéntico a index.html) ===================== */
+const CLIENT_ID=Math.random().toString(36).slice(2,9);
+let lastRev=0,pendingRemote=null,lastLocalEdit=0,pollTimer=null;
+const isTyping=()=>{const a=document.activeElement;return !!a&&/^(INPUT|SELECT|TEXTAREA)$/.test(a.tagName||"");};
+const busy=()=>isTyping()||(Date.now()-lastLocalEdit<2500);
+
+let saveTimer=null;
+async function save(){
+  try{
+    state._rev=Date.now();state._by=CLIENT_ID;lastRev=state._rev;lastLocalEdit=Date.now();
+    await window.storage.set(STORE_KEY,JSON.stringify(state));
+    flashSaved();setSync("saved");
+  }catch(e){setSync("offline");}
+}
+function saveDebounced(){clearTimeout(saveTimer);lastLocalEdit=Date.now();saveTimer=setTimeout(save,500);}
+function flashSaved(){const f=document.getElementById("savedFlag");if(!f)return;f.classList.add("show");
+  clearTimeout(f._t);f._t=setTimeout(()=>f.classList.remove("show"),1200);}
+function applyRemote(remote){
+  state=remote;lastRev=remote._rev||Date.now();pendingRemote=null;
+  renderAll();setSync("updated");
+}
+async function poll(){
+  let val=null;
+  try{const r=await window.storage.get(STORE_KEY);if(r&&r.value)val=r.value;}catch(e){setSync("offline");return;}
+  if(!val){setSync("live");return;}
+  let remote;try{remote=JSON.parse(val);}catch(e){return;}
+  const rrev=remote._rev||0;
+  if(rrev>lastRev&&remote._by!==CLIENT_ID&&remote.foods){
+    if(busy()){pendingRemote=remote;setSync("pending");}
+    else applyRemote(remote);
+  }else if(!pendingRemote){setSync("live");}
+}
+function startCollab(){
+  if(pollTimer)clearInterval(pollTimer);
+  pollTimer=setInterval(poll,4000);
+  document.addEventListener("visibilitychange",()=>{if(!document.hidden)poll();});
+}
+function setSync(mode){
+  const el=document.getElementById("syncStatus");if(!el)return;
+  el.classList.remove("pending");el.onclick=null;
+  const t=new Date().toLocaleTimeString("es-MX",{hour:"2-digit",minute:"2-digit"});
+  if(mode==="pending"){
+    el.classList.add("pending");
+    el.textContent="🔔 Cambios remotos — toca para aplicar";
+    el.onclick=()=>{if(pendingRemote)applyRemote(pendingRemote);};
+  }else if(mode==="updated"){el.textContent="🔄 Actualizado desde otro dispositivo · "+t;}
+  else if(mode==="saved"){el.textContent="🟢 En vivo · guardado "+t;}
+  else if(mode==="offline"){el.textContent="🟡 Sin conexión de sincronía — reintentando…";}
+  else{el.textContent="🟢 En vivo · al día "+t;}
+}
+function customConfirm(message,onYes){
+  const ov=document.createElement("div");ov.className="confirmov";
+  ov.innerHTML=`<div class="confirmbox"><p>${esc(message)}</p>
+    <div class="confirmbtns"><button class="btn cbno">Cancelar</button><button class="btn cbyes">Sí, continuar</button></div></div>`;
+  document.body.appendChild(ov);
+  ov.querySelector(".cbno").onclick=()=>ov.remove();
+  ov.querySelector(".cbyes").onclick=()=>{ov.remove();onYes();};
+  ov.addEventListener("click",e=>{if(e.target===ov)ov.remove();});
+}
+
+/* ===================== Cálculos ===================== */
+function bmr(p){const b=10*p.peso+6.25*p.estatura-5*p.edad;return p.sexo==="h"?b+5:b-161;}
+function tdee(p){return bmr(p)*(+p.actividad||1.2);}
+function kcalTarget(){
+  const p=state.profile;
+  if(p.kcalCustom&&+p.kcalCustom>0)return +p.kcalCustom;
+  return Math.round(tdee(p)*(1+(+p.objetivo||0)));
+}
+function macroTargets(){
+  const p=state.profile,kcal=kcalTarget();
+  const prot=p.peso*(+p.prot_gkg||1.8);
+  const fat=kcal*((+p.grasa_pct||25)/100)/9;
+  const carb=Math.max(0,(kcal-prot*4-fat*9)/4);
+  return{kcal,prot,fat,carb,fib:14*kcal/1000,
+    satMax:kcal*0.10/9,sugMax:kcal*0.10/4};
+}
+function microTarget(key){
+  const o=state.overrides[key];
+  if(o!=null&&o!==""&&isFinite(+o))return +o;
+  const n=NUTRIMAP[key];if(!n)return null;
+  const v=state.profile.sexo==="h"?(n.rda_h!=null?n.rda_h:n.rda_m):(n.rda_m!=null?n.rda_m:n.rda_h);
+  return v;
+}
+function aguaTarget(){return Math.round(state.profile.peso*33/50)*50;}   // ~33 ml/kg
+function dayEntry(k,create){
+  let d=state.diary[k];
+  if(!d&&create){d=blankDay();state.diary[k]=d;}
+  return d;
+}
+function sumItems(items,t){
+  items.forEach(it=>{
+    const f=state.foods[it.foodId];if(!f)return;
+    const x=(+it.g||0)/100;
+    TRACK_FIELDS.forEach(k=>{const v=+f[k];if(isFinite(v))t[k]+=v*x;});
+  });
+}
+function dayTotals(k){
+  const t={};TRACK_FIELDS.forEach(f=>t[f]=0);
+  const d=state.diary[k];if(!d)return t;
+  Object.values(d.meals).forEach(list=>sumItems(list,t));
+  return t;
+}
+function stackTotals(){
+  const t={};TRACK_FIELDS.forEach(f=>t[f]=0);
+  sumItems(state.stack.map(s=>({foodId:s.foodId,g:s.g})),t);
+  return t;
+}
+function mealKcal(items){let n=0;items.forEach(it=>{const f=state.foods[it.foodId];if(f)n+=(+f.kcal||0)*(+it.g||0)/100;});return n;}
+
+/* estado de un micronutriente: low | ok | over(UL) */
+function microStatus(key,val){
+  const tgt=microTarget(key),n=NUTRIMAP[key];
+  const ul=n&&n.ul!=null?+n.ul:null;
+  if(ul&&val>ul)return"over";
+  if(tgt&&val>=tgt*0.7)return"ok";
+  return"low";
+}
+
+/* ===================== Render: chips resumen ===================== */
+function renderSummary(){
+  const t=dayTotals(curDate),m=macroTargets();
+  const daysLogged=Object.keys(state.diary).filter(k=>{
+    const d=state.diary[k];return d&&Object.values(d.meals).some(l=>l.length);
+  }).length;
+  const pct=m.kcal?Math.round(t.kcal/m.kcal*100):0;
+  document.getElementById("summary").innerHTML=`
+    <div class="chip"><div class="n">${Math.round(t.kcal)}<small> / ${m.kcal}</small></div><div class="l">kcal hoy</div></div>
+    <div class="chip"><div class="n">${fmtNum(t.prot,0)}<small> / ${Math.round(m.prot)} g</small></div><div class="l">proteína</div></div>
+    <div class="chip"><div class="n">${fmtNum(t.carb,0)}<small> / ${Math.round(m.carb)} g</small></div><div class="l">carbohidratos</div></div>
+    <div class="chip"><div class="n">${fmtNum(t.fat,0)}<small> / ${Math.round(m.fat)} g</small></div><div class="l">grasas</div></div>
+    <div class="chip ${pct>125?"warn":""}"><div class="n">${daysLogged}</div><div class="l">días registrados</div></div>`;
+}
+
+/* ===================== Render: diario ===================== */
+function macroTile(name,val,target,unit,mode){
+  // mode "goal": llegar al objetivo (macros). mode "limit": no pasarse (sat/azúcar/sodio)
+  const pct=target?val/target*100:0;
+  let cls="",tag="";
+  if(mode==="limit"){
+    if(pct>100){cls="over";tag=`<span class="statustag over">▲ límite</span>`;}
+    else if(pct>80){cls="warn";tag=`<span class="statustag warn">cerca</span>`;}
+  }else{
+    if(name==="Calorías"&&pct>125){cls="over";tag=`<span class="statustag over">▲ exceso</span>`;}
+    else if(name==="Calorías"&&pct>110){cls="warn";tag=`<span class="statustag warn">pasado</span>`;}
+    else if(pct>=90){tag=`<span class="statustag ok">✓ en meta</span>`;}
+  }
+  return`<div class="mtile ${cls}">
+    <div class="mt-name">${name} ${tag}</div>
+    <div class="mt-val">${fmtNum(val,0)}<small> / ${fmtNum(target,0)} ${unit}</small></div>
+    <div class="bar"><i style="width:${Math.min(100,pct)}%"></i></div>
+    <div class="mt-sub">${Math.round(pct)}% del objetivo</div>
+  </div>`;
+}
+function renderMacroTiles(){
+  const t=dayTotals(curDate),m=macroTargets();
+  document.getElementById("macroTiles").innerHTML=
+    macroTile("Calorías",t.kcal,m.kcal,"kcal","goal")+
+    macroTile("Proteína",t.prot,m.prot,"g","goal")+
+    macroTile("Carbohidratos",t.carb,m.carb,"g","goal")+
+    macroTile("Grasas",t.fat,m.fat,"g","goal");
+}
+function microBarRow(n,val){
+  const key=n.key,tgt=microTarget(key);
+  const st=microStatus(key,val);
+  const pct=tgt?Math.min(100,val/tgt*100):0;
+  const ul=n.ul!=null?` · UL ${fmtNum(n.ul)}`:"";
+  const tag=st==="over"?` <span class="statustag over">▲ UL</span>`:"";
+  return`<div class="microrow">
+    <div class="mn">${esc(n.name)}${tag}<small>${esc(n.unit)}${ul}</small></div>
+    <div class="bar"><i class="${st}" style="width:${pct}%"></i></div>
+    <div class="mv"><b>${fmtNum(val)}</b> / ${fmtNum(tgt)} ${esc(n.unit)}</div>
+  </div>`;
+}
+function renderMicroPanel(){
+  const t=dayTotals(curDate),m=macroTargets();
+  let html="";
+  html+=`<div class="grptitle">Balance</div>`;
+  html+=microFixedRow("Fibra","g",t.fib,m.fib,"goal");
+  html+=microFixedRow("Azúcares","g",t.sug,m.sugMax,"limit");
+  html+=microFixedRow("Grasa saturada","g",t.sat,m.satMax,"limit");
+  MICRO_GROUPS.forEach(([title,list])=>{
+    if(!list.length)return;
+    html+=`<div class="grptitle">${title}</div>`;
+    list.forEach(n=>{html+=microBarRow(n,t[n.key]||0);});
+  });
+  document.getElementById("microPanel").innerHTML=html;
+}
+function microFixedRow(name,unit,val,target,mode){
+  const pct=target?val/target*100:0;
+  let cls=mode==="limit"?(pct>100?"over":pct>80?"warn":"ok"):(pct>=70?"ok":"low");
+  const tag=mode==="limit"&&pct>100?` <span class="statustag over">▲ límite</span>`:"";
+  const lbl=mode==="limit"?"máx":"meta";
+  return`<div class="microrow">
+    <div class="mn">${name}${tag}<small>${unit} · ${lbl} ${fmtNum(target,0)}</small></div>
+    <div class="bar"><i class="${cls}" style="width:${Math.min(100,pct)}%"></i></div>
+    <div class="mv"><b>${fmtNum(val)}</b> / ${fmtNum(target,0)} ${unit}</div>
+  </div>`;
+}
+function renderWeek(){
+  const m=macroTargets(),days=[];
+  const end=parseKey(curDate);
+  for(let i=6;i>=0;i--){const d=new Date(end);d.setDate(d.getDate()-i);days.push(d);}
+  const vals=days.map(d=>dayTotals(dkey(d)).kcal);
+  const maxV=Math.max(m.kcal*1.15,...vals,1);
+  const goalPct=m.kcal/maxV*100;
+  let html=`<div class="goalline" style="bottom:calc(${goalPct}% * .78 + 22px)"><span class="goaltag">${m.kcal} kcal</span></div><div class="week">`;
+  days.forEach((d,i)=>{
+    const k=dkey(d),v=vals[i],h=Math.max(2,v/maxV*100);
+    const today=k===curDate;
+    html+=`<div class="wday ${today?"today":""}" data-day="${k}" title="${DIAS[d.getDay()]} ${d.getDate()} ${MESES[d.getMonth()]}: ${Math.round(v)} kcal">
+      <div class="wbar" style="height:${h*0.78}%"></div>
+      <div class="wlbl">${DIAS[d.getDay()]} ${d.getDate()}<br>${v?Math.round(v):"·"}</div>
+    </div>`;
+  });
+  html+=`</div>`;
+  const el=document.getElementById("weekStrip");
+  el.innerHTML=html;
+  el.querySelectorAll(".wday").forEach(w=>w.addEventListener("click",()=>{curDate=w.dataset.day;renderAll();}));
+}
+
+function comboInit(holder,onPick,filterCat){
+  const inp=holder.querySelector("input"),sugg=holder.querySelector(".sugg");
+  let items=[],sel=-1;
+  function close(){sugg.classList.remove("open");sel=-1;}
+  function refresh(){
+    const q=norm(inp.value);
+    const all=Object.values(state.foods).sort((a,b)=>{
+      const pa=filterCat?(a.cat===filterCat?0:1):0,pb=filterCat?(b.cat===filterCat?0:1):0;
+      if(pa!==pb)return pa-pb;
+      return a.name.localeCompare(b.name,"es");
+    });
+    items=(q?all.filter(f=>norm(f.name).includes(q)):all).slice(0,9);
+    if(!items.length){close();return;}
+    sugg.innerHTML=items.map((f,i)=>`<div class="sug ${i===sel?"sel":""}" data-i="${i}">
+      <span>${CATS[f.cat]?CATS[f.cat].e:"·"}</span><span>${esc(f.name)}</span>
+      <span class="skcal">${Math.round(f.kcal)} kcal</span><span class="scat">${CATS[f.cat]?esc(CATS[f.cat].n):""}</span></div>`).join("");
+    sugg.classList.add("open");
+    sugg.querySelectorAll(".sug").forEach(el=>el.addEventListener("mousedown",e=>{e.preventDefault();pick(+el.dataset.i);}));
+  }
+  function pick(i){const f=items[i];if(!f)return;inp.value=f.name;close();onPick(f);}
+  inp.addEventListener("input",()=>{sel=-1;refresh();});
+  inp.addEventListener("focus",refresh);
+  inp.addEventListener("blur",()=>setTimeout(close,150));
+  inp.addEventListener("keydown",e=>{
+    if(e.key==="ArrowDown"){e.preventDefault();sel=Math.min(items.length-1,sel+1);refresh();}
+    else if(e.key==="ArrowUp"){e.preventDefault();sel=Math.max(0,sel-1);refresh();}
+    else if(e.key==="Enter"){e.preventDefault();pick(sel>=0?sel:0);}
+    else if(e.key==="Escape")close();
+  });
+  return{clear(){inp.value="";},input:inp};
+}
+
+function renderMeals(){
+  const d=dayEntry(curDate,false)||blankDay();
+  const holder=document.getElementById("mealsHolder");
+  holder.innerHTML=MEALS.map(([mk,label])=>{
+    const items=d.meals[mk]||[];
+    const rows=items.map(it=>{
+      const f=state.foods[it.foodId];
+      if(!f)return`<div class="ditem"><div class="dname"><small>(alimento borrado)</small></div>
+        <button class="del" data-del="${mk}|${it.id}" title="Quitar">✕</button></div>`;
+      const x=(+it.g||0)/100;
+      return`<div class="ditem">
+        <span>${CATS[f.cat]?CATS[f.cat].e:"·"}</span>
+        <div class="dname">${esc(f.name)}${f.serv_desc?` <small>· ${esc(f.serv_desc)} = ${fmtNum(f.serv_g)} g</small>`:""}</div>
+        <input class="f num dg" type="number" min="0" step="1" value="${fmtNum(it.g,0)}" data-g="${mk}|${it.id}" title="gramos"> <span class="mini">g</span>
+        <div class="dmac">${Math.round((+f.kcal||0)*x)} kcal · P ${fmtNum((+f.prot||0)*x,0)} · C ${fmtNum((+f.carb||0)*x,0)} · G ${fmtNum((+f.fat||0)*x,0)}</div>
+        <button class="del" data-del="${mk}|${it.id}" title="Quitar">✕</button>
+      </div>`;
+    }).join("");
+    return`<div class="card meal">
+      <div class="mealhead"><h4>${label}</h4><span class="mealkcal">${Math.round(mealKcal(items))} kcal</span></div>
+      ${rows||`<div class="mini" style="padding:4px 0">Sin registros aún.</div>`}
+      <div class="addline">
+        <div class="combo" data-meal="${mk}"><input class="f" placeholder="Añadir alimento a ${label.replace(/^\S+\s/,"").toLowerCase()}…"><div class="sugg"></div></div>
+        <input class="f num mg" type="number" min="0" step="1" placeholder="g" style="width:76px">
+        <button class="btn primary madd">Añadir</button>
+      </div>
+    </div>`;
+  }).join("");
+
+  // eventos: gramos, borrar, agregar
+  holder.querySelectorAll("input.dg").forEach(inp=>inp.addEventListener("input",()=>{
+    const [mk,id]=inp.dataset.g.split("|");
+    const it=(dayEntry(curDate,true).meals[mk]||[]).find(x=>x.id===id);
+    if(it){it.g=+inp.value||0;saveDebounced();refreshDiaryLight();}
+  }));
+  holder.querySelectorAll("button.del").forEach(b=>b.addEventListener("click",()=>{
+    const [mk,id]=b.dataset.del.split("|");
+    const d2=dayEntry(curDate,true);
+    d2.meals[mk]=d2.meals[mk].filter(x=>x.id!==id);
+    saveDebounced();renderDiario();renderSummary();
+  }));
+  holder.querySelectorAll(".combo").forEach(holderC=>{
+    const mk=holderC.dataset.meal;
+    const gInp=holderC.parentElement.querySelector("input.mg");
+    let picked=null;
+    const combo=comboInit(holderC,f=>{
+      picked=f;
+      if(!gInp.value)gInp.value=f.serv_g||100;
+      gInp.focus();gInp.select();
+    },mk==="sup"?"suplementos":null);
+    const addBtn=holderC.parentElement.querySelector("button.madd");
+    const doAdd=()=>{
+      if(!picked){combo.input.focus();return;}
+      const g=+gInp.value||+picked.serv_g||100;
+      dayEntry(curDate,true).meals[mk].push({id:uid(),foodId:picked.id,g});
+      picked=null;combo.clear();gInp.value="";
+      saveDebounced();renderDiario();renderSummary();
+    };
+    addBtn.addEventListener("click",doAdd);
+    gInp.addEventListener("keydown",e=>{if(e.key==="Enter")doAdd();});
+  });
+}
+function refreshDiaryLight(){renderMacroTiles();renderMicroPanel();renderWeek();renderSummary();renderMealKcals();}
+function renderMealKcals(){
+  const d=dayEntry(curDate,false)||blankDay();
+  document.querySelectorAll("#mealsHolder .meal").forEach((el,i)=>{
+    const mk=MEALS[i][0];
+    const span=el.querySelector(".mealkcal");
+    if(span)span.textContent=Math.round(mealKcal(d.meals[mk]||[]))+" kcal";
+  });
+}
+function renderAgua(){
+  const d=dayEntry(curDate,false)||blankDay();
+  const tgt=aguaTarget(),v=+d.agua||0,pct=Math.min(100,v/tgt*100);
+  document.getElementById("aguaBar").style.width=pct+"%";
+  document.getElementById("aguaLbl").textContent=`${v} / ${tgt} ml`;
+}
+function renderDiario(){
+  document.getElementById("dayInput").value=curDate;
+  const dt=parseKey(curDate);
+  renderMacroTiles();renderMeals();renderMicroPanel();renderWeek();renderAgua();
+  document.getElementById("dayNote").value=(dayEntry(curDate,false)||{}).nota||"";
+}
+
+/* ===================== Render: objetivos ===================== */
+function renderObjetivos(){
+  const p=state.profile;
+  const selOpt=(opts,cur)=>opts.map(([v,l])=>`<option value="${v}" ${String(v)===String(cur)?"selected":""}>${l}</option>`).join("");
+  document.getElementById("profileForm").innerHTML=`
+    <label>Sexo<select class="f" data-p="sexo">
+      <option value="h" ${p.sexo==="h"?"selected":""}>Hombre</option>
+      <option value="m" ${p.sexo==="m"?"selected":""}>Mujer</option></select></label>
+    <label>Edad<input class="f num" type="number" min="15" max="90" data-p="edad" value="${p.edad}"></label>
+    <label>Peso (kg)<input class="f num" type="number" min="30" max="250" step="0.5" data-p="peso" value="${p.peso}"></label>
+    <label>Estatura (cm)<input class="f num" type="number" min="120" max="230" data-p="estatura" value="${p.estatura}"></label>
+    <label class="span2">Actividad<select class="f" data-p="actividad">${selOpt(ACTIVIDADES,p.actividad)}</select></label>
+    <label class="span2">Objetivo<select class="f" data-p="objetivo">${selOpt(OBJETIVOS,p.objetivo)}</select></label>
+    <label>Proteína (g/kg)<input class="f num" type="number" min="0.8" max="3" step="0.1" data-p="prot_gkg" value="${p.prot_gkg}"></label>
+    <label>Grasa (% kcal)<input class="f num" type="number" min="15" max="45" step="1" data-p="grasa_pct" value="${p.grasa_pct}"></label>
+    <label class="span2">Kcal manual (opcional)<input class="f num" type="number" min="0" step="10" data-p="kcalCustom"
+      value="${p.kcalCustom||""}" placeholder="auto"></label>`;
+  document.getElementById("profileForm").querySelectorAll("[data-p]").forEach(el=>{
+    el.addEventListener("input",()=>{
+      const k=el.dataset.p;let v=el.value;
+      if(k==="sexo")state.profile[k]=v;
+      else if(k==="kcalCustom")state.profile[k]=v===""?null:+v;
+      else state.profile[k]=+v;
+      saveDebounced();renderTargetsPanel();renderMicroTargets();renderSummary();renderProfileHint();
+      if(view==="diario")renderDiario();
+    });
+  });
+  renderProfileHint();
+  renderTargetsPanel();
+  renderMicroTargets();
+}
+function renderProfileHint(){
+  const p=state.profile;
+  document.getElementById("profileHint").innerHTML=
+    `TMB (Mifflin-St Jeor): <b>${Math.round(bmr(p))}</b> kcal · TDEE (×${p.actividad}): <b>${Math.round(tdee(p))}</b> kcal`;
+}
+function renderTargetsPanel(){
+  const p=state.profile,m=macroTargets();
+  const row=(n,g,kcal,pct,note)=>`<div class="microrow">
+    <div class="mn">${n}<small>${note||""}</small></div>
+    <div class="bar"><i style="width:${pct}%"></i></div>
+    <div class="mv"><b>${Math.round(g)} g</b> · ${Math.round(kcal)} kcal · ${Math.round(pct)}%</div>
+  </div>`;
+  const pk=m.prot*4/m.kcal*100,fk=m.fat*9/m.kcal*100,ck=m.carb*4/m.kcal*100;
+  document.getElementById("targetsPanel").innerHTML=`
+    <div class="mtile" style="margin-bottom:12px">
+      <div class="mt-name">Calorías objetivo</div>
+      <div class="mt-val">${m.kcal}<small> kcal/día</small></div>
+      <div class="mt-sub">${p.kcalCustom?"definidas manualmente":`TDEE ${Math.round(tdee(p))} kcal ${p.objetivo>0?"+":""}${Math.round(p.objetivo*100)}%`}</div>
+    </div>
+    ${row("Proteína",m.prot,m.prot*4,pk,`${p.prot_gkg} g/kg × ${p.peso} kg`)}
+    ${row("Grasas",m.fat,m.fat*9,fk,`${p.grasa_pct}% de las kcal`)}
+    ${row("Carbohidratos",m.carb,m.carb*4,ck,"el resto de las kcal")}
+    ${row("Fibra",m.fib,0,Math.min(100,m.fib/40*100),"14 g por cada 1000 kcal")}
+    <div class="fkcalchk" style="margin-top:10px">Límites sugeridos: grasa saturada &lt; <b>${Math.round(m.satMax)} g</b> (10% kcal) · azúcares &lt; <b>${Math.round(m.sugMax)} g</b> (10% kcal) · sodio &lt; <b>2300 mg</b>.</div>`;
+}
+function renderMicroTargets(){
+  let html="";
+  MICRO_GROUPS.forEach(([title,list])=>{
+    if(!list.length)return;
+    html+=`<div class="grptitle">${title}</div>`;
+    list.forEach(n=>{
+      const auto=state.profile.sexo==="h"?(n.rda_h!=null?n.rda_h:n.rda_m):(n.rda_m!=null?n.rda_m:n.rda_h);
+      const ov=state.overrides[n.key];
+      html+=`<div class="microrow">
+        <div class="mn">${esc(n.name)}<small>${esc(n.unit)} · RDA ${fmtNum(auto)}${n.ul!=null?` · UL ${fmtNum(n.ul)}`:""}</small></div>
+        <div style="flex:1"></div>
+        <input class="f num" type="number" min="0" step="any" data-ov="${n.key}" value="${ov!=null?ov:""}" placeholder="${fmtNum(auto)}">
+        <span class="mini">${esc(n.unit)}/día</span>
+      </div>`;
+    });
+  });
+  const el=document.getElementById("microTargets");
+  el.innerHTML=html;
+  el.querySelectorAll("[data-ov]").forEach(inp=>inp.addEventListener("input",()=>{
+    const k=inp.dataset.ov;
+    if(inp.value==="")delete state.overrides[k];
+    else state.overrides[k]=+inp.value;
+    saveDebounced();
+    if(view==="diario")renderMicroPanel();
+  }));
+}
+
+/* ===================== Render: alimentos ===================== */
+function foodMacStr(f){
+  return`${Math.round(f.kcal)} kcal · P ${fmtNum(f.prot)} · C ${fmtNum(f.carb)} · G ${fmtNum(f.fat)}`;
+}
+function renderCatChips(){
+  const counts={};Object.values(state.foods).forEach(f=>counts[f.cat]=(counts[f.cat]||0)+1);
+  const total=Object.keys(state.foods).length;
+  let html=`<button class="catchip ${catFilter==="todas"?"active":""}" data-cat="todas">Todas (${total})</button>`;
+  CAT_ORDER.forEach(c=>{
+    html+=`<button class="catchip ${catFilter===c?"active":""}" data-cat="${c}">${CATS[c].e} ${CATS[c].n} (${counts[c]||0})</button>`;
+  });
+  const el=document.getElementById("catChips");
+  el.innerHTML=html;
+  el.querySelectorAll(".catchip").forEach(b=>b.addEventListener("click",()=>{catFilter=b.dataset.cat;renderAlimentos();}));
+}
+function foodEditorHTML(f){
+  const catOpts=CAT_ORDER.map(c=>`<option value="${c}" ${f.cat===c?"selected":""}>${CATS[c].e} ${CATS[c].n}</option>`).join("");
+  const numIn=(k,lbl,unit)=>`<label>${lbl}${unit?` (${unit})`:""}<input class="f num" type="number" step="any" min="0" data-f="${k}" value="${f[k]!=null?f[k]:""}" placeholder="—"></label>`;
+  let micros="";
+  MICRO_GROUPS.forEach(([title,list])=>{
+    if(!list.length)return;
+    micros+=`<div class="grptitle">${title} <span class="mini">por 100 g</span></div><div class="fgrid">`;
+    list.forEach(n=>{micros+=numIn(n.key,esc(n.name),esc(n.unit));});
+    micros+=`</div>`;
+  });
+  return`<div class="feditor">
+    <div class="grptitle">General</div>
+    <div class="fgrid">
+      <label class="span2">Nombre<input class="f" data-f="name" value="${esc(f.name)}"></label>
+      <label class="span2">Categoría<select class="f" data-f="cat">${catOpts}</select></label>
+      <label class="span2">Nota / base<input class="f" data-f="note" value="${esc(f.note||"")}" placeholder="ej. cocido, sin piel"></label>
+      <label>Porción (g)<input class="f num" type="number" step="any" min="0" data-f="serv_g" value="${f.serv_g!=null?f.serv_g:""}" placeholder="—"></label>
+      <label>Porción (desc.)<input class="f" data-f="serv_desc" value="${esc(f.serv_desc||"")}" placeholder="1 pieza"></label>
+    </div>
+    <div class="grptitle">Macros <span class="mini">por 100 g</span></div>
+    <div class="fgrid">
+      ${numIn("kcal","Calorías","kcal")}${numIn("prot","Proteína","g")}${numIn("carb","Carbohidratos","g")}${numIn("fat","Grasa","g")}
+      ${numIn("sat","Saturada","g")}${numIn("fib","Fibra","g")}${numIn("sug","Azúcares","g")}
+    </div>
+    <div class="fkcalchk" data-kcalchk></div>
+    ${micros}
+    <div class="fbtns">
+      <button class="btn" data-dup>⧉ Duplicar</button>
+      <button class="btn danger" data-delfood>🗑 Borrar alimento</button>
+    </div>
+  </div>`;
+}
+function kcalCheckStr(f){
+  const est=4*(+f.prot||0)+9*(+f.fat||0)+4*(+f.carb||0);
+  const dif=f.kcal?Math.abs(est-f.kcal)/f.kcal*100:0;
+  return`Comprobación: 4·P + 9·G + 4·C = <b>${Math.round(est)} kcal</b> vs. declaradas ${Math.round(+f.kcal||0)} ${dif>15?"· <span style='color:var(--seal-deep)'>⚠ difieren "+Math.round(dif)+"%</span>":"· ✓ coherente"}`;
+}
+function renderFoodList(){
+  const q=norm(document.getElementById("foodSearch").value);
+  let foods=Object.values(state.foods);
+  if(catFilter!=="todas")foods=foods.filter(f=>f.cat===catFilter);
+  if(q)foods=foods.filter(f=>norm(f.name).includes(q)||norm(f.note).includes(q));
+  foods.sort((a,b)=>a.name.localeCompare(b.name,"es"));
+  const byCat={};foods.forEach(f=>{(byCat[f.cat]=byCat[f.cat]||[]).push(f);});
+  let html="";
+  const cats=catFilter==="todas"?CAT_ORDER.filter(c=>byCat[c]):[catFilter];
+  cats.forEach(c=>{
+    const list=byCat[c]||[];
+    if(catFilter==="todas")html+=`<div class="grphead">${CATS[c].e} ${CATS[c].n}<span class="cnt">${list.length}</span></div>`;
+    list.forEach(f=>{
+      const isCustom=!DEFAULT_FOODS.some(d=>d.id===f.id);
+      const open=openEditors.has(f.id);
+      html+=`<div class="frow" data-food="${esc(f.id)}">
+        <div class="fhead">
+          <span>${CATS[f.cat].e}</span>
+          <span class="fname">${esc(f.name)}</span>
+          ${isCustom?`<span class="custom">personalizado</span>`:""}
+          ${f.note?`<span class="fnote">${esc(f.note)}</span>`:""}
+          ${f.serv_desc?`<span class="fnote">· ${esc(f.serv_desc)} = ${fmtNum(f.serv_g)} g</span>`:""}
+          <span class="fmac">${foodMacStr(f)}</span>
+          <span class="mini">${open?"▴ cerrar":"▾ editar"}</span>
+        </div>
+        ${open?foodEditorHTML(f):""}
+      </div>`;
+    });
+  });
+  document.getElementById("foodList").innerHTML=html||`<div class="mini" style="padding:14px 4px">Sin resultados. Prueba otra búsqueda o agrega un alimento nuevo.</div>`;
+  wireFoodList();
+}
+function wireFoodList(){
+  const holder=document.getElementById("foodList");
+  holder.querySelectorAll(".frow").forEach(row=>{
+    const fid=row.dataset.food,f=state.foods[fid];
+    row.querySelector(".fhead").addEventListener("click",()=>{
+      if(openEditors.has(fid))openEditors.delete(fid);else openEditors.add(fid);
+      renderFoodList();
+    });
+    const ed=row.querySelector(".feditor");
+    if(!ed)return;
+    ed.addEventListener("click",e=>e.stopPropagation());
+    const chk=ed.querySelector("[data-kcalchk]");
+    if(chk)chk.innerHTML=kcalCheckStr(f);
+    ed.querySelectorAll("[data-f]").forEach(inp=>inp.addEventListener("input",()=>{
+      const k=inp.dataset.f;
+      if(k==="name"||k==="note"||k==="serv_desc")f[k]=inp.value;
+      else if(k==="cat"){f.cat=inp.value;renderCatChips();}
+      else f[k]=inp.value===""?null:+inp.value;
+      if(chk)chk.innerHTML=kcalCheckStr(f);
+      const mac=row.querySelector(".fmac");if(mac)mac.textContent=foodMacStr(f);
+      const nm=row.querySelector(".fname");if(nm&&k==="name")nm.textContent=f.name;
+      saveDebounced();
+    }));
+    const dup=ed.querySelector("[data-dup]");
+    if(dup)dup.addEventListener("click",()=>{
+      const nf={...f,id:"cust_"+uid(),name:f.name+" (copia)"};
+      state.foods[nf.id]=nf;openEditors.add(nf.id);openEditors.delete(fid);
+      saveDebounced();renderAlimentos();
+    });
+    const del=ed.querySelector("[data-delfood]");
+    if(del)del.addEventListener("click",()=>{
+      customConfirm(`¿Borrar “${f.name}” del catálogo? Los registros del diario que lo usan quedarán marcados como borrados.`,()=>{
+        delete state.foods[fid];
+        if(DEFAULT_FOODS.some(d=>d.id===fid)&&!state.removed.includes(fid))state.removed.push(fid);
+        openEditors.delete(fid);
+        saveDebounced();renderAlimentos();renderSummary();
+      });
+    });
+  });
+}
+function renderAlimentos(){renderCatChips();renderFoodList();}
+
+/* ===================== Render: suplementos ===================== */
+function renderStack(){
+  const holder=document.getElementById("stackList");
+  holder.innerHTML=state.stack.map(s=>{
+    const f=state.foods[s.foodId];
+    const momOpts=MOMENTS.map(m=>`<option ${s.momento===m?"selected":""}>${m}</option>`).join("");
+    if(!f)return`<div class="srow"><div class="sname mini">(suplemento borrado del catálogo)</div>
+      <button class="del" data-sdel="${s.id}">✕</button></div>`;
+    const x=(+s.g||0)/100;
+    return`<div class="srow">
+      <div class="sname"><b>${esc(f.name)}</b>${f.serv_desc?` <span class="mini">· ${esc(f.serv_desc)} = ${fmtNum(f.serv_g)} g</span>`:""}
+        <div class="mini">${Math.round((+f.kcal||0)*x)} kcal · P ${fmtNum((+f.prot||0)*x)} g por dosis</div></div>
+      <input class="f num" type="number" min="0" step="any" value="${s.g}" data-sg="${s.id}" title="gramos por día"><span class="mini">g/día</span>
+      <select class="f smoment" data-sm="${s.id}">${momOpts}</select>
+      <input class="f" style="width:130px" placeholder="nota" value="${esc(s.nota||"")}" data-sn="${s.id}">
+      <button class="del" data-sdel="${s.id}" title="Quitar">✕</button>
+    </div>`;
+  }).join("")||`<div class="mini" style="padding:6px 0">Aún no defines tu stack. Busca abajo un suplemento (o cualquier alimento) y añádelo.</div>`;
+  holder.querySelectorAll("[data-sg]").forEach(inp=>inp.addEventListener("input",()=>{
+    const s=state.stack.find(x=>x.id===inp.dataset.sg);if(s){s.g=+inp.value||0;saveDebounced();renderStackContrib();}
+  }));
+  holder.querySelectorAll("[data-sm]").forEach(sel=>sel.addEventListener("change",()=>{
+    const s=state.stack.find(x=>x.id===sel.dataset.sm);if(s){s.momento=sel.value;saveDebounced();}
+  }));
+  holder.querySelectorAll("[data-sn]").forEach(inp=>inp.addEventListener("input",()=>{
+    const s=state.stack.find(x=>x.id===inp.dataset.sn);if(s){s.nota=inp.value;saveDebounced();}
+  }));
+  holder.querySelectorAll("[data-sdel]").forEach(b=>b.addEventListener("click",()=>{
+    state.stack=state.stack.filter(x=>x.id!==b.dataset.sdel);
+    saveDebounced();renderStack();renderStackContrib();
+  }));
+  renderStackContrib();
+}
+function renderStackContrib(){
+  const t=stackTotals();
+  let html="";
+  if(t.kcal>1)html+=`<div class="mini" style="margin-bottom:6px">Aporta <b>${Math.round(t.kcal)} kcal</b> · P ${fmtNum(t.prot)} g · C ${fmtNum(t.carb)} g · G ${fmtNum(t.fat)} g</div>`;
+  MICRO_GROUPS.forEach(([title,list])=>{
+    const rows=list.filter(n=>(t[n.key]||0)>0.001);
+    if(!rows.length)return;
+    html+=`<div class="grptitle">${title}</div>`;
+    rows.forEach(n=>{html+=microBarRow(n,t[n.key]||0);});
+  });
+  document.getElementById("stackContrib").innerHTML=html||`<div class="mini">Tu stack aún no aporta nutrientes registrados.</div>`;
+}
+
+/* ===================== Render: guía ===================== */
+function renderGuia(){
+  document.getElementById("tipsList").innerHTML=TIPS.map(t=>`<li>${esc(t)}</li>`).join("");
+  const groups=[
+    ["Vitaminas",NUTRIENTS.filter(n=>n.tipo==="vitamina")],
+    ["Minerales mayores",NUTRIENTS.filter(n=>n.tipo==="mineral")],
+    ["Minerales traza y otros",NUTRIENTS.filter(n=>n.tipo==="traza"||n.tipo==="macro"||n.tipo==="otro")]
+  ];
+  let html="";
+  groups.forEach(([title,list])=>{
+    if(!list.length)return;
+    html+=`<div class="sec-head" style="margin-top:22px"><h2 style="font-size:22px">${title}</h2><span class="rule"></span></div>`;
+    list.forEach(n=>{
+      const rda=[];
+      if(n.rda_h!=null)rda.push(`H ${fmtNum(n.rda_h)}`);
+      if(n.rda_m!=null)rda.push(`M ${fmtNum(n.rda_m)}`);
+      const tracked=n.key?`<span class="statustag ok">se rastrea</span>`:"";
+      html+=`<details class="nut"><summary>
+          <span class="nname">${esc(n.name)}</span>${tracked}
+          <span class="nrda">${rda.length?`RDA ${rda.join(" · ")} ${esc(n.unit)}`:""}${n.ul!=null?` · UL ${fmtNum(n.ul)}`:""}</span>
+        </summary>
+        <div class="nbody">
+          <p><b>Función:</b> ${esc(n.funcion)}</p>
+          ${n.deficiencia?`<p><b>Deficiencia:</b> ${esc(n.deficiencia)}</p>`:""}
+          <p><b>Fuentes:</b> ${esc(n.fuentes)}</p>
+          ${n.supl?`<p><b>Suplementación:</b> ${esc(n.supl)}</p>`:""}
+        </div>
+      </details>`;
+    });
+  });
+  document.getElementById("nutGuide").innerHTML=html;
+}
+
+/* ===================== Navegación de pestañas y fecha ===================== */
+function setView(v){
+  view=v;
+  document.querySelectorAll("#pagetabs .ptab").forEach(b=>b.classList.toggle("active",b.dataset.view===v));
+  document.querySelectorAll(".view").forEach(s=>s.hidden=s.id!=="view-"+v);
+  if(v==="diario")renderDiario();
+  else if(v==="objetivos")renderObjetivos();
+  else if(v==="alimentos")renderAlimentos();
+  else if(v==="supl")renderStack();
+}
+function shiftDay(n){
+  const d=parseKey(curDate);d.setDate(d.getDate()+n);curDate=dkey(d);
+  renderDiario();renderSummary();
+}
+
+function renderAll(){
+  renderSummary();
+  if(view==="diario")renderDiario();
+  else if(view==="objetivos")renderObjetivos();
+  else if(view==="alimentos")renderAlimentos();
+  else if(view==="supl")renderStack();
+}
+
+/* ===================== Eventos globales ===================== */
+function wireGlobal(){
+  document.querySelectorAll("#pagetabs .ptab").forEach(b=>b.addEventListener("click",()=>setView(b.dataset.view)));
+  document.getElementById("dayPrev").addEventListener("click",()=>shiftDay(-1));
+  document.getElementById("dayNext").addEventListener("click",()=>shiftDay(1));
+  document.getElementById("dayToday").addEventListener("click",()=>{curDate=dkey(new Date());renderDiario();renderSummary();});
+  document.getElementById("dayInput").addEventListener("change",e=>{
+    if(e.target.value){curDate=e.target.value;renderDiario();renderSummary();}
+  });
+  document.getElementById("aguaPlus").addEventListener("click",()=>{
+    const d=dayEntry(curDate,true);d.agua=(+d.agua||0)+250;saveDebounced();renderAgua();
+  });
+  document.getElementById("aguaMinus").addEventListener("click",()=>{
+    const d=dayEntry(curDate,true);d.agua=Math.max(0,(+d.agua||0)-250);saveDebounced();renderAgua();
+  });
+  document.getElementById("dayNote").addEventListener("input",e=>{
+    dayEntry(curDate,true).nota=e.target.value;saveDebounced();
+  });
+  document.getElementById("resetOverrides").addEventListener("click",()=>{
+    customConfirm("¿Restaurar todos los objetivos de micronutrientes a la RDA automática?",()=>{
+      state.overrides={};saveDebounced();renderMicroTargets();if(view==="diario")renderMicroPanel();
+    });
+  });
+  document.getElementById("foodSearch").addEventListener("input",()=>renderFoodList());
+  document.getElementById("newFood").addEventListener("click",()=>{
+    const id="cust_"+uid();
+    const f={id,name:"Nuevo alimento",cat:catFilter!=="todas"?catFilter:"otros",note:"",serv_g:null,serv_desc:"",
+      kcal:0,prot:0,fat:0,sat:null,carb:0,fib:null,sug:null};
+    MICRO_KEYS.forEach(k=>f[k]=null);
+    state.foods[id]=f;openEditors.add(id);
+    saveDebounced();renderAlimentos();
+    const row=document.querySelector(`.frow[data-food="${id}"]`);
+    if(row){row.scrollIntoView({behavior:"smooth",block:"center"});
+      const inp=row.querySelector('[data-f="name"]');if(inp){inp.focus();inp.select();}}
+  });
+  document.getElementById("reseedFoods").addEventListener("click",()=>{
+    customConfirm("Esto vuelve a agregar los alimentos del catálogo base que hayas borrado (no toca los tuyos ni tus ediciones). ¿Continuar?",()=>{
+      state.removed=[];
+      DEFAULT_FOODS.forEach(f=>{if(!state.foods[f.id])state.foods[f.id]={...f};});
+      saveDebounced();renderAlimentos();renderSummary();
+    });
+  });
+  // stack: combo + añadir
+  let stackPick=null;
+  const sc=comboInit(document.getElementById("stackCombo"),f=>{stackPick=f;},"suplementos");
+  document.getElementById("stackAddBtn").addEventListener("click",()=>{
+    if(!stackPick){sc.input.focus();return;}
+    state.stack.push({id:uid(),foodId:stackPick.id,g:+stackPick.serv_g||1,momento:MOMENTS[1],nota:""});
+    stackPick=null;sc.clear();
+    saveDebounced();renderStack();
+  });
+  document.getElementById("stackToDiary").addEventListener("click",()=>{
+    const today=dkey(new Date());
+    const d=dayEntry(today,true);
+    let added=0;
+    state.stack.forEach(s=>{
+      if(!state.foods[s.foodId])return;
+      const dup=d.meals.sup.some(it=>it.foodId===s.foodId);
+      if(!dup){d.meals.sup.push({id:uid(),foodId:s.foodId,g:+s.g||0});added++;}
+    });
+    saveDebounced();
+    curDate=today;setView("diario");renderSummary();
+    setSync(added?"saved":"live");
+  });
+  document.getElementById("printBtn").addEventListener("click",()=>window.print());
+  document.getElementById("syncBtn").addEventListener("click",()=>{setSync("live");poll();});
+}
+
+/* ===================== Init ===================== */
+(async function init(){
+  await load();
+  lastRev=state._rev||0;
+  wireGlobal();
+  renderGuia();
+  renderAll();
+  if(!state._rev){await save();}
+  else setSync("live");
+  startCollab();
+})();
+</script>
+</body>
+</html>

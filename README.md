@@ -1,11 +1,20 @@
-# Viajes · Itinerario China 2027 (luna de miel)
+# Mi panel personal · Viajes + Salud
 
-Planificador de viaje interactivo, hora por hora: motor de horarios que encadena
-actividades, mapa de clústeres, presupuesto (estimado vs. real), checklists de
-reservas y **sincronización en la nube** para editarlo entre dos personas.
+Dos apps estáticas con un header común para navegar entre ellas, hospedadas en
+**Netlify** y con estado sincronizado en **Supabase**:
 
-Es una sola página estática (`index.html`) que se hospeda en **Netlify** y guarda
-su estado en **Supabase**.
+- **`index.html` — Viajes.** Planificador de viaje interactivo, hora por hora:
+  motor de horarios que encadena actividades, mapa de clústeres, presupuesto
+  (estimado vs. real), checklists de reservas y sincronización en la nube para
+  editarlo entre dos personas.
+- **`salud.html` — Salud.** Calculadora de macros y micronutrientes con diario
+  de comidas, objetivos personalizados (Mifflin-St Jeor + RDA del NIH por sexo),
+  catálogo configurable de ~90 alimentos por categorías (carnes, pescados,
+  lácteos, legumbres, cereales, verduras, frutas, frutos secos, grasas,
+  suplementos…), seguimiento de vitaminas (A, C, D, E, K, B1–B12) y minerales
+  (calcio, potasio, magnesio, sodio, cloro, hierro, zinc, selenio, yodo, cobre,
+  manganeso…), gestión del stack de suplementación y una guía de nutrientes con
+  RDA/UL, funciones y fuentes.
 
 ## Arquitectura
 
@@ -25,11 +34,19 @@ su estado en **Supabase**.
 
 ## Puesta en marcha
 
-### 1. Crear la tabla en Supabase
+### 1. Crear las tablas en Supabase
 
-En tu proyecto de Supabase, ejecuta el script [`supabase/itinerario_estado.sql`](supabase/itinerario_estado.sql)
-(SQL Editor → pegar → Run). Crea la tabla `itinerario_estado` con RLS y políticas de
-acceso público a esa única tabla (planificador compartido sin login).
+En tu proyecto de Supabase, ejecuta (SQL Editor → pegar → Run):
+
+- [`supabase/itinerario_estado.sql`](supabase/itinerario_estado.sql) → tabla
+  `itinerario_estado` (estado del planificador de viajes).
+- [`supabase/salud_estado.sql`](supabase/salud_estado.sql) → tabla
+  `salud_estado` (estado de la app de salud/nutrición).
+
+Cada script crea su tabla con RLS y políticas de acceso público a esa única
+tabla (apps compartidas sin login). Mientras una tabla no exista, la app
+correspondiente sigue funcionando con `localStorage` (solo en ese dispositivo)
+y empieza a sincronizar sola en cuanto la creas.
 
 ### 2. Conectar la app a tu proyecto
 
@@ -61,14 +78,16 @@ El sitio no necesita build; sirve la raíz del repo (`publish = "."`, ver `netli
 
 | Archivo | Qué es |
 |---|---|
-| `index.html` | La app completa (UI + lógica + capa de almacenamiento Supabase). |
+| `index.html` | App de viajes (UI + lógica + capa de almacenamiento Supabase). |
+| `salud.html` | App de salud: macros, micronutrientes, alimentos y suplementos. |
 | `netlify.toml` | Config de Netlify (sitio estático, cabeceras de seguridad). |
-| `supabase/itinerario_estado.sql` | Migración: tabla de estado + RLS. |
+| `supabase/itinerario_estado.sql` | Migración: tabla de estado del planificador + RLS. |
+| `supabase/salud_estado.sql` | Migración: tabla de estado de salud/nutrición + RLS. |
 
 ## Notas de seguridad
 
-- El acceso es **público a la tabla `itinerario_estado`**: cualquiera con la URL del sitio
-  puede leer y editar el itinerario. Es intencional para un planificador de pareja sin
-  cuentas. Para restringirlo, cambia las políticas del SQL por unas con PIN/clave o con
-  autenticación de Supabase.
+- El acceso es **público a las tablas `itinerario_estado` y `salud_estado`**: cualquiera
+  con la URL del sitio puede leer y editar su contenido. Es intencional para apps
+  personales/de pareja sin cuentas. Para restringirlo, cambia las políticas del SQL por
+  unas con PIN/clave o con autenticación de Supabase.
 - Solo se expone la llave `anon` (pública). Nunca publiques la `service_role`.

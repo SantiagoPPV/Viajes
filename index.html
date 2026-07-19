@@ -27,6 +27,19 @@
       radial-gradient(900px 500px at -8% 108%,rgba(46,125,107,.08),transparent 55%),var(--paper);}
   .wrap{max-width:1120px;margin:0 auto;padding:28px 20px 90px}
 
+  /* ---------- navegación entre apps (Viajes · Salud) ---------- */
+  .topnav{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+  .topnav .brand{font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:600;
+    font-size:20px;color:var(--ink);margin-right:auto;letter-spacing:.01em}
+  .topnav .brand .amp{color:var(--seal);font-style:normal}
+  .topnav a.navlink{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.14em;
+    text-transform:uppercase;text-decoration:none;color:var(--ink-soft);border:1px solid var(--line);
+    background:var(--card);border-radius:20px;padding:8px 16px;box-shadow:var(--shadow);
+    transition:transform .16s ease,background .16s ease,color .16s ease,border-color .16s ease}
+  .topnav a.navlink:hover{transform:translateY(-1px);border-color:var(--jade);color:var(--jade)}
+  .topnav a.navlink.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .topnav a.navlink.active:hover{color:var(--paper)}
+
   header.masthead{position:relative;border:1px solid var(--line);border-radius:var(--radius);
     background:linear-gradient(180deg,var(--card),var(--card-2));padding:26px 28px 22px;
     box-shadow:var(--shadow);overflow:hidden}
@@ -375,6 +388,12 @@
 </head>
 <body>
 <div class="wrap">
+
+  <nav class="topnav" aria-label="Secciones">
+    <span class="brand">Mi panel <span class="amp">·</span> personal</span>
+    <a class="navlink active" href="index.html" aria-current="page">✈ Viajes</a>
+    <a class="navlink" href="salud.html">🌿 Salud</a>
+  </nav>
 
   <header class="masthead">
     <div class="eyebrow">05 – 29 mayo 2027 · 24 días</div>
