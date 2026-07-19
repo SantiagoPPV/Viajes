@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Iniciar sesión · Mi panel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#20272b;--ink-soft:#4a555b;--paper:#e6e0d1;--card:#f3efe4;--card-2:#eee9db;
+    --line:#c9c0ab;--line-soft:#d8d0bd;--seal:#a63a2a;--seal-deep:#8a2f22;--jade:#3e6152;--jade-deep:#2f4c40;
+    --shadow:0 1px 0 rgba(255,255,255,.6),0 6px 22px rgba(32,39,43,.10);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:22px;
+    color:var(--ink);font-family:"Inter",system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;
+    background:
+      radial-gradient(1000px 520px at 80% -10%,rgba(62,97,82,.12),transparent 60%),
+      radial-gradient(760px 420px at -10% 110%,rgba(166,58,42,.08),transparent 55%),var(--paper);}
+  .card{width:100%;max-width:400px;background:linear-gradient(180deg,var(--card),var(--card-2));
+    border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:34px 30px 26px;position:relative;overflow:hidden}
+  .card::before{content:"康";position:absolute;right:14px;top:-6px;font-family:"Cormorant Garamond",serif;
+    font-size:120px;line-height:1;color:var(--jade);opacity:.06;pointer-events:none}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--jade-deep);font-weight:500}
+  h1{font-family:"Cormorant Garamond",serif;font-weight:600;font-style:italic;font-size:34px;margin:.1em 0 .5em;line-height:1.05}
+  h1 .amp{color:var(--jade);font-style:normal}
+  label{display:block;font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--ink-soft);margin:14px 0 5px}
+  input{width:100%;font-family:"Inter",sans-serif;font-size:15px;color:var(--ink);
+    border:1px solid var(--line-soft);background:rgba(255,255,255,.6);border-radius:10px;padding:11px 12px}
+  input:focus{outline:none;border-color:var(--jade);background:#fff}
+  .pw{position:relative}
+  .pw button.eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:transparent;
+    cursor:pointer;font-size:15px;padding:6px;color:var(--ink-soft)}
+  button.go{width:100%;margin-top:20px;font-family:"IBM Plex Mono",monospace;font-size:13px;letter-spacing:.04em;
+    border:1px solid var(--jade);background:var(--jade);color:#fff;border-radius:11px;padding:13px;cursor:pointer;
+    transition:transform .15s,background .15s}
+  button.go:hover{background:var(--jade-deep);transform:translateY(-1px)}
+  button.go:disabled{opacity:.6;cursor:default;transform:none}
+  .msg{margin-top:14px;font-size:13px;border-radius:9px;padding:10px 12px;display:none}
+  .msg.err{display:block;background:#f6e6df;border:1px solid var(--seal);color:var(--seal-deep)}
+  .msg.info{display:block;background:rgba(62,97,82,.08);border:1px solid var(--jade);color:var(--jade-deep)}
+  .foot{margin-top:18px;font-size:11.5px;color:var(--ink-soft);text-align:center;line-height:1.5}
+  .spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.5);border-top-color:#fff;
+    border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px;margin-right:7px}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  @media (prefers-reduced-motion:reduce){.spin{animation:none}}
+</style>
+</head>
+<body>
+  <form class="card" id="loginForm" autocomplete="on">
+    <div class="eyebrow">Mi panel · personal</div>
+    <h1>Iniciar <span class="amp">·</span> sesión</h1>
+    <label for="usuario">Usuario</label>
+    <input id="usuario" name="username" type="text" autocapitalize="none" autocorrect="off" spellcheck="false"
+      autocomplete="username" placeholder="tu usuario" required>
+    <label for="password">Contraseña</label>
+    <div class="pw">
+      <input id="password" name="password" type="password" autocomplete="current-password" placeholder="••••••••" required>
+      <button type="button" class="eye" id="toggleEye" title="Mostrar/ocultar" aria-label="Mostrar u ocultar contraseña">👁</button>
+    </div>
+    <button class="go" id="goBtn" type="submit">Entrar</button>
+    <div class="msg" id="msg" role="alert"></div>
+    <p class="foot">Acceso privado. Si no tienes cuenta, pídesela a tu administrador.</p>
+  </form>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+<script>
+  const form=document.getElementById("loginForm");
+  const msg=document.getElementById("msg");
+  const goBtn=document.getElementById("goBtn");
+
+  function showMsg(text,kind){msg.className="msg "+(kind||"err");msg.textContent=text;}
+  function clearMsg(){msg.className="msg";msg.textContent="";}
+
+  // ojo de mostrar/ocultar
+  document.getElementById("toggleEye").addEventListener("click",()=>{
+    const p=document.getElementById("password");
+    p.type=p.type==="password"?"text":"password";
+  });
+
+  // si ya hay sesión, entra directo a la primera página permitida
+  (async function(){
+    try{
+      const s=await Auth.sesion();
+      if(s){
+        showMsg("Ya tienes sesión, redirigiendo…","info");
+        const p=await Auth.sb.from("perfiles").select("*").eq("id",s.user.id).single();
+        const destino=p.data?Auth.primeraPagina(p.data):null;
+        if(destino)location.replace(destino);
+        else showMsg("Tu cuenta no tiene secciones asignadas. Pide acceso a un administrador.","err");
+      }
+    }catch(e){/* sin sesión, nada que hacer */}
+  })();
+
+  form.addEventListener("submit",async(e)=>{
+    e.preventDefault();
+    clearMsg();
+    const usuario=document.getElementById("usuario").value.trim();
+    const password=document.getElementById("password").value;
+    if(!usuario||!password){showMsg("Escribe tu usuario y contraseña.");return;}
+    goBtn.disabled=true;
+    goBtn.innerHTML='<span class="spin"></span>Entrando…';
+    try{
+      const perfil=await Auth.entrar(usuario,password);
+      const destino=Auth.primeraPagina(perfil);
+      if(!destino){
+        showMsg("Tu cuenta no tiene ninguna sección asignada todavía. Pide acceso a un administrador.");
+        goBtn.disabled=false;goBtn.textContent="Entrar";
+        await Auth.sb.auth.signOut();
+        return;
+      }
+      showMsg("¡Bienvenido! Entrando…","info");
+      location.replace(destino);
+    }catch(err){
+      let m=err&&err.message?err.message:"No se pudo iniciar sesión.";
+      if(/invalid login credentials/i.test(m))m="Usuario o contraseña incorrectos.";
+      else if(/email logins are disabled|signups? not allowed|not enabled/i.test(m))
+        m="El inicio de sesión por correo no está activado en Supabase todavía (ver la guía de configuración).";
+      else if(/failed to fetch|networkerror/i.test(m))
+        m="No hay conexión con el servidor. Revisa tu internet.";
+      showMsg(m);
+      goBtn.disabled=false;goBtn.textContent="Entrar";
+    }
+  });
+</script>
+</body>
+</html>
