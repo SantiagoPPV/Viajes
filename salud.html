@@ -262,6 +262,8 @@
   /* ---------- suplementos ---------- */
   .srow{display:flex;gap:9px;align-items:center;flex-wrap:wrap;padding:9px 0;border-bottom:1px dashed var(--line-soft)}
   .srow .sname{flex:1;min-width:180px}
+  .srow .supbtn{padding:6px 10px;font-size:11px}
+  .supedit{width:100%;margin-top:8px;border:1px dashed var(--line);border-radius:10px;background:rgba(255,255,255,.4);padding:10px 12px}
   .srow select.smoment{font-family:"IBM Plex Mono",monospace;font-size:11px}
 
   /* ---------- guía ---------- */
@@ -637,8 +639,9 @@ const NUTRIENTS=[
 {"key":null,"name":"Colina","tipo":"vitamina","unit":"mg","rda_h":550,"rda_m":425,"ul":3500,"funcion":"Necesaria para las membranas celulares, el neurotransmisor acetilcolina y la funcion hepatica.","deficiencia":"Dano hepatico (higado graso), dano muscular.","fuentes":"Huevo, higado, res, pollo, soya, pescado","supl":"Puede faltar en veganos o embarazo; forma bitartrato o citicolina. UL 3500 mg; exceso da olor corporal a pescado."},
 {"key":null,"name":"Acido pantotenico (B5)","tipo":"vitamina","unit":"mg","rda_h":5,"rda_m":5,"ul":null,"funcion":"Forma la coenzima A, esencial en el metabolismo de grasas, carbohidratos y proteinas.","deficiencia":"Muy rara; fatiga, irritabilidad, hormigueo.","fuentes":"Higado, huevo, aguacate, hongos, pollo, cereales integrales","supl":"Practicamente nunca necesaria; ampliamente distribuida en alimentos. Sin UL."},
 {"key":null,"name":"Biotina (B7)","tipo":"vitamina","unit":"ug","rda_h":30,"rda_m":30,"ul":null,"funcion":"Coenzima en el metabolismo de grasas, carbohidratos y aminoacidos; apoya piel y cabello.","deficiencia":"Rara; caida de cabello, dermatitis, sintomas neurologicos.","fuentes":"Huevo, higado, almendra, camote, semilla de girasol, salmon","supl":"Popular para cabello y una con poca evidencia. Puede alterar resultados de laboratorio (tiroides, troponina)."},
-{"key":null,"name":"Omega-3 (EPA+DHA)","tipo":"macro","unit":"mg","rda_h":500,"rda_m":500,"ul":null,"funcion":"Acidos grasos que apoyan la salud cardiovascular, cerebral y modulan la inflamacion.","deficiencia":"Piel seca, mala concentracion, mayor inflamacion.","fuentes":"Salmon, sardina, atun, macarela, semilla de chia, linaza","supl":"250-500 mg/dia de EPA+DHA si no comes pescado 2 veces/semana; algas para veganos. Dosis altas afectan la coagulacion."},
-{"key":null,"name":"Creatina","tipo":"traza","unit":"g","rda_h":3,"rda_m":3,"ul":null,"funcion":"Aumenta las reservas de fosfocreatina muscular, mejorando fuerza, potencia y desempeno en ejercicio de alta intensidad.","deficiencia":"No es esencial; niveles bajos en veganos y vegetarianos.","fuentes":"Res, cerdo, arenque, salmon, atun, poca en dieta vegetal","supl":"Monohidrato de creatina 3-5 g/dia, sin necesidad de fase de carga. Muy segura; puede subir 1-2 kg de agua intramuscular."}
+{"key":"epa","name":"EPA (omega-3)","tipo":"otro","unit":"mg","rda_h":250,"rda_m":250,"ul":null,"funcion":"Acido graso omega-3 que modula la inflamacion y apoya el corazon y el animo.","deficiencia":"Mas inflamacion, piel seca, baja concentracion.","fuentes":"Salmon, sardina, atun, macarela, aceite de pescado/algas","supl":"Meta EPA+DHA ~250-500 mg/dia si no comes pescado graso 2 veces/semana. Pon el EPA que declare tu producto."},
+{"key":"dha","name":"DHA (omega-3)","tipo":"otro","unit":"mg","rda_h":250,"rda_m":250,"ul":null,"funcion":"Acido graso omega-3 clave para el cerebro, la vista y la cognicion.","deficiencia":"Baja concentracion, animo bajo, vista.","fuentes":"Salmon, sardina, atun, macarela, aceite de pescado/algas","supl":"Meta EPA+DHA ~250-500 mg/dia; algas para veganos. Pon el DHA que declare tu producto."},
+{"key":"creatina","name":"Creatina","tipo":"otro","unit":"g","rda_h":3,"rda_m":3,"ul":null,"funcion":"Aumenta las reservas de fosfocreatina muscular, mejorando fuerza, potencia y desempeno en ejercicio de alta intensidad.","deficiencia":"No es esencial; niveles bajos en veganos y vegetarianos.","fuentes":"Res, cerdo, arenque, salmon, atun, poca en dieta vegetal","supl":"Monohidrato de creatina 3-5 g/dia, sin necesidad de fase de carga. Muy segura; puede subir 1-2 kg de agua intramuscular."}
 ];
 
 /* ============ Mejores prácticas (guía) ============ */
@@ -698,10 +701,24 @@ const MICRO_KEYS=NUTRIENTS.filter(n=>n.key).map(n=>n.key);
 const MICRO_GROUPS=[
   ["Vitaminas",NUTRIENTS.filter(n=>n.key&&n.tipo==="vitamina")],
   ["Minerales mayores",NUTRIENTS.filter(n=>n.key&&n.tipo==="mineral")],
-  ["Minerales traza",NUTRIENTS.filter(n=>n.key&&n.tipo==="traza")]
+  ["Minerales traza",NUTRIENTS.filter(n=>n.key&&n.tipo==="traza")],
+  ["Ácidos grasos y otros",NUTRIENTS.filter(n=>n.key&&n.tipo==="otro")]
 ];
 const TRACK_FIELDS=["kcal","prot","fat","sat","carb","fib","sug"].concat(MICRO_KEYS);
 const FOOD_NUM_FIELDS=["serv_g","kcal","prot","fat","sat","carb","fib","sug"].concat(MICRO_KEYS);
+// EPA/DHA (mg) y creatina (g) por 100 g donde aportan (aprox.). Se aplican sin
+// pisar lo que el usuario ya haya editado (solo rellenan si el campo está vacío).
+const EXTRA_NUTR={
+  "salmon":{epa:690,dha:820,creatina:0.4},"atun-fresco":{epa:40,dha:190,creatina:0.4},
+  "atun-agua-lata":{epa:47,dha:223,creatina:0.3},"sardinas-aceite-lata":{epa:470,dha:510,creatina:0.3},
+  "tilapia":{epa:4,dha:110,creatina:0.3},"bacalao-merluza":{epa:60,dha:120,creatina:0.3},
+  "camaron":{epa:145,dha:120},"pulpo":{epa:75,dha:80},"mejillones":{epa:190,dha:250},
+  "bistec-res-magro":{creatina:0.5},"carne-molida-res-80-20":{creatina:0.45},
+  "lomo-cerdo":{creatina:0.5},"chuleta-cerdo":{creatina:0.5},"cecina-res":{creatina:0.5},
+  "machaca-res":{creatina:1.1},"pechuga-pollo":{creatina:0.34},"muslo-pollo":{creatina:0.3},
+  "pechuga-pavo":{creatina:0.3},"higado-res":{creatina:0.2},
+  "omega-3-aceite-pescado":{epa:18000,dha:12000},"creatina-monohidratada":{creatina:88}
+};
 
 /* ===================== Utilidades ===================== */
 const esc=s=>(s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
@@ -810,6 +827,9 @@ async function load(){
     if(!state.foods[f.id]&&!state.removed.includes(f.id))state.foods[f.id]={...f};
   });
   Object.values(state.foods).forEach(f=>{if(!CATS[f.cat])f.cat="otros";});
+  // aportes de EPA/DHA/creatina (rellenan solo si faltan; respeta ediciones del usuario)
+  Object.entries(EXTRA_NUTR).forEach(([id,ex])=>{const f=state.foods[id];
+    if(f)Object.entries(ex).forEach(([k,v])=>{if(f[k]==null)f[k]=v;});});
   Object.values(state.diary).forEach(d=>{
     if(!d.meals)d.meals={};
     MEALS.forEach(([k])=>{if(!Array.isArray(d.meals[k]))d.meals[k]=[];});
@@ -1439,6 +1459,17 @@ function wireFoodList(){
 function renderAlimentos(){renderCatChips();renderFoodList();}
 
 /* ===================== Render: suplementos ===================== */
+const openSup=new Set();
+function supEditorFields(f){
+  const numIn=(k,lbl,unit)=>`<label>${esc(lbl)}${unit?` (${unit})`:""}<input class="f num" type="number" step="any" min="0" data-sf="${k}" value="${f[k]!=null?f[k]:""}" placeholder="—"></label>`;
+  let html=`<div class="grptitle">Lo que aporta por 100 g <span class="mini">(1 dosis = ${fmtNum(f.serv_g)} g)</span></div><div class="fgrid">`;
+  html+=numIn("kcal","Calorías","kcal")+numIn("prot","Proteína","g")+numIn("carb","Carbs","g")+numIn("fat","Grasa","g")+numIn("sat","Saturada","g")+numIn("fib","Fibra","g")+numIn("sug","Azúcar","g");
+  html+=`</div>`;
+  MICRO_GROUPS.forEach(([title,list])=>{if(!list.length)return;
+    html+=`<div class="grptitle">${title}</div><div class="fgrid">`;
+    list.forEach(n=>{html+=numIn(n.key,n.name,n.unit);});html+=`</div>`;});
+  return html;
+}
 function renderStack(){
   const holder=document.getElementById("stackList");
   holder.innerHTML=state.stack.map(s=>{
@@ -1446,14 +1477,16 @@ function renderStack(){
     const momOpts=MOMENTS.map(m=>`<option ${s.momento===m?"selected":""}>${m}</option>`).join("");
     if(!f)return`<div class="srow"><div class="sname mini">(suplemento borrado del catálogo)</div>
       <button class="del" data-sdel="${s.id}">✕</button></div>`;
-    const x=(+s.g||0)/100;
+    const x=(+s.g||0)/100;const open=openSup.has(s.id);
     return`<div class="srow">
       <div class="sname"><b>${esc(f.name)}</b>${f.serv_desc?` <span class="mini">· ${esc(f.serv_desc)} = ${fmtNum(f.serv_g)} g</span>`:""}
         <div class="mini">${Math.round((+f.kcal||0)*x)} kcal · P ${fmtNum((+f.prot||0)*x)} g por dosis</div></div>
       <input class="f num" type="number" min="0" step="any" value="${s.g}" data-sg="${s.id}" title="gramos por día"><span class="mini">g/día</span>
       <select class="f smoment" data-sm="${s.id}">${momOpts}</select>
       <input class="f" style="width:130px" placeholder="nota" value="${esc(s.nota||"")}" data-sn="${s.id}">
+      <button class="btn supbtn" data-sedit="${s.id}" title="Editar lo que aporta">${open?"▴ aporte":"✎ aporte"}</button>
       <button class="del" data-sdel="${s.id}" title="Quitar">✕</button>
+      ${open?`<div class="supedit" data-sup="${s.id}">${supEditorFields(f)}</div>`:""}
     </div>`;
   }).join("")||`<div class="mini" style="padding:6px 0">Aún no defines tu stack. Busca abajo un suplemento (o cualquier alimento) y añádelo.</div>`;
   holder.querySelectorAll("[data-sg]").forEach(inp=>inp.addEventListener("input",()=>{
@@ -1468,6 +1501,14 @@ function renderStack(){
   holder.querySelectorAll("[data-sdel]").forEach(b=>b.addEventListener("click",()=>{
     state.stack=state.stack.filter(x=>x.id!==b.dataset.sdel);
     saveDebounced();renderStack();renderStackContrib();
+  }));
+  holder.querySelectorAll("[data-sedit]").forEach(b=>b.addEventListener("click",()=>{
+    const id=b.dataset.sedit;if(openSup.has(id))openSup.delete(id);else openSup.add(id);renderStack();
+  }));
+  holder.querySelectorAll("[data-sf]").forEach(inp=>inp.addEventListener("input",()=>{
+    const cont=inp.closest(".supedit");if(!cont)return;
+    const s=state.stack.find(x=>x.id===cont.dataset.sup),f=s&&state.foods[s.foodId];if(!f)return;
+    f[inp.dataset.sf]=inp.value===""?null:+inp.value;saveDebounced();renderStackContrib();
   }));
   renderStackContrib();
 }
