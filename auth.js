@@ -105,7 +105,9 @@
   }
 
   async function entrar(usuario, password) {
-    const email = (usuario || "").trim().toLowerCase() + DOMINIO;
+    // Acepta un usuario corto (se le agrega @viajes.local) o un correo completo.
+    const id = (usuario || "").trim().toLowerCase();
+    const email = id.includes("@") ? id : id + DOMINIO;
     const { data, error } = await sb.auth.signInWithPassword({ email, password });
     if (error) throw error;
     await cargarPerfil(data.user.id);
