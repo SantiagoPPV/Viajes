@@ -38,6 +38,12 @@
   .topnav a.navlink:hover{transform:translateY(-1px);border-color:var(--jade);color:var(--jade)}
   .topnav a.navlink.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
   .topnav a.navlink.active:hover{color:var(--paper)}
+  .topnav .whoami{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft);
+    padding:8px 4px;white-space:nowrap}
+  .topnav .logout{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.1em;
+    text-transform:uppercase;border:1px solid var(--line-soft);background:transparent;color:var(--ink-soft);
+    border-radius:20px;padding:8px 14px;cursor:pointer}
+  .topnav .logout:hover{border-color:var(--seal);color:var(--seal-deep);background:#f6e6df}
 
   header.masthead{position:relative;border:1px solid var(--line);border-radius:var(--radius);
     background:linear-gradient(180deg,var(--card),var(--card-2));padding:26px 28px 22px;
@@ -263,11 +269,7 @@
 <body>
 <div class="wrap">
 
-  <nav class="topnav" aria-label="Secciones">
-    <span class="brand">Mi panel <span class="amp">·</span> personal</span>
-    <a class="navlink" href="index.html">✈ Viajes</a>
-    <a class="navlink active" href="salud.html" aria-current="page">🌿 Salud</a>
-  </nav>
+  <nav class="topnav" id="topnav" aria-label="Secciones"></nav>
 
   <header class="masthead">
     <div class="eyebrow">Macros · micronutrientes · suplementación</div>
@@ -413,51 +415,11 @@
   <p class="foot">Los valores nutricionales provienen de bases públicas (USDA FoodData Central) y son aproximados; las RDA/UL son las del NIH para adultos sanos. Esta herramienta es informativa y no sustituye el consejo de un médico o nutriólogo, especialmente si tienes alguna condición de salud. Tus cambios se guardan y sincronizan automáticamente en la nube.</p>
 </div>
 
-<!-- ============ Configuración Supabase + capa de almacenamiento ============
-     Misma infraestructura que el planificador de viajes (index.html), pero con
-     su propia tabla: salud_estado (ver supabase/salud_estado.sql). -->
-<script>
-  const SUPABASE_URL="https://waxyoduhhydsgysaruto.supabase.co";
-  const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndheHlvZHVoaHlkc2d5c2FydXRvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM4OTk3MTksImV4cCI6MjA5OTQ3NTcxOX0.wVl2WOa-Hew3KcToQv2RCBugs-g-5xHH3iqGQTTO7bU";
-
-  const SB_TABLE="salud_estado";
-  const SB_BASE=(SUPABASE_URL||"").replace(/\/+$/,"");
-  const SB_READY=/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(SB_BASE)&&(SUPABASE_ANON_KEY||"").length>20;
-
-  window.storage={
-    async get(key){
-      if(SB_READY){
-        try{
-          const r=await fetch(SB_BASE+"/rest/v1/"+SB_TABLE+"?clave=eq."+encodeURIComponent(key)+"&select=valor",
-            {headers:{apikey:SUPABASE_ANON_KEY,Authorization:"Bearer "+SUPABASE_ANON_KEY}});
-          if(r.ok){
-            const rows=await r.json();
-            if(rows&&rows.length){try{localStorage.setItem(key,rows[0].valor);}catch(_){}
-              return{value:rows[0].valor};}
-            return null;
-          }
-        }catch(e){}
-        const v=localStorage.getItem(key);
-        if(v!==null)return{value:v};
-        throw new Error("sin conexión con Supabase");
-      }
-      const v=localStorage.getItem(key);
-      return v!==null?{value:v}:null;
-    },
-    async set(key,value){
-      try{localStorage.setItem(key,value);}catch(_){}
-      if(SB_READY){
-        const r=await fetch(SB_BASE+"/rest/v1/"+SB_TABLE,{
-          method:"POST",
-          headers:{apikey:SUPABASE_ANON_KEY,Authorization:"Bearer "+SUPABASE_ANON_KEY,
-            "Content-Type":"application/json",Prefer:"resolution=merge-duplicates,return=minimal"},
-          body:JSON.stringify({clave:key,valor:value,actualizado:new Date().toISOString()})
-        });
-        if(!r.ok)throw new Error("Supabase set "+r.status);
-      }
-    }
-  };
-</script>
+<!-- ============ Sesión + almacenamiento por usuario ============
+     Requiere sesión (auth.js). Los datos de Salud se guardan por usuario en la
+     tabla salud_datos (ver supabase/cuentas_schema.sql). -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
 
 <script>
 /* ===================== Datos: catálogo base de alimentos =====================
@@ -683,6 +645,20 @@ function fmtNum(v,dec){
 /* ===================== Estado ===================== */
 const STORE_KEY="salud-nutricion-v1";
 let state=null;
+let UID=null, PERFIL=null;           // se fijan al iniciar sesión (init)
+const LKEY=()=>"salud-datos:"+UID;   // respaldo local por usuario
+
+/* Lee/escribe los datos de Salud del usuario actual en la tabla salud_datos. */
+async function remoteGet(){
+  const {data,error}=await Auth.sb.from("salud_datos").select("datos").eq("usuario_id",UID).maybeSingle();
+  if(error)throw error;
+  return data?data.datos:null;
+}
+async function remoteSet(obj){
+  const {error}=await Auth.sb.from("salud_datos")
+    .upsert({usuario_id:UID,datos:obj,actualizado:new Date().toISOString()});
+  if(error)throw error;
+}
 let curDate=dkey(new Date());     // día visible del diario (no se sincroniza)
 let view="diario";                // pestaña visible (no se sincroniza)
 let catFilter="todas";            // filtro del catálogo (no se sincroniza)
@@ -705,8 +681,9 @@ function freshState(){
 
 async function load(){
   let raw=null;
-  try{const r=await window.storage.get(STORE_KEY);if(r&&r.value)raw=r.value;}catch(e){}
-  if(raw){try{state=JSON.parse(raw);}catch(e){state=null;}}
+  try{raw=await remoteGet();}
+  catch(e){try{const v=localStorage.getItem(LKEY());if(v)raw=JSON.parse(v);}catch(_){}}
+  if(raw&&typeof raw==="object"&&!Array.isArray(raw))state=raw;
   if(!state||!state.foods)state=freshState();
   // asegurar estructura + defaults nuevos
   state.profile=Object.assign(defaultProfile(),state.profile||{});
@@ -737,7 +714,8 @@ let saveTimer=null;
 async function save(){
   try{
     state._rev=Date.now();state._by=CLIENT_ID;lastRev=state._rev;lastLocalEdit=Date.now();
-    await window.storage.set(STORE_KEY,JSON.stringify(state));
+    try{localStorage.setItem(LKEY(),JSON.stringify(state));}catch(_){}
+    await remoteSet(state);
     flashSaved();setSync("saved");
   }catch(e){setSync("offline");}
 }
@@ -749,10 +727,9 @@ function applyRemote(remote){
   renderAll();setSync("updated");
 }
 async function poll(){
-  let val=null;
-  try{const r=await window.storage.get(STORE_KEY);if(r&&r.value)val=r.value;}catch(e){setSync("offline");return;}
-  if(!val){setSync("live");return;}
-  let remote;try{remote=JSON.parse(val);}catch(e){return;}
+  let remote=null;
+  try{remote=await remoteGet();}catch(e){setSync("offline");return;}
+  if(!remote){setSync("live");return;}
   const rrev=remote._rev||0;
   if(rrev>lastRev&&remote._by!==CLIENT_ID&&remote.foods){
     if(busy()){pendingRemote=remote;setSync("pending");}
@@ -1444,6 +1421,10 @@ function wireGlobal(){
 
 /* ===================== Init ===================== */
 (async function init(){
+  const perfil=await Auth.requerirAcceso("salud");
+  if(!perfil)return;                 // el guardia ya redirigió o mostró bloqueo
+  PERFIL=perfil; UID=perfil.id;
+  Auth.montarBarra("salud",perfil);
   await load();
   lastRev=state._rev||0;
   wireGlobal();

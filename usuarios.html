@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Usuarios · Mi panel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#20272b;--ink-soft:#4a555b;--paper:#e6e0d1;--paper-2:#ded7c5;--card:#f3efe4;--card-2:#eee9db;
+    --line:#c9c0ab;--line-soft:#d8d0bd;--seal:#a63a2a;--seal-deep:#8a2f22;--jade:#3e6152;--jade-deep:#2f4c40;--gold:#c08a2e;
+    --shadow:0 1px 0 rgba(255,255,255,.6),0 6px 22px rgba(32,39,43,.09);--radius:14px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;
+    font-family:"Inter",system-ui,-apple-system,sans-serif;
+    background:
+      radial-gradient(1200px 600px at 80% -8%,rgba(85,80,127,.08),transparent 60%),
+      radial-gradient(900px 500px at -8% 108%,rgba(62,97,82,.08),transparent 55%),var(--paper);}
+  .wrap{max-width:960px;margin:0 auto;padding:28px 20px 90px}
+
+  .topnav{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+  .topnav .brand{font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:600;font-size:20px;
+    color:var(--ink);margin-right:auto;letter-spacing:.01em}
+  .topnav .brand .amp{color:var(--jade);font-style:normal}
+  .topnav a.navlink{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;
+    text-decoration:none;color:var(--ink-soft);border:1px solid var(--line);background:var(--card);border-radius:20px;
+    padding:8px 16px;box-shadow:var(--shadow);transition:transform .16s,background .16s,color .16s,border-color .16s}
+  .topnav a.navlink:hover{transform:translateY(-1px);border-color:var(--jade);color:var(--jade)}
+  .topnav a.navlink.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .topnav .whoami{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft);padding:8px 4px;white-space:nowrap}
+  .topnav .logout{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;
+    border:1px solid var(--line-soft);background:transparent;color:var(--ink-soft);border-radius:20px;padding:8px 14px;cursor:pointer}
+  .topnav .logout:hover{border-color:var(--seal);color:var(--seal-deep);background:#f6e6df}
+
+  header.masthead{position:relative;border:1px solid var(--line);border-radius:var(--radius);
+    background:linear-gradient(180deg,var(--card),var(--card-2));padding:24px 26px 20px;box-shadow:var(--shadow);overflow:hidden}
+  .masthead::before{content:"人";position:absolute;right:20px;top:6px;font-family:"Cormorant Garamond",serif;
+    font-size:120px;line-height:1;color:var(--jade);opacity:.07;pointer-events:none}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.24em;text-transform:uppercase;
+    color:var(--jade-deep);font-weight:500}
+  h1{font-family:"Cormorant Garamond",serif;font-weight:600;font-style:italic;font-size:clamp(30px,5vw,46px);
+    line-height:1.02;margin:.1em 0 .1em}
+  h1 .amp{color:var(--jade);font-style:normal}
+  .subline{color:var(--ink-soft);font-size:14.5px;max-width:70ch}
+
+  .sec{margin-top:24px}
+  .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+  .sec-head h2{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:26px;margin:0;font-style:italic}
+  .sec-head .rule{flex:1;height:1px;background:var(--line)}
+  .sec-head .hint{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft)}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);
+    margin:10px 0;padding:18px 20px}
+  .card h4{font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:600;font-size:20px;margin:0 0 4px}
+  .card .csub{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft);margin:0 0 14px}
+
+  label.fl{display:block;font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink-soft);margin:0 0 4px}
+  input.f,select.f{width:100%;font-family:"Inter",sans-serif;font-size:14px;color:var(--ink);
+    border:1px solid var(--line-soft);background:rgba(255,255,255,.6);border-radius:9px;padding:9px 11px}
+  input.f:focus,select.f:focus{outline:none;border-color:var(--jade);background:#fff}
+  .formgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px}
+  .formgrid .span2{grid-column:span 2}
+  .paginas{display:flex;gap:14px;flex-wrap:wrap;align-items:center;padding-top:4px}
+  .paginas label{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;cursor:pointer;color:var(--ink)}
+  .paginas input{width:17px;height:17px;accent-color:var(--jade);cursor:pointer}
+
+  .btn{font-family:"IBM Plex Mono",monospace;font-size:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);
+    border-radius:9px;padding:9px 14px;cursor:pointer;box-shadow:var(--shadow);transition:transform .15s,background .15s,border-color .15s,color .15s}
+  .btn:hover{background:var(--card-2);transform:translateY(-1px)}
+  .btn.primary{background:var(--jade);color:#fff;border-color:var(--jade)}
+  .btn.primary:hover{background:var(--jade-deep)}
+  .btn.danger{color:var(--seal-deep);border-color:var(--seal)}
+  .btn.danger:hover{background:#f6e6df}
+  .btn:disabled{opacity:.55;cursor:default;transform:none}
+  .btnrow{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-top:14px}
+
+  .msg{margin-top:12px;font-size:13px;border-radius:9px;padding:9px 12px;display:none}
+  .msg.err{display:block;background:#f6e6df;border:1px solid var(--seal);color:var(--seal-deep)}
+  .msg.ok{display:block;background:rgba(62,97,82,.08);border:1px solid var(--jade);color:var(--jade-deep)}
+
+  .urow{border:1px solid var(--line-soft);border-radius:12px;background:rgba(255,255,255,.4);padding:14px 16px;margin:10px 0}
+  .uhead{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .uava{width:38px;height:38px;border-radius:10px;flex:none;display:flex;align-items:center;justify-content:center;
+    font-family:"Cormorant Garamond",serif;font-size:20px;font-weight:600;color:#fff;background:var(--jade)}
+  .uava.admin{background:var(--seal)}
+  .uinfo{flex:1;min-width:160px}
+  .uinfo .un{font-weight:600;font-size:15px}
+  .uinfo .um{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-soft)}
+  .badge{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+    border-radius:5px;padding:2px 8px;white-space:nowrap;border:1px solid}
+  .badge.admin{color:var(--seal-deep);border-color:var(--seal);background:#f6e6df}
+  .badge.usuario{color:var(--jade-deep);border-color:var(--jade)}
+  .chips{display:flex;gap:6px;flex-wrap:wrap}
+  .chip{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--ink-soft);border:1px solid var(--line-soft);
+    border-radius:5px;padding:2px 7px;background:var(--card-2)}
+  .chip.none{color:var(--seal-deep);border-color:var(--line-soft)}
+  .uactions{display:flex;gap:7px;flex-wrap:wrap;margin-left:auto}
+  .ueditor{border-top:1px dashed var(--line-soft);margin-top:12px;padding-top:14px;display:none}
+  .ueditor.open{display:block}
+  .subgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px}
+  .pwrow{display:flex;gap:9px;align-items:flex-end;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px dashed var(--line-soft)}
+  .pwrow>div{flex:1;min-width:180px}
+  .self{font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:var(--gold);border:1px solid var(--gold);
+    border-radius:5px;padding:2px 7px;text-transform:uppercase;letter-spacing:.06em}
+
+  .empty{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--ink-soft);padding:16px 4px}
+
+  .confirmov{position:fixed;inset:0;background:rgba(32,39,43,.45);z-index:9999;display:flex;align-items:center;
+    justify-content:center;padding:20px;animation:cffade .15s ease}
+  @keyframes cffade{from{opacity:0}to{opacity:1}}
+  .confirmbox{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:0 20px 60px rgba(0,0,0,.3);max-width:420px;width:100%;padding:22px 22px 18px}
+  .confirmbox p{margin:0 0 18px;font-size:15px;color:var(--ink);line-height:1.5}
+  .confirmbtns{display:flex;gap:10px;justify-content:flex-end}
+  .confirmbtns .cbyes{background:var(--seal);color:#fff;border-color:var(--seal)}
+  .confirmbtns .cbyes:hover{background:var(--seal-deep)}
+
+  .loading{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-soft);padding:20px 4px}
+  .spin{display:inline-block;width:12px;height:12px;border:2px solid var(--line);border-top-color:var(--jade);
+    border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px;margin-right:8px}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  @media (max-width:620px){.formgrid,.subgrid{grid-template-columns:1fr}.uactions{margin-left:0;width:100%}}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}.spin{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="topnav" id="topnav" aria-label="Secciones"></nav>
+
+  <header class="masthead">
+    <div class="eyebrow">Administración · cuentas y accesos</div>
+    <h1>Usuarios</h1>
+    <p class="subline">Crea cuentas, asigna a qué secciones entra cada persona y gestiona sus contraseñas. Solo tú (administrador) ves esta página.</p>
+  </header>
+
+  <section class="sec">
+    <div class="sec-head"><h2>Crear usuario</h2><span class="rule"></span></div>
+    <div class="card">
+      <div class="formgrid">
+        <div><label class="fl" for="nUsuario">Usuario (para entrar)</label>
+          <input class="f" id="nUsuario" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="ej. maria"></div>
+        <div><label class="fl" for="nNombre">Nombre a mostrar</label>
+          <input class="f" id="nNombre" placeholder="ej. María López"></div>
+        <div><label class="fl" for="nPass">Contraseña</label>
+          <input class="f" id="nPass" type="text" placeholder="mínimo 6 caracteres"></div>
+        <div><label class="fl" for="nRol">Rol</label>
+          <select class="f" id="nRol">
+            <option value="usuario">Usuario (accesos limitados)</option>
+            <option value="admin">Administrador (todo + gestión de usuarios)</option>
+          </select></div>
+        <div class="span2"><label class="fl">Puede entrar a</label>
+          <div class="paginas">
+            <label><input type="checkbox" id="nPagViajes" checked> ✈ Viajes</label>
+            <label><input type="checkbox" id="nPagSalud" checked> 🌿 Salud</label>
+            <span class="csub" style="margin:0">Los administradores entran a todo automáticamente.</span>
+          </div></div>
+      </div>
+      <div class="btnrow">
+        <button class="btn primary" id="btnCrear">＋ Crear usuario</button>
+      </div>
+      <div class="msg" id="crearMsg" role="alert"></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head"><h2>Cuentas</h2><span class="rule"></span>
+      <span class="hint" id="conteo"></span></div>
+    <div id="lista"><div class="loading"><span class="spin"></span>Cargando usuarios…</div></div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+<script>
+  const esc=s=>(s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  const norm=s=>(s||"").trim().toLowerCase().replace(/[^a-z0-9._-]/g,"");
+  const MESES=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+  function fechaCorta(iso){try{const d=new Date(iso);return d.getDate()+" "+MESES[d.getMonth()]+" "+d.getFullYear();}catch(e){return"";}}
+  let YO=null, usuarios=[];
+
+  function customConfirm(message,onYes){
+    const ov=document.createElement("div");ov.className="confirmov";
+    ov.innerHTML='<div class="confirmbox"><p>'+esc(message)+'</p>'+
+      '<div class="confirmbtns"><button class="btn cbno">Cancelar</button>'+
+      '<button class="btn cbyes">Sí, continuar</button></div></div>';
+    document.body.appendChild(ov);
+    ov.querySelector(".cbno").onclick=()=>ov.remove();
+    ov.querySelector(".cbyes").onclick=()=>{ov.remove();onYes();};
+    ov.addEventListener("click",e=>{if(e.target===ov)ov.remove();});
+  }
+  function showMsg(el,text,kind){el.className="msg "+(kind||"err");el.textContent=text;}
+  function clearMsg(el){el.className="msg";el.textContent="";}
+
+  async function cargar(){
+    const cont=document.getElementById("lista");
+    try{
+      const {data,error}=await Auth.sb.from("perfiles").select("*").order("creado",{ascending:true});
+      if(error)throw error;
+      usuarios=data||[];
+    }catch(e){
+      cont.innerHTML='<div class="empty">No se pudieron cargar los usuarios: '+esc(e.message||e)+'</div>';
+      return;
+    }
+    document.getElementById("conteo").textContent=usuarios.length+(usuarios.length===1?" cuenta":" cuentas");
+    if(!usuarios.length){cont.innerHTML='<div class="empty">Aún no hay usuarios. Crea el primero arriba.</div>';return;}
+    cont.innerHTML=usuarios.map(fila).join("");
+    usuarios.forEach(wire);
+  }
+
+  function paginaChips(p){
+    if(p.rol==="admin")return '<span class="chip">todo</span>';
+    const ps=p.paginas||[];
+    if(!ps.length)return '<span class="chip none">sin acceso</span>';
+    const et={viajes:"✈ Viajes",salud:"🌿 Salud"};
+    return ps.map(k=>'<span class="chip">'+(et[k]||k)+'</span>').join("");
+  }
+  function fila(p){
+    const yo=p.id===YO.id;
+    const ini=(p.nombre||p.usuario||"?").trim().charAt(0).toUpperCase();
+    return '<div class="urow" data-id="'+esc(p.id)+'">'+
+      '<div class="uhead">'+
+        '<div class="uava '+(p.rol==="admin"?"admin":"")+'">'+esc(ini)+'</div>'+
+        '<div class="uinfo"><div class="un">'+esc(p.nombre||p.usuario)+
+          (yo?' <span class="self">tú</span>':"")+'</div>'+
+          '<div class="um">@'+esc(p.usuario)+' · creado '+fechaCorta(p.creado)+'</div></div>'+
+        '<span class="badge '+(p.rol==="admin"?"admin":"usuario")+'">'+esc(p.rol)+'</span>'+
+        '<div class="chips">'+paginaChips(p)+'</div>'+
+        '<div class="uactions">'+
+          '<button class="btn" data-act="toggle">✎ Editar</button>'+
+          (yo?'':'<button class="btn danger" data-act="borrar">🗑</button>')+
+        '</div>'+
+      '</div>'+
+      '<div class="ueditor">'+
+        '<div class="subgrid">'+
+          '<div><label class="fl">Nombre a mostrar</label><input class="f" data-f="nombre" value="'+esc(p.nombre||"")+'"></div>'+
+          '<div><label class="fl">Rol</label><select class="f" data-f="rol"'+(yo?" disabled":"")+'>'+
+            '<option value="usuario"'+(p.rol==="usuario"?" selected":"")+'>Usuario</option>'+
+            '<option value="admin"'+(p.rol==="admin"?" selected":"")+'>Administrador</option></select>'+
+            (yo?'<div class="um" style="margin-top:4px">No puedes cambiar tu propio rol.</div>':"")+'</div>'+
+          '<div class="span2"><label class="fl">Puede entrar a</label><div class="paginas">'+
+            '<label><input type="checkbox" data-pag="viajes"'+((p.paginas||[]).includes("viajes")?" checked":"")+'> ✈ Viajes</label>'+
+            '<label><input type="checkbox" data-pag="salud"'+((p.paginas||[]).includes("salud")?" checked":"")+'> 🌿 Salud</label>'+
+          '</div></div>'+
+        '</div>'+
+        '<div class="btnrow"><button class="btn primary" data-act="guardar">Guardar cambios</button>'+
+          '<span class="msg" data-msg style="margin:0"></span></div>'+
+        '<div class="pwrow"><div><label class="fl">Nueva contraseña</label>'+
+          '<input class="f" data-f="pass" type="text" placeholder="mínimo 6 caracteres"></div>'+
+          '<button class="btn" data-act="password">Cambiar contraseña</button></div>'+
+      '</div>'+
+    '</div>';
+  }
+  function wire(p){
+    const row=document.querySelector('.urow[data-id="'+p.id+'"]');
+    if(!row)return;
+    const ed=row.querySelector(".ueditor");
+    const msg=row.querySelector("[data-msg]");
+    row.querySelector('[data-act="toggle"]').onclick=()=>ed.classList.toggle("open");
+    const borrar=row.querySelector('[data-act="borrar"]');
+    if(borrar)borrar.onclick=()=>customConfirm(
+      '¿Borrar al usuario “'+(p.nombre||p.usuario)+'”? Se elimina su cuenta y sus datos (viajes y salud). No se puede deshacer.',
+      async()=>{ try{ await Auth.fn("borrar",{id:p.id}); await cargar(); }
+                catch(e){ alert("No se pudo borrar: "+(e.message||e)); } });
+    row.querySelector('[data-act="guardar"]').onclick=async(ev)=>{
+      const btn=ev.target;clearMsg(msg);
+      const nombre=row.querySelector('[data-f="nombre"]').value.trim();
+      const rol=row.querySelector('[data-f="rol"]').value;
+      const paginas=[...row.querySelectorAll('[data-pag]')].filter(c=>c.checked).map(c=>c.dataset.pag);
+      btn.disabled=true;
+      try{
+        await Auth.fn("editar",{id:p.id,nombre,rol,paginas});
+        showMsg(msg,"Guardado ✓","ok");
+        await cargar();
+      }catch(e){showMsg(msg,e.message||String(e),"err");btn.disabled=false;}
+    };
+    row.querySelector('[data-act="password"]').onclick=async(ev)=>{
+      const btn=ev.target;clearMsg(msg);
+      const inp=row.querySelector('[data-f="pass"]');
+      const pass=inp.value;
+      if(pass.length<6){showMsg(msg,"La contraseña debe tener al menos 6 caracteres.","err");return;}
+      btn.disabled=true;
+      try{
+        await Auth.fn("password",{id:p.id,password:pass});
+        inp.value="";showMsg(msg,"Contraseña actualizada ✓","ok");
+      }catch(e){showMsg(msg,e.message||String(e),"err");}
+      btn.disabled=false;
+    };
+  }
+
+  async function crear(){
+    const msg=document.getElementById("crearMsg");clearMsg(msg);
+    const usuario=norm(document.getElementById("nUsuario").value);
+    const nombre=document.getElementById("nNombre").value.trim()||usuario;
+    const password=document.getElementById("nPass").value;
+    const rol=document.getElementById("nRol").value;
+    const paginas=[];
+    if(document.getElementById("nPagViajes").checked)paginas.push("viajes");
+    if(document.getElementById("nPagSalud").checked)paginas.push("salud");
+    if(!usuario){showMsg(msg,"Escribe un usuario (solo letras, números, punto, guion).");return;}
+    if(password.length<6){showMsg(msg,"La contraseña debe tener al menos 6 caracteres.");return;}
+    const btn=document.getElementById("btnCrear");
+    btn.disabled=true;btn.textContent="Creando…";
+    try{
+      await Auth.fn("crear",{usuario,nombre,password,rol,paginas});
+      showMsg(msg,"Usuario “"+usuario+"” creado ✓","ok");
+      document.getElementById("nUsuario").value="";
+      document.getElementById("nNombre").value="";
+      document.getElementById("nPass").value="";
+      await cargar();
+    }catch(e){
+      let m=e.message||String(e);
+      if(/duplicate key|already registered|already exists/i.test(m))m="Ese usuario ya existe.";
+      else if(/not found|failed to (send|fetch)|non-2xx|404/i.test(m))
+        m="No se pudo contactar la función de usuarios. ¿Ya la desplegaste? (ver la guía de configuración).";
+      showMsg(msg,m,"err");
+    }
+    btn.disabled=false;btn.textContent="＋ Crear usuario";
+  }
+
+  (async function init(){
+    const perfil=await Auth.requerirAcceso("usuarios");
+    if(!perfil)return;                 // el guardia ya redirigió/bloqueó
+    YO=perfil;
+    Auth.montarBarra("usuarios",perfil);
+    document.getElementById("btnCrear").addEventListener("click",crear);
+    document.getElementById("nPass").addEventListener("keydown",e=>{if(e.key==="Enter")crear();});
+    await cargar();
+  })();
+</script>
+</body>
+</html>
