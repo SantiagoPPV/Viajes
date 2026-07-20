@@ -384,34 +384,102 @@
   @media (max-width:520px){.summary{grid-template-columns:repeat(2,1fr)}.wrap{padding:18px 12px 60px}
     .trange{width:82px;font-size:10.5px}.startwrap{margin-left:0}}
   @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+  /* ---------- barra de sesión ---------- */
+  .topnav .whoami{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft);padding:8px 4px;white-space:nowrap}
+  .topnav .logout{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;
+    border:1px solid var(--line-soft);background:transparent;color:var(--ink-soft);border-radius:20px;padding:8px 14px;cursor:pointer}
+  .topnav .logout:hover{border-color:var(--seal);color:var(--seal-deep);background:#f6e6df}
+
+  /* ---------- lista de viajes ---------- */
+  .trips-head{display:flex;align-items:baseline;gap:12px;margin:6px 0 16px;flex-wrap:wrap}
+  .trips-head h1{font-family:"Cormorant Garamond",serif;font-weight:600;font-style:italic;
+    font-size:clamp(30px,5vw,46px);margin:0;line-height:1.02}
+  .trips-head h1 .amp{color:var(--seal);font-style:normal}
+  .trips-head .rule{flex:1;height:1px;background:var(--line)}
+  .trips-sub{color:var(--ink-soft);font-size:14.5px;max-width:70ch;margin:0 0 18px}
+  .tripgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+  .tripcard{position:relative;border:1px solid var(--line);border-radius:var(--radius);
+    background:linear-gradient(180deg,var(--card),var(--card-2));box-shadow:var(--shadow);padding:18px 18px 14px;
+    display:flex;flex-direction:column;gap:6px;min-height:150px;transition:transform .16s,box-shadow .16s}
+  .tripcard:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(32,39,43,.14)}
+  .tripcard .tc-eyebrow{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--seal-deep)}
+  .tripcard h3{font-family:"Cormorant Garamond",serif;font-weight:600;font-style:italic;font-size:23px;margin:0;line-height:1.08}
+  .tripcard .tc-meta{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft);margin-top:2px}
+  .tripcard .tc-badge{font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.06em;text-transform:uppercase;
+    border:1px solid var(--jade);color:var(--jade-deep);border-radius:5px;padding:1px 7px;width:fit-content}
+  .tripcard .tc-actions{margin-top:auto;display:flex;gap:6px;flex-wrap:wrap;padding-top:10px}
+  .tripcard .tc-actions .btn{padding:7px 11px;font-size:11px}
+  .tripcard .tc-open{background:var(--seal);color:#fff;border-color:var(--seal)}
+  .tripcard .tc-open:hover{background:var(--seal-deep)}
+  .tripcard.new{align-items:center;justify-content:center;text-align:center;border-style:dashed;cursor:pointer;
+    background:transparent;color:var(--ink-soft)}
+  .tripcard.new:hover{border-color:var(--seal);color:var(--seal-deep);background:#f6e6df}
+  .tripcard.new .plus{font-family:"Cormorant Garamond",serif;font-size:40px;line-height:1;color:var(--seal)}
+  .tripcard .tc-rename{display:none;gap:6px;margin-top:8px}
+  .tripcard .tc-rename.open{display:flex}
+  .tripcard .tc-rename input{flex:1;min-width:0;font-family:"Inter",sans-serif;font-size:13px;
+    border:1px solid var(--line-soft);border-radius:8px;padding:6px 8px;background:#fff}
+  .tripsEmpty{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--ink-soft);padding:8px 0 16px}
+
+  /* ---------- barra superior del editor de viaje ---------- */
+  .tripbar{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+  .tripbar .back{font-family:"IBM Plex Mono",monospace;font-size:12px;border:1px solid var(--line);background:var(--card);
+    color:var(--ink);border-radius:9px;padding:8px 14px;cursor:pointer;box-shadow:var(--shadow)}
+  .tripbar .back:hover{border-color:var(--seal);color:var(--seal-deep);transform:translateY(-1px)}
+  h1#mhTitle{cursor:text}
+  .mhedit{border:1px dashed var(--line);border-radius:11px;background:rgba(255,255,255,.35);padding:12px 14px;margin-top:12px;display:none}
+  .mhedit.open{display:block}
+  .mhedit .mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px 12px}
+  .mhedit label{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--ink-soft);display:flex;flex-direction:column;gap:4px}
+  .mhedit input{font-family:"Inter",sans-serif;font-size:13px;border:1px solid var(--line-soft);border-radius:8px;
+    padding:7px 9px;background:#fff;color:var(--ink)}
+  .mhtoggle{font-family:"IBM Plex Mono",monospace;font-size:10.5px;border:1px solid var(--line);background:var(--card-2);
+    color:var(--ink-soft);border-radius:8px;padding:4px 10px;cursor:pointer;margin-top:8px}
+  .mhtoggle:hover{border-color:var(--seal);color:var(--seal-deep)}
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <nav class="topnav" aria-label="Secciones">
-    <span class="brand">Mi panel <span class="amp">·</span> personal</span>
-    <a class="navlink active" href="index.html" aria-current="page">✈ Viajes</a>
-    <a class="navlink" href="salud.html">🌿 Salud</a>
-  </nav>
+  <nav class="topnav" id="topnav" aria-label="Secciones"></nav>
+
+  <!-- ===================== Lista de viajes ===================== -->
+  <section id="tripsList">
+    <div class="trips-head"><h1>Mis <span class="amp">·</span> viajes</h1><span class="rule"></span></div>
+    <p class="trips-sub">Cada viaje es un itinerario completo con su mapa, presupuesto y checklists. Crea los que quieras; por defecto solo tú los ves (y con quien decidas compartirlos).</p>
+    <div class="tripgrid" id="tripgrid"></div>
+  </section>
+
+  <!-- ===================== Editor de un viaje ===================== -->
+  <div id="tripEditor" hidden>
+  <div class="tripbar">
+    <button class="back" id="backToList">← Mis viajes</button>
+    <button class="mhtoggle" id="mhToggle" style="margin-top:0">✎ Detalles del viaje</button>
+  </div>
 
   <header class="masthead">
-    <div class="eyebrow">05 – 29 mayo 2027 · 24 días</div>
-    <h1>Luna de miel <span class="amp">·</span> China</h1>
-    <p class="subline">Itinerario con motor de horarios: cada actividad vive en un <b>catálogo</b> con su duración; el día se encadena solo (fin de una = inicio de la siguiente) y las horas fijas anclan shows, vuelos y trenes. Cambia una duración y todo el día se recorre.</p>
-    <div class="datestrip">
-      <span>Salida <b>5 may</b> GDL → Tokio (NRT)</span>
-      <span>Llegada <b>7 may</b> Tokio · luego vuelo a Hong Kong</span>
-      <span>Regreso <b>29 may</b> PVG → GDL <em>(mismo día, noche)</em></span>
-      <span class="countdown" id="countdown"></span>
-      <span class="countdown">👥 Tiempo real: 2 personas</span>
+    <div class="eyebrow" id="mhEyebrow"></div>
+    <h1 id="mhTitle">Viaje</h1>
+    <p class="subline" id="mhSubline"></p>
+    <div class="datestrip" id="mhDates"></div>
+    <div class="mhedit" id="mhEdit">
+      <div class="mgrid">
+        <label>Título<input id="metaTitulo" placeholder="Nombre del viaje"></label>
+        <label>Subtítulo<input id="metaSub" placeholder="una frase corta"></label>
+        <label>Fecha de inicio<input id="metaInicio" type="date"></label>
+        <label>Personas<input id="metaPersonas" type="number" min="1" max="20"></label>
+        <label>Noches disponibles<input id="metaNoches" type="number" min="0" max="120"></label>
+      </div>
     </div>
   </header>
 
   <div class="summary" id="summary"></div>
 
-  <section class="sec">
-    <div class="sec-head"><h2>Mapa de clústeres</h2><span class="rule"></span>
+  <section class="sec" id="mapSection">
+    <div class="sec-head"><h2>Mapa de la ruta</h2><span class="rule"></span>
       <span class="hint">tinta = tren · rojo punteado = vuelo</span></div>
     <div class="mappanel"><div id="mapholder"></div><div class="legend" id="legend"></div></div>
   </section>
@@ -443,63 +511,20 @@
   </div>
 
   <p class="foot">Tours, hoteles y restaurantes son sugerencias con buena reputación (GetYourGuide, Viator, Tripadvisor, guías locales y Michelin); confirma precios, horarios y disponibilidad antes de reservar. Los tiempos son estimados editables. Tus cambios se guardan y sincronizan automáticamente en la nube.</p>
+  </div><!-- /#tripEditor -->
 </div>
 
-<!-- ============ Configuración Supabase + capa de almacenamiento ============
-     Rellena las 2 constantes de abajo con los datos de tu proyecto Supabase:
-       • SUPABASE_URL       → Project Settings › API › Project URL   (https://xxxxx.supabase.co)
-       • SUPABASE_ANON_KEY  → Project Settings › API › Project API keys › anon / public
-     Antes de configurarlas la app guarda solo en este dispositivo (localStorage).
-     Configuradas, sincroniza en la nube entre dispositivos (tú y tu pareja). -->
-<script>
-  const SUPABASE_URL="https://waxyoduhhydsgysaruto.supabase.co";
-  const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndheHlvZHVoaHlkc2d5c2FydXRvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM4OTk3MTksImV4cCI6MjA5OTQ3NTcxOX0.wVl2WOa-Hew3KcToQv2RCBugs-g-5xHH3iqGQTTO7bU";
-
-  const SB_TABLE="itinerario_estado";
-  const SB_BASE=(SUPABASE_URL||"").replace(/\/+$/,"");
-  const SB_READY=/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(SB_BASE)&&(SUPABASE_ANON_KEY||"").length>20;
-
-  /* window.storage: misma interfaz que usaba el artifact (get/set con promesas).
-     Backend: Supabase (PostgREST) con respaldo en localStorage. Si Supabase no está
-     configurado o no responde, usa localStorage para que la app siga funcionando. */
-  window.storage={
-    async get(key){
-      if(SB_READY){
-        try{
-          const r=await fetch(SB_BASE+"/rest/v1/"+SB_TABLE+"?clave=eq."+encodeURIComponent(key)+"&select=valor",
-            {headers:{apikey:SUPABASE_ANON_KEY,Authorization:"Bearer "+SUPABASE_ANON_KEY}});
-          if(r.ok){
-            const rows=await r.json();
-            if(rows&&rows.length){try{localStorage.setItem(key,rows[0].valor);}catch(_){}
-              return{value:rows[0].valor};}
-            return null;                               // aún no hay fila en la nube
-          }
-        }catch(e){/* red caída → respaldo local */}
-        const v=localStorage.getItem(key);
-        if(v!==null)return{value:v};
-        throw new Error("sin conexión con Supabase");   // la app marcará "offline"
-      }
-      const v=localStorage.getItem(key);
-      return v!==null?{value:v}:null;
-    },
-    async set(key,value){
-      try{localStorage.setItem(key,value);}catch(_){}   // espejo local siempre
-      if(SB_READY){
-        const r=await fetch(SB_BASE+"/rest/v1/"+SB_TABLE,{
-          method:"POST",
-          headers:{apikey:SUPABASE_ANON_KEY,Authorization:"Bearer "+SUPABASE_ANON_KEY,
-            "Content-Type":"application/json",Prefer:"resolution=merge-duplicates,return=minimal"},
-          body:JSON.stringify({clave:key,valor:value,actualizado:new Date().toISOString()})
-        });
-        if(!r.ok)throw new Error("Supabase set "+r.status); // la app lo captura → "offline"
-      }
-    }
-  };
-</script>
+<!-- ============ Sesión + almacenamiento por usuario ============
+     Requiere sesión (auth.js). Cada viaje se guarda como un renglón en la tabla
+     viajes (ver supabase/cuentas_schema.sql). -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
 
 <script>
 /* ===================== Constantes ===================== */
-const TRIP_START=new Date(2027,4,7), AVAILABLE_NIGHTS=22;
+// La fecha de inicio y las noches disponibles vienen de cada viaje (state.meta).
+function tripStart(){const s=state&&state.meta&&state.meta.inicio;return s?new Date(s+"T00:00:00"):new Date();}
+function availNights(){const n=state&&state.meta&&+state.meta.noches;return n>0?n:totalNights();}
 const MESES=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
 const fmt=d=>d.getDate()+" "+MESES[d.getMonth()];
 const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x;};
@@ -1054,85 +1079,67 @@ function defaultLegs(){return{"_arrive":{dep:"",arr:"05:45",note:""},"_depart":{
 function freshState(){const bases={},order=[];DEFAULT_BASES.forEach(b=>{bases[b.id]=seedBase(b);order.push(b.id);});
   return{bases,order,checks:{},legs:defaultLegs(),currency:"MXN",budget:{flightsEst:0,flightsReal:0},costsSeeded:true,tokyoSwap:true,japanRoute:true};}
 
-async function load(){
-  let raw=null;
-  try{const r=await window.storage.get(STORE_KEY,true);if(r&&r.value)raw=r.value;}catch(e){}
-  if(!raw){ // migrar desde almacenamiento individual (versión previa) si existe
-    try{const r2=await window.storage.get(STORE_KEY);if(r2&&r2.value)raw=r2.value;}catch(e){}
-  }
-  if(raw){try{state=JSON.parse(raw);}catch(e){state=null;}}
-  if(!state||!state.bases)state=freshState();
-  DEFAULT_BASES.forEach(b=>{if(!state.bases[b.id]||!state.bases[b.id].catalog)state.bases[b.id]=seedBase(b);});
-  if(!state.checks)state.checks={};
-  if(!state.legs)state.legs=defaultLegs();
-  Object.entries(defaultLegs()).forEach(([k,v])=>{if(!state.legs[k])state.legs[k]=v;});
-  if(!state.currency)state.currency="MXN";
-  if(!state.budget)state.budget={flightsEst:0,flightsReal:0};
-  // migrar metadatos a cada base (antes vivían en DEFAULT_BASES)
-  const META={};DEFAULT_BASES.forEach(b=>META[b.id]=b);
-  Object.entries(state.bases).forEach(([id,st])=>{
-    const m=META[id];
-    if(m){["name","region","cluster","x","y","ldx","ldy","anchor","optional"].forEach(k=>{if(st[k]===undefined)st[k]=m[k];});}
+/* Normaliza la estructura de un viaje cargado (genérico; no siembra China). */
+function normalizeTripState(s){
+  if(!s||typeof s!=="object")s={};
+  if(!s.bases)s.bases={};
+  if(!s.checks)s.checks={};
+  if(!s.legs)s.legs=defaultLegs();
+  Object.entries(defaultLegs()).forEach(([k,v])=>{if(!s.legs[k])s.legs[k]=v;});
+  if(!s.currency)s.currency="MXN";
+  if(!s.budget)s.budget={flightsEst:0,flightsReal:0};
+  if(!s.meta||typeof s.meta!=="object")s.meta={};
+  const m=s.meta;
+  if(m.titulo==null)m.titulo="Viaje sin título";
+  if(m.subtitulo==null)m.subtitulo="";
+  if(m.eyebrow==null)m.eyebrow="";
+  if(m.inicio==null)m.inicio="";
+  if(m.personas==null)m.personas=1;
+  if(m.noches==null)m.noches=0;
+  if(m.hasMap==null)m.hasMap=false;
+  Object.entries(s.bases).forEach(([id,st])=>{
     st.id=st.id||id;
     if(st.cluster!==undefined)st.cluster=String(st.cluster);
     if(st.catalog)st.catalog.forEach(a=>{if(!a.costs)a.costs=[];});
-    if(st.catalog&&!st.catalog.some(a=>a.cid==="g-hotel"))
-      st.catalog.push({cid:"g-hotel",name:"Hotel / check-in",type:"hotel",dur:30,note:"",src:"",costs:[]});
     if(!st.budget)st.budget={lodgingEst:0,lodgingReal:0,miscEst:0,miscReal:0};
+    if(st.expanded===undefined)st.expanded=false;
+    if(st.tab===undefined)st.tab="plan";
+    if(st.day===undefined)st.day=0;
+    if(!st.schedule)st.schedule={0:[]};
+    if(!st.dayStart)st.dayStart={0:"09:00"};
   });
-  // sembrar costos por defecto una sola vez (para planes guardados antes de esta versión)
-  if(!state.costsSeeded){
-    Object.values(state.bases).forEach(st=>{
-      (st.catalog||[]).forEach(a=>{if((!a.costs||!a.costs.length)&&DEFAULT_COSTS[a.cid])a.costs=costsFor(a.cid);});
-    });
-    state.costsSeeded=true;
-  }
-  // orden: construir si falta, y agregar cualquier base nueva
-  if(!Array.isArray(state.order)||!state.order.length)
-    state.order=DEFAULT_BASES.map(b=>b.id);
-  state.order=state.order.filter(id=>state.bases[id]);            // limpia ids borrados
-  Object.keys(state.bases).forEach(id=>{if(!state.order.includes(id))state.order.push(id);});
-  // migración única: sustituir Fenghuang por Tokio al inicio
-  if(!state.tokyoSwap){
-    if(state.bases.fenghuang){delete state.bases.fenghuang;state.order=state.order.filter(id=>id!=="fenghuang");}
-    if(!state.bases.tokyo){const td=DEFAULT_BASES.find(b=>b.id==="tokyo");if(td)state.bases.tokyo=seedBase(td);}
-    state.order=state.order.filter(id=>id!=="tokyo");
-    state.order.unshift("tokyo");
-    state.tokyoSwap=true;
-  }
-  // migración única: ruta B1 con Osaka + Kyoto (llega Tokio, arranca HK, termina Tokio)
-  if(!state.japanRoute){
-    ["osaka","kyoto"].forEach(id=>{if(!state.bases[id]){const d=DEFAULT_BASES.find(b=>b.id===id);if(d)state.bases[id]=seedBase(d);}});
-    const POS={
-      tokyo:{x:780,y:174,ldx:-13,ldy:-2,anchor:"end",cluster:"jp",region:"Japón · regreso"},
-      kyoto:{x:756,y:206,ldx:-13,ldy:-2,anchor:"end",cluster:"jp",region:"Japón · Kansai"},
-      osaka:{x:734,y:238,ldx:-13,ldy:2,anchor:"end",cluster:"jp",region:"Japón · Kansai"}
-    };
-    Object.entries(POS).forEach(([id,p])=>{if(state.bases[id])Object.assign(state.bases[id],p);});
-    const desired=["hk","yangshuo","zjj","chongqing","chengdu","xian","beijing","shanghai","osaka","kyoto","tokyo"];
-    const newOrder=desired.filter(id=>state.bases[id]);
-    state.order.forEach(id=>{if(!newOrder.includes(id)&&state.bases[id])newOrder.push(id);});
-    state.order=newOrder;
-    // costo de conexión en las actividades de llegada existentes (tus tarifas ×2)
-    const setArrCost=(bid,cid,label,est)=>{const st=state.bases[bid];if(!st||!st.catalog)return;
-      const a=st.catalog.find(x=>x.cid===cid);if(a)a.costs=[{id:uid(),label,est,real:0}];};
-    setArrCost("hk","hk-arrive","Vuelo Tokio → Hong Kong (2)",10600);
-    setArrCost("tokyo","tk-arrive","Tren bala Kyoto → Tokio (2)",3300);
-    if(state.budget&&!state.budget.flightsEst)state.budget.flightsEst=56000;
-    state.japanRoute=true;
-  }
+  if(!Array.isArray(s.order)||!s.order.length)s.order=Object.keys(s.bases);
+  s.order=s.order.filter(id=>s.bases[id]);
+  Object.keys(s.bases).forEach(id=>{if(!s.order.includes(id))s.order.push(id);});
+  return s;
 }
-/* ===================== Colaboración en tiempo casi real ===================== */
+/* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
+function freshBlankTrip(titulo){
+  const b=seedCustomBase("Primera parada",0);
+  const bases={};bases[b.id]=b;
+  return normalizeTripState({bases,order:[b.id],
+    meta:{titulo:titulo||"Nuevo viaje",subtitulo:"",eyebrow:"Nuevo itinerario",inicio:"",personas:1,noches:0,hasMap:false},
+    checks:{},legs:defaultLegs(),currency:"MXN",budget:{flightsEst:0,flightsReal:0},costsSeeded:true});
+}
+/* ===================== Sesión + multi-viaje ===================== */
 const CLIENT_ID=Math.random().toString(36).slice(2,9);
+let UID=null, PERFIL=null;
+let currentTripId=null, currentTripOwn=false;   // viaje abierto
+let trips=[];                                     // lista de "Mis viajes"
 let lastRev=0, pendingRemote=null, lastLocalEdit=0, pollTimer=null;
 const isTyping=()=>{const a=document.activeElement;return !!a&&/^(INPUT|SELECT|TEXTAREA)$/.test(a.tagName||"");};
 const busy=()=>isTyping()||(Date.now()-lastLocalEdit<2500);
 
 let saveTimer=null;
 async function save(){
+  if(!currentTripId||!state)return;
+  if(!currentTripOwn&&PERFIL.rol!=="admin"){setSync("readonly");return;}
   try{
     state._rev=Date.now();state._by=CLIENT_ID;lastRev=state._rev;lastLocalEdit=Date.now();
-    await window.storage.set(STORE_KEY,JSON.stringify(state),true);
+    const titulo=(state.meta&&state.meta.titulo)||"Viaje sin título";
+    const {error}=await Auth.sb.from("viajes")
+      .update({datos:state,titulo,actualizado:new Date().toISOString()}).eq("id",currentTripId);
+    if(error)throw error;
     flashSaved();setSync("saved");
   }catch(e){setSync("offline");}
 }
@@ -1140,7 +1147,6 @@ function saveDebounced(){clearTimeout(saveTimer);lastLocalEdit=Date.now();saveTi
 function flashSaved(){const f=document.getElementById("savedFlag");if(!f)return;f.classList.add("show");
   clearTimeout(f._t);f._t=setTimeout(()=>f.classList.remove("show"),1200);}
 
-// conserva la navegación local (qué base está abierta, pestaña, día) al recibir cambios remotos
 function preserveLocalUI(remote){
   if(remote&&remote.bases&&state&&state.bases){
     for(const id in remote.bases){const loc=state.bases[id];
@@ -1150,24 +1156,169 @@ function preserveLocalUI(remote){
 }
 function applyRemote(remote){
   preserveLocalUI(remote);
-  state=remote;lastRev=remote._rev||Date.now();pendingRemote=null;
+  state=normalizeTripState(remote);lastRev=remote._rev||Date.now();pendingRemote=null;
   renderAll();setSync("updated");
 }
 async function poll(){
-  let val=null;
-  try{const r=await window.storage.get(STORE_KEY,true);if(r&&r.value)val=r.value;}catch(e){setSync("offline");return;}
-  if(!val){setSync("live");return;}
-  let remote;try{remote=JSON.parse(val);}catch(e){return;}
+  if(!currentTripId)return;
+  let remote=null;
+  try{
+    const {data,error}=await Auth.sb.from("viajes").select("datos").eq("id",currentTripId).maybeSingle();
+    if(error)throw error;remote=data?data.datos:null;
+  }catch(e){setSync("offline");return;}
+  if(!remote){setSync("live");return;}
   const rrev=remote._rev||0;
   if(rrev>lastRev && remote._by!==CLIENT_ID && remote.bases){
     if(busy()){pendingRemote=remote;setSync("pending");}
     else applyRemote(remote);
   }else if(!pendingRemote){setSync("live");}
 }
-function startCollab(){
-  if(pollTimer)clearInterval(pollTimer);
-  pollTimer=setInterval(poll,4000);
-  document.addEventListener("visibilitychange",()=>{if(!document.hidden)poll();});
+function startCollab(){if(pollTimer)clearInterval(pollTimer);pollTimer=setInterval(poll,4000);}
+function stopCollab(){if(pollTimer){clearInterval(pollTimer);pollTimer=null;}}
+
+/* ---- Lista de viajes (propios + compartidos) ---- */
+async function refreshTrips(){
+  let own=[],shared=[];
+  try{
+    const {data}=await Auth.sb.from("viajes").select("id,titulo,propietario,actualizado")
+      .eq("propietario",UID).order("creado",{ascending:true});
+    own=data||[];
+  }catch(e){}
+  try{
+    const {data:acc}=await Auth.sb.from("viaje_acceso").select("viaje_id").eq("usuario_id",UID);
+    const ids=(acc||[]).map(a=>a.viaje_id);
+    if(ids.length){
+      const {data}=await Auth.sb.from("viajes").select("id,titulo,propietario,actualizado").in("id",ids);
+      shared=(data||[]).filter(t=>t.propietario!==UID);
+    }
+  }catch(e){}
+  trips=own.map(t=>({...t,own:true})).concat(shared.map(t=>({...t,own:false})));
+}
+function fmtWhen(iso){try{const d=new Date(iso);return fmt(d)+" "+String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0");}catch(e){return"";}}
+function renderTripsList(){
+  const g=document.getElementById("tripgrid");
+  let html="";
+  trips.forEach(t=>{
+    html+=`<div class="tripcard" data-id="${esc(t.id)}">
+      <div class="tc-eyebrow">${t.own?"Mi viaje":"Compartido"}</div>
+      <h3>${esc(t.titulo||"Viaje sin título")}</h3>
+      <div class="tc-meta">Actualizado ${fmtWhen(t.actualizado)}</div>
+      ${t.own?"":'<span class="tc-badge">solo lectura</span>'}
+      <div class="tc-rename"><input value="${esc(t.titulo||"")}" data-rn><button class="btn" data-act="rndo">✓</button></div>
+      <div class="tc-actions">
+        <button class="btn tc-open" data-act="open">Abrir</button>
+        ${t.own?'<button class="btn" data-act="rename">Renombrar</button><button class="btn" data-act="dup">Duplicar</button><button class="btn danger" data-act="del">Borrar</button>':""}
+      </div>
+    </div>`;
+  });
+  html+=`<div class="tripcard new" id="newTripCard"><div class="plus">＋</div><div>Nuevo viaje</div></div>`;
+  g.innerHTML=html;
+  trips.forEach(t=>{
+    const card=g.querySelector('.tripcard[data-id="'+t.id+'"]');if(!card)return;
+    const act=a=>card.querySelector('[data-act="'+a+'"]');
+    act("open").onclick=()=>openTrip(t.id);
+    if(t.own){
+      act("rename").onclick=()=>card.querySelector(".tc-rename").classList.toggle("open");
+      act("rndo").onclick=()=>{const v=card.querySelector("[data-rn]").value.trim()||"Viaje sin título";renameTrip(t.id,v);};
+      act("dup").onclick=()=>duplicateTrip(t.id);
+      act("del").onclick=()=>customConfirm('¿Borrar el viaje “'+(t.titulo||"")+'”? No se puede deshacer.',()=>deleteTrip(t.id));
+    }
+  });
+  document.getElementById("newTripCard").onclick=createTrip;
+}
+function showList(){
+  stopCollab();currentTripId=null;state=null;
+  document.getElementById("tripEditor").hidden=true;
+  document.getElementById("tripsList").hidden=false;
+  renderTripsList();window.scrollTo(0,0);
+}
+async function openTrip(id){
+  let row=null;
+  try{const {data,error}=await Auth.sb.from("viajes").select("*").eq("id",id).single();if(error)throw error;row=data;}
+  catch(e){alert("No se pudo abrir el viaje.");return;}
+  currentTripId=row.id;currentTripOwn=(row.propietario===UID);
+  state=normalizeTripState(row.datos||{});
+  if(!state.meta.titulo||state.meta.titulo==="Viaje sin título")state.meta.titulo=row.titulo||"Viaje";
+  lastRev=state._rev||0;
+  document.getElementById("tripsList").hidden=true;
+  document.getElementById("tripEditor").hidden=false;
+  document.getElementById("mhEdit").classList.remove("open");
+  renderAll();
+  setSync((currentTripOwn||PERFIL.rol==="admin")?"live":"readonly");
+  startCollab();window.scrollTo(0,0);
+}
+async function createTrip(){
+  const nuevo=freshBlankTrip("Nuevo viaje");
+  try{
+    const {data,error}=await Auth.sb.from("viajes")
+      .insert({propietario:UID,titulo:nuevo.meta.titulo,datos:nuevo}).select("id").single();
+    if(error)throw error;
+    await refreshTrips();openTrip(data.id);
+  }catch(e){alert("No se pudo crear el viaje: "+(e.message||e));}
+}
+async function duplicateTrip(id){
+  try{
+    const {data:row}=await Auth.sb.from("viajes").select("titulo,datos").eq("id",id).single();
+    const datos=normalizeTripState(JSON.parse(JSON.stringify(row.datos||{})));
+    datos.meta.titulo=(row.titulo||"Viaje")+" (copia)";delete datos._rev;
+    const {error}=await Auth.sb.from("viajes")
+      .insert({propietario:UID,titulo:datos.meta.titulo,datos});
+    if(error)throw error;
+    await refreshTrips();renderTripsList();
+  }catch(e){alert("No se pudo duplicar: "+(e.message||e));}
+}
+async function deleteTrip(id){
+  try{await Auth.sb.from("viajes").delete().eq("id",id);await refreshTrips();renderTripsList();}
+  catch(e){alert("No se pudo borrar: "+(e.message||e));}
+}
+async function renameTrip(id,titulo){
+  try{await Auth.sb.from("viajes").update({titulo}).eq("id",id);
+    const t=trips.find(x=>x.id===id);if(t)t.titulo=titulo;renderTripsList();}
+  catch(e){alert("No se pudo renombrar: "+(e.message||e));}
+}
+/* ---- Migración única del viaje de China (legacy → tabla viajes) ---- */
+async function migrateChinaIfNeeded(){
+  if(!PERFIL||PERFIL.rol!=="admin")return;
+  if(trips.some(t=>t.own&&/china/i.test(t.titulo||"")))return;
+  let raw=null;
+  try{
+    const {data}=await Auth.sb.from("itinerario_estado").select("valor").eq("clave","china-honeymoon-v4").maybeSingle();
+    if(data)raw=data.valor;
+  }catch(e){return;}
+  if(!raw)return;
+  let legacy;try{legacy=JSON.parse(raw);}catch(e){return;}
+  if(!legacy||!legacy.bases)return;
+  legacy=normalizeTripState(legacy);
+  legacy.meta={titulo:"Luna de miel · China 2027",subtitulo:"Itinerario hora por hora con motor de horarios.",
+    eyebrow:"05 – 29 mayo 2027 · 24 días",inicio:"2027-05-07",personas:2,noches:22,hasMap:true};
+  delete legacy._rev;
+  try{await Auth.sb.from("viajes").insert({propietario:UID,titulo:legacy.meta.titulo,datos:legacy});await refreshTrips();}catch(e){}
+}
+/* ---- Masthead dinámico + editor de detalles ---- */
+function renderMasthead(){
+  const m=(state&&state.meta)||{};
+  document.getElementById("mhEyebrow").textContent=m.eyebrow||"";
+  document.getElementById("mhTitle").textContent=m.titulo||"Viaje";
+  document.getElementById("mhSubline").textContent=m.subtitulo||"";
+  let html="";
+  if(m.inicio){const dep=new Date(m.inicio+"T00:00:00");
+    const dias=Math.ceil((dep-new Date())/86400000);
+    html+=`<span>Inicio <b>${fmt(dep)}</b></span>`;
+    if(dias>0)html+=`<span class="countdown">⏳ ${dias} días para el viaje</span>`;}
+  const per=+m.personas||1;html+=`<span class="countdown">👥 ${per} persona${per===1?"":"s"}</span>`;
+  if(!currentTripOwn&&PERFIL&&PERFIL.rol!=="admin")html+=`<span class="countdown">👁 solo lectura</span>`;
+  document.getElementById("mhDates").innerHTML=html;
+  const g=(id,v)=>{const el=document.getElementById(id);if(el&&document.activeElement!==el)el.value=v;};
+  g("metaTitulo",m.titulo||"");g("metaSub",m.subtitulo||"");g("metaInicio",m.inicio||"");
+  g("metaPersonas",m.personas||1);g("metaNoches",m.noches||0);
+}
+function wireMetaEditor(){
+  document.getElementById("mhToggle").addEventListener("click",()=>document.getElementById("mhEdit").classList.toggle("open"));
+  const bind=(id,key,num)=>{const el=document.getElementById(id);if(!el)return;
+    el.addEventListener("input",()=>{if(!state)return;state.meta[key]=num?(+el.value||0):el.value;
+      renderMasthead();saveDebounced();});};
+  bind("metaTitulo","titulo",false);bind("metaSub","subtitulo",false);
+  bind("metaInicio","inicio",false);bind("metaPersonas","personas",true);bind("metaNoches","noches",true);
 }
 function setSync(mode){
   const el=document.getElementById("syncStatus");if(!el)return;
@@ -1180,6 +1331,7 @@ function setSync(mode){
   }else if(mode==="updated"){el.textContent="🔄 Actualizado con cambios de tu pareja · "+t;}
   else if(mode==="saved"){el.textContent="🟢 En vivo · guardado "+t;}
   else if(mode==="offline"){el.textContent="🟡 Sin conexión de sincronía — reintentando…";}
+  else if(mode==="readonly"){el.textContent="👁 Solo lectura · viaje de otra persona";}
   else {el.textContent="🟢 En vivo · al día "+t;}
 }
 
@@ -1189,7 +1341,7 @@ const orderedBases=()=>(state.order||[]).map(id=>{const st=state.bases[id];
     ldx:st.ldx,ldy:st.ldy,anchor:st.anchor,optional:st.optional},st};});
 const activeBases=()=>orderedBases().filter(o=>o.st.included);
 const totalNights=()=>activeBases().reduce((s,o)=>s+o.st.nights,0);
-function withDates(){let c=new Date(TRIP_START);return activeBases().map(o=>{
+function withDates(){let c=new Date(tripStart());return activeBases().map(o=>{
   const ci=new Date(c),co=addDays(c,o.st.nights);c=co;return{...o,checkin:ci,checkout:co};});}
 
 /* ---- Costos ---- */
@@ -1230,14 +1382,14 @@ function computeDay(st,d){
 /* ===================== Resumen ===================== */
 function renderSummary(){
   const active=activeBases();
-  const flights=2+active.slice(0,-1).filter((o,i)=>getXfer(o.def.id,active[i+1].def.id).type==="air").length;
-  const tn=totalNights(),over=tn>AVAILABLE_NIGHTS,under=tn<AVAILABLE_NIGHTS;
-  const bal=over?(tn-AVAILABLE_NIGHTS)+" de más":under?(AVAILABLE_NIGHTS-tn)+" libres":"cuadra perfecto";
-  const chips=[{n:"24",l:"días totales"},
-    {n:tn+" / "+AVAILABLE_NIGHTS,l:"noches · "+bal,cls:(over||under)?"warn":""},
-    {n:active.length,l:"bases"},
-    {n:new Set(active.map(o=>o.def.cluster)).size,l:"clústeres"},
-    {n:flights,l:"vuelos (2 intl + internos)"}];
+  const air=active.slice(0,-1).filter((o,i)=>getXfer(o.def.id,active[i+1].def.id).type==="air").length;
+  const tn=totalNights(),av=availNights(),over=tn>av,under=tn<av;
+  const bal=over?(tn-av)+" de más":under?(av-tn)+" libres":"cuadra perfecto";
+  const chips=[{n:tn+1,l:"días"},
+    {n:tn+" / "+av,l:"noches · "+bal,cls:(over||under)?"warn":""},
+    {n:active.length,l:active.length===1?"parada":"paradas"},
+    {n:new Set(active.map(o=>o.def.cluster)).size,l:"zonas"},
+    {n:air,l:air===1?"vuelo":"vuelos"}];
   document.getElementById("summary").innerHTML=chips.map(c=>
     `<div class="chip ${c.cls||''}"><div class="n">${c.n}</div><div class="l">${c.l}</div></div>`).join("");
 }
@@ -1245,6 +1397,9 @@ function renderSummary(){
 /* ===================== Mapa ===================== */
 const clusterColor=c=>CLUSTERS[c]?CLUSTERS[c].color:"var(--copt)";
 function renderMap(){
+  const sec=document.getElementById("mapSection");
+  if(!state.meta||!state.meta.hasMap){if(sec)sec.hidden=true;return;}
+  if(sec)sec.hidden=false;
   const active=withDates(),W=800,H=560;
   let s=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ruta por China">`;
   s+=`<g opacity="0.5">
@@ -1323,14 +1478,14 @@ function renderCards(){
         ${st.expanded?renderDetail(b,st):''}
       </div>`;
     // vuelo internacional de llegada, antes de la primera base activa
-    if(on&&dd&&b.id===firstActiveId)
+    if(on&&dd&&b.id===firstActiveId&&state.meta&&state.meta.hasMap)
       holder.appendChild(makeRibbon(xferRibbonHTML("_arrive","intl","Vuelo internacional",
         "Guadalajara (GDL) → Tokio (escala) → "+b.name,"5 may → 7 may")));
     holder.appendChild(leg);
     if(on&&dd){const nx=dated[dated.indexOf(dd)+1];
       if(nx){const x=getXfer(b.id,nx.def.id);
         holder.appendChild(makeRibbon(xferRibbonHTML(b.id+"|"+nx.def.id,x.type,x.mode,x.detail,x.time)));}
-      else // última base activa → vuelo internacional de salida
+      else if(state.meta&&state.meta.hasMap) // última base activa → vuelo internacional de salida
         holder.appendChild(makeRibbon(xferRibbonHTML("_depart","intl","Vuelo internacional",
           b.name+" → Guadalajara (GDL)","29 may · mismo día (noche)")));
     }
@@ -1792,9 +1947,10 @@ function wireCardEvents(){
   });
 }
 function buildTransportItems(){
-  const active=activeBases();const items=[{grp:"Vuelos internacionales"},
+  const active=activeBases();
+  const items=(state.meta&&state.meta.hasMap)?[{grp:"Vuelos internacionales"},
     {id:"fl-intl-out",t:"Guadalajara (GDL) → Tokio (NRT/HND)",s:"sale 5 may · llega 7 may"},
-    {id:"fl-intl-ret",t:"Shanghái (PVG) → Guadalajara (GDL)",s:"sale 29 may · llega mismo día (noche)"}];
+    {id:"fl-intl-ret",t:"Shanghái (PVG) → Guadalajara (GDL)",s:"sale 29 may · llega mismo día (noche)"}]:[];
   const air=[],rail=[],road=[];
   for(let i=0;i<active.length-1;i++){const a=active[i].def,b=active[i+1].def,x=getXfer(a.id,b.id);
     const row={id:"tr-"+a.id+"-"+b.id,t:`${a.name} → ${b.name}`,s:`${x.mode} · ${x.detail} · ${x.time}`};
@@ -1859,7 +2015,7 @@ function renderBudget(){
         <span style="opacity:.8">· montos totales para la pareja · edita presupuesto y real por concepto en 🗂 Catálogo</span>
       </div>
       <div class="costhead" style="padding-right:0"><span style="flex:1"></span><span class="cxlbl" style="width:110px">presupuesto</span><span class="cxlbl" style="width:110px">real</span></div>
-      <div class="bglobal"><span class="blabel" style="flex:1">✈ Vuelos internacionales (GDL ⇄ China)</span>
+      <div class="bglobal"><span class="blabel" style="flex:1">✈ Vuelos principales (ida y vuelta)</span>
         <input type="number" class="f bamt gfield" data-fld="flightsEst" min="0" step="500" value="${g.flightsEst||''}" placeholder="0">
         <input type="number" class="f bamt gfield" data-fld="flightsReal" min="0" step="500" value="${g.flightsReal||''}" placeholder="0"></div>
       ${bases}
@@ -1892,21 +2048,24 @@ function refreshBudgetTotals(){
 }
 
 /* ===================== Countdown + maestro ===================== */
-function renderCountdown(){const now=new Date(),dep=new Date(2027,4,5);
-  document.getElementById("countdown").textContent="⏳ "+Math.max(0,Math.ceil((dep-now)/86400000))+" días para despegar";}
-function renderAll(){renderSummary();renderMap();renderCards();renderBudget();renderChecklists();}
+function renderAll(){renderMasthead();renderSummary();renderMap();renderCards();renderBudget();renderChecklists();}
 
 document.getElementById("printBtn").addEventListener("click",()=>window.print());
 document.getElementById("syncBtn").addEventListener("click",()=>{setSync("live");poll();});
+document.getElementById("backToList").addEventListener("click",showList);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&currentTripId)poll();});
 
 (async function init(){
-  renderCountdown();
-  await load();
-  lastRev=state._rev||0;
-  renderAll();
-  if(!state._rev){await save();}      // primer guardado a compartido (sella _rev)
-  else setSync("live");
-  startCollab();
+  const perfil=await Auth.requerirAcceso("viajes");
+  if(!perfil)return;                 // el guardia ya redirigió o mostró bloqueo
+  PERFIL=perfil;UID=perfil.id;
+  Auth.montarBarra("viajes",perfil);
+  wireMetaEditor();
+  await refreshTrips();
+  await migrateChinaIfNeeded();
+  showList();
+  const tp=new URLSearchParams(location.search).get("trip");
+  if(tp)openTrip(tp);            // abrir un viaje directo (p. ej. desde Admin viajes)
 })();
 </script>
 </body>

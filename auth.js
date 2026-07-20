@@ -49,6 +49,7 @@
     viajes:   { href: "index.html",  icono: "✈", etiqueta: "Viajes" },
     salud:    { href: "salud.html",  icono: "🌿", etiqueta: "Salud" },
     usuarios: { href: "usuarios.html", icono: "👥", etiqueta: "Usuarios", soloAdmin: true },
+    "viajes-admin": { href: "viajes-admin.html", icono: "🗂", etiqueta: "Admin viajes", soloAdmin: true },
   };
 
   function puedeVer(pagina, p) {

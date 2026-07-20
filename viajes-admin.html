@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin de viajes · Mi panel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#20272b;--ink-soft:#4a555b;--paper:#e6e0d1;--paper-2:#ded7c5;--card:#f3efe4;--card-2:#eee9db;
+    --line:#c9c0ab;--line-soft:#d8d0bd;--seal:#a63a2a;--seal-deep:#8a2f22;--jade:#3e6152;--jade-deep:#2f4c40;--gold:#c08a2e;
+    --shadow:0 1px 0 rgba(255,255,255,.6),0 6px 22px rgba(32,39,43,.09);--radius:14px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;
+    font-family:"Inter",system-ui,-apple-system,sans-serif;
+    background:
+      radial-gradient(1200px 600px at 80% -8%,rgba(74,122,153,.09),transparent 60%),
+      radial-gradient(900px 500px at -8% 108%,rgba(166,58,42,.06),transparent 55%),var(--paper);}
+  .wrap{max-width:1000px;margin:0 auto;padding:28px 20px 90px}
+
+  .topnav{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+  .topnav .brand{font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:600;font-size:20px;
+    color:var(--ink);margin-right:auto;letter-spacing:.01em}
+  .topnav .brand .amp{color:var(--jade);font-style:normal}
+  .topnav a.navlink{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;
+    text-decoration:none;color:var(--ink-soft);border:1px solid var(--line);background:var(--card);border-radius:20px;
+    padding:8px 16px;box-shadow:var(--shadow);transition:transform .16s,background .16s,color .16s,border-color .16s}
+  .topnav a.navlink:hover{transform:translateY(-1px);border-color:var(--jade);color:var(--jade)}
+  .topnav a.navlink.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .topnav .whoami{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft);padding:8px 4px;white-space:nowrap}
+  .topnav .logout{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;
+    border:1px solid var(--line-soft);background:transparent;color:var(--ink-soft);border-radius:20px;padding:8px 14px;cursor:pointer}
+  .topnav .logout:hover{border-color:var(--seal);color:var(--seal-deep);background:#f6e6df}
+
+  header.masthead{position:relative;border:1px solid var(--line);border-radius:var(--radius);
+    background:linear-gradient(180deg,var(--card),var(--card-2));padding:24px 26px 20px;box-shadow:var(--shadow);overflow:hidden}
+  .masthead::before{content:"图";position:absolute;right:20px;top:6px;font-family:"Cormorant Garamond",serif;
+    font-size:120px;line-height:1;color:var(--jade);opacity:.07;pointer-events:none}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.24em;text-transform:uppercase;
+    color:var(--jade-deep);font-weight:500}
+  h1{font-family:"Cormorant Garamond",serif;font-weight:600;font-style:italic;font-size:clamp(30px,5vw,46px);
+    line-height:1.02;margin:.1em 0 .1em}
+  h1 .amp{color:var(--jade);font-style:normal}
+  .subline{color:var(--ink-soft);font-size:14.5px;max-width:72ch}
+
+  .sec-head{display:flex;align-items:baseline;gap:12px;margin:24px 0 12px;flex-wrap:wrap}
+  .sec-head h2{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:26px;margin:0;font-style:italic}
+  .sec-head .rule{flex:1;height:1px;background:var(--line)}
+  .sec-head .hint{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft)}
+
+  .trow{border:1px solid var(--line);border-radius:var(--radius);background:var(--card);box-shadow:var(--shadow);
+    padding:16px 18px;margin:10px 0}
+  .thead{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .thead h3{font-family:"Cormorant Garamond",serif;font-weight:600;font-style:italic;font-size:22px;margin:0;line-height:1.1}
+  .owner{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
+    border:1px solid var(--seal);color:var(--seal-deep);background:#f6e6df;border-radius:5px;padding:2px 8px;white-space:nowrap}
+  .tmeta{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft)}
+  .topen{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:11.5px;text-decoration:none;
+    border:1px solid var(--jade);color:#fff;background:var(--jade);border-radius:9px;padding:8px 14px;white-space:nowrap}
+  .topen:hover{background:var(--jade-deep)}
+  .share{border-top:1px dashed var(--line-soft);margin-top:12px;padding-top:12px}
+  .share .lbl{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink-soft);margin-bottom:8px}
+  .userchips{display:flex;gap:8px;flex-wrap:wrap}
+  .uchip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line-soft);border-radius:20px;
+    padding:6px 12px;font-size:13px;cursor:pointer;background:rgba(255,255,255,.4);transition:border-color .15s,background .15s}
+  .uchip:hover{border-color:var(--jade)}
+  .uchip.on{border-color:var(--jade);background:rgba(62,97,82,.10)}
+  .uchip.owner{opacity:.7;cursor:default;border-style:dashed}
+  .uchip input{width:15px;height:15px;accent-color:var(--jade);cursor:pointer}
+  .uchip .tag{font-family:"IBM Plex Mono",monospace;font-size:9px;color:var(--ink-soft)}
+
+  .empty,.loading{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--ink-soft);padding:18px 4px}
+  .spin{display:inline-block;width:12px;height:12px;border:2px solid var(--line);border-top-color:var(--jade);
+    border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px;margin-right:8px}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}.spin{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="topnav" id="topnav" aria-label="Secciones"></nav>
+
+  <header class="masthead">
+    <div class="eyebrow">Administración · viajes de todos</div>
+    <h1>Admin de <span class="amp">·</span> viajes</h1>
+    <p class="subline">Aquí ves <b>todos los viajes</b> que crea cada persona y decides <b>con quién se comparte</b> cada uno. El dueño siempre ve el suyo; tú (admin) ves todos. Marca a quién más se lo quieres mostrar.</p>
+  </header>
+
+  <div class="sec-head"><h2>Todos los viajes</h2><span class="rule"></span><span class="hint" id="conteo"></span></div>
+  <div id="lista"><div class="loading"><span class="spin"></span>Cargando viajes…</div></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+<script>
+  const esc=s=>(s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  const MESES=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+  function fechaCorta(iso){try{const d=new Date(iso);return d.getDate()+" "+MESES[d.getMonth()]+" "+String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0");}catch(e){return"";}}
+  let YO=null, perfiles=[], perfMap={}, viajes=[], acceso={}; // acceso[viajeId]=Set(userIds)
+
+  async function cargar(){
+    const cont=document.getElementById("lista");
+    try{
+      const [p,v,a]=await Promise.all([
+        Auth.sb.from("perfiles").select("id,usuario,nombre,rol").order("creado",{ascending:true}),
+        Auth.sb.from("viajes").select("id,titulo,propietario,actualizado,creado").order("creado",{ascending:true}),
+        Auth.sb.from("viaje_acceso").select("viaje_id,usuario_id"),
+      ]);
+      if(p.error)throw p.error; if(v.error)throw v.error; if(a.error)throw a.error;
+      perfiles=p.data||[]; viajes=v.data||[];
+      perfMap={}; perfiles.forEach(x=>perfMap[x.id]=x);
+      acceso={}; (a.data||[]).forEach(r=>{(acceso[r.viaje_id]=acceso[r.viaje_id]||new Set()).add(r.usuario_id);});
+    }catch(e){
+      cont.innerHTML='<div class="empty">No se pudieron cargar los viajes: '+esc(e.message||e)+'</div>';
+      return;
+    }
+    document.getElementById("conteo").textContent=viajes.length+(viajes.length===1?" viaje":" viajes");
+    if(!viajes.length){cont.innerHTML='<div class="empty">Todavía nadie ha creado viajes.</div>';return;}
+    cont.innerHTML=viajes.map(fila).join("");
+    viajes.forEach(wire);
+  }
+  function nombreDe(id){const p=perfMap[id];return p?(p.nombre||p.usuario):"(usuario desconocido)";}
+  function fila(t){
+    const dueno=nombreDe(t.propietario);
+    const set=acceso[t.id]||new Set();
+    const otros=perfiles.filter(p=>p.id!==t.propietario);
+    const chips=otros.length?otros.map(p=>{
+      const on=set.has(p.id);
+      return '<label class="uchip'+(on?" on":"")+'" data-u="'+esc(p.id)+'">'+
+        '<input type="checkbox" '+(on?"checked":"")+'>'+esc(p.nombre||p.usuario)+
+        (p.rol==="admin"?' <span class="tag">admin</span>':"")+'</label>';
+    }).join(""):'<span class="tmeta">No hay otros usuarios a quién compartir todavía.</span>';
+    return '<div class="trow" data-id="'+esc(t.id)+'">'+
+      '<div class="thead">'+
+        '<h3>'+esc(t.titulo||"Viaje sin título")+'</h3>'+
+        '<span class="owner">dueño: '+esc(dueno)+'</span>'+
+        '<span class="tmeta">actualizado '+fechaCorta(t.actualizado)+'</span>'+
+        '<a class="topen" href="index.html?trip='+encodeURIComponent(t.id)+'">Abrir ↗</a>'+
+      '</div>'+
+      '<div class="share"><div class="lbl">Además del dueño, pueden verlo:</div>'+
+        '<div class="userchips"><label class="uchip owner"><input type="checkbox" checked disabled>'+esc(dueno)+' <span class="tag">dueño</span></label>'+chips+'</div>'+
+      '</div>'+
+    '</div>';
+  }
+  function wire(t){
+    const row=document.querySelector('.trow[data-id="'+t.id+'"]');
+    if(!row)return;
+    row.querySelectorAll('.uchip[data-u]').forEach(chip=>{
+      const uid=chip.dataset.u, box=chip.querySelector("input");
+      box.addEventListener("change",async()=>{
+        box.disabled=true;
+        try{
+          if(box.checked){
+            await Auth.sb.from("viaje_acceso").insert({viaje_id:t.id,usuario_id:uid});
+            (acceso[t.id]=acceso[t.id]||new Set()).add(uid);
+          }else{
+            await Auth.sb.from("viaje_acceso").delete().eq("viaje_id",t.id).eq("usuario_id",uid);
+            if(acceso[t.id])acceso[t.id].delete(uid);
+          }
+          chip.classList.toggle("on",box.checked);
+        }catch(e){
+          box.checked=!box.checked;
+          alert("No se pudo actualizar el acceso: "+(e.message||e));
+        }
+        box.disabled=false;
+      });
+    });
+  }
+
+  (async function init(){
+    const perfil=await Auth.requerirAcceso("viajes-admin");
+    if(!perfil)return;
+    YO=perfil;
+    Auth.montarBarra("viajes-admin",perfil);
+    await cargar();
+  })();
+</script>
+</body>
+</html>
