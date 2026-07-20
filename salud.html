@@ -169,6 +169,50 @@
   .ditem .dname{flex:1;min-width:0;font-size:13.5px}
   .ditem .dname small{color:var(--ink-soft);font-size:11.5px}
   .ditem input.dg{width:72px}
+  .qty{display:inline-flex;align-items:center;border:1px solid var(--line-soft);border-radius:9px;overflow:hidden;background:rgba(255,255,255,.55);flex:none}
+  .qty input.dg,.qty input.drc{width:52px;border:0;border-radius:0;background:transparent;text-align:center;padding:6px 2px}
+  .qty input.dg:focus,.qty input.drc:focus{background:#fff;outline:none}
+  .qstep{border:0;background:transparent;width:28px;height:32px;cursor:pointer;font-size:16px;color:var(--ink-soft);line-height:1;padding:0}
+  .qstep:hover{background:var(--card-2);color:var(--jade)}
+
+  /* ---------- calendario semanal ---------- */
+  .calweek{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-top:14px}
+  .calday{border:1px solid var(--line);border-left:4px solid var(--line);border-radius:12px;background:var(--card);
+    box-shadow:var(--shadow);padding:12px 10px 10px;cursor:pointer;display:flex;flex-direction:column;gap:5px;min-height:120px;
+    transition:transform .15s,box-shadow .15s}
+  .calday:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(32,39,43,.14)}
+  .calday.today{border-color:var(--jade);box-shadow:0 0 0 2px rgba(62,97,82,.15),var(--shadow)}
+  .calday.ok{border-left-color:var(--jade)}
+  .calday.low{border-left-color:var(--muted)}
+  .calday.over{border-left-color:var(--seal)}
+  .calday.none{border-left-color:var(--line-soft);opacity:.75}
+  .calday .cd-h{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
+  .calday .cd-h b{color:var(--ink);font-size:14px}
+  .calday .cd-k{font-family:"Cormorant Garamond",serif;font-size:26px;font-weight:600;line-height:1;color:var(--ink)}
+  .calday .cd-k small{font-size:11px;color:var(--ink-soft);font-family:"IBM Plex Mono",monospace}
+  .calday.none .cd-k{color:var(--muted)}
+  .calday .cd-bar{height:6px;border-radius:4px;background:var(--line-soft);overflow:hidden;margin-top:2px}
+  .calday .cd-bar i{display:block;height:100%;background:var(--jade);border-radius:4px}
+  .calday.over .cd-bar i{background:var(--seal)}
+  .calday.low .cd-bar i{background:var(--muted)}
+  .calday .cd-sub{font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:var(--ink-soft);margin-top:auto}
+  .daymodal{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 20px 60px rgba(0,0,0,.3);
+    max-width:520px;width:100%;max-height:88vh;overflow:auto;padding:20px 22px 18px}
+  .daymodal .dm-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}
+  .daymodal .dm-date{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--jade-deep)}
+  .daymodal .dm-k{font-family:"Cormorant Garamond",serif;font-size:34px;font-weight:600;line-height:1.05}
+  .daymodal .dm-k small{font-size:15px;color:var(--ink-soft);font-family:"IBM Plex Mono",monospace}
+  .daymodal .dm-x{margin-left:auto;padding:6px 12px}
+  .daymodal .dm-meals{margin-top:12px;border-top:1px dashed var(--line-soft);padding-top:10px}
+  .daymodal .mgrp{margin:8px 0}
+  .daymodal .mgh{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--jade-deep);display:flex;gap:8px;margin-bottom:3px}
+  .daymodal .mgh span{margin-left:auto;color:var(--ink-soft)}
+  .daymodal .ml{font-size:13px;color:var(--ink);display:flex;gap:8px;padding:2px 0}
+  .daymodal .ml span{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft)}
+  .daymodal .dm-acts{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+  @media (max-width:720px){.calweek{grid-template-columns:repeat(4,1fr)}}
+  @media (max-width:480px){.calweek{grid-template-columns:repeat(2,1fr)}}
   .ditem .dmac{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-soft);width:200px;text-align:right;flex:none}
   .addline{display:flex;gap:8px;margin-top:9px;align-items:center;flex-wrap:wrap}
 
@@ -281,6 +325,7 @@
 
   <div class="pagetabs" id="pagetabs">
     <button class="ptab active" data-view="diario">📔 Diario</button>
+    <button class="ptab" data-view="cal">📅 Calendario</button>
     <button class="ptab" data-view="objetivos">🎯 Objetivos</button>
     <button class="ptab" data-view="alimentos">🥗 Alimentos</button>
     <button class="ptab" data-view="recetas">🍳 Mis comidas</button>
@@ -332,6 +377,21 @@
         </div>
       </div>
     </div>
+  </section>
+
+  <!-- ==================== CALENDARIO ==================== -->
+  <section class="sec view" id="view-cal" hidden>
+    <div class="sec-head"><h2>Calendario</h2><span class="rule"></span>
+      <div class="datebar">
+        <button class="dnav" id="calPrev" title="Semana anterior">◀</button>
+        <span class="dlabel" id="calLabel"></span>
+        <button class="dnav" id="calNext" title="Semana siguiente">▶</button>
+        <button class="btn" id="calToday">Esta semana</button>
+      </div>
+    </div>
+    <div class="macrogrid" id="calKpis"></div>
+    <div class="calweek" id="calWeek"></div>
+    <p class="csub" style="margin-top:12px">Toca un día para ver el detalle, editarlo o copiar el día anterior.</p>
   </section>
 
   <!-- ==================== OBJETIVOS ==================== -->
@@ -460,7 +520,7 @@ const DEFAULT_FOODS=[
 {"id":"tilapia","name":"Tilapia cocida","cat":"pescados","note":"cocida","serv_g":150,"serv_desc":"1 filete","kcal":128,"prot":26.15,"fat":2.65,"sat":0.94,"carb":0,"fib":0,"sug":0,"vA":0,"vC":0,"vD":3.1,"vE":0.8,"vK":0,"b1":0.04,"b2":0.07,"b3":4.7,"b6":0.12,"b9":5,"b12":1.86,"ca":14,"fe":0.7,"mg":34,"p":204,"k":380,"na":56,"zn":0.4,"se":54.4,"iod":null,"cu":0.09,"mn":0.04,"cl":null},
 {"id":"clara-huevo","name":"Clara de huevo","cat":"huevos-lacteos","note":"cruda (USDA 01124); casi todo el yodo y vitaminas liposolubles estan en la yema","serv_g":33,"serv_desc":"clara de 1 huevo","kcal":52,"prot":10.9,"fat":0.17,"sat":0,"carb":0.73,"fib":0,"sug":0.7,"vA":0,"vC":0,"vD":0,"vE":0,"vK":0,"b1":0.004,"b2":0.439,"b3":0.105,"b6":0.005,"b9":4,"b12":0.09,"ca":7,"fe":0.08,"mg":11,"p":15,"k":163,"na":166,"zn":0.03,"se":20,"iod":null,"cu":0.023,"mn":0.011,"cl":null},
 {"id":"huevo-cocido","name":"Huevo entero cocido","cat":"huevos-lacteos","note":"cocido/duro, sin sal (USDA 01129)","serv_g":50,"serv_desc":"1 pieza","kcal":155,"prot":12.6,"fat":10.6,"sat":3.27,"carb":1.1,"fib":0,"sug":1.1,"vA":149,"vC":0,"vD":2.2,"vE":1.03,"vK":0.3,"b1":0.066,"b2":0.513,"b3":0.064,"b6":0.121,"b9":44,"b12":1.11,"ca":50,"fe":1.19,"mg":10,"p":172,"k":126,"na":124,"zn":1.05,"se":30.8,"iod":52,"cu":0.013,"mn":0.026,"cl":null},
-{"id":"huevo-revuelto","name":"Huevo revuelto","cat":"huevos-lacteos","note":"2 huevos con poca grasa (aprox.)","serv_g":100,"serv_desc":"2 huevos","kcal":166,"prot":11,"fat":12.2,"sat":3.9,"carb":2.2,"fib":0,"sug":1.5,"vA":140,"vC":0,"vD":2,"vE":1.1,"vK":0.5,"b1":0.04,"b2":0.4,"b3":0.1,"b6":0.12,"b9":40,"b12":1,"ca":66,"fe":1.3,"mg":11,"p":160,"k":132,"na":145,"zn":1.1,"se":24,"iod":40,"cu":0.03,"mn":0.03,"cl":null},
+{"id":"huevo-revuelto","name":"Huevo revuelto","cat":"huevos-lacteos","note":"1 huevo revuelto con poca grasa (aprox.); 1 huevo ~50 g","serv_g":50,"serv_desc":"1 huevo","kcal":166,"prot":11,"fat":12.2,"sat":3.9,"carb":2.2,"fib":0,"sug":1.5,"vA":140,"vC":0,"vD":2,"vE":1.1,"vK":0.5,"b1":0.04,"b2":0.4,"b3":0.1,"b6":0.12,"b9":40,"b12":1,"ca":66,"fe":1.3,"mg":11,"p":160,"k":132,"na":145,"zn":1.1,"se":24,"iod":40,"cu":0.03,"mn":0.03,"cl":null},
 {"id":"cecina-res","name":"Cecina de res","cat":"carnes","note":"res salada y seca, asada (aprox.; muy alta en sodio)","serv_g":60,"serv_desc":"1 porcion","kcal":240,"prot":33,"fat":11,"sat":4.6,"carb":0,"fib":0,"sug":0,"vA":0,"vC":0,"vD":0.2,"vE":0.4,"vK":1.2,"b1":0.08,"b2":0.2,"b3":5,"b6":0.4,"b9":8,"b12":2.6,"ca":12,"fe":3,"mg":24,"p":200,"k":350,"na":1900,"zn":5,"se":25,"iod":null,"cu":0.1,"mn":0.02,"cl":null},
 {"id":"machaca-res","name":"Machaca (res deshidratada)","cat":"carnes","note":"res seca deshebrada (aprox.; muy alta en sodio)","serv_g":30,"serv_desc":"1 porcion","kcal":410,"prot":60,"fat":18,"sat":7.5,"carb":2,"fib":0,"sug":0,"vA":0,"vC":0,"vD":0.3,"vE":0.5,"vK":1.5,"b1":0.1,"b2":0.3,"b3":7,"b6":0.5,"b9":10,"b12":4,"ca":15,"fe":5,"mg":40,"p":320,"k":550,"na":2000,"zn":8,"se":30,"iod":null,"cu":0.15,"mn":0.03,"cl":null},
 {"id":"chorizo-cerdo","name":"Chorizo de cerdo","cat":"carnes","note":"chorizo mexicano de cerdo, cocido (aprox.)","serv_g":40,"serv_desc":"1 porcion","kcal":455,"prot":24,"fat":38,"sat":14,"carb":1.9,"fib":0,"sug":0,"vA":0,"vC":0,"vD":0.6,"vE":0.2,"vK":1,"b1":0.5,"b2":0.2,"b3":4,"b6":0.4,"b9":2,"b12":1.9,"ca":8,"fe":1.6,"mg":18,"p":190,"k":320,"na":1240,"zn":3,"se":30,"iod":null,"cu":0.08,"mn":0.02,"cl":null},
@@ -692,17 +752,19 @@ function defaultStack(){
   return s;
 }
 function defaultRecipes(){
-  const R=(id,name,cat,items,note)=>({id,name,cat,items,note:note||""});
+  // base:{label,n} = "esta receta está definida para n huevos"; al subir huevos, todo escala en lote.
+  const R=(id,name,cat,items,note,base)=>({id,name,cat,items,note:note||"",base:base||null});
   const has=id=>DEFAULT_FOODS.some(f=>f.id===id);
+  const HUEVOS={label:"huevos",n:2};
   const out=[];
   if(has("huevo-revuelto")&&has("jitomate")&&has("cebolla"))
-    out.push(R("rec-mexicana","Huevos a la mexicana","des",[{foodId:"huevo-revuelto",g:100},{foodId:"jitomate",g:50},{foodId:"cebolla",g:25}],"+ chile al gusto"));
+    out.push(R("rec-mexicana","Huevos a la mexicana","des",[{foodId:"huevo-revuelto",g:100},{foodId:"jitomate",g:60},{foodId:"cebolla",g:30}],"+ chile al gusto",HUEVOS));
   if(has("machaca-res")&&has("huevo-revuelto"))
-    out.push(R("rec-machaca","Machaca con huevo","des",[{foodId:"machaca-res",g:30},{foodId:"huevo-revuelto",g:100},{foodId:"jitomate",g:30},{foodId:"cebolla",g:20}]));
+    out.push(R("rec-machaca","Machaca con huevo","des",[{foodId:"machaca-res",g:30},{foodId:"huevo-revuelto",g:100},{foodId:"jitomate",g:40},{foodId:"cebolla",g:25}],"",HUEVOS));
   if(has("chorizo-cerdo")&&has("huevo-revuelto"))
-    out.push(R("rec-chorizo","Huevos con chorizo","des",[{foodId:"huevo-revuelto",g:100},{foodId:"chorizo-cerdo",g:40}]));
+    out.push(R("rec-chorizo","Huevos con chorizo","des",[{foodId:"huevo-revuelto",g:100},{foodId:"chorizo-cerdo",g:50}],"",HUEVOS));
   if(has("cecina-res")&&has("huevo-revuelto"))
-    out.push(R("rec-cecina","Huevos con cecina","des",[{foodId:"huevo-revuelto",g:100},{foodId:"cecina-res",g:60}]));
+    out.push(R("rec-cecina","Huevos con cecina","des",[{foodId:"huevo-revuelto",g:100},{foodId:"cecina-res",g:60}],"",HUEVOS));
   return out;
 }
 function blankDay(){const meals={};MEALS.forEach(([k])=>meals[k]=[]);return{meals,agua:0,nota:""};}
@@ -1019,7 +1081,9 @@ function renderMeals(){
         return`<div class="ditem">
           <span>🍳</span>
           <div class="dname">${esc(r.name)} <small>· receta</small></div>
-          <input class="f num dmult" type="number" min="0" step="0.5" value="${fmtNum(mult,2)}" data-mult="${mk}|${it.id}" title="porciones"> <span class="mini">porc.</span>
+          ${r.base&&r.base.n
+            ?`<span class="qty"><button class="qstep" data-rq="${mk}|${it.id}|-1" tabindex="-1">−</button><input class="f num drc" type="number" min="0" step="1" value="${fmtNum(Math.round(r.base.n*mult*100)/100,0)}" data-rc="${mk}|${it.id}|${r.base.n}" title="${esc(r.base.label)}"><button class="qstep" data-rq="${mk}|${it.id}|1" tabindex="-1">＋</button></span> <span class="mini">${esc(r.base.label)}</span>`
+            :`<input class="f num dmult" type="number" min="0" step="0.5" value="${fmtNum(mult,2)}" data-mult="${mk}|${it.id}" title="porciones"> <span class="mini">porc.</span>`}
           <div class="dmac">${Math.round(tt.kcal)} kcal · P ${fmtNum(tt.prot,0)} · C ${fmtNum(tt.carb,0)} · G ${fmtNum(tt.fat,0)}</div>
           <button class="del" data-del="${mk}|${it.id}" title="Quitar">✕</button>
         </div>`;
@@ -1031,7 +1095,8 @@ function renderMeals(){
       return`<div class="ditem">
         <span>${CATS[f.cat]?CATS[f.cat].e:"·"}</span>
         <div class="dname">${esc(f.name)}${f.serv_desc?` <small>· ${esc(f.serv_desc)} = ${fmtNum(f.serv_g)} g</small>`:""}</div>
-        <input class="f num dg" type="number" min="0" step="1" value="${fmtNum(it.g,0)}" data-g="${mk}|${it.id}" title="gramos"> <span class="mini">g</span>
+        <span class="qty"><button class="qstep" data-q="${mk}|${it.id}|-1" tabindex="-1" title="menos">−</button><input class="f num dg" type="number" min="0" step="1" value="${fmtNum(it.g,0)}" data-g="${mk}|${it.id}" title="gramos"><button class="qstep" data-q="${mk}|${it.id}|1" tabindex="-1" title="más">＋</button></span>
+        <span class="mini">${f.serv_g?`${fmtNum(it.g/f.serv_g)} ${esc((f.serv_desc||"pz").replace(/^\d+\s*/,""))}`:"g"}</span>
         <div class="dmac">${Math.round((+f.kcal||0)*x)} kcal · P ${fmtNum((+f.prot||0)*x,0)} · C ${fmtNum((+f.carb||0)*x,0)} · G ${fmtNum((+f.fat||0)*x,0)}</div>
         <button class="del" data-del="${mk}|${it.id}" title="Quitar">✕</button>
       </div>`;
@@ -1064,6 +1129,27 @@ function renderMeals(){
       if(mac&&r){const tt=recipeTotals(r,it.mult);
         mac.textContent=`${Math.round(tt.kcal)} kcal · P ${fmtNum(tt.prot,0)} · C ${fmtNum(tt.carb,0)} · G ${fmtNum(tt.fat,0)}`;}
     }
+  }));
+  holder.querySelectorAll(".qstep[data-q]").forEach(btn=>btn.addEventListener("click",()=>{
+    const [mk,id,dir]=btn.dataset.q.split("|");
+    const it=(dayEntry(curDate,true).meals[mk]||[]).find(x=>x.id===id);if(!it)return;
+    const f=state.foods[it.foodId];const step=(f&&f.serv_g)||10;
+    it.g=Math.max(0,Math.round(((+it.g||0)+(+dir)*step)*100)/100);
+    saveDebounced();renderMeals();refreshDiaryLight();
+  }));
+  holder.querySelectorAll("input.drc").forEach(inp=>inp.addEventListener("input",()=>{
+    const [mk,id,n]=inp.dataset.rc.split("|");
+    const it=(dayEntry(curDate,true).meals[mk]||[]).find(x=>x.id===id);
+    if(it){it.mult=(+inp.value||0)/(+n||1);saveDebounced();refreshDiaryLight();
+      const row=inp.closest(".ditem"),r=recipeById(it.recipeId),mac=row&&row.querySelector(".dmac");
+      if(mac&&r){const tt=recipeTotals(r,it.mult);mac.textContent=`${Math.round(tt.kcal)} kcal · P ${fmtNum(tt.prot,0)} · C ${fmtNum(tt.carb,0)} · G ${fmtNum(tt.fat,0)}`;}}
+  }));
+  holder.querySelectorAll(".qstep[data-rq]").forEach(btn=>btn.addEventListener("click",()=>{
+    const [mk,id,dir]=btn.dataset.rq.split("|");
+    const it=(dayEntry(curDate,true).meals[mk]||[]).find(x=>x.id===id);if(!it)return;
+    const r=recipeById(it.recipeId);const n=(r&&r.base&&r.base.n)||1;
+    const cnt=Math.max(0,Math.round(n*(it.mult==null?1:it.mult))+(+dir));
+    it.mult=cnt/n;saveDebounced();renderMeals();refreshDiaryLight();
   }));
   holder.querySelectorAll("select.addrec").forEach(sel=>sel.addEventListener("change",()=>{
     const mk=sel.dataset.meal,rid=sel.value;if(!rid)return;
@@ -1511,11 +1597,82 @@ function wireRecetas(){
     }
   });
 }
+/* ===================== Calendario semanal ===================== */
+function mondayOf(d){const x=new Date(d);const wd=(x.getDay()+6)%7;x.setDate(x.getDate()-wd);x.setHours(0,0,0,0);return x;}
+let calWeekStart=dkey(mondayOf(new Date()));
+function dayHasLog(k){const dd=state.diary[k];return !!(dd&&dd.meals&&Object.values(dd.meals).some(l=>l&&l.length));}
+function calKpiTile(name,val,sub){return `<div class="mtile"><div class="mt-name">${name}</div><div class="mt-val">${val}</div><div class="mt-sub">${sub||""}</div></div>`;}
+function renderCal(){
+  const m=macroTargets(),start=parseKey(calWeekStart);
+  const days=[];for(let i=0;i<7;i++){const d=new Date(start);d.setDate(d.getDate()+i);days.push(d);}
+  const endd=days[6];
+  document.getElementById("calLabel").textContent=`${start.getDate()} ${MESES[start.getMonth()]} – ${endd.getDate()} ${MESES[endd.getMonth()]}`;
+  let sumK=0,logged=0,onT=0,sumP=0;
+  const per=days.map(d=>{const k=dkey(d),t=dayTotals(k),has=dayHasLog(k);
+    if(has){logged++;sumK+=t.kcal;sumP+=t.prot;if(m.kcal&&t.kcal>=m.kcal*0.85&&t.kcal<=m.kcal*1.15)onT++;}
+    return{d,k,t,has};});
+  const avgK=logged?Math.round(sumK/logged):0,avgP=logged?Math.round(sumP/logged):0;
+  document.getElementById("calKpis").innerHTML=
+    calKpiTile("Prom. kcal",avgK,"por día con registro")+
+    calKpiTile("Días con registro",logged+" / 7","")+
+    calKpiTile("Días en meta",onT+" / "+logged,"±15% de la meta")+
+    calKpiTile("Prom. proteína",avgP+" g","por día");
+  const todayK=dkey(new Date());
+  document.getElementById("calWeek").innerHTML=per.map(({d,k,t,has})=>{
+    const st=!has?"none":(m.kcal&&t.kcal>m.kcal*1.15?"over":m.kcal&&t.kcal<m.kcal*0.7?"low":"ok");
+    const pct=has&&m.kcal?Math.min(100,t.kcal/m.kcal*100):0;
+    return `<div class="calday ${k===todayK?"today":""} ${st}" data-day="${k}">
+      <div class="cd-h">${DIAS[d.getDay()]} <b>${d.getDate()}</b></div>
+      <div class="cd-k">${has?Math.round(t.kcal):"—"}<small>${has?" kcal":""}</small></div>
+      <div class="cd-bar"><i style="width:${pct}%"></i></div>
+      <div class="cd-sub">${has?"P "+Math.round(t.prot)+" · C "+Math.round(t.carb)+" · G "+Math.round(t.fat):"sin registro"}</div>
+    </div>`;
+  }).join("");
+  document.querySelectorAll("#calWeek .calday").forEach(el=>el.addEventListener("click",()=>openDayModal(el.dataset.day)));
+}
+function openDayModal(k){
+  const d=parseKey(k),t=dayTotals(k),m=macroTargets(),dd=state.diary[k];
+  const bar=(name,val,tgt,unit)=>{const pct=tgt?Math.min(100,val/tgt*100):0;
+    return `<div class="microrow"><div class="mn">${name}</div><div class="bar"><i style="width:${pct}%"></i></div><div class="mv"><b>${Math.round(val)}</b> / ${Math.round(tgt)} ${unit}</div></div>`;};
+  const meals=MEALS.map(([mk,label])=>{
+    const items=(dd&&dd.meals[mk])||[];if(!items.length)return "";
+    const lines=items.map(it=>{
+      if(it.recipeId){const r=recipeById(it.recipeId);return r?`<div class="ml">${esc(r.name)}<span>${Math.round(entryTotals(it).kcal)} kcal</span></div>`:"";}
+      const f=state.foods[it.foodId];return f?`<div class="ml">${esc(f.name)} · ${fmtNum(it.g,0)} g<span>${Math.round(entryTotals(it).kcal)} kcal</span></div>`:"";
+    }).join("");
+    return `<div class="mgrp"><div class="mgh">${label}<span>${Math.round(mealKcal(items))} kcal</span></div>${lines}</div>`;
+  }).join("")||`<div class="mini" style="padding:6px 0">Sin registros este día.</div>`;
+  const ov=document.createElement("div");ov.className="confirmov";
+  ov.innerHTML=`<div class="daymodal">
+    <div class="dm-head"><div>
+      <div class="dm-date">${DIAS[d.getDay()]} ${d.getDate()} ${MESES[d.getMonth()]} ${d.getFullYear()}</div>
+      <div class="dm-k">${Math.round(t.kcal)} <small>/ ${m.kcal} kcal</small></div>
+    </div><button class="btn dm-x">✕</button></div>
+    ${bar("Proteína",t.prot,m.prot,"g")}${bar("Carbohidratos",t.carb,m.carb,"g")}${bar("Grasas",t.fat,m.fat,"g")}
+    <div class="dm-meals">${meals}</div>
+    <div class="dm-acts">
+      <button class="btn primary dm-open">✎ Ver / editar en Diario</button>
+      <button class="btn dm-copy">⧉ Copiar del día anterior</button>
+    </div></div>`;
+  document.body.appendChild(ov);
+  const close=()=>ov.remove();
+  ov.querySelector(".dm-x").onclick=close;
+  ov.addEventListener("click",e=>{if(e.target===ov)close();});
+  ov.querySelector(".dm-open").onclick=()=>{curDate=k;close();setView("diario");renderSummary();};
+  ov.querySelector(".dm-copy").onclick=()=>{
+    const prev=new Date(d);prev.setDate(prev.getDate()-1);const pk=dkey(prev),pd=state.diary[pk];
+    if(!dayHasLog(pk)){alert("El día anterior no tiene registros para copiar.");return;}
+    const day=dayEntry(k,true);
+    MEALS.forEach(([mk])=>{(pd.meals[mk]||[]).forEach(it=>day.meals[mk].push(Object.assign({},it,{id:uid()})));});
+    saveDebounced();close();renderCal();renderSummary();
+  };
+}
 function setView(v){
   view=v;
   document.querySelectorAll("#pagetabs .ptab").forEach(b=>b.classList.toggle("active",b.dataset.view===v));
   document.querySelectorAll(".view").forEach(s=>s.hidden=s.id!=="view-"+v);
   if(v==="diario")renderDiario();
+  else if(v==="cal")renderCal();
   else if(v==="objetivos")renderObjetivos();
   else if(v==="alimentos")renderAlimentos();
   else if(v==="recetas")renderRecetas();
@@ -1567,6 +1724,9 @@ function wireGlobal(){
     if(row){row.scrollIntoView({behavior:"smooth",block:"center"});
       const inp=row.querySelector('[data-rf="name"]');if(inp){inp.focus();inp.select();}}
   });
+  document.getElementById("calPrev").addEventListener("click",()=>{const d=parseKey(calWeekStart);d.setDate(d.getDate()-7);calWeekStart=dkey(d);renderCal();});
+  document.getElementById("calNext").addEventListener("click",()=>{const d=parseKey(calWeekStart);d.setDate(d.getDate()+7);calWeekStart=dkey(d);renderCal();});
+  document.getElementById("calToday").addEventListener("click",()=>{calWeekStart=dkey(mondayOf(new Date()));renderCal();});
   document.getElementById("newFood").addEventListener("click",()=>{
     const id="cust_"+uid();
     const f={id,name:"Nuevo alimento",cat:catFilter!=="todas"?catFilter:"otros",note:"",serv_g:null,serv_desc:"",
