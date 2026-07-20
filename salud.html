@@ -788,6 +788,11 @@ async function load(){
   if(!Array.isArray(state.stack))state.stack=[];
   if(!Array.isArray(state.recipes))state.recipes=[];
   if(!state.recipesSeeded){defaultRecipes().forEach(r=>{if(!state.recipes.some(x=>x.id===r.id))state.recipes.push(r);});state.recipesSeeded=true;}
+  // migración: recetas de huevo por defecto con "lote de huevos" + huevo a 50 g
+  const _HB={label:"huevos",n:2};
+  ["rec-mexicana","rec-machaca","rec-chorizo","rec-cecina"].forEach(id=>{const r=state.recipes.find(x=>x.id===id);if(r&&!r.base)r.base=_HB;});
+  const _he=state.foods["huevo-revuelto"];
+  if(_he&&_he.serv_g===100){_he.serv_g=50;_he.serv_desc="1 huevo";}
   // sembrar alimentos del catálogo base que falten (salvo que el usuario los haya borrado)
   DEFAULT_FOODS.forEach(f=>{
     if(!state.foods[f.id]&&!state.removed.includes(f.id))state.foods[f.id]={...f};
