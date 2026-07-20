@@ -541,6 +541,7 @@ const DEFAULT_FOODS=[
 {"id":"avena","name":"Avena en hojuelas cruda","cat":"cereales","note":"hojuelas de grano entero, crudas/secas (USDA Foundation)","serv_g":40,"serv_desc":"1/2 taza (40 g)","kcal":379,"prot":13.2,"fat":6.5,"sat":1.11,"carb":67.7,"fib":10.1,"sug":1,"vA":0,"vC":0,"vD":0,"vE":0.4,"vK":2,"b1":0.46,"b2":0.155,"b3":1.12,"b6":0.1,"b9":32,"b12":0,"ca":52,"fe":4.25,"mg":138,"p":410,"k":362,"na":6,"zn":3.64,"se":28.9,"iod":null,"cu":0.391,"mn":3.63,"cl":null},
 {"id":"camote","name":"Camote cocido","cat":"cereales","note":"hervido, sin cascara, sin sal (USDA 11510); camote naranja rico en beta-caroteno","serv_g":150,"serv_desc":"1 pieza mediana","kcal":76,"prot":1.37,"fat":0.14,"sat":0.03,"carb":17.7,"fib":2.5,"sug":5.7,"vA":787,"vC":12.8,"vD":0,"vE":0.94,"vK":2.1,"b1":0.056,"b2":0.047,"b3":0.538,"b6":0.165,"b9":6,"b12":0,"ca":27,"fe":0.72,"mg":18,"p":32,"k":230,"na":27,"zn":0.2,"se":0.2,"iod":null,"cu":0.094,"mn":0.27,"cl":null},
 {"id":"pan-integral","name":"Pan integral","cat":"cereales","note":"pan de caja de trigo integral, comercial (USDA)","serv_g":30,"serv_desc":"1 rebanada","kcal":252,"prot":12.3,"fat":3.4,"sat":0.72,"carb":43.1,"fib":6,"sug":4.3,"vA":0,"vC":0,"vD":0,"vE":0.5,"vK":7.8,"b1":0.39,"b2":0.17,"b3":4.44,"b6":0.21,"b9":42,"b12":0,"ca":161,"fe":2.5,"mg":76,"p":212,"k":250,"na":455,"zn":1.76,"se":25.8,"iod":null,"cu":0.227,"mn":2.14,"cl":700},
+{"id":"pan-masa-madre","name":"Pan de masa madre","cat":"cereales","note":"sourdough (aprox.); 1 rebanada ~50 g","serv_g":50,"serv_desc":"1 rebanada","kcal":289,"prot":12,"fat":1.9,"sat":0.4,"carb":56,"fib":2.4,"sug":2,"vA":0,"vC":0,"vD":0,"vE":0.3,"vK":0.5,"b1":0.5,"b2":0.3,"b3":5,"b6":0.1,"b9":130,"b12":0,"ca":30,"fe":3.5,"mg":24,"p":90,"k":110,"na":540,"zn":1,"se":25,"iod":null,"cu":0.15,"mn":0.7,"cl":null},
 {"id":"papa","name":"Papa cocida","cat":"cereales","note":"hervida, sin cascara, sin sal (USDA 11367)","serv_g":150,"serv_desc":"1 papa mediana","kcal":86,"prot":1.71,"fat":0.1,"sat":0.03,"carb":20,"fib":1.8,"sug":0.85,"vA":0,"vC":7.4,"vD":0,"vE":0.01,"vK":2.1,"b1":0.098,"b2":0.019,"b3":1.31,"b6":0.269,"b9":9,"b12":0,"ca":8,"fe":0.31,"mg":20,"p":40,"k":328,"na":5,"zn":0.27,"se":0.3,"iod":null,"cu":0.167,"mn":0.14,"cl":null},
 {"id":"pasta","name":"Pasta cocida","cat":"cereales","note":"espagueti de trigo, cocido sin sal, no enriquecido (USDA); si es pasta fortificada, b1/b9/fe son mayores","serv_g":140,"serv_desc":"1 taza","kcal":158,"prot":5.8,"fat":0.93,"sat":0.18,"carb":30.9,"fib":1.8,"sug":0.56,"vA":0,"vC":0,"vD":0,"vE":0.06,"vK":0,"b1":0.02,"b2":0.02,"b3":0.4,"b6":0.049,"b9":7,"b12":0,"ca":7,"fe":0.5,"mg":18,"p":58,"k":44,"na":1,"zn":0.51,"se":26.4,"iod":null,"cu":0.1,"mn":0.322,"cl":null},
 {"id":"quinoa","name":"Quinoa cocida","cat":"cereales","note":"cocida sin sal (USDA 20137)","serv_g":185,"serv_desc":"1 taza","kcal":120,"prot":4.4,"fat":1.92,"sat":0.23,"carb":21.3,"fib":2.8,"sug":0.87,"vA":0,"vC":0,"vD":0,"vE":0.63,"vK":null,"b1":0.107,"b2":0.11,"b3":0.412,"b6":0.123,"b9":42,"b12":0,"ca":17,"fe":1.49,"mg":64,"p":152,"k":172,"na":7,"zn":1.09,"se":2.8,"iod":null,"cu":0.192,"mn":0.631,"cl":null},
@@ -765,6 +766,13 @@ function defaultRecipes(){
     out.push(R("rec-chorizo","Huevos con chorizo","des",[{foodId:"huevo-revuelto",g:100},{foodId:"chorizo-cerdo",g:50}],"",HUEVOS));
   if(has("cecina-res")&&has("huevo-revuelto"))
     out.push(R("rec-cecina","Huevos con cecina","des",[{foodId:"huevo-revuelto",g:100},{foodId:"cecina-res",g:60}],"",HUEVOS));
+  // "comidas completas": una receta puede incluir otra receta + alimentos extra
+  if(has("aguacate")&&has("pan-masa-madre")&&has("aceite-oliva-extra-virgen")&&out.some(r=>r.id==="rec-mexicana"))
+    out.push(R("rec-desayuno-completo","Desayuno completo (mexicana + pan + aguacate)","des",
+      [{recipeId:"rec-mexicana",mult:1},{foodId:"aguacate",g:70},{foodId:"pan-masa-madre",g:50},{foodId:"aceite-oliva-extra-virgen",g:5}],"la mexicana escala por huevos"));
+  if(has("pechuga-pollo")&&has("espinaca")&&has("arroz-blanco"))
+    out.push(R("rec-pollo-espinaca-arroz","Pollo con espinacas y arroz","com",
+      [{foodId:"pechuga-pollo",g:150},{foodId:"espinaca",g:100},{foodId:"arroz-blanco",g:150}]));
   return out;
 }
 function blankDay(){const meals={};MEALS.forEach(([k])=>meals[k]=[]);return{meals,agua:0,nota:""};}
@@ -793,6 +801,10 @@ async function load(){
   ["rec-mexicana","rec-machaca","rec-chorizo","rec-cecina"].forEach(id=>{const r=state.recipes.find(x=>x.id===id);if(r&&!r.base)r.base=_HB;});
   const _he=state.foods["huevo-revuelto"];
   if(_he&&_he.serv_g===100){_he.serv_g=50;_he.serv_desc="1 huevo";}
+  // sembrar (una vez) las recetas "completas" nuevas, sin resucitar las que el usuario borró
+  if(!state.recipesV2){["rec-desayuno-completo","rec-pollo-espinaca-arroz"].forEach(id=>{
+    const def=defaultRecipes().find(r=>r.id===id);
+    if(def&&!state.recipes.some(x=>x.id===id))state.recipes.push(def);});state.recipesV2=true;}
   // sembrar alimentos del catálogo base que falten (salvo que el usuario los haya borrado)
   DEFAULT_FOODS.forEach(f=>{
     if(!state.foods[f.id]&&!state.removed.includes(f.id))state.foods[f.id]={...f};
@@ -901,10 +913,17 @@ function addFoodTo(t,foodId,g){
   TRACK_FIELDS.forEach(k=>{const v=+f[k];if(isFinite(v))t[k]+=v*x;});
 }
 function recipeById(id){return (state.recipes||[]).find(r=>r.id===id);}
-function addRecipeTo(t,recipeId,mult){const r=recipeById(recipeId);if(!r)return;
-  (r.items||[]).forEach(it=>addFoodTo(t,it.foodId,(+it.g||0)*(+mult||1)));}
-function recipeTotals(r,mult){const t={};TRACK_FIELDS.forEach(f=>t[f]=0);
-  (r.items||[]).forEach(it=>addFoodTo(t,it.foodId,(+it.g||0)*(mult==null?1:+mult||0)));return t;}
+// Una receta puede contener alimentos {foodId,g} y OTRAS recetas {recipeId,mult}.
+function addRecipeTo(t,recipeId,mult,seen){
+  const r=recipeById(recipeId);if(!r)return;
+  mult=(mult==null?1:+mult||0);
+  seen=seen||new Set();if(seen.has(recipeId))return;seen.add(recipeId); // evita ciclos
+  (r.items||[]).forEach(it=>{
+    if(it.recipeId)addRecipeTo(t,it.recipeId,(it.mult==null?1:+it.mult||0)*mult,seen);
+    else addFoodTo(t,it.foodId,(+it.g||0)*mult);
+  });
+}
+function recipeTotals(r,mult){const t={};TRACK_FIELDS.forEach(f=>t[f]=0);addRecipeTo(t,r.id,mult);return t;}
 function entryTotals(it){const t={};TRACK_FIELDS.forEach(f=>t[f]=0);
   if(it.recipeId)addRecipeTo(t,it.recipeId,it.mult==null?1:it.mult);else addFoodTo(t,it.foodId,it.g);return t;}
 function sumItems(items,t){
@@ -1510,11 +1529,21 @@ function updateRecTotals(row,r){
 }
 function recipeRow(r){
   const open=openRecipes.has(r.id);
-  const ing=(r.items||[]).map(it=>{const f=state.foods[it.foodId];return f?f.name:"?";}).join(", ");
+  const ing=(r.items||[]).map(it=>{if(it.recipeId){const s=recipeById(it.recipeId);return s?s.name:"receta";}const f=state.foods[it.foodId];return f?f.name:"?";}).join(", ");
   let ed="";
   if(open){
     const catOpts=RECIPE_CATS.map(c=>`<option value="${c[0]}" ${r.cat===c[0]?"selected":""}>${c[1]}</option>`).join("");
-    const rows=(r.items||[]).map((it,i)=>{const f=state.foods[it.foodId];
+    const subOpts=(state.recipes||[]).filter(x=>x.id!==r.id).sort((a,b)=>a.name.localeCompare(b.name,"es"))
+      .map(x=>`<option value="${esc(x.id)}">${esc(x.name)}${MEALMAP[x.cat]?" · "+MEALMAP[x.cat]:""}</option>`).join("");
+    const rows=(r.items||[]).map((it,i)=>{
+      if(it.recipeId){const sub=recipeById(it.recipeId),mlt=it.mult==null?1:it.mult;
+        return `<div class="ditem">
+          <span>🍳</span>
+          <div class="dname">${sub?esc(sub.name):"(receta borrada)"} <small>· receta</small></div>
+          <input class="f num" type="number" min="0" step="0.5" value="${fmtNum(mlt,2)}" data-im="${i}" title="porciones"> <span class="mini">porc.</span>
+          <button class="del" data-idel="${i}" title="Quitar">✕</button>
+        </div>`;}
+      const f=state.foods[it.foodId];
       return `<div class="ditem">
         <span>${f&&CATS[f.cat]?CATS[f.cat].e:"·"}</span>
         <div class="dname">${f?esc(f.name):"(alimento borrado)"}</div>
@@ -1527,19 +1556,22 @@ function recipeRow(r){
         <label class="span2">Nombre<input class="f" data-rf="name" value="${esc(r.name)}"></label>
         <label class="span2">Categoría<select class="f" data-rf="cat">${catOpts}</select></label>
         <label class="span2">Nota<input class="f" data-rf="note" value="${esc(r.note||"")}" placeholder="opcional"></label>
+        <label>Escala por (cantidad)<input class="f num" type="number" min="0" step="1" data-rf="basen" value="${r.base?r.base.n:""}" placeholder="—"></label>
+        <label>Escala por (unidad)<input class="f" data-rf="baselbl" value="${r.base?esc(r.base.label):""}" placeholder="huevos, porciones…"></label>
       </div>
-      <div class="grptitle">Ingredientes</div>
-      ${rows||`<div class="mini" style="padding:4px 0">Sin ingredientes aún.</div>`}
-      <div class="addline"><div class="combo" data-reccombo><input class="f" placeholder="Añadir ingrediente…"><div class="sugg"></div></div>
+      <div class="grptitle">Componentes <span class="mini">alimentos y otras recetas</span></div>
+      ${rows||`<div class="mini" style="padding:4px 0">Sin componentes aún.</div>`}
+      <div class="addline"><div class="combo" data-reccombo><input class="f" placeholder="Añadir alimento…"><div class="sugg"></div></div>
         <input class="f num rig" type="number" min="0" step="1" placeholder="g" style="width:76px"><button class="btn primary radd">Añadir</button></div>
-      <div class="fkcalchk" style="margin-top:10px">Total (1 porción): <b>${Math.round(t.kcal)} kcal</b> · P ${fmtNum(t.prot,0)} g · C ${fmtNum(t.carb,0)} g · G ${fmtNum(t.fat,0)} g · fibra ${fmtNum(t.fib,0)} g · Na ${fmtNum(t.na,0)} mg</div>
+      ${subOpts?`<div class="addline" style="margin-top:6px"><select class="f addsubrec" style="flex:1;min-width:160px"><option value="">＋ agregar otra receta…</option>${subOpts}</select></div>`:""}
+      <div class="fkcalchk" style="margin-top:10px">Total (receta completa${r.base?` = ${r.base.n} ${esc(r.base.label)}`:""}): <b>${Math.round(t.kcal)} kcal</b> · P ${fmtNum(t.prot,0)} g · C ${fmtNum(t.carb,0)} g · G ${fmtNum(t.fat,0)} g · fibra ${fmtNum(t.fib,0)} g · Na ${fmtNum(t.na,0)} mg</div>
       <div class="fbtns"><button class="btn" data-rdup>⧉ Duplicar</button><button class="btn danger" data-rdel>🗑 Borrar receta</button></div>
     </div>`;
   }
   return `<div class="frow" data-rec="${esc(r.id)}">
     <div class="fhead">
       <span>🍳</span><span class="fname">${esc(r.name)}</span>
-      <span class="fnote">${ing?esc(ing):"sin ingredientes"}</span>
+      <span class="fnote">${ing?esc(ing):"sin componentes"}</span>
       <span class="fmac">${recipeMacroStr(r)}</span>
       <span class="mini">${open?"▴ cerrar":"▾ editar"}</span>
     </div>
@@ -1572,12 +1604,21 @@ function wireRecetas(){
     const ed=row.querySelector(".feditor");if(!ed)return;
     ed.addEventListener("click",e=>e.stopPropagation());
     ed.querySelectorAll("[data-rf]").forEach(inp=>inp.addEventListener("input",()=>{
-      const k=inp.dataset.rf;r[k]=inp.value;
+      const k=inp.dataset.rf;
+      if(k==="basen"||k==="baselbl"){
+        const n=+(ed.querySelector('[data-rf="basen"]').value)||0;
+        const lbl=(ed.querySelector('[data-rf="baselbl"]').value||"").trim();
+        r.base=(n>0&&lbl)?{n,label:lbl}:null;saveDebounced();return;
+      }
+      r[k]=inp.value;
       if(k==="name"){const nm=row.querySelector(".fname");if(nm)nm.textContent=r.name;}
       saveDebounced();if(k==="cat")renderRecetas();
     }));
     ed.querySelectorAll("[data-ig]").forEach(inp=>inp.addEventListener("input",()=>{
       const i=+inp.dataset.ig;if(r.items[i]){r.items[i].g=+inp.value||0;saveDebounced();updateRecTotals(row,r);}
+    }));
+    ed.querySelectorAll("[data-im]").forEach(inp=>inp.addEventListener("input",()=>{
+      const i=+inp.dataset.im;if(r.items[i]){r.items[i].mult=+inp.value||0;saveDebounced();updateRecTotals(row,r);}
     }));
     ed.querySelectorAll("[data-idel]").forEach(b=>b.addEventListener("click",()=>{
       const i=+b.dataset.idel;r.items.splice(i,1);saveDebounced();renderRecetas();
@@ -1600,6 +1641,9 @@ function wireRecetas(){
       ed.querySelector(".radd").addEventListener("click",add);
       gInp.addEventListener("keydown",e=>{if(e.key==="Enter")add();});
     }
+    const subsel=ed.querySelector(".addsubrec");
+    if(subsel)subsel.addEventListener("change",()=>{const sid=subsel.value;if(!sid)return;
+      r.items=r.items||[];r.items.push({recipeId:sid,mult:1});subsel.value="";saveDebounced();renderRecetas();});
   });
 }
 /* ===================== Calendario semanal ===================== */
