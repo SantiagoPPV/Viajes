@@ -9,49 +9,61 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#20272b;--ink-soft:#4a555b;
-    --paper:#e6e0d1;--paper-2:#ded7c5;
-    --card:#f3efe4;--card-2:#eee9db;
-    --line:#c9c0ab;--line-soft:#d8d0bd;
-    --seal:#a63a2a;--seal-deep:#8a2f22;--jade:#3e6152;
-    --c1:#2e7d6b;--c2:#5a8c4e;--c3:#4a7a99;--c4:#c08a2e;--c5:#b0563a;--c6:#55507f;--copt:#7d7361;
-    --t-tour:#a63a2a;--t-sight:#3e6152;--t-food:#c08a2e;--t-bar:#55507f;--t-transfer:#7d7361;--t-free:#9a917d;--t-rest:#7f97a8;--t-hotel:#5f7d8a;
-    --shadow:0 1px 0 rgba(255,255,255,.6),0 6px 22px rgba(32,39,43,.09);
-    --radius:14px;
+    --ink:#1c1c19;--ink-soft:#5a564c;
+    --paper:#f4eee1;--paper-2:#ece4d2;
+    --card:#fbf7ec;--card-2:#f4eddc;
+    --line:#d8cdba;--line-soft:#e5dcc9;
+    --seal:#b73e3e;--seal-deep:#8f2e2b;--jade:#5f7565;
+    --c1:#3a3a35;--c2:#5f7565;--c3:#4a6076;--c4:#c09146;--c5:#b73e3e;--c6:#75566d;--copt:#8b8377;
+    --t-tour:#b73e3e;--t-sight:#5f7565;--t-food:#c09146;--t-bar:#75566d;--t-transfer:#8b8377;--t-free:#a89d88;--t-rest:#7f97a8;--t-hotel:#5f7d8a;
+    --shadow:0 1px 0 rgba(255,255,255,.7),0 6px 22px rgba(27,27,24,.08);
+    --radius:12px;
   }
   *{box-sizing:border-box}
   body{margin:0;color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;
     font-family:"Inter",system-ui,-apple-system,sans-serif;
     background:
-      radial-gradient(1200px 600px at 78% -8%,rgba(85,80,127,.08),transparent 60%),
-      radial-gradient(900px 500px at -8% 108%,rgba(46,125,107,.08),transparent 55%),var(--paper);}
-  .wrap{max-width:1120px;margin:0 auto;padding:28px 20px 90px}
+      radial-gradient(1100px 560px at 82% -8%,rgba(183,62,62,.05),transparent 60%),
+      radial-gradient(900px 500px at -8% 108%,rgba(95,117,101,.06),transparent 55%),var(--paper);}
+  .wrap{max-width:1120px;margin:0 auto;padding:16px 20px 70px}
 
-  /* ---------- navegación entre apps (Viajes · Salud) ---------- */
-  .topnav{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
-  .topnav .brand{font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:600;
-    font-size:20px;color:var(--ink);margin-right:auto;letter-spacing:.01em}
-  .topnav .brand .amp{color:var(--seal);font-style:normal}
-  .topnav a.navlink{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.14em;
-    text-transform:uppercase;text-decoration:none;color:var(--ink-soft);border:1px solid var(--line);
-    background:var(--card);border-radius:20px;padding:8px 16px;box-shadow:var(--shadow);
-    transition:transform .16s ease,background .16s ease,color .16s ease,border-color .16s ease}
-  .topnav a.navlink:hover{transform:translateY(-1px);border-color:var(--jade);color:var(--jade)}
-  .topnav a.navlink.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
-  .topnav a.navlink.active:hover{color:var(--paper)}
+  /* ---------- bandas decorativas koi (estética "tokyo") ---------- */
+  .koiband{position:relative;height:118px;overflow:hidden;background:#f2e9d8}
+  .koiband svg{display:block;width:100%;height:100%}
+  .koiband.bottom svg{transform:scaleX(-1)}
+  .inkbar{height:24px;background:#171713;display:flex;align-items:center;justify-content:center}
+  .inkbar::after{content:"✿ 旅 ✿";color:#e8ddc6;font-size:10px;letter-spacing:.6em;
+    font-family:"IBM Plex Mono",monospace;padding-left:.6em}
+  @media (max-width:560px){.koiband{height:84px}}
+
+  /* ---------- navegación (estilo editorial "tokyo") ---------- */
+  .topnav{display:flex;align-items:center;gap:4px 16px;margin-bottom:22px;flex-wrap:wrap;
+    padding:12px 2px 10px;border-bottom:1px solid var(--line)}
+  .topnav .brand{font-family:"Cormorant Garamond",serif;font-weight:600;
+    font-size:21px;color:var(--ink);margin-right:auto;letter-spacing:.02em}
+  .topnav .brand .amp{color:var(--seal)}
+  .topnav a.navlink,.topnav button.navlink{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;text-decoration:none;color:var(--ink-soft);border:0;background:transparent;
+    box-shadow:none;border-radius:0;padding:7px 2px;border-bottom:2px solid transparent;cursor:pointer;
+    transition:color .16s ease,border-color .16s ease}
+  .topnav a.navlink:hover,.topnav button.navlink:hover{color:var(--seal)}
+  .topnav a.navlink.active,.topnav button.navlink.active{color:var(--ink);border-bottom-color:var(--seal);background:transparent}
+  .topnav a.navlink.active:hover{color:var(--ink)}
 
   header.masthead{position:relative;border:1px solid var(--line);border-radius:var(--radius);
-    background:linear-gradient(180deg,var(--card),var(--card-2));padding:26px 28px 22px;
-    box-shadow:var(--shadow);overflow:hidden}
-  .masthead::before{content:"印";position:absolute;right:20px;top:12px;font-family:"Cormorant Garamond",serif;
-    font-size:120px;line-height:1;color:var(--seal);opacity:.06;pointer-events:none}
-  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.24em;
+    background:linear-gradient(180deg,var(--card),var(--card-2));padding:32px 28px 26px;
+    box-shadow:var(--shadow);overflow:hidden;text-align:center}
+  .masthead::before{content:"旅";position:absolute;right:22px;top:10px;font-family:"Cormorant Garamond",serif;
+    font-size:120px;line-height:1;color:var(--seal);opacity:.07;pointer-events:none}
+  .masthead::after{content:"";position:absolute;left:50%;bottom:14px;transform:translateX(-50%);
+    width:64px;height:1px;background:var(--seal);opacity:.55}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.3em;
     text-transform:uppercase;color:var(--seal-deep);font-weight:500}
-  h1{font-family:"Cormorant Garamond",serif;font-weight:600;font-style:italic;
-    font-size:clamp(32px,6vw,56px);line-height:1.02;margin:.12em 0 .1em}
+  h1{font-family:"Cormorant Garamond",serif;font-weight:600;font-style:normal;
+    font-size:clamp(32px,6vw,54px);line-height:1.04;margin:.14em 0 .1em;letter-spacing:.01em}
   h1 .amp{color:var(--seal);font-style:normal}
-  .subline{color:var(--ink-soft);font-size:15px;max-width:66ch}
-  .datestrip{display:flex;flex-wrap:wrap;gap:8px 24px;margin-top:14px;
+  .subline{color:var(--ink-soft);font-size:15px;max-width:66ch;margin-left:auto;margin-right:auto}
+  .datestrip{display:flex;flex-wrap:wrap;gap:8px 24px;margin-top:14px;justify-content:center;
     font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--ink-soft)}
   .datestrip b{color:var(--ink);font-weight:600}
   .countdown{color:var(--seal-deep)}
@@ -65,13 +77,14 @@
   .chip.warn .n{color:var(--seal-deep)}
 
   .sec{margin-top:34px}
-  .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:14px}
-  .sec-head h2{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:27px;margin:0;font-style:italic}
-  .sec-head .rule{flex:1;height:1px;background:var(--line)}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:14px}
+  .sec-head::before{content:"";flex:1;height:1px;background:var(--line);align-self:center}
+  .sec-head h2{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:27px;margin:0;font-style:normal}
+  .sec-head .rule{flex:1;height:1px;background:var(--line);align-self:center}
   .sec-head .hint{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft)}
 
   .mappanel{border:1px solid var(--line);border-radius:var(--radius);
-    background:linear-gradient(180deg,#f4f0e6,#ebe5d6);box-shadow:var(--shadow);padding:8px}
+    background:linear-gradient(180deg,#fbf6ea,#f3ecdb);box-shadow:var(--shadow);padding:8px}
   .mappanel svg{width:100%;height:auto;display:block;border-radius:9px}
   .legend{display:flex;flex-wrap:wrap;gap:12px 18px;padding:12px 14px 8px;
     font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-soft)}
@@ -387,13 +400,13 @@
 
   /* ---------- barra de sesión ---------- */
   .topnav .whoami{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft);padding:8px 4px;white-space:nowrap}
-  .topnav .logout{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;
-    border:1px solid var(--line-soft);background:transparent;color:var(--ink-soft);border-radius:20px;padding:8px 14px;cursor:pointer}
-  .topnav .logout:hover{border-color:var(--seal);color:var(--seal-deep);background:#f6e6df}
+  .topnav .logout{opacity:.85}
+  .topnav .logout:hover{color:var(--seal-deep)}
 
   /* ---------- lista de viajes ---------- */
-  .trips-head{display:flex;align-items:baseline;gap:12px;margin:6px 0 16px;flex-wrap:wrap}
-  .trips-head h1{font-family:"Cormorant Garamond",serif;font-weight:600;font-style:italic;
+  .trips-head{display:flex;align-items:baseline;gap:14px;margin:6px 0 16px;flex-wrap:wrap}
+  .trips-head::before{content:"";flex:1;height:1px;background:var(--line);align-self:center}
+  .trips-head h1{font-family:"Cormorant Garamond",serif;font-weight:600;font-style:normal;
     font-size:clamp(30px,5vw,46px);margin:0;line-height:1.02}
   .trips-head h1 .amp{color:var(--seal);font-style:normal}
   .trips-head .rule{flex:1;height:1px;background:var(--line)}
@@ -442,6 +455,61 @@
 </style>
 </head>
 <body>
+
+<!-- ===== banda decorativa superior (koi · estética "tokyo") ===== -->
+<div class="koiband" aria-hidden="true">
+<svg viewBox="0 0 1200 150" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <pattern id="bd-sg" width="40" height="20" patternUnits="userSpaceOnUse">
+      <g fill="none" stroke="#cfbfa6" stroke-width="1">
+        <circle cx="0" cy="20" r="19"/><circle cx="0" cy="20" r="13"/><circle cx="0" cy="20" r="7"/>
+        <circle cx="40" cy="20" r="19"/><circle cx="40" cy="20" r="13"/><circle cx="40" cy="20" r="7"/>
+        <circle cx="20" cy="10" r="19"/><circle cx="20" cy="10" r="13"/><circle cx="20" cy="10" r="7"/>
+      </g>
+    </pattern>
+    <clipPath id="bd-kc"><path d="M46,62 C54,32 94,18 134,26 C164,32 182,48 184,62 C182,76 164,92 134,98 C94,106 54,92 46,62 Z"/></clipPath>
+    <g id="bd-hana">
+      <g fill="#e6c6c0" opacity=".9">
+        <ellipse cy="-6.5" rx="3.4" ry="6"/>
+        <g transform="rotate(72)"><ellipse cy="-6.5" rx="3.4" ry="6"/></g>
+        <g transform="rotate(144)"><ellipse cy="-6.5" rx="3.4" ry="6"/></g>
+        <g transform="rotate(216)"><ellipse cy="-6.5" rx="3.4" ry="6"/></g>
+        <g transform="rotate(288)"><ellipse cy="-6.5" rx="3.4" ry="6"/></g>
+      </g>
+      <circle r="2" fill="#b73e3e"/>
+    </g>
+    <g id="bd-koi">
+      <path d="M56,62 C42,48 32,38 26,16 C36,34 46,46 58,52 C52,58 52,66 58,72 C46,78 36,90 26,108 C32,86 42,76 56,62 Z" fill="#f7f1e3" stroke="#26251f" stroke-width="2.4" stroke-linejoin="round"/>
+      
+      <path d="M116,30 C116,18 106,12 96,16 C102,22 110,27 116,30 Z" fill="#f7f1e3" stroke="#26251f" stroke-width="2.2" stroke-linejoin="round"/>
+      <path d="M120,94 C120,106 110,112 100,108 C106,102 114,97 120,94 Z" fill="#f7f1e3" stroke="#26251f" stroke-width="2.2" stroke-linejoin="round"/>
+      <path d="M46,62 C54,32 94,18 134,26 C164,32 182,48 184,62 C182,76 164,92 134,98 C94,106 54,92 46,62 Z"
+        fill="#fbf6ea" stroke="#26251f" stroke-width="2.5"/>
+      <g clip-path="url(#bd-kc)">
+        <path d="M82,24 C104,17 128,21 144,34 C134,52 106,56 88,49 C78,42 78,30 82,24 Z" fill="#b73e3e"/>
+        <path d="M52,70 C64,84 86,90 102,86 C94,100 68,102 56,92 C50,86 50,76 52,70 Z" fill="#26251f"/>
+        <path d="M150,40 C160,44 168,52 170,60 C164,68 154,72 146,70 C142,60 144,48 150,40 Z" fill="#b73e3e" opacity=".85"/>
+        <rect x="40" y="14" width="150" height="92" fill="url(#bd-sg)" opacity=".22"/>
+      </g>
+      <circle cx="160" cy="52" r="3.1" fill="#26251f"/>
+      
+    </g>
+  </defs>
+  <rect width="1200" height="150" fill="#f2e9d8"/>
+  <rect width="1200" height="150" fill="url(#bd-sg)" opacity=".24"/>
+  <path d="M-20,112 C200,72 420,142 660,98 C880,60 1050,122 1220,86" fill="none" stroke="#cbb99e" stroke-width="1.4" opacity=".7"/>
+  <path d="M-20,132 C220,96 460,158 700,116 C910,80 1070,138 1220,106" fill="none" stroke="#cbb99e" stroke-width="1.2" opacity=".5"/>
+  <use href="#bd-hana" transform="translate(64,118) scale(1.25)"/>
+  <use href="#bd-hana" transform="translate(420,30) scale(1.05) rotate(20)"/>
+  <use href="#bd-hana" transform="translate(842,122) scale(1.35) rotate(40)"/>
+  <use href="#bd-hana" transform="translate(1142,36) scale(1.1) rotate(10)"/>
+  <use href="#bd-koi" transform="translate(96,-18) scale(1.04)"/>
+  <use href="#bd-koi" transform="translate(772,16) scale(-1,1)"/>
+  <use href="#bd-koi" transform="translate(936,-26) scale(.98) rotate(10)"/>
+</svg>
+</div>
+<div class="inkbar" aria-hidden="true"></div>
+
 <div class="wrap">
 
   <nav class="topnav" id="topnav" aria-label="Secciones"></nav>
@@ -512,6 +580,21 @@
 
   <p class="foot">Tours, hoteles y restaurantes son sugerencias con buena reputación (GetYourGuide, Viator, Tripadvisor, guías locales y Michelin); confirma precios, horarios y disponibilidad antes de reservar. Los tiempos son estimados editables. Tus cambios se guardan y sincronizan automáticamente en la nube.</p>
   </div><!-- /#tripEditor -->
+</div>
+
+<!-- ===== banda decorativa inferior ===== -->
+<div class="inkbar" aria-hidden="true"></div>
+<div class="koiband bottom" aria-hidden="true">
+<svg viewBox="0 0 1200 150" preserveAspectRatio="xMidYMid slice">
+  <rect width="1200" height="150" fill="#f2e9d8"/>
+  <rect width="1200" height="150" fill="url(#bd-sg)" opacity=".24"/>
+  <path d="M-20,52 C220,96 460,26 700,70 C910,108 1070,42 1220,80" fill="none" stroke="#cbb99e" stroke-width="1.3" opacity=".6"/>
+  <use href="#bd-hana" transform="translate(150,38) scale(1.2) rotate(15)"/>
+  <use href="#bd-hana" transform="translate(700,116) scale(1.3)"/>
+  <use href="#bd-hana" transform="translate(1080,44) scale(1.05) rotate(30)"/>
+  <use href="#bd-koi" transform="translate(230,44) scale(1.02)"/>
+  <use href="#bd-koi" transform="translate(1010,58) scale(-.95,.95) rotate(-8)"/>
+</svg>
 </div>
 
 <!-- ============ Sesión + almacenamiento por usuario ============
@@ -1396,16 +1479,66 @@ function renderSummary(){
 
 /* ===================== Mapa ===================== */
 const clusterColor=c=>CLUSTERS[c]?CLUSTERS[c].color:"var(--copt)";
+/* Fondo estilo "tokyo": mar seigaiha, costa estilizada de China + Japón, koi y flores. */
+const TOKYO_MAP_BG=`
+  <defs>
+    <pattern id="mp-sg" width="40" height="20" patternUnits="userSpaceOnUse">
+      <g fill="none" stroke="#ccbba1" stroke-width="1">
+        <circle cx="0" cy="20" r="19"/><circle cx="0" cy="20" r="13"/><circle cx="0" cy="20" r="7"/>
+        <circle cx="40" cy="20" r="19"/><circle cx="40" cy="20" r="13"/><circle cx="40" cy="20" r="7"/>
+        <circle cx="20" cy="10" r="19"/><circle cx="20" cy="10" r="13"/><circle cx="20" cy="10" r="7"/>
+      </g>
+    </pattern>
+    <clipPath id="mp-kc"><path d="M46,62 C54,32 94,18 134,26 C164,32 182,48 184,62 C182,76 164,92 134,98 C94,106 54,92 46,62 Z"/></clipPath>
+    <g id="mp-hana">
+      <g fill="#e3c3bd" opacity=".85">
+        <ellipse cy="-6.5" rx="3.4" ry="6"/>
+        <g transform="rotate(72)"><ellipse cy="-6.5" rx="3.4" ry="6"/></g>
+        <g transform="rotate(144)"><ellipse cy="-6.5" rx="3.4" ry="6"/></g>
+        <g transform="rotate(216)"><ellipse cy="-6.5" rx="3.4" ry="6"/></g>
+        <g transform="rotate(288)"><ellipse cy="-6.5" rx="3.4" ry="6"/></g>
+      </g>
+      <circle r="2" fill="#b73e3e"/>
+    </g>
+    <g id="mp-koi">
+      <path d="M56,62 C42,48 32,38 26,16 C36,34 46,46 58,52 C52,58 52,66 58,72 C46,78 36,90 26,108 C32,86 42,76 56,62 Z" fill="#f7f1e3" stroke="#26251f" stroke-width="2.4" stroke-linejoin="round"/>
+      
+      <path d="M116,30 C116,18 106,12 96,16 C102,22 110,27 116,30 Z" fill="#f7f1e3" stroke="#26251f" stroke-width="2.2" stroke-linejoin="round"/>
+      <path d="M120,94 C120,106 110,112 100,108 C106,102 114,97 120,94 Z" fill="#f7f1e3" stroke="#26251f" stroke-width="2.2" stroke-linejoin="round"/>
+      <path d="M46,62 C54,32 94,18 134,26 C164,32 182,48 184,62 C182,76 164,92 134,98 C94,106 54,92 46,62 Z"
+        fill="#fbf6ea" stroke="#26251f" stroke-width="2.5"/>
+      <g clip-path="url(#mp-kc)">
+        <path d="M82,24 C104,17 128,21 144,34 C134,52 106,56 88,49 C78,42 78,30 82,24 Z" fill="#b73e3e"/>
+        <path d="M52,70 C64,84 86,90 102,86 C94,100 68,102 56,92 C50,86 50,76 52,70 Z" fill="#26251f"/>
+        <rect x="40" y="14" width="150" height="92" fill="url(#mp-sg)" opacity=".22"/>
+      </g>
+      <circle cx="160" cy="52" r="3.1" fill="#26251f"/>
+      
+    </g>
+  </defs>
+  <rect x="0" y="0" width="800" height="560" fill="#f7f0e2"/>
+  <rect x="0" y="0" width="800" height="560" fill="url(#mp-sg)" opacity=".3"/>
+  <path d="M132,318 C118,278 128,236 158,214 C160,168 196,132 250,118 C300,84 380,66 450,70 C505,58 560,58 592,84 C630,72 668,84 676,112 C712,126 716,158 694,176 C724,196 728,238 704,258 C718,286 708,316 684,328 C694,356 670,380 642,390 C638,420 612,442 584,446 C572,478 542,496 510,490 C474,512 428,512 398,494 C352,506 306,490 286,458 C240,452 208,424 202,388 C172,374 150,348 132,318 Z"
+    fill="#f2e9d6" stroke="none"/>
+  <path d="M592,84 C630,72 668,84 676,112 C712,126 716,158 694,176 C724,196 728,238 704,258 C718,286 708,316 684,328 C694,356 670,380 642,390 C638,420 612,442 584,446 C572,478 542,496 510,490 C474,512 428,512 398,494" fill="none" stroke="#bfae92" stroke-width="1.7" stroke-linecap="round"/>
+  <ellipse cx="702" cy="386" rx="7" ry="13" transform="rotate(18 702 386)" fill="#f2e9d6" stroke="#c8b89d" stroke-width="1.1"/>
+  <path d="M760,120 C778,128 790,150 786,176 C798,196 792,224 774,236 C768,258 748,268 730,258
+           C722,244 728,230 740,224 C734,206 740,186 754,178 C748,158 750,134 760,120 Z"
+    fill="#f0e7d2" stroke="#c6b69c" stroke-width="1.3"/>
+  <ellipse cx="520" cy="532" rx="16" ry="9" fill="#f0e7d2" stroke="#c6b69c" stroke-width="1.2"/>
+  <use href="#mp-koi" transform="translate(14,420) scale(.82)" opacity=".5"/>
+  <use href="#mp-koi" transform="translate(788,26) scale(-.62,.62)" opacity=".45"/>
+  <use href="#mp-hana" transform="translate(84,120) scale(1.35)" opacity=".8"/>
+  <use href="#mp-hana" transform="translate(736,468) scale(1.5) rotate(25)" opacity=".8"/>
+  <use href="#mp-hana" transform="translate(240,520) scale(1.1) rotate(50)" opacity=".7"/>
+  <use href="#mp-hana" transform="translate(560,40) scale(1.05) rotate(15)" opacity=".65"/>`;
 function renderMap(){
   const sec=document.getElementById("mapSection");
   if(!state.meta||!state.meta.hasMap){if(sec)sec.hidden=true;return;}
   if(sec)sec.hidden=false;
   const active=withDates(),W=800,H=560;
   let s=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ruta por China">`;
-  s+=`<g opacity="0.5">
-    <path d="M40,300 q60,-70 120,-20 q50,-60 120,-15 q70,-55 140,-5" fill="none" stroke="#9aa39a" stroke-width="1.4" opacity="0.33"/>
-    <path d="M300,150 q70,-50 140,-10 q60,-45 150,0" fill="none" stroke="#9aa39a" stroke-width="1.4" opacity="0.3"/>
-    <path d="M470,430 q60,-45 130,-8 q50,-40 130,-2" fill="none" stroke="#9aa39a" stroke-width="1.4" opacity="0.3"/></g>`;
+  s+=TOKYO_MAP_BG;
   for(let i=0;i<active.length-1;i++){const a=active[i].def,b=active[i+1].def,air=getXfer(a.id,b.id).type==="air";
     s+=`<line class="maproute" x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="${air?'var(--seal)':'var(--ink)'}"
       stroke-width="${air?2:2.4}" stroke-linecap="round" ${air?'stroke-dasharray="2 7"':'opacity="0.72"'}/>`;}
