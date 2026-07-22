@@ -78,11 +78,18 @@ El sitio no necesita build; sirve la raíz del repo (`publish = "."`, ver `netli
 
 | Archivo | Qué es |
 |---|---|
-| `index.html` | App de viajes (UI + lógica + capa de almacenamiento Supabase). |
-| `salud.html` | App de salud: macros, micronutrientes, alimentos y suplementos. |
+| `index.html` | App de viajes: multi-viaje por usuario (lista, plantilla, editor). |
+| `salud.html` | App de salud: macros, micronutrientes, recetas, calendario y suplementos. |
+| `retos.html` | App de retos: metas diarias tipo 75 Hard con rachas y calendario. |
+| `login.html` / `auth.js` | Inicio de sesión y capa compartida de sesión/permisos. |
+| `usuarios.html` | Panel admin: cuentas, roles y accesos por sección. |
+| `viajes-admin.html` | Panel admin: todos los viajes y con quién se comparte cada uno. |
 | `netlify.toml` | Config de Netlify (sitio estático, cabeceras de seguridad). |
-| `supabase/itinerario_estado.sql` | Migración: tabla de estado del planificador + RLS. |
-| `supabase/salud_estado.sql` | Migración: tabla de estado de salud/nutrición + RLS. |
+| `supabase/cuentas_schema.sql` | Migración: perfiles, salud_datos, viajes, viaje_acceso + RLS. |
+| `supabase/retos_datos.sql` | Migración: tabla de datos de retos por usuario + RLS. |
+| `supabase/functions/admin-usuarios/` | Edge Function de gestión segura de usuarios. |
+| `supabase/itinerario_estado.sql` | (Legado) tabla clave-valor del planificador original. |
+| `supabase/salud_estado.sql` | (Legado) tabla clave-valor de la primera versión de salud. |
 
 ## Notas de seguridad
 

@@ -156,6 +156,7 @@
           <div class="paginas">
             <label><input type="checkbox" id="nPagViajes" checked> ✈ Viajes</label>
             <label><input type="checkbox" id="nPagSalud" checked> 🌿 Salud</label>
+            <label><input type="checkbox" id="nPagRetos" checked> 🏆 Retos</label>
             <span class="csub" style="margin:0">Los administradores entran a todo automáticamente.</span>
           </div></div>
       </div>
@@ -215,7 +216,7 @@
     if(p.rol==="admin")return '<span class="chip">todo</span>';
     const ps=p.paginas||[];
     if(!ps.length)return '<span class="chip none">sin acceso</span>';
-    const et={viajes:"✈ Viajes",salud:"🌿 Salud"};
+    const et={viajes:"✈ Viajes",salud:"🌿 Salud",retos:"🏆 Retos"};
     return ps.map(k=>'<span class="chip">'+(et[k]||k)+'</span>').join("");
   }
   function fila(p){
@@ -244,6 +245,7 @@
           '<div class="span2"><label class="fl">Puede entrar a</label><div class="paginas">'+
             '<label><input type="checkbox" data-pag="viajes"'+((p.paginas||[]).includes("viajes")?" checked":"")+'> ✈ Viajes</label>'+
             '<label><input type="checkbox" data-pag="salud"'+((p.paginas||[]).includes("salud")?" checked":"")+'> 🌿 Salud</label>'+
+            '<label><input type="checkbox" data-pag="retos"'+((p.paginas||[]).includes("retos")?" checked":"")+'> 🏆 Retos</label>'+
           '</div></div>'+
         '</div>'+
         '<div class="btnrow"><button class="btn primary" data-act="guardar">Guardar cambios</button>'+
@@ -300,6 +302,7 @@
     const paginas=[];
     if(document.getElementById("nPagViajes").checked)paginas.push("viajes");
     if(document.getElementById("nPagSalud").checked)paginas.push("salud");
+    if(document.getElementById("nPagRetos").checked)paginas.push("retos");
     if(!usuario){showMsg(msg,"Escribe un usuario (solo letras, números, punto, guion).");return;}
     if(password.length<6){showMsg(msg,"La contraseña debe tener al menos 6 caracteres.");return;}
     const btn=document.getElementById("btnCrear");

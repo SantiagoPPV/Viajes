@@ -33,7 +33,7 @@ function json(body: unknown, status = 200): Response {
 }
 
 const norm = (s: string) => (s ?? "").toString().trim().toLowerCase();
-const PAGINAS_VALIDAS = ["viajes", "salud"];
+const PAGINAS_VALIDAS = ["viajes", "salud", "retos"];
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });

@@ -48,8 +48,9 @@
   const PAGINAS = {
     viajes:   { href: "index.html",  icono: "✈", etiqueta: "Viajes" },
     salud:    { href: "salud.html",  icono: "🌿", etiqueta: "Salud" },
-    usuarios: { href: "usuarios.html", icono: "👥", etiqueta: "Usuarios", soloAdmin: true },
-    "viajes-admin": { href: "viajes-admin.html", icono: "🗂", etiqueta: "Admin viajes", soloAdmin: true },
+    retos:    { href: "retos.html",  icono: "🏆", etiqueta: "Retos" },
+    usuarios: { href: "usuarios.html", icono: "👥", etiqueta: "Usuarios", soloAdmin: true, grupo: "config" },
+    "viajes-admin": { href: "viajes-admin.html", icono: "🗂", etiqueta: "Admin viajes", soloAdmin: true, grupo: "config" },
   };
 
   function puedeVer(pagina, p) {
@@ -63,6 +64,7 @@
     if (!p) return "login.html";
     if (puedeVer("viajes", p)) return "index.html";
     if (puedeVer("salud", p)) return "salud.html";
+    if (puedeVer("retos", p)) return "retos.html";
     if (p.rol === "admin") return "usuarios.html";
     return null; // sin acceso a nada
   }
@@ -135,26 +137,77 @@
     return data;
   }
 
+  /* Estilos del menú desplegable de configuración (una sola vez por página). */
+  function inyectarEstilosNav() {
+    if (document.getElementById("authNavCss")) return;
+    const st = document.createElement("style");
+    st.id = "authNavCss";
+    st.textContent =
+      ".navdrop{position:relative;display:inline-flex}" +
+      ".navdrop .dropbtn{cursor:pointer}" +
+      ".dropmenu{position:absolute;right:0;top:calc(100% + 6px);min-width:190px;z-index:400;" +
+        "background:var(--card,#f3efe4);border:1px solid var(--line,#c9c0ab);border-radius:12px;" +
+        "box-shadow:0 14px 34px rgba(32,39,43,.22);display:none;flex-direction:column;overflow:hidden;padding:5px}" +
+      ".dropmenu.open{display:flex}" +
+      ".dropmenu a{font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.1em;" +
+        "text-transform:uppercase;text-decoration:none;color:var(--ink-soft,#4a555b);padding:10px 14px;" +
+        "border-radius:8px;white-space:nowrap;transition:background .15s,color .15s}" +
+      ".dropmenu a:hover{background:var(--card-2,#eee9db);color:var(--jade,#3e6152)}" +
+      ".dropmenu a.active{background:var(--ink,#20272b);color:var(--paper,#e6e0d1)}" +
+      "@media (prefers-reduced-motion:reduce){.dropmenu a{transition:none}}";
+    document.head.appendChild(st);
+  }
+
   /* Dibuja la barra de navegación superior dentro del elemento #topnav.
-     Muestra solo las secciones que el usuario puede ver + su nombre + salir. */
+     Secciones visibles + menú ⚙ Configuración (admin) + nombre + salir. */
   function montarBarra(paginaActual, p) {
     const cont = document.getElementById("topnav");
     if (!cont) return;
-    const enlaces = Object.keys(PAGINAS)
-      .filter((k) => puedeVer(k, p))
-      .map((k) => {
-        const m = PAGINAS[k], act = k === paginaActual ? " active" : "";
-        const aria = k === paginaActual ? ' aria-current="page"' : "";
-        return '<a class="navlink' + act + '" href="' + m.href + '"' + aria + ">" +
-               m.icono + " " + m.etiqueta + "</a>";
-      }).join("");
+    inyectarEstilosNav();
+    const visibles = Object.keys(PAGINAS).filter((k) => puedeVer(k, p));
+    const principales = visibles.filter((k) => !PAGINAS[k].grupo);
+    const config = visibles.filter((k) => PAGINAS[k].grupo === "config");
+    const link = (k) => {
+      const m = PAGINAS[k], act = k === paginaActual ? " active" : "";
+      const aria = k === paginaActual ? ' aria-current="page"' : "";
+      return '<a class="navlink' + act + '" href="' + m.href + '"' + aria + ">" +
+             m.icono + " " + m.etiqueta + "</a>";
+    };
     const quien = (p && (p.nombre || p.usuario)) || "";
-    cont.innerHTML =
+    let html =
       '<span class="brand">Mi panel <span class="amp">·</span> personal</span>' +
-      enlaces +
+      principales.map(link).join("");
+    if (config.length) {
+      const dentro = config.indexOf(paginaActual) >= 0;
+      html += '<div class="navdrop">' +
+        '<button type="button" class="navlink dropbtn' + (dentro ? " active" : "") +
+          '" aria-haspopup="true" aria-expanded="false">⚙ Configuración ▾</button>' +
+        '<div class="dropmenu">' +
+        config.map((k) => {
+          const m = PAGINAS[k];
+          return '<a class="' + (k === paginaActual ? "active" : "") + '" href="' + m.href + '">' +
+                 m.icono + " " + m.etiqueta + "</a>";
+        }).join("") +
+        "</div></div>";
+    }
+    html +=
       '<span class="whoami" title="' + (p ? p.usuario : "") + '">' +
         (p && p.rol === "admin" ? "★ " : "") + quien + "</span>" +
       '<button class="navlink logout" onclick="Auth.salir()">Salir</button>';
+    cont.innerHTML = html;
+    const drop = cont.querySelector(".navdrop");
+    if (drop) {
+      const btn = drop.querySelector(".dropbtn"), menu = drop.querySelector(".dropmenu");
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const abierto = menu.classList.toggle("open");
+        btn.setAttribute("aria-expanded", abierto ? "true" : "false");
+      });
+      document.addEventListener("click", () => {
+        menu.classList.remove("open");
+        btn.setAttribute("aria-expanded", "false");
+      });
+    }
   }
 
   window.Auth = {

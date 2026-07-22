@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Retos · Metas diarias — 75 Hard y más</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#20272b;--ink-soft:#4a555b;
+    --paper:#e6e0d1;--paper-2:#ded7c5;
+    --card:#f3efe4;--card-2:#eee9db;
+    --line:#c9c0ab;--line-soft:#d8d0bd;
+    --seal:#a63a2a;--seal-deep:#8a2f22;--jade:#3e6152;--jade-deep:#2f4c40;
+    --gold:#c08a2e;--muted:#a9a08c;
+    --shadow:0 1px 0 rgba(255,255,255,.6),0 6px 22px rgba(32,39,43,.09);
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;
+    font-family:"Inter",system-ui,-apple-system,sans-serif;
+    background:
+      radial-gradient(1200px 600px at 78% -8%,rgba(192,138,46,.09),transparent 60%),
+      radial-gradient(900px 500px at -8% 108%,rgba(62,97,82,.09),transparent 55%),var(--paper);}
+  .wrap{max-width:1120px;margin:0 auto;padding:28px 20px 90px}
+
+  .topnav{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+  .topnav .brand{font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:600;
+    font-size:20px;color:var(--ink);margin-right:auto;letter-spacing:.01em}
+  .topnav .brand .amp{color:var(--gold);font-style:normal}
+  .topnav a.navlink,.topnav button.navlink{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.14em;
+    text-transform:uppercase;text-decoration:none;color:var(--ink-soft);border:1px solid var(--line);
+    background:var(--card);border-radius:20px;padding:8px 16px;box-shadow:var(--shadow);
+    transition:transform .16s ease,background .16s ease,color .16s ease,border-color .16s ease}
+  .topnav a.navlink:hover,.topnav button.navlink:hover{transform:translateY(-1px);border-color:var(--jade);color:var(--jade)}
+  .topnav a.navlink.active,.topnav button.navlink.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .topnav a.navlink.active:hover{color:var(--paper)}
+  .topnav .whoami{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft);padding:8px 4px;white-space:nowrap}
+  .topnav .logout{border-color:var(--line-soft)!important;background:transparent!important}
+  .topnav .logout:hover{border-color:var(--seal)!important;color:var(--seal-deep)!important;background:#f6e6df!important}
+
+  header.masthead{position:relative;border:1px solid var(--line);border-radius:var(--radius);
+    background:linear-gradient(180deg,var(--card),var(--card-2));padding:26px 28px 22px;
+    box-shadow:var(--shadow);overflow:hidden}
+  .masthead::before{content:"志";position:absolute;right:20px;top:8px;font-family:"Cormorant Garamond",serif;
+    font-size:120px;line-height:1;color:var(--gold);opacity:.08;pointer-events:none}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.24em;
+    text-transform:uppercase;color:var(--seal-deep);font-weight:500}
+  h1{font-family:"Cormorant Garamond",serif;font-weight:600;font-style:italic;
+    font-size:clamp(32px,6vw,56px);line-height:1.02;margin:.12em 0 .1em}
+  h1 .amp{color:var(--gold);font-style:normal}
+  .subline{color:var(--ink-soft);font-size:15px;max-width:70ch}
+
+  .summary{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:16px 0 6px}
+  .chip{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;box-shadow:var(--shadow);
+    transition:transform .16s,box-shadow .16s}
+  .chip:hover{transform:translateY(-2px);box-shadow:0 1px 0 rgba(255,255,255,.6),0 10px 26px rgba(32,39,43,.14)}
+  .chip .n{font-family:"Cormorant Garamond",serif;font-size:28px;font-weight:600;line-height:1;white-space:nowrap}
+  .chip .n small{font-size:15px;color:var(--ink-soft)}
+  .chip .l{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--ink-soft);margin-top:4px}
+  .chip.fire .n{color:var(--seal-deep)}
+  .chip.pulse{animation:chippulse .6s ease}
+  @keyframes chippulse{0%{transform:scale(1)}40%{transform:scale(1.06)}100%{transform:scale(1)}}
+
+  .sec{margin-top:24px}
+  .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+  .sec-head h2{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:27px;margin:0;font-style:italic}
+  .sec-head .rule{flex:1;height:1px;background:var(--line)}
+  .sec-head .hint{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft)}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);margin:10px 0;padding:16px 18px;position:relative}
+  .card h4{font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:600;font-size:21px;margin:0 0 6px}
+  .card .csub{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft);margin:-2px 0 10px}
+  .grid2{display:grid;grid-template-columns:1.05fr .95fr;gap:18px}
+  .grid2>div>.card:first-child{margin-top:0}
+
+  input.f,select.f{font-family:"Inter",sans-serif;font-size:13px;color:var(--ink);
+    border:1px solid var(--line-soft);background:rgba(255,255,255,.5);border-radius:8px;padding:7px 9px}
+  input.f:focus,select.f:focus{outline:none;border-color:var(--jade);background:#fff}
+  input.num{font-family:"IBM Plex Mono",monospace;font-size:12.5px;text-align:right;width:80px}
+  .mini{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-soft)}
+
+  .btn{font-family:"IBM Plex Mono",monospace;font-size:12px;border:1px solid var(--line);background:var(--card);
+    color:var(--ink);border-radius:9px;padding:9px 14px;cursor:pointer;box-shadow:var(--shadow);
+    transition:transform .15s,background .15s,border-color .15s,color .15s}
+  .btn:hover{background:var(--card-2);transform:translateY(-1px)}
+  .btn.primary{background:var(--jade);color:#fff;border-color:var(--jade)}
+  .btn.primary:hover{background:var(--jade-deep)}
+  .btn.danger{color:var(--seal-deep);border-color:var(--seal)}
+  .btn.danger:hover{background:#f6e6df}
+  .addbtn{font-family:"IBM Plex Mono",monospace;font-size:11.5px;border:1px dashed var(--line);
+    background:transparent;color:var(--ink-soft);border-radius:9px;padding:8px 12px;cursor:pointer}
+  .addbtn:hover{border-color:var(--jade);color:var(--jade)}
+  .del{border:0;background:transparent;color:var(--ink-soft);cursor:pointer;font-size:15px;
+    width:26px;height:22px;border-radius:5px;flex:none;line-height:1}
+  .del:hover{background:#f0e0dc;color:var(--seal-deep)}
+
+  /* ---------- selector de retos ---------- */
+  .retotabs{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 4px;align-items:center}
+  .rtab{font-family:"IBM Plex Mono",monospace;font-size:11.5px;border:1px solid var(--line);
+    border-radius:10px;padding:7px 14px;cursor:pointer;background:var(--card-2);color:var(--ink-soft)}
+  .rtab.active{background:var(--gold);color:#fff;border-color:var(--gold)}
+  .rtab:not(.active):hover{border-color:var(--gold);color:var(--ink)}
+
+  /* ---------- checklist de hoy ---------- */
+  .metaline{display:flex;align-items:center;gap:13px;padding:10px 0;border-bottom:1px dashed var(--line-soft)}
+  .metaline:last-of-type{border-bottom:0}
+  .metaline .mtxt{flex:1;min-width:0;font-size:14.5px;transition:color .2s}
+  .metaline.on .mtxt{color:var(--muted);text-decoration:line-through;text-decoration-color:rgba(62,97,82,.55)}
+  .mstreak{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-soft);white-space:nowrap}
+  .chk{position:relative;width:38px;height:38px;border-radius:50%;border:2px solid var(--line);
+    background:rgba(255,255,255,.7);cursor:pointer;flex:none;display:flex;align-items:center;justify-content:center;
+    transition:border-color .15s,background .25s,transform .12s;padding:0}
+  .chk:hover{border-color:var(--jade);transform:scale(1.07)}
+  .chk svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;opacity:0}
+  .chk svg path{stroke-dasharray:24;stroke-dashoffset:24}
+  .chk.on{background:var(--jade);border-color:var(--jade)}
+  .chk.on svg{opacity:1}
+  .chk.on svg path{stroke-dashoffset:0}
+  .chk.just{animation:pop .38s cubic-bezier(.34,1.56,.64,1)}
+  .chk.just svg path{animation:draw .35s ease .04s backwards}
+  .chk .ring{position:absolute;inset:-2px;border-radius:50%;pointer-events:none;opacity:0}
+  .chk.just .ring{border:2px solid var(--jade);animation:ringout .55s ease-out forwards}
+  @keyframes draw{from{stroke-dashoffset:24}to{stroke-dashoffset:0}}
+  @keyframes pop{0%{transform:scale(.72)}60%{transform:scale(1.18)}100%{transform:scale(1)}}
+  @keyframes ringout{0%{opacity:.85;transform:scale(1)}100%{opacity:0;transform:scale(1.95)}}
+
+  .daydone{margin-top:12px;border-radius:11px;background:linear-gradient(135deg,var(--jade),var(--jade-deep));
+    color:#fff;padding:13px 16px;display:flex;align-items:center;gap:12px;animation:slidein .45s cubic-bezier(.34,1.4,.64,1)}
+  .daydone .big{font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:600;font-size:20px}
+  .daydone .sub{font-family:"IBM Plex Mono",monospace;font-size:10.5px;opacity:.85}
+  @keyframes slidein{0%{opacity:0;transform:translateY(8px) scale(.97)}100%{opacity:1;transform:none}}
+
+  .cfx{position:absolute;width:8px;height:8px;border-radius:2px;left:50%;top:40%;pointer-events:none;z-index:60;
+    animation:fly .8s ease-out forwards}
+  @keyframes fly{0%{transform:translate(0,0) rotate(0);opacity:1}100%{transform:translate(var(--dx),var(--dy)) rotate(260deg);opacity:0}}
+
+  /* ---------- calendario del reto ---------- */
+  .retocal{display:grid;grid-template-columns:repeat(auto-fill,minmax(37px,1fr));gap:7px}
+  .rcell{aspect-ratio:1;border-radius:10px;border:1px solid var(--line-soft);background:rgba(255,255,255,.45);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;
+    position:relative;transition:transform .13s,box-shadow .15s,background .2s}
+  .rcell .dnum{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-soft);line-height:1}
+  .rcell .p{position:absolute;left:5px;right:5px;bottom:4px;height:3px;border-radius:2px;background:var(--line-soft);overflow:hidden}
+  .rcell .p i{display:block;height:100%;background:var(--jade)}
+  .rcell.done{background:var(--jade);border-color:var(--jade)}
+  .rcell.done .dnum{color:#fff;font-weight:600}
+  .rcell.done .p{display:none}
+  .rcell.miss{background:#f6e6df;border-color:var(--seal)}
+  .rcell.miss .dnum{color:var(--seal-deep)}
+  .rcell.today{box-shadow:0 0 0 2px var(--jade)}
+  .rcell.future{opacity:.42;cursor:default}
+  .rcell:not(.future):hover{transform:translateY(-2px);box-shadow:0 6px 14px rgba(32,39,43,.14)}
+  .rcell.justdone{animation:cellpop .45s cubic-bezier(.34,1.56,.64,1)}
+  @keyframes cellpop{0%{transform:scale(.75)}60%{transform:scale(1.16)}100%{transform:scale(1)}}
+  .callegend{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;font-family:"IBM Plex Mono",monospace;
+    font-size:10px;color:var(--ink-soft)}
+  .callegend .k{display:inline-flex;align-items:center;gap:6px}
+  .callegend .sw{width:13px;height:13px;border-radius:4px;border:1px solid var(--line-soft)}
+
+  /* ---------- estadísticas por meta ---------- */
+  .microrow{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px dashed var(--line-soft);font-size:13px}
+  .microrow:last-child{border-bottom:0}
+  .microrow .mn{width:170px;flex:none;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .microrow .bar{flex:1;height:8px;border-radius:5px;background:var(--line-soft);overflow:hidden}
+  .microrow .bar i{display:block;height:100%;border-radius:5px;background:var(--jade);transition:width .35s ease}
+  .microrow .mv{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft);width:110px;text-align:right;flex:none}
+  .microrow .mv b{color:var(--ink)}
+
+  /* ---------- editor del reto ---------- */
+  details.cfg{border:1px solid var(--line-soft);border-radius:11px;background:rgba(255,255,255,.35);margin-top:14px;overflow:hidden}
+  details.cfg>summary{list-style:none;cursor:pointer;font-family:"IBM Plex Mono",monospace;font-size:11px;
+    color:var(--ink-soft);padding:10px 14px}
+  details.cfg>summary::-webkit-details-marker{display:none}
+  details.cfg>summary:hover{color:var(--jade)}
+  details.cfg .cfgbody{padding:4px 14px 14px;border-top:1px dashed var(--line-soft)}
+  .fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px 12px;margin-top:10px}
+  .fgrid label{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--ink-soft);display:flex;flex-direction:column;gap:4px}
+  .toggle{display:inline-flex;align-items:center;gap:8px;cursor:pointer;
+    font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft);user-select:none;margin-top:10px}
+  .switch{width:38px;height:22px;border-radius:12px;background:var(--line);position:relative;transition:background .15s;flex:none}
+  .switch::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;
+    background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:left .15s}
+  .toggle.on .switch{background:var(--jade)}
+  .toggle.on .switch::after{left:18px}
+  .metaedit{display:flex;gap:8px;align-items:center;padding:6px 0}
+  .metaedit input.ico{width:52px;text-align:center}
+  .metaedit input.nom{flex:1;min-width:0}
+  .cfgbtns{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
+
+  /* ---------- vacío / onboarding ---------- */
+  .empty75{border:1px dashed var(--line);border-radius:var(--radius);background:rgba(255,255,255,.35);
+    padding:34px 26px;text-align:center;margin-top:20px}
+  .empty75 h3{font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:600;font-size:26px;margin:0 0 6px}
+  .empty75 p{color:var(--ink-soft);font-size:14px;max-width:56ch;margin:0 auto 16px}
+
+  /* ---------- modal de día ---------- */
+  .confirmov{position:fixed;inset:0;background:rgba(32,39,43,.45);z-index:9999;
+    display:flex;align-items:center;justify-content:center;padding:20px;animation:cffade .15s ease}
+  @keyframes cffade{from{opacity:0}to{opacity:1}}
+  .confirmbox,.daymodal{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:0 20px 60px rgba(0,0,0,.3);max-width:430px;width:100%;padding:22px 22px 18px;position:relative}
+  .daymodal{max-height:86vh;overflow:auto}
+  .confirmbox p{margin:0 0 18px;font-size:15px;color:var(--ink);line-height:1.5}
+  .confirmbtns{display:flex;gap:10px;justify-content:flex-end}
+  .confirmbtns .cbyes{background:var(--seal);color:#fff;border-color:var(--seal)}
+  .confirmbtns .cbyes:hover{background:var(--seal-deep)}
+  .daymodal .dm-date{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--seal-deep)}
+  .daymodal h3{font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:600;font-size:26px;margin:.1em 0 .3em}
+  .daymodal .dm-x{position:absolute;right:14px;top:14px;padding:6px 12px}
+
+  .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:22px}
+  .saved{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--jade);opacity:0;transition:opacity .3s}
+  .saved.show{opacity:1}
+  .syncstat{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft);
+    border:1px solid var(--line-soft);border-radius:8px;padding:5px 10px;background:var(--card)}
+  .syncstat.pending{color:#fff;background:var(--seal);border-color:var(--seal);cursor:pointer;
+    animation:pulsesync 1.4s ease-in-out infinite}
+  @keyframes pulsesync{0%,100%{box-shadow:0 0 0 0 rgba(166,58,42,.4)}50%{box-shadow:0 0 0 5px rgba(166,58,42,0)}}
+  .foot{margin-top:26px;font-size:12px;color:var(--ink-soft);border-top:1px solid var(--line);padding-top:14px;font-style:italic}
+
+  @media (max-width:900px){.grid2{grid-template-columns:1fr}}
+  @media (max-width:820px){.summary{grid-template-columns:repeat(3,1fr)}}
+  @media (max-width:560px){.summary{grid-template-columns:repeat(2,1fr)}.wrap{padding:18px 12px 60px}
+    .microrow .mn{width:120px}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="topnav" id="topnav" aria-label="Secciones"></nav>
+
+  <header class="masthead">
+    <div class="eyebrow">Metas diarias · rachas · disciplina</div>
+    <h1>Retos <span class="amp">·</span> día a día</h1>
+    <p class="subline">Tu sistema de metas personales estilo <b>75 Hard</b>: define las metas de tu reto, márcalas cada día y sigue tu <b>racha</b> en el calendario. Si el modo estricto está activo, fallar un día reinicia el contador — como manda el reto.</p>
+  </header>
+
+  <div id="app"></div>
+
+  <div class="controls">
+    <button class="btn" id="syncBtn">Sincronizar ahora</button>
+    <span class="syncstat" id="syncStatus">🟢 En vivo</span>
+    <span class="saved" id="savedFlag">Guardado ✓</span>
+  </div>
+
+  <p class="foot">Los retos son personales: solo tú ves los tuyos. Marca tus metas todos los días — la constancia gana. Tus cambios se guardan y sincronizan automáticamente en la nube.</p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+<script>
+/* ===================== Utilidades ===================== */
+const esc=s=>(s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+let _id=0;
+const uid=()=>"i"+(++_id)+"_"+Date.now().toString(36)+Math.floor(Math.random()*999);
+const MESES=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+const DIAS=["dom","lun","mar","mié","jue","vie","sáb"];
+function dkey(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function parseKey(k){const [y,m,dd]=k.split("-").map(Number);return new Date(y,m-1,dd);}
+function addDaysK(k,n){const d=parseKey(k);d.setDate(d.getDate()+n);return dkey(d);}
+const hoyK=()=>dkey(new Date());
+const REDUCED=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ===================== Estado ===================== */
+let state=null,UID=null,PERFIL=null;
+const LKEY=()=>"retos-datos:"+UID;
+
+const TEMPLATE_METAS=[
+  {icono:"🏋️",nombre:"Entrenamiento 45 min"},
+  {icono:"🌳",nombre:"2.º entrenamiento (al aire libre)"},
+  {icono:"🥗",nombre:"Seguir la dieta · sin alcohol"},
+  {icono:"💧",nombre:"4 litros de agua"},
+  {icono:"📖",nombre:"Leer 10 páginas"},
+  {icono:"📸",nombre:"Foto de progreso"}
+];
+function nuevoReto(nombre){
+  return{id:"reto_"+uid(),nombre:nombre||"Mi 75 Hard",inicio:hoyK(),dias:75,estricto:true,
+    metas:TEMPLATE_METAS.map(m=>({id:"m_"+uid(),icono:m.icono,nombre:m.nombre})),log:{},creado:hoyK()};
+}
+function freshState(){return{retos:[],activo:null};}
+
+async function remoteGet(){
+  const {data,error}=await Auth.sb.from("retos_datos").select("datos").eq("usuario_id",UID).maybeSingle();
+  if(error)throw error;
+  return data?data.datos:null;
+}
+async function remoteSet(obj){
+  const {error}=await Auth.sb.from("retos_datos")
+    .upsert({usuario_id:UID,datos:obj,actualizado:new Date().toISOString()});
+  if(error)throw error;
+}
+async function load(){
+  let raw=null;
+  try{raw=await remoteGet();}
+  catch(e){try{const v=localStorage.getItem(LKEY());if(v)raw=JSON.parse(v);}catch(_){}}
+  if(raw&&typeof raw==="object"&&!Array.isArray(raw))state=raw;
+  if(!state||!Array.isArray(state.retos))state=freshState();
+  state.retos.forEach(r=>{
+    if(!Array.isArray(r.metas))r.metas=[];
+    if(!r.log||typeof r.log!=="object")r.log={};
+    if(!r.dias||r.dias<1)r.dias=75;
+    if(!r.inicio)r.inicio=hoyK();
+    if(r.estricto==null)r.estricto=true;
+  });
+}
+
+/* ===================== Sincronización (mismo patrón que Salud) ===================== */
+const CLIENT_ID=Math.random().toString(36).slice(2,9);
+let lastRev=0,pendingRemote=null,lastLocalEdit=0,pollTimer=null,saveTimer=null;
+const isTyping=()=>{const a=document.activeElement;return !!a&&/^(INPUT|SELECT|TEXTAREA)$/.test(a.tagName||"");};
+const busy=()=>isTyping()||(Date.now()-lastLocalEdit<2500);
+async function save(){
+  try{
+    state._rev=Date.now();state._by=CLIENT_ID;lastRev=state._rev;lastLocalEdit=Date.now();
+    try{localStorage.setItem(LKEY(),JSON.stringify(state));}catch(_){}
+    await remoteSet(state);
+    flashSaved();setSync("saved");
+  }catch(e){setSync("offline");}
+}
+function saveDebounced(){clearTimeout(saveTimer);lastLocalEdit=Date.now();saveTimer=setTimeout(save,500);}
+function flashSaved(){const f=document.getElementById("savedFlag");if(!f)return;f.classList.add("show");
+  clearTimeout(f._t);f._t=setTimeout(()=>f.classList.remove("show"),1200);}
+function applyRemote(remote){state=remote;lastRev=remote._rev||Date.now();pendingRemote=null;renderAll();setSync("updated");}
+async function poll(){
+  let remote=null;
+  try{remote=await remoteGet();}catch(e){setSync("offline");return;}
+  if(!remote){setSync("live");return;}
+  const rrev=remote._rev||0;
+  if(rrev>lastRev&&remote._by!==CLIENT_ID&&Array.isArray(remote.retos)){
+    if(busy()){pendingRemote=remote;setSync("pending");}
+    else applyRemote(remote);
+  }else if(!pendingRemote){setSync("live");}
+}
+function startCollab(){if(pollTimer)clearInterval(pollTimer);pollTimer=setInterval(poll,4000);
+  document.addEventListener("visibilitychange",()=>{if(!document.hidden)poll();});}
+function setSync(mode){
+  const el=document.getElementById("syncStatus");if(!el)return;
+  el.classList.remove("pending");el.onclick=null;
+  const t=new Date().toLocaleTimeString("es-MX",{hour:"2-digit",minute:"2-digit"});
+  if(mode==="pending"){el.classList.add("pending");el.textContent="🔔 Cambios remotos — toca para aplicar";
+    el.onclick=()=>{if(pendingRemote)applyRemote(pendingRemote);};}
+  else if(mode==="updated"){el.textContent="🔄 Actualizado desde otro dispositivo · "+t;}
+  else if(mode==="saved"){el.textContent="🟢 En vivo · guardado "+t;}
+  else if(mode==="offline"){el.textContent="🟡 Sin conexión de sincronía — reintentando…";}
+  else{el.textContent="🟢 En vivo · al día "+t;}
+}
+function customConfirm(message,onYes){
+  const ov=document.createElement("div");ov.className="confirmov";
+  ov.innerHTML=`<div class="confirmbox"><p>${esc(message)}</p>
+    <div class="confirmbtns"><button class="btn cbno">Cancelar</button><button class="btn cbyes">Sí, continuar</button></div></div>`;
+  document.body.appendChild(ov);
+  ov.querySelector(".cbno").onclick=()=>ov.remove();
+  ov.querySelector(".cbyes").onclick=()=>{ov.remove();onYes();};
+  ov.addEventListener("click",e=>{if(e.target===ov)ov.remove();});
+}
+
+/* ===================== Lógica del reto ===================== */
+function retoActivo(){
+  if(!state.retos.length)return null;
+  return state.retos.find(r=>r.id===state.activo)||state.retos[0];
+}
+function metaChecked(r,k,mid){return !!(r.log[k]&&r.log[k][mid]);}
+function dayCount(r,k){const l=r.log[k]||{};return r.metas.filter(m=>l[m.id]).length;}
+function dayComplete(r,k){return r.metas.length>0&&dayCount(r,k)===r.metas.length;}
+function dayKeys(r){const out=[];for(let i=0;i<r.dias;i++)out.push(addDaysK(r.inicio,i));return out;}
+function finReto(r){return addDaysK(r.inicio,r.dias-1);}
+function stats(r){
+  const today=hoyK(),keys=dayKeys(r);
+  let completos=0,mejor=0,run=0,elapsed=0;
+  keys.forEach(k=>{
+    if(k>today)return;
+    elapsed++;
+    if(dayComplete(r,k)){completos++;run++;if(run>mejor)mejor=run;}
+    else if(k<today)run=0;                 // hoy incompleto aún no rompe la racha
+  });
+  // racha previa (termina ayer) para el "día" del modo estricto
+  let prev=0;
+  for(let k=addDaysK(today,-1);k>=r.inicio;k=addDaysK(k,-1)){
+    if(dayComplete(r,k))prev++;else break;
+    if(k===r.inicio)break;
+  }
+  const hoyDone=dayComplete(r,today);
+  const racha=prev+(hoyDone?1:0);
+  const idxHoy=keys.indexOf(today);
+  const enCurso=idxHoy>=0;
+  const diaCal=enCurso?idxHoy+1:(today<r.inicio?0:r.dias);
+  const diaNum=r.estricto?(enCurso?Math.min(prev+1,r.dias):diaCal):diaCal;
+  return{completos,mejor,racha,elapsed,diaCal,diaNum,enCurso,hoyDone,
+    hoyCount:dayCount(r,today),pct:r.dias?completos/r.dias*100:0,terminado:today>finReto(r)};
+}
+function metaStats(r,mid){
+  const today=hoyK();let done=0,elapsed=0;
+  dayKeys(r).forEach(k=>{if(k>today)return;elapsed++;if(metaChecked(r,k,mid))done++;});
+  let streak=0,start=metaChecked(r,today,mid)?today:addDaysK(today,-1);
+  for(let k=start;k>=r.inicio;k=addDaysK(k,-1)){
+    if(k>today){continue;}
+    if(metaChecked(r,k,mid))streak++;else break;
+    if(k===r.inicio)break;
+  }
+  return{done,elapsed,pct:elapsed?done/elapsed*100:0,streak};
+}
+
+/* ===================== Animaciones ===================== */
+const CFX_COLORS=["#3e6152","#c08a2e","#a63a2a","#4a7a99","#55507f"];
+function burst(el){
+  if(REDUCED||!el)return;
+  for(let i=0;i<16;i++){
+    const d=document.createElement("span");d.className="cfx";
+    const ang=Math.random()*Math.PI*2,dist=60+Math.random()*90;
+    d.style.setProperty("--dx",Math.cos(ang)*dist+"px");
+    d.style.setProperty("--dy",Math.sin(ang)*dist-30+"px");
+    d.style.background=CFX_COLORS[i%CFX_COLORS.length];
+    d.style.animationDelay=(Math.random()*.12)+"s";
+    el.appendChild(d);
+    setTimeout(()=>d.remove(),950);
+  }
+}
+let lastToggle=null;   // {k, mid} para animar solo el check recién tocado
+let lastDayDone=null;  // k del día que se acaba de completar (para la celda)
+
+/* ===================== Render ===================== */
+function chkHTML(r,k,mid){
+  const on=metaChecked(r,k,mid);
+  const just=lastToggle&&lastToggle.k===k&&lastToggle.mid===mid;
+  return`<button class="chk${on?" on":""}${just&&on?" just":""}" data-chk="${k}|${mid}" aria-pressed="${on}" title="${on?"Desmarcar":"Marcar"}">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4 10-10"/></svg><span class="ring"></span>
+  </button>`;
+}
+function fmtFecha(k){const d=parseKey(k);return DIAS[d.getDay()]+" "+d.getDate()+" "+MESES[d.getMonth()];}
+
+function renderApp(){
+  const app=document.getElementById("app");
+  const r=retoActivo();
+  if(!r){
+    app.innerHTML=`<div class="empty75">
+      <h3>🏆 Empieza tu primer reto</h3>
+      <p>Te preparo la plantilla clásica del <b>75 Hard</b>: 75 días, 6 metas diarias (dos entrenamientos, dieta, 4 L de agua, lectura y foto de progreso). Puedes editar todo: nombre, duración y metas.</p>
+      <button class="btn primary" id="crear75">＋ Crear mi reto (plantilla 75 Hard)</button>
+      <span style="display:inline-block;width:10px"></span>
+      <button class="btn" id="crearVacio">Crear uno desde cero</button>
+    </div>`;
+    document.getElementById("crear75").onclick=()=>{
+      const nr=nuevoReto("Mi 75 Hard");state.retos.push(nr);state.activo=nr.id;
+      saveDebounced();renderAll();
+    };
+    document.getElementById("crearVacio").onclick=()=>{
+      const nr=nuevoReto("Mi reto");nr.metas=[{id:"m_"+uid(),icono:"✅",nombre:"Mi primera meta"}];
+      state.retos.push(nr);state.activo=nr.id;saveDebounced();renderAll();
+    };
+    return;
+  }
+  const st=stats(r),today=hoyK();
+  // ---------- selector + chips ----------
+  const tabs=state.retos.map(x=>`<button class="rtab ${x.id===r.id?"active":""}" data-rt="${esc(x.id)}">🏆 ${esc(x.nombre)}</button>`).join("")+
+    `<button class="addbtn" id="nuevoReto">＋ Nuevo reto</button>`;
+  const chips=`
+    <div class="chip"><div class="n">${st.enCurso?st.diaNum:st.terminado?r.dias:0}<small> / ${r.dias}</small></div>
+      <div class="l">día ${r.estricto?"· estricto":""}</div></div>
+    <div class="chip fire"><div class="n">🔥 ${st.racha}</div><div class="l">racha actual</div></div>
+    <div class="chip"><div class="n">${st.mejor}</div><div class="l">mejor racha</div></div>
+    <div class="chip"><div class="n">${st.completos}<small> / ${r.dias}</small></div><div class="l">días completos · ${Math.round(st.pct)}%</div></div>
+    <div class="chip" id="chipHoy"><div class="n">${st.hoyCount}<small> / ${r.metas.length}</small></div><div class="l">metas de hoy</div></div>`;
+  // ---------- hoy ----------
+  const metasHoy=r.metas.map(m=>{
+    const ms=metaStats(r,m.id);
+    return`<div class="metaline ${metaChecked(r,today,m.id)?"on":""}">
+      ${chkHTML(r,today,m.id)}
+      <div class="mtxt">${esc(m.icono||"✅")} ${esc(m.nombre)}</div>
+      <span class="mstreak" title="racha de esta meta">🔥 ${ms.streak}</span>
+    </div>`;
+  }).join("");
+  const hoyEnRango=today>=r.inicio&&today<=finReto(r);
+  const doneBanner=st.hoyDone?`<div class="daydone"><span style="font-size:24px">🎉</span>
+      <div><div class="big">¡Día ${st.diaNum} completado!</div>
+      <div class="sub">Racha: ${st.racha} día${st.racha===1?"":"s"} · sigue así</div></div></div>`:"";
+  // ---------- calendario ----------
+  const cells=dayKeys(r).map((k,i)=>{
+    const total=r.metas.length,c=dayCount(r,k);
+    const isFuture=k>today,isToday=k===today;
+    let cls="";
+    if(!isFuture){
+      if(dayComplete(r,k))cls="done";
+      else if(k<today&&c<total)cls="miss";
+    }
+    if(isFuture)cls+=" future";
+    if(isToday)cls+=" today";
+    if(lastDayDone===k)cls+=" justdone";
+    const pct=total?c/total*100:0;
+    const d=parseKey(k);
+    return`<div class="rcell ${cls}" data-day="${k}" title="Día ${i+1} · ${DIAS[d.getDay()]} ${d.getDate()} ${MESES[d.getMonth()]} · ${c}/${total} metas">
+      <span class="dnum">${i+1}</span>
+      ${(!isFuture&&!dayComplete(r,k))?`<span class="p"><i style="width:${pct}%"></i></span>`:""}
+    </div>`;
+  }).join("");
+  // ---------- estadísticas por meta ----------
+  const metaRows=r.metas.map(m=>{
+    const ms=metaStats(r,m.id);
+    return`<div class="microrow"><div class="mn">${esc(m.icono||"✅")} ${esc(m.nombre)}</div>
+      <div class="bar"><i style="width:${Math.round(ms.pct)}%"></i></div>
+      <div class="mv"><b>${ms.done}</b>/${ms.elapsed} · ${Math.round(ms.pct)}%</div></div>`;
+  }).join("");
+  // ---------- editor ----------
+  const metasEdit=r.metas.map((m,i)=>`<div class="metaedit">
+      <input class="f ico" maxlength="4" value="${esc(m.icono||"")}" data-mi="${i}" title="emoji">
+      <input class="f nom" value="${esc(m.nombre)}" data-mn="${i}">
+      <button class="del" data-md="${i}" title="Quitar meta">✕</button>
+    </div>`).join("");
+  const fin=parseKey(finReto(r));
+  app.innerHTML=`
+    <div class="retotabs" id="retotabs">${tabs}</div>
+    <div class="summary" id="chips">${chips}</div>
+    <div class="grid2 sec">
+      <div>
+        <div class="card" id="hoyCard">
+          <h4>Hoy · ${fmtFecha(today)}</h4>
+          <div class="csub">${hoyEnRango?`día ${st.diaCal} del calendario · marca tus metas`:(today<r.inicio?`tu reto empieza el ${fmtFecha(r.inicio)}`:`este reto terminó el ${fmtFecha(finReto(r))}`)}</div>
+          ${hoyEnRango?metasHoy:""}
+          ${hoyEnRango?doneBanner:""}
+        </div>
+        <div class="card">
+          <h4>Metas del reto</h4>
+          <div class="csub">% de días cumplidos (de los días transcurridos) y racha por meta</div>
+          ${metaRows||`<div class="mini">Este reto aún no tiene metas — agrégalas abajo.</div>`}
+          <details class="cfg" id="cfgReto">
+            <summary>⚙ Configurar este reto (nombre, fechas, metas…)</summary>
+            <div class="cfgbody">
+              <div class="fgrid">
+                <label>Nombre<input class="f" id="cfgNombre" value="${esc(r.nombre)}"></label>
+                <label>Inicio<input class="f" id="cfgInicio" type="date" value="${r.inicio}"></label>
+                <label>Duración (días)<input class="f num" id="cfgDias" type="number" min="7" max="365" value="${r.dias}"></label>
+              </div>
+              <div class="toggle ${r.estricto?"on":""}" id="cfgEstricto" role="switch" aria-checked="${r.estricto}">
+                <span class="switch"></span> modo estricto: fallar un día reinicia el contador
+              </div>
+              <div class="csub" style="margin-top:14px">Metas diarias</div>
+              ${metasEdit}
+              <button class="addbtn" id="cfgAddMeta">＋ Agregar meta</button>
+              <div class="cfgbtns">
+                <button class="btn" id="cfgReiniciar">↺ Reiniciar desde hoy</button>
+                <button class="btn danger" id="cfgBorrar">🗑 Borrar reto</button>
+              </div>
+            </div>
+          </details>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h4>Calendario del reto</h4>
+          <div class="csub">${fmtFecha(r.inicio)} → ${DIAS[fin.getDay()]} ${fin.getDate()} ${MESES[fin.getMonth()]} · toca un día para editarlo</div>
+          <div class="retocal" id="retocal">${cells}</div>
+          <div class="callegend">
+            <span class="k"><span class="sw" style="background:var(--jade);border-color:var(--jade)"></span> completo</span>
+            <span class="k"><span class="sw" style="background:#f6e6df;border-color:var(--seal)"></span> fallado</span>
+            <span class="k"><span class="sw" style="box-shadow:0 0 0 2px var(--jade)"></span> hoy</span>
+            <span class="k"><span class="sw" style="opacity:.45"></span> futuro</span>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  wireApp(r);
+  lastToggle=null;lastDayDone=null;
+}
+function wireApp(r){
+  const app=document.getElementById("app");
+  app.querySelectorAll(".rtab").forEach(b=>b.addEventListener("click",()=>{
+    state.activo=b.dataset.rt;saveDebounced();renderAll();
+  }));
+  const nuevo=document.getElementById("nuevoReto");
+  if(nuevo)nuevo.addEventListener("click",()=>{
+    const nr=nuevoReto("Nuevo reto");state.retos.push(nr);state.activo=nr.id;
+    saveDebounced();renderAll();
+    const cfg=document.getElementById("cfgReto");if(cfg)cfg.open=true;
+    const nom=document.getElementById("cfgNombre");if(nom){nom.focus();nom.select();}
+  });
+  app.querySelectorAll("[data-chk]").forEach(b=>b.addEventListener("click",()=>{
+    const [k,mid]=b.dataset.chk.split("|");
+    toggleMeta(r,k,mid);
+  }));
+  app.querySelectorAll(".rcell:not(.future)").forEach(c=>c.addEventListener("click",()=>openDia(r,c.dataset.day)));
+  // editor
+  const on=(id,fn)=>{const el=document.getElementById(id);if(el)fn(el);};
+  on("cfgNombre",el=>el.addEventListener("input",()=>{r.nombre=el.value;saveDebounced();
+    const tab=app.querySelector('.rtab[data-rt="'+r.id+'"]');if(tab)tab.textContent="🏆 "+r.nombre;}));
+  on("cfgInicio",el=>el.addEventListener("change",()=>{if(el.value){r.inicio=el.value;saveDebounced();renderAll();keepCfgOpen();}}));
+  on("cfgDias",el=>el.addEventListener("change",()=>{const v=+el.value||75;r.dias=Math.max(7,Math.min(365,v));saveDebounced();renderAll();keepCfgOpen();}));
+  on("cfgEstricto",el=>el.addEventListener("click",()=>{r.estricto=!r.estricto;saveDebounced();renderAll();keepCfgOpen();}));
+  app.querySelectorAll("[data-mi]").forEach(inp=>inp.addEventListener("input",()=>{
+    const m=r.metas[+inp.dataset.mi];if(m){m.icono=inp.value;saveDebounced();}}));
+  app.querySelectorAll("[data-mn]").forEach(inp=>inp.addEventListener("input",()=>{
+    const m=r.metas[+inp.dataset.mn];if(m){m.nombre=inp.value;saveDebounced();}}));
+  app.querySelectorAll("[data-md]").forEach(b=>b.addEventListener("click",()=>{
+    const m=r.metas[+b.dataset.md];if(!m)return;
+    customConfirm(`¿Quitar la meta “${m.nombre}” del reto? Su historial se conserva pero deja de contar.`,()=>{
+      r.metas.splice(+b.dataset.md,1);saveDebounced();renderAll();keepCfgOpen();
+    });
+  }));
+  on("cfgAddMeta",el=>el.addEventListener("click",()=>{
+    r.metas.push({id:"m_"+uid(),icono:"✅",nombre:"Nueva meta"});
+    saveDebounced();renderAll();keepCfgOpen();
+    const inputs=document.querySelectorAll("[data-mn]");
+    const last=inputs[inputs.length-1];if(last){last.focus();last.select();}
+  }));
+  on("cfgReiniciar",el=>el.addEventListener("click",()=>{
+    customConfirm("¿Reiniciar este reto desde hoy? Se borra el historial de checks y el día 1 vuelve a ser hoy.",()=>{
+      r.inicio=hoyK();r.log={};saveDebounced();renderAll();
+    });
+  }));
+  on("cfgBorrar",el=>el.addEventListener("click",()=>{
+    customConfirm(`¿Borrar el reto “${r.nombre}” con todo su historial? No se puede deshacer.`,()=>{
+      state.retos=state.retos.filter(x=>x.id!==r.id);
+      state.activo=state.retos.length?state.retos[0].id:null;
+      saveDebounced();renderAll();
+    });
+  }));
+}
+function keepCfgOpen(){const cfg=document.getElementById("cfgReto");if(cfg)cfg.open=true;}
+
+function toggleMeta(r,k,mid,fromModal){
+  const wasDone=dayComplete(r,k);
+  if(!r.log[k])r.log[k]={};
+  r.log[k][mid]=!r.log[k][mid];
+  if(!r.log[k][mid])delete r.log[k][mid];
+  lastToggle={k,mid};
+  const nowDone=dayComplete(r,k);
+  if(nowDone&&!wasDone)lastDayDone=k;
+  saveDebounced();
+  renderAll();
+  if(fromModal)openDia(r,k,true);
+  if(nowDone&&!wasDone){
+    const target=fromModal?document.querySelector(".daymodal"):document.getElementById("hoyCard");
+    burst(target||document.getElementById("app"));
+    const chip=document.getElementById("chipHoy");if(chip&&k===hoyK())chip.classList.add("pulse");
+  }
+}
+
+/* ---------- modal de un día ---------- */
+function openDia(r,k,replace){
+  document.querySelectorAll(".confirmov").forEach(x=>x.remove());
+  const idx=dayKeys(r).indexOf(k);if(idx<0)return;
+  const c=dayCount(r,k),total=r.metas.length;
+  const metas=r.metas.map(m=>`<div class="metaline ${metaChecked(r,k,m.id)?"on":""}">
+      ${chkHTML(r,k,m.id)}
+      <div class="mtxt">${esc(m.icono||"✅")} ${esc(m.nombre)}</div>
+    </div>`).join("");
+  const estado=dayComplete(r,k)?`<span style="color:var(--jade-deep)">✓ Día completo</span>`
+    :(k<hoyK()?`<span style="color:var(--seal-deep)">✗ Incompleto (${c}/${total})</span>`:`${c}/${total} metas`);
+  const ov=document.createElement("div");ov.className="confirmov";
+  ov.innerHTML=`<div class="daymodal">
+    <button class="btn dm-x">✕</button>
+    <div class="dm-date">Día ${idx+1} de ${r.dias}</div>
+    <h3>${fmtFecha(k)}</h3>
+    <div class="mini" style="margin-bottom:8px">${estado}</div>
+    ${metas}
+  </div>`;
+  document.body.appendChild(ov);
+  ov.querySelector(".dm-x").onclick=()=>ov.remove();
+  ov.addEventListener("click",e=>{if(e.target===ov)ov.remove();});
+  ov.querySelectorAll("[data-chk]").forEach(b=>b.addEventListener("click",()=>{
+    const [kk,mid]=b.dataset.chk.split("|");
+    toggleMeta(r,kk,mid,true);
+  }));
+  lastToggle=null;
+}
+
+function renderAll(){renderApp();}
+
+/* ===================== Init ===================== */
+document.getElementById("syncBtn").addEventListener("click",()=>{setSync("live");poll();});
+(async function init(){
+  const perfil=await Auth.requerirAcceso("retos");
+  if(!perfil)return;
+  PERFIL=perfil;UID=perfil.id;
+  Auth.montarBarra("retos",perfil);
+  await load();
+  lastRev=state._rev||0;
+  renderAll();
+  if(!state._rev){await save();}
+  else setSync("live");
+  startCollab();
+})();
+</script>
+</body>
+</html>
