@@ -20,6 +20,7 @@
     --radius:12px;
   }
   *{box-sizing:border-box}
+  html{scroll-padding-bottom:96px;scroll-padding-top:12px}
   body{margin:0;color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;
     font-family:"Inter",system-ui,-apple-system,sans-serif;
     background:
@@ -392,11 +393,108 @@
   .maproute{transition:stroke-width .18s ease,opacity .18s ease}
   .mappanel:hover .maproute{opacity:.9}
 
+  /* ---------- avisos flotantes (toasts) ---------- */
+  .toastwrap{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:10000;
+    display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;width:min(94vw,460px)}
+  .toast{pointer-events:auto;background:var(--ink);color:var(--paper);border-radius:11px;
+    padding:11px 14px;box-shadow:0 10px 30px rgba(32,39,43,.28);font-size:13.5px;
+    display:flex;align-items:center;gap:12px;width:100%;
+    animation:toastin .18s ease}
+  @keyframes toastin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .toast.out{opacity:0;transform:translateY(10px);transition:opacity .2s,transform .2s}
+  .toast .tmsg{flex:1;min-width:0}
+  .toast .tact{flex:none;border:1px solid rgba(255,255,255,.45);background:transparent;color:#fff;
+    font-family:"IBM Plex Mono",monospace;font-size:11.5px;border-radius:8px;padding:6px 11px;cursor:pointer}
+  .toast .tact:hover{background:rgba(255,255,255,.16)}
+  .toast.err{background:var(--seal-deep)}
+  .toast.ok{background:var(--jade)}
+
+  /* ---------- menú de acciones por fila ---------- */
+  .rowmenu{position:relative}
+  .rowmenu>.mbtn{border:0;background:transparent;cursor:pointer;color:var(--ink-soft);
+    font-size:16px;width:34px;height:34px;border-radius:8px;line-height:1}
+  .rowmenu>.mbtn:hover{background:var(--card-2);color:var(--jade)}
+  .menupop{position:absolute;right:0;top:36px;z-index:60;min-width:216px;max-width:min(88vw,320px);background:var(--card);
+    border:1px solid var(--line);border-radius:11px;box-shadow:0 14px 36px rgba(32,39,43,.22);
+    padding:6px;display:none;max-height:300px;overflow:auto}
+  .rowmenu.open .menupop{display:block}
+  .menupop button,.menupop .mlabel{display:block;width:100%;text-align:left;border:0;background:transparent;
+    font-family:"Inter",sans-serif;font-size:13px;color:var(--ink);padding:9px 11px;border-radius:8px;cursor:pointer}
+  .menupop button:hover{background:var(--card-2);color:var(--seal-deep)}
+  .menupop button.danger:hover{background:#f6e6df;color:var(--seal-deep)}
+  .menupop .mlabel{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--ink-soft);cursor:default;padding:9px 11px 4px}
+  .menupop .msep{height:1px;background:var(--line-soft);margin:5px 4px}
+
+  /* ---------- buscador ---------- */
+  .findbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:12px}
+  .findbar input{flex:1;min-width:180px;font-size:13.5px;padding:10px 12px;border-radius:10px;
+    border:1px solid var(--line);background:var(--card)}
+  .findbar input:focus{outline:none;border-color:var(--jade);background:#fff}
+  .findcount{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft)}
+  mark.hit{background:#f6e2b8;color:var(--ink);border-radius:3px;padding:0 2px}
+
+  /* ---------- avisos en línea ---------- */
+  .inlinewarn{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12.5px;
+    color:var(--seal-deep);background:#f8ece6;border:1px solid var(--seal);
+    border-radius:10px;padding:9px 12px;margin:10px 0}
+  .inlinewarn button{border:1px solid var(--seal);background:transparent;color:var(--seal-deep);
+    font-family:"IBM Plex Mono",monospace;font-size:11px;border-radius:7px;padding:5px 10px;cursor:pointer}
+  .inlinewarn button:hover{background:var(--seal);color:#fff}
+
+  /* ---------- estados vacíos ---------- */
+  .empty{text-align:center;padding:26px 18px;color:var(--ink-soft)}
+  .empty .ebig{font-size:30px;margin-bottom:6px;opacity:.6}
+  .empty p{margin:0 0 12px;font-size:13.5px}
+
   @media (max-width:820px){.summary{grid-template-columns:repeat(3,1fr)}.grid2{grid-template-columns:1fr}
     .datecol{text-align:left;min-width:0}}
   @media (max-width:520px){.summary{grid-template-columns:repeat(2,1fr)}.wrap{padding:18px 12px 60px}
     .trange{width:82px;font-size:10.5px}.startwrap{margin-left:0}}
-  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+  /* ---------- móvil: áreas táctiles y filas legibles ---------- */
+  @media (max-width:640px){
+    /* la fila del día pasa a dos renglones: hora arriba, contenido abajo */
+    .row{flex-wrap:wrap;gap:7px;padding:11px 0}
+    .trange{width:auto;font-size:12px;order:1}
+    .tdot{order:0}
+    .dhandle{display:none}                    /* en táctil se usa el menú ⋮, no el arrastre */
+    .rmain{order:3;flex-basis:100%;min-width:0}
+    .rowbtns{order:2;margin-left:auto;flex-direction:row;gap:2px}
+    .rowmenu{order:2}
+    .updn{width:38px;height:34px;font-size:13px}
+    .del{width:38px;height:34px;font-size:18px}
+    .rowmenu>.mbtn{width:38px;height:34px}
+    /* el menú se ancla a la derecha para no salirse de la pantalla */
+    .menupop{right:0;left:auto;min-width:0;width:max-content;max-width:min(84vw,300px)}
+    /* controles cómodos para el dedo */
+    .btn,.addbtn{padding:11px 15px;font-size:12.5px}
+    .btool{width:38px;height:38px}
+    .nightsctl button{width:38px;height:38px;font-size:19px}
+    .daychip{padding:9px 13px;font-size:12px}
+    .tab{padding:9px 14px;font-size:12px}
+    .star{font-size:21px;padding:2px 4px}
+    /* 16px en TODOS los campos: por debajo, iOS hace zoom al enfocarlos */
+    input.f,select.f,input.itemnote,input.pnote,input.rtitle,
+    select.placesel,select.rtype,input.clabel,input.camt,input.bamt,
+    input.durinp,input.legnote,input.mname,input.mregion,input.essfield,
+    .findbar input,.metagrid input,.mgrid input{font-size:16px!important;padding:9px 10px}
+    input[type="time"].f{font-size:16px!important;padding:7px 8px}
+    input.durinp{width:74px}
+    input.camt{font-size:16px!important}
+    .card-head{padding:14px 13px;gap:10px}
+    .card-ctl{padding:0 13px 13px}
+    .detail{padding:13px 13px 16px}
+    .costrow{flex-wrap:wrap}
+    .costrow input.camt{width:calc(50% - 18px)}
+    .bline{flex-wrap:wrap}
+    .bline input.bamt,.bline .ro{width:calc(50% - 12px)}
+    .controls{position:sticky;bottom:0;background:linear-gradient(180deg,transparent,var(--paper) 22%);
+      padding:12px 0 10px;z-index:40}
+    /* espacio para que la barra fija nunca tape la última fila */
+    .wrap{padding-bottom:120px}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 
   /* ---------- barra de sesión ---------- */
   .topnav .whoami{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft);padding:8px 4px;white-space:nowrap}
@@ -554,7 +652,12 @@
 
   <section class="sec">
     <div class="sec-head"><h2>Itinerario</h2><span class="rule"></span>
-      <span class="hint">toca una base para abrir su plan</span></div>
+      <span class="hint">toca una parada para abrir su plan</span></div>
+    <div class="findbar">
+      <input id="findInput" type="search" placeholder="🔍 Buscar parada, actividad, hotel o restaurante…" autocomplete="off">
+      <span class="findcount" id="findCount"></span>
+      <button class="btn" id="expandAll" title="Abrir o cerrar todas las paradas">⇕ Abrir todo</button>
+    </div>
     <div id="cards"></div>
   </section>
 
@@ -572,7 +675,11 @@
   </section>
 
   <div class="controls">
+    <button class="btn" id="undoBtn" title="Deshacer" disabled>↶ Deshacer</button>
+    <button class="btn" id="redoBtn" title="Rehacer" disabled>↷ Rehacer</button>
     <button class="btn" id="printBtn">Imprimir / PDF</button>
+    <button class="btn" id="exportBtn" title="Descargar una copia de seguridad del viaje">⬇ Exportar</button>
+    <button class="btn" id="importBtn" title="Reemplazar este viaje con un archivo exportado">⬆ Importar</button>
     <button class="btn" id="syncBtn">Sincronizar ahora</button>
     <span class="syncstat" id="syncStatus">🟢 En vivo</span>
     <span class="saved" id="savedFlag">Guardado ✓</span>
@@ -1204,6 +1311,166 @@ function freshBlankTrip(titulo){
     meta:{titulo:titulo||"Nuevo viaje",subtitulo:"",eyebrow:"Nuevo itinerario",inicio:"",personas:1,noches:0,hasMap:false},
     checks:{},legs:defaultLegs(),currency:"MXN",budget:{flightsEst:0,flightsReal:0},costsSeeded:true});
 }
+/* ===================== Avisos flotantes (toasts) ===================== */
+function toastWrap(){let w=document.getElementById("toastwrap");
+  if(!w){w=document.createElement("div");w.id="toastwrap";w.className="toastwrap";document.body.appendChild(w);}
+  return w;}
+/* toast(msg,{tipo:"ok|err|info", accion:{texto,fn}, ms}) */
+function toast(msg,opts){
+  opts=opts||{};const w=toastWrap();
+  const el=document.createElement("div");
+  el.className="toast"+(opts.tipo==="err"?" err":opts.tipo==="ok"?" ok":"");
+  el.innerHTML=`<span class="tmsg">${esc(msg)}</span>`;
+  if(opts.accion){
+    const b=document.createElement("button");b.className="tact";b.textContent=opts.accion.texto;
+    b.addEventListener("click",()=>{cerrar();try{opts.accion.fn();}catch(e){}});
+    el.appendChild(b);
+  }
+  w.appendChild(el);
+  // como mucho 3 avisos a la vez: los viejos se van para no tapar la pantalla
+  while(w.children.length>3)w.firstChild.remove();
+  let t=null;
+  const cerrar=()=>{clearTimeout(t);if(!el.parentNode)return;
+    el.classList.add("out");setTimeout(()=>el.remove(),220);};
+  t=setTimeout(cerrar,opts.ms||(opts.accion?6500:3200));
+  return cerrar;
+}
+
+/* ===================== Deshacer / rehacer ===================== */
+const UNDO_MAX=40;
+let undoStack=[],redoStack=[];
+const snapshot=()=>JSON.parse(JSON.stringify(state));
+/* Llamar ANTES de mutar el estado. `etiqueta` describe la acción en pasado. */
+function pushUndo(etiqueta){
+  if(!state)return;
+  undoStack.push({etiqueta,datos:snapshot()});
+  if(undoStack.length>UNDO_MAX)undoStack.shift();
+  redoStack=[];
+  actualizarUndoUI();
+}
+function aplicarSnapshot(snap){
+  // conserva la navegación local (qué base está abierta, pestaña y día)
+  const ui={};
+  if(state&&state.bases)for(const id in state.bases){const b=state.bases[id];
+    ui[id]={expanded:b.expanded,tab:b.tab,day:b.day};}
+  state=normalizeTripState(snap);
+  for(const id in ui)if(state.bases[id])Object.assign(state.bases[id],ui[id]);
+  renderAll();save();
+}
+function undo(){
+  if(!undoStack.length){toast("No hay nada que deshacer");return;}
+  if(!puedeEditar()){toast("Este viaje es de solo lectura",{tipo:"err"});return;}
+  const paso=undoStack.pop();
+  redoStack.push({etiqueta:paso.etiqueta,datos:snapshot()});
+  aplicarSnapshot(paso.datos);
+  actualizarUndoUI();
+  toast("Deshecho: "+paso.etiqueta,{tipo:"ok",accion:{texto:"Rehacer",fn:redo}});
+}
+function redo(){
+  if(!redoStack.length){toast("No hay nada que rehacer");return;}
+  const paso=redoStack.pop();
+  undoStack.push({etiqueta:paso.etiqueta,datos:snapshot()});
+  aplicarSnapshot(paso.datos);
+  actualizarUndoUI();
+  toast("Rehecho: "+paso.etiqueta,{tipo:"ok"});
+}
+function actualizarUndoUI(){
+  const u=document.getElementById("undoBtn"),r=document.getElementById("redoBtn");
+  if(u){u.disabled=!undoStack.length;u.title=undoStack.length?("Deshacer: "+undoStack[undoStack.length-1].etiqueta):"Nada que deshacer";}
+  if(r){r.disabled=!redoStack.length;r.title=redoStack.length?("Rehacer: "+redoStack[redoStack.length-1].etiqueta):"Nada que rehacer";}
+}
+/* Edita el estado de forma segura: registra deshacer, guarda y re-dibuja. */
+function editar(etiqueta,fn,opts){
+  if(!puedeEditar()){toast("Este viaje es de solo lectura",{tipo:"err"});return false;}
+  pushUndo(etiqueta);
+  try{fn();}catch(e){undoStack.pop();actualizarUndoUI();toast("No se pudo completar la acción",{tipo:"err"});return false;}
+  save();
+  if(!opts||opts.render!==false)((opts&&opts.full)?renderAll:renderCards)();
+  return true;
+}
+const puedeEditar=()=>!!state&&(currentTripOwn||(PERFIL&&PERFIL.rol==="admin"));
+
+/* ===================== Menús de acciones (táctil) ===================== */
+function cerrarMenus(){document.querySelectorAll(".rowmenu.open").forEach(m=>m.classList.remove("open"));}
+document.addEventListener("click",e=>{if(!e.target.closest(".rowmenu"))cerrarMenus();});
+/* Registro de menús dibujados en el último render: id → items (con sus acciones) */
+let menuRegistro={};
+const limpiarMenus=()=>{menuRegistro={};};
+/* Construye un menú desplegable. items: [{label}|{sep}|{texto,fn,peligro}] */
+function menuHTML(id,items){
+  menuRegistro[id]=items;
+  const cuerpo=items.map(it=>{
+    if(it.sep)return '<div class="msep"></div>';
+    if(it.label)return `<div class="mlabel">${esc(it.label)}</div>`;
+    return `<button type="button" data-mi="${esc(it.key)}"${it.peligro?' class="danger"':''}>${esc(it.texto)}</button>`;
+  }).join("");
+  return `<div class="rowmenu" data-menu="${esc(id)}">
+    <button type="button" class="mbtn" title="Más acciones" aria-label="Más acciones">⋮</button>
+    <div class="menupop">${cuerpo}</div>
+  </div>`;
+}
+/* Conecta todos los menús presentes en el DOM con las acciones registradas. */
+function wireMenus(raiz){
+  raiz.querySelectorAll(".rowmenu[data-menu]").forEach(m=>{
+    const items=menuRegistro[m.dataset.menu];if(!items)return;
+    m.querySelector(".mbtn").addEventListener("click",e=>{
+      e.stopPropagation();const abierto=m.classList.contains("open");
+      cerrarMenus();if(!abierto){m.classList.add("open");
+        // si no cabe abajo, ábrelo hacia arriba
+        const pop=m.querySelector(".menupop");
+        if(pop){const r=pop.getBoundingClientRect();
+          if(r.bottom>window.innerHeight-8){pop.style.top="auto";pop.style.bottom="36px";}
+          else{pop.style.top="";pop.style.bottom="";}}
+      }
+    });
+    items.forEach(it=>{
+      if(it.sep||it.label)return;
+      const b=m.querySelector(`[data-mi="${CSS.escape(it.key)}"]`);
+      if(b)b.addEventListener("click",e=>{e.stopPropagation();cerrarMenus();it.fn();});
+    });
+  });
+}
+
+/* ===================== Exportar / importar ===================== */
+function exportarViaje(){
+  if(!state){toast("Abre un viaje primero");return;}
+  const limpio=JSON.parse(JSON.stringify(state));delete limpio._rev;delete limpio._by;
+  const nombre=((state.meta&&state.meta.titulo)||"viaje").replace(/[^\wáéíóúñÁÉÍÓÚÑ -]/g,"").trim()||"viaje";
+  const blob=new Blob([JSON.stringify(limpio,null,2)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);
+  a.download=nombre+".json";document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1000);
+  toast("Copia de seguridad descargada",{tipo:"ok"});
+}
+function importarViaje(){
+  if(!puedeEditar()){toast("Este viaje es de solo lectura",{tipo:"err"});return;}
+  const inp=document.createElement("input");inp.type="file";inp.accept="application/json,.json";
+  inp.addEventListener("change",()=>{
+    const f=inp.files&&inp.files[0];if(!f)return;
+    const fr=new FileReader();
+    fr.onload=()=>{
+      let datos;
+      try{datos=JSON.parse(fr.result);}
+      catch(e){toast("El archivo no es un JSON válido",{tipo:"err"});return;}
+      if(!datos||typeof datos!=="object"||!datos.bases){
+        toast("Ese archivo no parece un viaje exportado",{tipo:"err"});return;}
+      const nb=Object.keys(datos.bases).length;
+      customConfirm(`Vas a reemplazar el contenido de este viaje con el archivo importado `+
+        `(${nb} parada${nb===1?"":"s"}). Podrás deshacerlo con ↶.`,()=>{
+        editar("importar viaje",()=>{
+          const meta=state.meta;
+          state=normalizeTripState(datos);
+          // conserva el título actual si el archivo no traía uno propio
+          if(!datos.meta||!datos.meta.titulo)state.meta.titulo=meta.titulo;
+        },{full:true});
+        toast("Viaje importado",{tipo:"ok",accion:{texto:"Deshacer",fn:undo}});
+      },"Sí, importar");
+    };
+    fr.readAsText(f);
+  });
+  inp.click();
+}
+
 /* ===================== Sesión + multi-viaje ===================== */
 const CLIENT_ID=Math.random().toString(36).slice(2,9);
 let UID=null, PERFIL=null;
@@ -1240,6 +1507,9 @@ function preserveLocalUI(remote){
 function applyRemote(remote){
   preserveLocalUI(remote);
   state=normalizeTripState(remote);lastRev=remote._rev||Date.now();pendingRemote=null;
+  // el historial local ya no corresponde a esta versión: deshacer pisaría
+  // los cambios de la otra persona, así que se descarta.
+  undoStack=[];redoStack=[];actualizarUndoUI();
   renderAll();setSync("updated");
 }
 async function poll(){
@@ -1318,8 +1588,10 @@ function showList(){
 async function openTrip(id){
   let row=null;
   try{const {data,error}=await Auth.sb.from("viajes").select("*").eq("id",id).single();if(error)throw error;row=data;}
-  catch(e){alert("No se pudo abrir el viaje.");return;}
+  catch(e){toast("No se pudo abrir el viaje.",{tipo:"err"});return;}
   currentTripId=row.id;currentTripOwn=(row.propietario===UID);
+  undoStack=[];redoStack=[];actualizarUndoUI();   // historial propio de cada viaje
+  filtro="";const fi=document.getElementById("findInput");if(fi)fi.value="";
   state=normalizeTripState(row.datos||{});
   if(!state.meta.titulo||state.meta.titulo==="Viaje sin título")state.meta.titulo=row.titulo||"Viaje";
   lastRev=state._rev||0;
@@ -1337,7 +1609,7 @@ async function createTrip(){
       .insert({propietario:UID,titulo:nuevo.meta.titulo,datos:nuevo}).select("id").single();
     if(error)throw error;
     await refreshTrips();openTrip(data.id);
-  }catch(e){alert("No se pudo crear el viaje: "+(e.message||e));}
+  }catch(e){toast("No se pudo crear el viaje: "+(e.message||e),{tipo:"err"});}
 }
 async function duplicateTrip(id){
   try{
@@ -1348,16 +1620,16 @@ async function duplicateTrip(id){
       .insert({propietario:UID,titulo:datos.meta.titulo,datos});
     if(error)throw error;
     await refreshTrips();renderTripsList();
-  }catch(e){alert("No se pudo duplicar: "+(e.message||e));}
+  }catch(e){toast("No se pudo duplicar: "+(e.message||e),{tipo:"err"});}
 }
 async function deleteTrip(id){
   try{await Auth.sb.from("viajes").delete().eq("id",id);await refreshTrips();renderTripsList();}
-  catch(e){alert("No se pudo borrar: "+(e.message||e));}
+  catch(e){toast("No se pudo borrar: "+(e.message||e),{tipo:"err"});}
 }
 async function renameTrip(id,titulo){
   try{await Auth.sb.from("viajes").update({titulo}).eq("id",id);
     const t=trips.find(x=>x.id===id);if(t)t.titulo=titulo;renderTripsList();}
-  catch(e){alert("No se pudo renombrar: "+(e.message||e));}
+  catch(e){toast("No se pudo renombrar: "+(e.message||e),{tipo:"err"});}
 }
 /* ---- Migración única del viaje de China (legacy → tabla viajes) ---- */
 async function migrateChinaIfNeeded(){
@@ -1568,12 +1840,19 @@ function renderMap(){
 const esc=s=>(s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 
 function renderCards(){
+  const yPrev=window.scrollY;                 // conserva la posición de lectura
+  limpiarMenus();
   const dated=withDates(),byId={};dated.forEach(o=>byId[o.def.id]=o);
   const firstActiveId=dated.length?dated[0].def.id:null;
   const holder=document.getElementById("cards");holder.innerHTML="";
-  let seq=0;
+  if(typeof restaurarScroll==="function")restaurarScroll(yPrev);
+  let seq=0,mostradas=0;
   orderedBases().forEach(o=>{
     const b=o.def,st=o.st,on=st.included;if(on)seq++;
+    // buscador: oculta las paradas que no coinciden (sin borrar nada)
+    const coinc=coincidencias(st);
+    if(coinc&&!coinc.total)return;
+    mostradas++;
     const col=clusterColor(b.cluster),dd=byId[b.id];
     const leg=document.createElement("div");leg.className="leg";
     leg.innerHTML=`
@@ -1581,7 +1860,11 @@ function renderCards(){
       <div class="card ${on?'':'off'}">
         <div class="card-head" data-act="expand" data-bid="${b.id}">
           <div class="seal">${on?seq:'·'}</div>
-          <div class="titlecol"><h3>${b.name}</h3><div class="region">${b.region}</div></div>
+          <div class="titlecol"><h3>${resaltar(esc(b.name))}</h3><div class="region">${resaltar(esc(b.region))}</div>
+            ${coinc&&coinc.total&&!st.expanded?`<div class="region" style="color:var(--jade)">${
+              [coinc.actividades.length?coinc.actividades.length+" actividad"+(coinc.actividades.length===1?"":"es"):"",
+               coinc.lugares.length?coinc.lugares.length+" lugar"+(coinc.lugares.length===1?"":"es"):""]
+              .filter(Boolean).join(" · ")||"coincide el nombre"}</div>`:""}</div>
           <div class="datecol">${on&&dd?`<div class="dr">${fmt(dd.checkin)} → ${fmt(dd.checkout)}</div><div>${st.nights} noche${st.nights===1?'':'s'}</div>`:`<div class="dr">— fuera del plan —</div>`}<div class="basecost">≈ ${fmtMoney(baseTotals(st).est)}</div></div>
           <div class="chev">${st.expanded?'▲':'▼'}</div>
         </div>
@@ -1595,6 +1878,7 @@ function renderCards(){
           <div class="basetools">
             <button class="btool" data-act="baseup" data-bid="${b.id}" title="Subir">▲</button>
             <button class="btool" data-act="basedown" data-bid="${b.id}" title="Bajar">▼</button>
+            <button class="btool" data-act="dupbase" data-bid="${b.id}" title="Duplicar esta parada">⧉</button>
             <button class="btool danger" data-act="delbase" data-bid="${b.id}" title="Borrar esta base">🗑</button>
           </div>
           <details class="basemeta">
@@ -1623,10 +1907,23 @@ function renderCards(){
           b.name+" → Guadalajara (GDL)","29 may · mismo día (noche)")));
     }
   });
-  const addLeg=document.createElement("div");addLeg.className="leg";
-  addLeg.innerHTML=`<span class="node" style="background:transparent;border-color:transparent;box-shadow:none"></span>
-    <button class="addbase" data-act="addbase">＋ Agregar base / parada nueva</button>`;
-  holder.appendChild(addLeg);
+  if(filtro&&!mostradas){
+    const vacio=document.createElement("div");vacio.className="empty";
+    vacio.innerHTML=`<div class="ebig">🔍</div><p>Ninguna parada coincide con “${esc(filtro)}”.</p>`;
+    holder.appendChild(vacio);
+  }
+  if(!filtro&&!orderedBases().length){
+    const vacio=document.createElement("div");vacio.className="empty";
+    vacio.innerHTML=`<div class="ebig">🧭</div>
+      <p>Este viaje todavía no tiene paradas. Agrega la primera para empezar a planear.</p>`;
+    holder.appendChild(vacio);
+  }
+  if(!filtro){                       // al filtrar no se agregan paradas nuevas
+    const addLeg=document.createElement("div");addLeg.className="leg";
+    addLeg.innerHTML=`<span class="node" style="background:transparent;border-color:transparent;box-shadow:none"></span>
+      <button class="addbase" data-act="addbase">＋ Agregar parada nueva</button>`;
+    holder.appendChild(addLeg);
+  }
   wireCardEvents();
 }
 function makeRibbon(html){const rib=document.createElement("div");rib.className="leg";
@@ -1687,6 +1984,82 @@ function placeLinkHTML(st,type,it,bid,cur){
     ${empty?`<span class="linknote">agrega lugares en la pestaña ${tabIcon}</span>`:(linked&&linked.note?`<span class="linknote">${esc(linked.note)}</span>`:'')}
   </div>`;
 }
+/* ---- Menú de acciones de una actividad del día (funciona con el dedo) ---- */
+function itemMenuItems(b,st,dia,r){
+  const nDays=Math.max(1,st.nights);
+  const dated=withDates().find(o=>o.def.id===b.id);
+  const items=[];
+  // mover a otro día de esta misma parada
+  const otrosDias=[];
+  for(let d=0;d<nDays;d++){
+    if(d===dia)continue;
+    const dt=dated?" · "+fmt(addDays(dated.checkin,d)):"";
+    otrosDias.push({key:"d:"+d,texto:"Día "+(d+1)+dt,fn:()=>moverItemADia(b.id,dia,r.it.id,d)});
+  }
+  if(otrosDias.length){items.push({label:"Mover a otro día"});items.push(...otrosDias);}
+  // mover a otra parada
+  const otrasBases=orderedBases().filter(o=>o.def.id!==b.id);
+  if(otrasBases.length){
+    items.push({sep:true},{label:"Mover a otra parada"});
+    otrasBases.forEach(o=>items.push({key:"b:"+o.def.id,texto:o.def.name||"(sin nombre)",
+      fn:()=>moverItemABase(b.id,dia,r.it.id,o.def.id)}));
+  }
+  items.push({sep:true});
+  items.push({key:"dup",texto:"⧉ Duplicar aquí",fn:()=>duplicarItem(b.id,dia,r.it.id)});
+  items.push({key:"del",texto:"× Quitar del día",peligro:true,
+    fn:()=>quitarItem(b.id,dia,r.it.id,r.act.name)});
+  return items;
+}
+function moverItemADia(bid,dia,itemId,destino){
+  const st=state.bases[bid];const arr=st.schedule[dia]||[];
+  const i=arr.findIndex(x=>x.id===itemId);if(i<0)return;
+  editar("mover actividad de día",()=>{
+    const[m]=arr.splice(i,1);
+    st.schedule[destino]=st.schedule[destino]||[];st.schedule[destino].push(m);
+    st.day=destino;
+  });
+  toast("Movida al día "+(destino+1),{tipo:"ok",accion:{texto:"Deshacer",fn:undo}});
+}
+function moverItemABase(bid,dia,itemId,destinoBid){
+  const st=state.bases[bid],dst=state.bases[destinoBid];if(!dst)return;
+  const arr=st.schedule[dia]||[];const i=arr.findIndex(x=>x.id===itemId);if(i<0)return;
+  const act=st.catalog.find(a=>a.cid===arr[i].ref);
+  editar("mover actividad a otra parada",()=>{
+    const[m]=arr.splice(i,1);
+    // la actividad vive en el catálogo de su parada: cópiala al destino si no existe
+    if(act&&!dst.catalog.some(a=>a.cid===act.cid))
+      dst.catalog.push(JSON.parse(JSON.stringify(act)));
+    const d=Math.min(dst.day||0,Math.max(1,dst.nights)-1);
+    dst.schedule[d]=dst.schedule[d]||[];dst.schedule[d].push(m);
+    dst.expanded=true;
+  });
+  toast("Movida a "+(dst.name||"la otra parada"),{tipo:"ok",accion:{texto:"Deshacer",fn:undo}});
+}
+function duplicarItem(bid,dia,itemId){
+  const st=state.bases[bid];const arr=st.schedule[dia]||[];
+  const i=arr.findIndex(x=>x.id===itemId);if(i<0)return;
+  editar("duplicar actividad",()=>{
+    const copia=JSON.parse(JSON.stringify(arr[i]));copia.id=uid();
+    arr.splice(i+1,0,copia);
+  });
+  toast("Actividad duplicada",{tipo:"ok",accion:{texto:"Deshacer",fn:undo}});
+}
+function quitarItem(bid,dia,itemId,nombre){
+  const st=state.bases[bid];
+  editar("quitar actividad",()=>{
+    st.schedule[dia]=(st.schedule[dia]||[]).filter(x=>x.id!==itemId);
+  });
+  toast("Quitada: "+(nombre||"actividad"),{accion:{texto:"Deshacer",fn:undo}});
+}
+
+/* Cuenta actividades que quedaron en días más allá de las noches actuales. */
+function actividadesOcultas(st){
+  const nDays=Math.max(1,st.nights);let n=0,dias=[];
+  Object.keys(st.schedule||{}).forEach(k=>{
+    const d=+k;if(d>=nDays&&(st.schedule[k]||[]).length){n+=st.schedule[k].length;dias.push(d);}
+  });
+  return{n,dias};
+}
 function renderPlan(b,st){
   const nDays=Math.max(1,st.nights);
   let cur=st.day||0;if(cur>=nDays)cur=nDays-1;
@@ -1694,9 +2067,18 @@ function renderPlan(b,st){
   let bar='<div class="daybar">';
   for(let d=0;d<nDays;d++){
     const dt=dated?fmt(addDays(dated.checkin,d)):"";
-    bar+=`<span class="daychip ${d===cur?'active':''}" data-act="day" data-bid="${b.id}" data-day="${d}">Día ${d+1}<span class="dt">${dt}</span></span>`;
+    const nAct=(st.schedule[d]||[]).length;
+    bar+=`<span class="daychip ${d===cur?'active':''}" data-act="day" data-bid="${b.id}" data-day="${d}">Día ${d+1}<span class="dt">${dt?"· "+dt:""}${nAct?" · "+nAct+" act":""}</span></span>`;
   }
   bar+=`<span class="startwrap">inicio <input type="time" class="f startinp" data-bid="${b.id}" data-day="${cur}" value="${esc((st.dayStart&&st.dayStart[cur])||'09:00')}"></span></div>`;
+
+  /* Aviso: hay actividades guardadas en días que ya no existen (bajaste noches) */
+  const oc=actividadesOcultas(st);
+  if(oc.n)bar+=`<div class="inlinewarn">
+    <span>⚠ ${oc.n} actividad${oc.n===1?"":"es"} quedaron en días ocultos porque esta parada tiene ${st.nights} noche${st.nights===1?"":"s"}.</span>
+    <button data-act="recuperar" data-bid="${b.id}">Traerlas al último día</button>
+    <button data-act="descartarocultas" data-bid="${b.id}">Descartarlas</button>
+  </div>`;
 
   const typekey=`<div class="typekey">${Object.keys(TYPES).map(t=>`<span class="k"><span class="dot" style="background:${TYPES[t].c}"></span>${TYPES[t].l}</span>`).join("")}</div>`;
 
@@ -1722,11 +2104,13 @@ function renderPlan(b,st){
       <div class="rowbtns">
         <button class="updn" data-act="moveup" data-bid="${b.id}" data-day="${cur}" data-item="${r.it.id}" title="Subir">▲</button>
         <button class="updn" data-act="movedown" data-bid="${b.id}" data-day="${cur}" data-item="${r.it.id}" title="Bajar">▼</button>
-        <button class="del" data-act="delitem" data-bid="${b.id}" data-day="${cur}" data-item="${r.it.id}" title="Quitar del día">×</button>
       </div>
+      ${menuHTML("it:"+b.id+":"+cur+":"+r.it.id,itemMenuItems(b,st,cur,r))}
     </div>`;
   });
-  if(!comp.length)rows='<p style="color:var(--ink-soft);font-size:13px">Día vacío: añade actividades del catálogo abajo.</p>';
+  if(!comp.length)rows=`<div class="empty"><div class="ebig">🗓</div>
+    <p>Este día está vacío. Elige una actividad del catálogo abajo y añádela,
+    o crea una nueva desde la pestaña 🗂 Catálogo.</p></div>`;
 
   const groups={};st.catalog.forEach(a=>{(groups[a.type]=groups[a.type]||[]).push(a);});
   const opts=Object.keys(TYPES).filter(t=>groups[t]).map(t=>
@@ -1734,7 +2118,7 @@ function renderPlan(b,st){
       `<option value="${a.cid}">${esc(a.name)||'(sin nombre)'} · ${fmtDur(a.dur)}</option>`).join("")+`</optgroup>`).join("");
 
   return bar+typekey
-    +`<p class="hint2">Los horarios se encadenan solos desde el inicio del día. «Fijo» ancla una hora (shows, trenes, vuelos); si se encima con lo anterior verás ⚠. Arrastra por el asa ⠿ para reordenar, o suéltala en otra pestaña de día para moverla ahí; con ▲▼ en el borde también salta al día anterior o siguiente.</p>`
+    +`<p class="hint2">Los horarios se encadenan solos desde el inicio del día. «Fijo» ancla una hora (shows, trenes, vuelos); si se encima con lo anterior verás ⚠. Usa <b>⋮</b> para mover una actividad a otro día o a otra parada, duplicarla o quitarla; <b>▲▼</b> la reordena. En computadora también puedes arrastrarla por el asa ⠿.</p>`
     +`<div class="rows">${rows}</div>
     <div class="addrow">
       <select class="f" data-addsel="${b.id}">${opts}</select>
@@ -1779,7 +2163,10 @@ function renderCatalog(b,st){
         <input class="f pnote edit catfield" data-fld="note" data-bid="${b.id}" data-cid="${a.cid}" value="${esc(a.note)}" placeholder="Nota">
         ${costEditorHTML(b,a)}
       </div>
-      <button class="del" data-act="delcat" data-bid="${b.id}" data-cid="${a.cid}">×</button>
+      <div class="rowbtns">
+        <button class="updn" data-act="dupcat" data-bid="${b.id}" data-cid="${a.cid}" title="Duplicar">⧉</button>
+        <button class="del" data-act="delcat" data-bid="${b.id}" data-cid="${a.cid}" title="Borrar del catálogo">×</button>
+      </div>
     </div>`;
   }).join("");
   return `<p class="hint2">Define cada actividad, su duración y —al abrir 💰— los conceptos de costo (presupuesto y real). Los montos alimentan la sección Presupuesto de abajo.</p>
@@ -1841,42 +2228,145 @@ function refreshCostSummary(bid,cid){
 }
 
 /* diálogo de confirmación propio (los iframes de artefactos bloquean confirm()) */
-function customConfirm(message,onYes){
+function customConfirm(message,onYes,etiquetaSi){
   const ov=document.createElement("div");ov.className="confirmov";
   ov.innerHTML=`<div class="confirmbox"><p>${message}</p>
     <div class="confirmbtns"><button class="btn cbcancel">Cancelar</button>
-    <button class="btn danger cbyes">Sí, borrar</button></div></div>`;
+    <button class="btn danger cbyes">${esc(etiquetaSi||"Sí, borrar")}</button></div></div>`;
   document.body.appendChild(ov);
-  const close=()=>{ov.remove();};
+  const close=()=>{ov.remove();document.removeEventListener("keydown",onKey);};
+  const onKey=e=>{if(e.key==="Escape")close();};
+  document.addEventListener("keydown",onKey);
   ov.querySelector(".cbcancel").addEventListener("click",close);
   ov.querySelector(".cbyes").addEventListener("click",()=>{close();try{onYes();}catch(e){}});
   ov.addEventListener("click",e=>{if(e.target===ov)close();});
+  setTimeout(()=>{const y=ov.querySelector(".cbyes");if(y)y.focus();},30);
 }
 /* ===================== Eventos ===================== */
+/* ===================== Buscador ===================== */
+let filtro="";
+const norm=s=>(s==null?"":String(s)).toLowerCase()
+  .normalize("NFD").replace(/[\u0300-\u036f]/g,"");   // ignora acentos
+/* ¿Qué coincide dentro de una parada? Devuelve {base, actividades[], lugares[]} */
+function coincidencias(st){
+  const q=norm(filtro);if(!q)return null;
+  const base=norm(st.name).includes(q)||norm(st.region).includes(q);
+  const actividades=(st.catalog||[]).filter(a=>
+    norm(a.name).includes(q)||norm(a.note).includes(q)||norm(a.src).includes(q));
+  const lugares=[].concat(st.hotels||[],st.food||[]).filter(p=>
+    norm(p.name).includes(q)||norm(p.note).includes(q)||norm(p.area).includes(q));
+  return{base,actividades,lugares,total:(base?1:0)+actividades.length+lugares.length};
+}
+function aplicarFiltro(valor){
+  filtro=(valor||"").trim();
+  renderCards();
+  const cont=document.getElementById("findCount");
+  if(!cont)return;
+  if(!filtro){cont.textContent="";return;}
+  let paradas=0,cosas=0;
+  orderedBases().forEach(o=>{const c=coincidencias(o.st);
+    if(c&&c.total){paradas++;cosas+=c.actividades.length+c.lugares.length;}});
+  cont.textContent=paradas?`${paradas} parada${paradas===1?"":"s"} · ${cosas} coincidencia${cosas===1?"":"s"}`
+    :"sin resultados";
+}
+/* Resalta el texto buscado dentro de un fragmento ya escapado. */
+function resaltar(textoEsc){
+  if(!filtro)return textoEsc;
+  const q=norm(filtro);if(!q)return textoEsc;
+  const plano=norm(textoEsc);const i=plano.indexOf(q);
+  if(i<0)return textoEsc;
+  return textoEsc.slice(0,i)+'<mark class="hit">'+textoEsc.slice(i,i+q.length)+"</mark>"+textoEsc.slice(i+q.length);
+}
+
+/* Devuelve el scroll a su sitio tras un re-dibujado completo. */
+function restaurarScroll(y){
+  requestAnimationFrame(()=>{
+    if(Math.abs(window.scrollY-y)>2)window.scrollTo({top:y,behavior:"instant"in document.documentElement.style?"instant":"auto"});
+  });
+}
 function wireCardEvents(){
   const holder=document.getElementById("cards");
   const find=(arr,id)=>arr.find(x=>x.id===id);
+  wireMenus(holder);
 
   holder.querySelectorAll("[data-act]").forEach(el=>{
     el.addEventListener("click",e=>{
       const a=el.dataset.act,bid=el.dataset.bid,st=state.bases[bid];
       if(a==="expand"){st.expanded=!st.expanded;save();renderCards();return;}
       e.stopPropagation();
-      if(a==="inc"){st.nights=Math.min(14,st.nights+1);save();renderAll();return;}
-      if(a==="dec"){st.nights=Math.max(1,st.nights-1);save();renderAll();return;}
-      if(a==="toggle"){st.included=!st.included;save();renderAll();return;}
+      if(a==="inc"){editar("añadir noche",()=>{st.nights=Math.min(60,st.nights+1);},{full:true});return;}
+      if(a==="dec"){
+        const nuevas=Math.max(1,st.nights-1);
+        if(nuevas===st.nights)return;
+        const perdidas=(st.schedule[nuevas]||[]).length;
+        editar("quitar noche",()=>{st.nights=nuevas;},{full:true});
+        if(perdidas)toast(`El día ${nuevas+1} quedó oculto con ${perdidas} actividad${perdidas===1?"":"es"} (no se borraron)`,
+          {accion:{texto:"Deshacer",fn:undo}});
+        return;}
+      if(a==="toggle"){
+        const dentro=!st.included;
+        editar(dentro?"incluir parada":"excluir parada",()=>{st.included=dentro;},{full:true});
+        toast(dentro?`“${st.name}” vuelve al viaje`:`“${st.name}” queda fuera del plan (sus datos se conservan)`,
+          {accion:{texto:"Deshacer",fn:undo}});
+        return;}
       if(a==="baseup"||a==="basedown"){
         const arr=state.order,i=arr.indexOf(bid),j=a==="baseup"?i-1:i+1;
-        if(i>=0&&j>=0&&j<arr.length){[arr[i],arr[j]]=[arr[j],arr[i]];save();renderAll();}
+        if(i>=0&&j>=0&&j<arr.length)editar("reordenar paradas",()=>{[arr[i],arr[j]]=[arr[j],arr[i]];},{full:true});
         return;}
       if(a==="delbase"){
-        customConfirm(`¿Borrar “${st.name}” y todo su plan (días, catálogo, costos)? Esto no se puede deshacer.`,()=>{
-          state.order=state.order.filter(x=>x!==bid);delete state.bases[bid];save();renderAll();});
+        const nAct=Object.values(st.schedule||{}).reduce((n,d)=>n+d.length,0);
+        customConfirm(`¿Quitar “${esc(st.name)}” del viaje?<br><span style="font-size:13px;color:var(--ink-soft)">`+
+          `Se borrarán sus ${nAct} actividad${nAct===1?"":"es"}, su catálogo y sus costos. `+
+          `Podrás recuperarlo con ↶ Deshacer.</span>`,()=>{
+          const nombre=st.name;
+          editar("borrar parada",()=>{
+            state.order=state.order.filter(x=>x!==bid);delete state.bases[bid];
+          },{full:true});
+          toast("Parada borrada: "+nombre,{accion:{texto:"Deshacer",fn:undo}});
+        },"Sí, quitar");
+        return;}
+      if(a==="dupbase"){
+        editar("duplicar parada",()=>{
+          const copia=JSON.parse(JSON.stringify(st));
+          copia.id="cust_"+uid();copia.name=(st.name||"Parada")+" (copia)";
+          copia.expanded=true;
+          // ids nuevos para que las dos paradas no compartan referencias
+          Object.keys(copia.schedule||{}).forEach(d=>{
+            copia.schedule[d]=(copia.schedule[d]||[]).map(it=>({...it,id:uid()}));});
+          (copia.hotels||[]).forEach(h=>h.id=uid());(copia.food||[]).forEach(f=>f.id=uid());
+          copia.x=(+st.x||400)+18;copia.y=(+st.y||300)+18;
+          state.bases[copia.id]=copia;
+          state.order.splice(state.order.indexOf(bid)+1,0,copia.id);
+        },{full:true});
+        toast("Parada duplicada",{tipo:"ok",accion:{texto:"Deshacer",fn:undo}});
+        return;}
+      if(a==="recuperar"){
+        const oc=actividadesOcultas(st);if(!oc.n)return;
+        editar("recuperar actividades ocultas",()=>{
+          const destino=Math.max(1,st.nights)-1;
+          st.schedule[destino]=st.schedule[destino]||[];
+          oc.dias.sort((x,y)=>x-y).forEach(d=>{
+            (st.schedule[d]||[]).forEach(it=>st.schedule[destino].push(it));
+            delete st.schedule[d];
+          });
+          st.day=destino;
+        });
+        toast(`${oc.n} actividad${oc.n===1?"":"es"} recuperada${oc.n===1?"":"s"}`,{tipo:"ok",accion:{texto:"Deshacer",fn:undo}});
+        return;}
+      if(a==="descartarocultas"){
+        const oc=actividadesOcultas(st);if(!oc.n)return;
+        customConfirm(`¿Descartar ${oc.n} actividad${oc.n===1?"":"es"} de los días ocultos? Podrás deshacerlo con ↶.`,()=>{
+          editar("descartar actividades ocultas",()=>{oc.dias.forEach(d=>{delete st.schedule[d];});});
+          toast("Actividades descartadas",{accion:{texto:"Deshacer",fn:undo}});
+        },"Sí, descartar");
         return;}
       if(a==="addbase"){
-        const nb=seedCustomBase("Nueva parada",Object.keys(state.bases).length);
-        state.bases[nb.id]=nb;state.order.push(nb.id);save();renderAll();
-        setTimeout(()=>{const c=document.querySelector(`.card [data-bid="${nb.id}"]`);if(c&&c.scrollIntoView)c.scrollIntoView({behavior:"smooth",block:"center"});},60);
+        let nuevoId=null;
+        editar("añadir parada",()=>{
+          const nb=seedCustomBase("Nueva parada",Object.keys(state.bases).length);
+          nuevoId=nb.id;state.bases[nb.id]=nb;state.order.push(nb.id);
+        },{full:true});
+        setTimeout(()=>{const c=document.querySelector(`.card [data-bid="${nuevoId}"]`);if(c&&c.scrollIntoView)c.scrollIntoView({behavior:"smooth",block:"center"});},60);
         return;}
       if(a==="tab"){st.tab=el.dataset.tab;save();renderCards();return;}
       if(a==="day"){st.day=+el.dataset.day;save();renderCards();return;}
@@ -1901,25 +2391,58 @@ function wireCardEvents(){
           save();renderCards();
         }
         return;}
-      if(a==="addcat"){st.catalog.push({cid:uid(),name:"",type:"sight",dur:60,note:"",src:"",costs:[]});save();renderCards();return;}
+      if(a==="addcat"){editar("crear actividad",()=>{
+        st.catalog.push({cid:uid(),name:"",type:"sight",dur:60,note:"",src:"",costs:[]});});return;}
+      if(a==="dupcat"){
+        const act=st.catalog.find(x=>x.cid===el.dataset.cid);if(!act)return;
+        editar("duplicar actividad del catálogo",()=>{
+          const copia=JSON.parse(JSON.stringify(act));copia.cid=uid();
+          copia.name=(act.name||"Actividad")+" (copia)";
+          (copia.costs||[]).forEach(c=>c.id=uid());
+          st.catalog.splice(st.catalog.indexOf(act)+1,0,copia);
+        });
+        toast("Actividad duplicada en el catálogo",{tipo:"ok",accion:{texto:"Deshacer",fn:undo}});
+        return;}
       if(a==="delcat"){
         const cid=el.dataset.cid,use=usageCount(st,cid);
-        const doDel=()=>{st.catalog=st.catalog.filter(x=>x.cid!==cid);
-          Object.keys(st.schedule).forEach(d=>{st.schedule[d]=st.schedule[d].filter(x=>x.ref!==cid);});
-          save();renderCards();};
-        if(use)customConfirm(`Esta actividad se usa ${use} vez/veces en el plan. ¿Borrarla también del itinerario?`,doDel);
+        const act=st.catalog.find(x=>x.cid===cid);const nombre=(act&&act.name)||"actividad";
+        const doDel=()=>{
+          editar("borrar actividad del catálogo",()=>{
+            st.catalog=st.catalog.filter(x=>x.cid!==cid);
+            Object.keys(st.schedule).forEach(d=>{st.schedule[d]=st.schedule[d].filter(x=>x.ref!==cid);});
+          });
+          toast("Borrada: "+nombre,{accion:{texto:"Deshacer",fn:undo}});
+        };
+        if(use)customConfirm(`“${esc(nombre)}” se usa ${use} vez/veces en el plan. `+
+          `¿Borrarla también del itinerario? Podrás deshacerlo con ↶.`,doDel,"Sí, borrar");
         else doDel();
         return;}
       if(a==="addcost"){const act=st.catalog.find(x=>x.cid===el.dataset.cid);
-        if(act){act.costs=act.costs||[];act.costs.push({id:uid(),label:"",est:0,real:0});openCost.add(el.dataset.cid);save();renderCards();}return;}
+        if(act)editar("añadir concepto de costo",()=>{
+          act.costs=act.costs||[];act.costs.push({id:uid(),label:"",est:0,real:0});
+          openCost.add(el.dataset.cid);});
+        return;}
       if(a==="delcost"){const act=st.catalog.find(x=>x.cid===el.dataset.cid);
-        if(act){act.costs=(act.costs||[]).filter(c=>c.id!==el.dataset.ccid);openCost.add(el.dataset.cid);save();renderCards();}return;}
-      if(a==="addhotel"){st.hotels.push({id:uid(),name:"",area:"",note:"",chosen:false});save();renderCards();return;}
-      if(a==="delhotel"){st.hotels=st.hotels.filter(x=>x.id!==el.dataset.item);save();renderCards();return;}
-      if(a==="choosehotel"){const h=find(st.hotels,el.dataset.item);h.chosen=!h.chosen;save();renderCards();return;}
-      if(a==="addfood"){st.food.push({id:uid(),name:"",kind:"rest",note:"",chosen:false});save();renderCards();return;}
-      if(a==="delfood"){st.food=st.food.filter(x=>x.id!==el.dataset.item);save();renderCards();return;}
-      if(a==="choosefood"){const f=find(st.food,el.dataset.item);f.chosen=!f.chosen;save();renderCards();return;}
+        if(act)editar("borrar concepto de costo",()=>{
+          act.costs=(act.costs||[]).filter(c=>c.id!==el.dataset.ccid);
+          openCost.add(el.dataset.cid);});
+        return;}
+      if(a==="addhotel"){editar("añadir hotel",()=>{
+        st.hotels.push({id:uid(),name:"",area:"",note:"",chosen:false});});return;}
+      if(a==="delhotel"){
+        const h=find(st.hotels,el.dataset.item);const nombre=(h&&h.name)||"hotel";
+        editar("borrar hotel",()=>{st.hotels=st.hotels.filter(x=>x.id!==el.dataset.item);});
+        toast("Borrado: "+nombre,{accion:{texto:"Deshacer",fn:undo}});return;}
+      if(a==="choosehotel"){const h=find(st.hotels,el.dataset.item);
+        if(h)editar("elegir hotel",()=>{h.chosen=!h.chosen;});return;}
+      if(a==="addfood"){editar("añadir lugar",()=>{
+        st.food.push({id:uid(),name:"",kind:"rest",note:"",chosen:false});});return;}
+      if(a==="delfood"){
+        const f=find(st.food,el.dataset.item);const nombre=(f&&f.name)||"lugar";
+        editar("borrar lugar",()=>{st.food=st.food.filter(x=>x.id!==el.dataset.item);});
+        toast("Borrado: "+nombre,{accion:{texto:"Deshacer",fn:undo}});return;}
+      if(a==="choosefood"){const f=find(st.food,el.dataset.item);
+        if(f)editar("elegir lugar",()=>{f.chosen=!f.chosen;});return;}
     });
   });
 
@@ -2095,19 +2618,73 @@ function buildTransportItems(){
 }
 function renderChecklist(el,title,items){
   let done=0,total=0,html=`<h4>${title}</h4>`;
-  items.forEach(it=>{if(it.grp){html+=`<div class="grp">${it.grp}</div>`;return;}
+  items.forEach(it=>{if(it.grp){html+=`<div class="grp">${esc(it.grp)}</div>`;return;}
     total++;const on=!!state.checks[it.id];if(on)done++;
-    html+=`<div class="item ${on?'done':''}"><input type="checkbox" data-ck="${it.id}" ${on?'checked':''}>
-      <label>${it.t}${it.s?`<span class="sub">${it.s}</span>`:''}</label></div>`;});
+    html+=`<div class="item ${on?'done':''}"><input type="checkbox" data-ck="${esc(it.id)}" ${on?'checked':''}>
+      <label>${esc(it.t)}${it.s?`<span class="sub">${esc(it.s)}</span>`:''}</label></div>`;});
   const pct=total?Math.round(done/total*100):0;
   html+=`<div class="progress"><i style="width:${pct}%"></i></div><div class="pcount">${done} / ${total} listo</div>`;
   el.innerHTML=html;
   el.querySelectorAll("[data-ck]").forEach(cb=>cb.addEventListener("change",()=>{
     state.checks[cb.dataset.ck]=cb.checked;save();renderChecklist(el,title,items);}));
 }
+/* La lista de esenciales vive en el viaje (state.esenciales) y es editable.
+   La primera vez se siembra con la lista sugerida del código. */
+function esencialesDe(){
+  if(!state.esenciales){
+    state.esenciales=ESSENTIALS.map(e=>({id:e.id,t:e.t,s:e.s}));
+  }
+  return state.esenciales;
+}
+function renderEsenciales(){
+  const el=document.getElementById("essentialsCard");
+  const lista=esencialesDe();
+  let done=0;
+  const filas=lista.map(it=>{
+    const on=!!state.checks[it.id];if(on)done++;
+    return `<div class="item ${on?'done':''}">
+      <input type="checkbox" data-ck="${esc(it.id)}" ${on?'checked':''}>
+      <label style="flex:1;min-width:0">
+        <input class="f essfield" data-eid="${esc(it.id)}" data-fld="t" value="${esc(it.t)}"
+          placeholder="Pendiente" style="width:100%;font-size:13px">
+        <input class="f essfield" data-eid="${esc(it.id)}" data-fld="s" value="${esc(it.s||'')}"
+          placeholder="nota (opcional)" style="width:100%;font-size:11px;margin-top:3px;color:var(--ink-soft)">
+      </label>
+      <button class="del" data-esdel="${esc(it.id)}" title="Quitar de la lista">×</button>
+    </div>`;
+  }).join("");
+  const total=lista.length,pct=total?Math.round(done/total*100):0;
+  el.innerHTML=`<h4>Esenciales</h4><div class="grp">Antes de salir</div>
+    ${filas||'<div class="empty"><p>Sin pendientes. Agrega el primero abajo.</p></div>'}
+    <div class="progress"><i style="width:${pct}%"></i></div>
+    <div class="pcount">${done} / ${total} listo</div>
+    <button class="addbtn block" id="essAdd">＋ Añadir pendiente</button>`;
+
+  el.querySelectorAll("[data-ck]").forEach(cb=>cb.addEventListener("change",()=>{
+    state.checks[cb.dataset.ck]=cb.checked;save();renderEsenciales();}));
+  el.querySelectorAll(".essfield").forEach(inp=>inp.addEventListener("input",()=>{
+    const it=esencialesDe().find(x=>x.id===inp.dataset.eid);
+    if(it){it[inp.dataset.fld]=inp.value;saveDebounced();}}));
+  el.querySelectorAll("[data-esdel]").forEach(b=>b.addEventListener("click",()=>{
+    const id=b.dataset.esdel;
+    const it=esencialesDe().find(x=>x.id===id);const nombre=(it&&it.t)||"pendiente";
+    editar("quitar pendiente",()=>{
+      state.esenciales=esencialesDe().filter(x=>x.id!==id);delete state.checks[id];
+    },{render:false});
+    renderEsenciales();
+    toast("Quitado: "+nombre,{accion:{texto:"Deshacer",fn:undo}});
+  }));
+  const add=document.getElementById("essAdd");
+  if(add)add.addEventListener("click",()=>{
+    editar("añadir pendiente",()=>{esencialesDe().push({id:"ess_"+uid(),t:"",s:""});},{render:false});
+    renderEsenciales();
+    const ins=el.querySelectorAll('.essfield[data-fld="t"]');
+    if(ins.length)ins[ins.length-1].focus();
+  });
+}
 function renderChecklists(){
   renderChecklist(document.getElementById("transportCard"),"Traslados",buildTransportItems());
-  renderChecklist(document.getElementById("essentialsCard"),"Esenciales",[{grp:"Antes de salir"},...ESSENTIALS]);
+  renderEsenciales();
 }
 
 /* ===================== Presupuesto ===================== */
@@ -2186,7 +2763,32 @@ function renderAll(){renderMasthead();renderSummary();renderMap();renderCards();
 document.getElementById("printBtn").addEventListener("click",()=>window.print());
 document.getElementById("syncBtn").addEventListener("click",()=>{setSync("live");poll();});
 document.getElementById("backToList").addEventListener("click",showList);
+(function(){
+  const inp=document.getElementById("findInput");
+  let t=null;
+  inp.addEventListener("input",()=>{clearTimeout(t);t=setTimeout(()=>aplicarFiltro(inp.value),160);});
+  inp.addEventListener("keydown",e=>{if(e.key==="Escape"){inp.value="";aplicarFiltro("");inp.blur();}});
+  document.getElementById("expandAll").addEventListener("click",()=>{
+    if(!state)return;
+    const bases=orderedBases();
+    const abrir=!bases.every(o=>o.st.expanded);   // si alguna está cerrada, abre todas
+    bases.forEach(o=>o.st.expanded=abrir);
+    save();renderCards();
+    document.getElementById("expandAll").textContent=abrir?"⇕ Cerrar todo":"⇕ Abrir todo";
+  });
+})();
+document.getElementById("undoBtn").addEventListener("click",undo);
+document.getElementById("redoBtn").addEventListener("click",redo);
+document.getElementById("exportBtn").addEventListener("click",exportarViaje);
+document.getElementById("importBtn").addEventListener("click",importarViaje);
 document.addEventListener("visibilitychange",()=>{if(!document.hidden&&currentTripId)poll();});
+/* Atajos: Ctrl/Cmd+Z deshacer · Ctrl/Cmd+Shift+Z (o Ctrl+Y) rehacer */
+document.addEventListener("keydown",e=>{
+  if(!currentTripId||!(e.ctrlKey||e.metaKey))return;
+  const k=(e.key||"").toLowerCase();
+  if(k==="z"&&!e.shiftKey){e.preventDefault();undo();}
+  else if((k==="z"&&e.shiftKey)||k==="y"){e.preventDefault();redo();}
+});
 
 (async function init(){
   const perfil=await Auth.requerirAcceso("viajes");
