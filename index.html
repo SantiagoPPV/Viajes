@@ -426,6 +426,36 @@
     text-transform:uppercase;color:var(--ink-soft);cursor:default;padding:9px 11px 4px}
   .menupop .msep{height:1px;background:var(--line-soft);margin:5px 4px}
 
+  /* ---------- nombre editable en el día a día ---------- */
+  .rnamerow{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+  input.rnameinp{flex:1;min-width:130px;font-family:"Inter",sans-serif;font-size:13.5px;font-weight:500;
+    line-height:1.3;color:var(--ink);border:1px solid transparent;background:transparent;
+    border-radius:7px;padding:4px 7px}
+  input.rnameinp:hover{border-color:var(--line-soft);background:rgba(255,255,255,.55)}
+  input.rnameinp:focus{outline:none;border-color:var(--jade);background:#fff}
+  input.rnameinp::placeholder{color:#a99f88;font-style:italic}
+
+  /* ---------- selección múltiple ---------- */
+  input.rsel{flex:none;width:19px;height:19px;margin-top:4px;accent-color:var(--jade);cursor:pointer}
+  .row.picked{background:rgba(62,97,82,.09);border-radius:8px;
+    box-shadow:inset 3px 0 0 var(--jade)}
+  .selbar{position:sticky;top:6px;z-index:50;display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+    background:var(--ink);color:var(--paper);border-radius:11px;padding:9px 11px;margin-bottom:10px;
+    box-shadow:0 8px 22px rgba(32,39,43,.24)}
+  .selbar .sn{font-family:"IBM Plex Mono",monospace;font-size:12px;flex:1;min-width:110px}
+  .selbar button{border:1px solid rgba(255,255,255,.45);background:transparent;color:#fff;
+    font-family:"IBM Plex Mono",monospace;font-size:11.5px;border-radius:8px;padding:7px 11px;cursor:pointer}
+  .selbar button:hover{background:rgba(255,255,255,.18)}
+  .selbar button.danger:hover{background:var(--seal);border-color:var(--seal)}
+  .selbar .rowmenu>.mbtn{color:var(--paper);width:auto;padding:0 10px;height:31px;
+    border:1px solid rgba(255,255,255,.45);border-radius:8px;
+    font-family:"IBM Plex Mono",monospace;font-size:11.5px}
+  .selbar .rowmenu>.mbtn:hover{background:rgba(255,255,255,.18);color:#fff}
+  .selbar .menupop{color:var(--ink)}
+  .selall{display:inline-flex;align-items:center;gap:7px;font-family:"IBM Plex Mono",monospace;
+    font-size:11px;color:var(--ink-soft);cursor:pointer;user-select:none;margin-bottom:8px}
+  .selall input{width:17px;height:17px;accent-color:var(--jade);cursor:pointer}
+
   /* ---------- buscador ---------- */
   .findbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:12px}
   .findbar input{flex:1;min-width:180px;font-size:13.5px;padding:10px 12px;border-radius:10px;
@@ -1984,6 +2014,114 @@ function placeLinkHTML(st,type,it,bid,cur){
     ${empty?`<span class="linknote">agrega lugares en la pestaña ${tabIcon}</span>`:(linked&&linked.note?`<span class="linknote">${esc(linked.note)}</span>`:'')}
   </div>`;
 }
+/* ===================== Selección múltiple ===================== */
+let seleccion=new Set();          // ids de actividades marcadas
+let selCtx=null;                  // {bid,dia} al que pertenece la selección
+function limpiarSeleccion(){seleccion=new Set();selCtx=null;}
+/* La selección solo vale dentro de un día de una parada. */
+function asegurarCtx(bid,dia){
+  if(!selCtx||selCtx.bid!==bid||selCtx.dia!==dia){seleccion=new Set();selCtx={bid,dia};}
+}
+const selActiva=(bid,dia)=>!!selCtx&&selCtx.bid===bid&&selCtx.dia===dia;
+function seleccionados(bid,dia){
+  const st=state.bases[bid];if(!st)return[];
+  return (st.schedule[dia]||[]).filter(x=>seleccion.has(x.id));
+}
+/* Mueve las marcadas a otro día de la misma parada (conserva su orden). */
+function moverSeleccionADia(bid,dia,destino){
+  const st=state.bases[bid];const items=seleccionados(bid,dia);if(!items.length)return;
+  const n=items.length;
+  editar(n===1?"mover actividad de día":`mover ${n} actividades de día`,()=>{
+    const ids=new Set(items.map(x=>x.id));
+    st.schedule[dia]=(st.schedule[dia]||[]).filter(x=>!ids.has(x.id));
+    st.schedule[destino]=st.schedule[destino]||[];
+    items.forEach(it=>st.schedule[destino].push(it));
+    // se queda en el día actual a propósito: mover no debe sacarte de donde estás
+  });
+  limpiarSeleccion();renderCards();
+  toast(`${n} actividad${n===1?"":"es"} movida${n===1?"":"s"} al día ${destino+1}`,
+    {tipo:"ok",accion:{texto:"Deshacer",fn:undo}});
+}
+/* Mueve las marcadas a otra parada (copiando su ficha de catálogo si falta). */
+function moverSeleccionABase(bid,dia,destinoBid){
+  const st=state.bases[bid],dst=state.bases[destinoBid];if(!dst)return;
+  const items=seleccionados(bid,dia);if(!items.length)return;
+  const n=items.length;
+  editar(n===1?"mover actividad a otra parada":`mover ${n} actividades a otra parada`,()=>{
+    const ids=new Set(items.map(x=>x.id));
+    st.schedule[dia]=(st.schedule[dia]||[]).filter(x=>!ids.has(x.id));
+    const d=Math.min(dst.day||0,Math.max(1,dst.nights)-1);
+    dst.schedule[d]=dst.schedule[d]||[];
+    items.forEach(it=>{
+      const act=st.catalog.find(a=>a.cid===it.ref);
+      if(act&&!dst.catalog.some(a=>a.cid===act.cid))
+        dst.catalog.push(JSON.parse(JSON.stringify(act)));
+      dst.schedule[d].push(it);
+    });
+  });
+  limpiarSeleccion();renderCards();
+  toast(`${n} actividad${n===1?"":"es"} movida${n===1?"":"s"} a ${dst.name||"la otra parada"}`,
+    {tipo:"ok",accion:{texto:"Deshacer",fn:undo}});
+}
+function duplicarSeleccion(bid,dia){
+  const st=state.bases[bid];const items=seleccionados(bid,dia);if(!items.length)return;
+  const n=items.length;
+  editar(n===1?"duplicar actividad":`duplicar ${n} actividades`,()=>{
+    const arr=st.schedule[dia];
+    items.forEach(it=>{
+      const copia=JSON.parse(JSON.stringify(it));copia.id=uid();
+      arr.splice(arr.findIndex(x=>x.id===it.id)+1,0,copia);
+    });
+  });
+  limpiarSeleccion();renderCards();
+  toast(`${n} actividad${n===1?"":"es"} duplicada${n===1?"":"s"}`,{tipo:"ok",accion:{texto:"Deshacer",fn:undo}});
+}
+function quitarSeleccion(bid,dia){
+  const st=state.bases[bid];const items=seleccionados(bid,dia);if(!items.length)return;
+  const n=items.length;
+  const hacer=()=>{
+    editar(n===1?"quitar actividad":`quitar ${n} actividades`,()=>{
+      const ids=new Set(items.map(x=>x.id));
+      st.schedule[dia]=(st.schedule[dia]||[]).filter(x=>!ids.has(x.id));
+    });
+    limpiarSeleccion();renderCards();
+    toast(`${n} actividad${n===1?"":"es"} quitada${n===1?"":"s"} del día`,{accion:{texto:"Deshacer",fn:undo}});
+  };
+  if(n>=3)customConfirm(`¿Quitar ${n} actividades de este día? Podrás deshacerlo con ↶.`,hacer,"Sí, quitar");
+  else hacer();
+}
+/* Barra que aparece al marcar actividades. */
+function selbarHTML(b,st,dia){
+  if(!selActiva(b.id,dia))return"";
+  const n=seleccion.size;if(!n)return"";
+  const nDays=Math.max(1,st.nights);
+  const dated=withDates().find(o=>o.def.id===b.id);
+  const destinos=[];
+  const dias=[];
+  for(let d=0;d<nDays;d++){
+    if(d===dia)continue;
+    const dt=dated?" · "+fmt(addDays(dated.checkin,d)):"";
+    dias.push({key:"sd:"+d,texto:"Día "+(d+1)+dt,fn:()=>moverSeleccionADia(b.id,dia,d)});
+  }
+  if(dias.length){destinos.push({label:"A otro día"});destinos.push(...dias);}
+  const otras=orderedBases().filter(o=>o.def.id!==b.id);
+  if(otras.length){
+    if(destinos.length)destinos.push({sep:true});
+    destinos.push({label:"A otra parada"});
+    otras.forEach(o=>destinos.push({key:"sb:"+o.def.id,texto:o.def.name||"(sin nombre)",
+      fn:()=>moverSeleccionABase(b.id,dia,o.def.id)}));
+  }
+  const menu=destinos.length?menuHTML("sel:"+b.id+":"+dia,destinos):"";
+  return `<div class="selbar">
+    <span class="sn">${n} seleccionada${n===1?"":"s"}</span>
+    ${menu?menu.replace('class="mbtn" title="Más acciones" aria-label="Más acciones">⋮',
+        'class="mbtn" title="Mover a…" aria-label="Mover a">Mover a ▾'):""}
+    <button data-act="dupsel" data-bid="${b.id}" data-day="${dia}">⧉ Duplicar</button>
+    <button class="danger" data-act="delsel" data-bid="${b.id}" data-day="${dia}">× Quitar</button>
+    <button data-act="cancelsel">Cancelar</button>
+  </div>`;
+}
+
 /* ---- Menú de acciones de una actividad del día (funciona con el dedo) ---- */
 function itemMenuItems(b,st,dia,r){
   const nDays=Math.max(1,st.nights);
@@ -2016,7 +2154,7 @@ function moverItemADia(bid,dia,itemId,destino){
   editar("mover actividad de día",()=>{
     const[m]=arr.splice(i,1);
     st.schedule[destino]=st.schedule[destino]||[];st.schedule[destino].push(m);
-    st.day=destino;
+    // no se cambia st.day: mover no debe sacarte del día que estás viendo
   });
   toast("Movida al día "+(destino+1),{tipo:"ok",accion:{texto:"Deshacer",fn:undo}});
 }
@@ -2031,7 +2169,6 @@ function moverItemABase(bid,dia,itemId,destinoBid){
       dst.catalog.push(JSON.parse(JSON.stringify(act)));
     const d=Math.min(dst.day||0,Math.max(1,dst.nights)-1);
     dst.schedule[d]=dst.schedule[d]||[];dst.schedule[d].push(m);
-    dst.expanded=true;
   });
   toast("Movida a "+(dst.name||"la otra parada"),{tipo:"ok",accion:{texto:"Deshacer",fn:undo}});
 }
@@ -2087,12 +2224,19 @@ function renderPlan(b,st){
   comp.forEach(r=>{
     if(r.gap>0)rows+=`<div class="gap">— ${fmtDur(r.gap)} libres —</div>`;
     const c=(TYPES[r.act.type]||TYPES.free).c;
-    rows+=`<div class="row" draggable="false" data-drag="${r.it.id}" data-bid="${b.id}" data-day="${cur}">
+    const marcada=selActiva(b.id,cur)&&seleccion.has(r.it.id);
+    rows+=`<div class="row${marcada?' picked':''}" draggable="false" data-drag="${r.it.id}" data-bid="${b.id}" data-day="${cur}">
+      <input type="checkbox" class="rsel" data-item="${r.it.id}" ${marcada?'checked':''}
+        title="Seleccionar" aria-label="Seleccionar actividad">
       <span class="dhandle" title="Arrastra para reordenar">⠿</span>
       <span class="tdot" style="background:${c}"></span>
       <span class="trange ${r.warn?'warn':''}" data-tr="${r.it.id}">${toHM(r.s)}–${toHM(r.e)}${r.warn?' ⚠':''}</span>
       <div class="rmain">
-        <div class="rname">${esc(r.act.name)||'(sin nombre)'} ${r.act.src?`<span class="src">${esc(r.act.src)}</span>`:''}${actEst(r.act)?`<span class="costtag">${fmtMoney(actEst(r.act))}</span>`:''}</div>
+        <div class="rnamerow">
+          <input class="rnameinp" data-bid="${b.id}" data-cid="${r.act.cid}" value="${esc(r.act.name)}"
+            placeholder="Nombre de la actividad" title="Se edita también en el catálogo">
+          ${r.act.src?`<span class="src">${esc(r.act.src)}</span>`:''}${actEst(r.act)?`<span class="costtag">${fmtMoney(actEst(r.act))}</span>`:''}
+        </div>
         ${r.act.note?`<div class="rnote2">${esc(r.act.note)}</div>`:''}
         ${placeLinkHTML(st,r.act.type,r.it,b.id,cur)}
         <div class="rrow2">
@@ -2117,8 +2261,14 @@ function renderPlan(b,st){
     `<optgroup label="${TYPES[t].l}">`+groups[t].map(a=>
       `<option value="${a.cid}">${esc(a.name)||'(sin nombre)'} · ${fmtDur(a.dur)}</option>`).join("")+`</optgroup>`).join("");
 
+  const todas=comp.length&&selActiva(b.id,cur)&&comp.every(r=>seleccion.has(r.it.id));
+  const selall=comp.length?`<label class="selall">
+    <input type="checkbox" data-selall data-bid="${b.id}" data-day="${cur}" ${todas?'checked':''}>
+    seleccionar todo el día</label>`:"";
+
   return bar+typekey
-    +`<p class="hint2">Los horarios se encadenan solos desde el inicio del día. «Fijo» ancla una hora (shows, trenes, vuelos); si se encima con lo anterior verás ⚠. Usa <b>⋮</b> para mover una actividad a otro día o a otra parada, duplicarla o quitarla; <b>▲▼</b> la reordena. En computadora también puedes arrastrarla por el asa ⠿.</p>`
+    +`<p class="hint2">Los horarios se encadenan solos desde el inicio del día. «Fijo» ancla una hora (shows, trenes, vuelos); si se encima con lo anterior verás ⚠. Edita el nombre escribiendo sobre él: también cambia en el catálogo. Marca varias con ☐ para moverlas, duplicarlas o quitarlas juntas; con <b>⋮</b> actúas sobre una sola y con <b>▲▼</b> la reordenas.</p>`
+    +selbarHTML(b,st,cur)+selall
     +`<div class="rows">${rows}</div>
     <div class="addrow">
       <select class="f" data-addsel="${b.id}">${opts}</select>
@@ -2289,6 +2439,51 @@ function wireCardEvents(){
   const find=(arr,id)=>arr.find(x=>x.id===id);
   wireMenus(holder);
 
+  /* nombre editable desde el día a día → edita la ficha del catálogo */
+  holder.querySelectorAll("input.rnameinp").forEach(el=>{
+    el.addEventListener("input",()=>{
+      const st=state.bases[el.dataset.bid];if(!st)return;
+      const act=st.catalog.find(a=>a.cid===el.dataset.cid);if(!act)return;
+      if(!puedeEditar())return;
+      act.name=el.value;saveDebounced();      // sin re-dibujar: no se pierde el foco
+    });
+    // al terminar de escribir, registra un paso de deshacer y refresca
+    el.addEventListener("focus",()=>{el._antes=el.value;});
+    el.addEventListener("blur",()=>{
+      if(el._antes===undefined||el._antes===el.value)return;
+      const previo=el._antes;el._antes=undefined;
+      const st=state.bases[el.dataset.bid];const act=st&&st.catalog.find(a=>a.cid===el.dataset.cid);
+      if(!act)return;
+      const nuevo=act.name;act.name=previo;          // rebobina para fotografiar el estado anterior
+      pushUndo("renombrar actividad");
+      act.name=nuevo;save();renderCards();
+    });
+  });
+
+  /* selección múltiple */
+  holder.querySelectorAll("input.rsel").forEach(cb=>{
+    cb.addEventListener("click",e=>e.stopPropagation());
+    cb.addEventListener("change",()=>{
+      const row=cb.closest(".row");if(!row)return;
+      const bid=row.dataset.bid,dia=+row.dataset.day;
+      asegurarCtx(bid,dia);
+      if(cb.checked)seleccion.add(cb.dataset.item);else seleccion.delete(cb.dataset.item);
+      if(!seleccion.size)selCtx=null;
+      renderCards();
+    });
+  });
+  holder.querySelectorAll("[data-selall]").forEach(cb=>{
+    cb.addEventListener("click",e=>e.stopPropagation());
+    cb.addEventListener("change",()=>{
+      const bid=cb.dataset.bid,dia=+cb.dataset.day;
+      asegurarCtx(bid,dia);
+      const st=state.bases[bid];
+      if(cb.checked)computeDay(st,dia).forEach(r=>seleccion.add(r.it.id));
+      else{seleccion=new Set();selCtx=null;}
+      renderCards();
+    });
+  });
+
   holder.querySelectorAll("[data-act]").forEach(el=>{
     el.addEventListener("click",e=>{
       const a=el.dataset.act,bid=el.dataset.bid,st=state.bases[bid];
@@ -2368,8 +2563,11 @@ function wireCardEvents(){
         },{full:true});
         setTimeout(()=>{const c=document.querySelector(`.card [data-bid="${nuevoId}"]`);if(c&&c.scrollIntoView)c.scrollIntoView({behavior:"smooth",block:"center"});},60);
         return;}
-      if(a==="tab"){st.tab=el.dataset.tab;save();renderCards();return;}
-      if(a==="day"){st.day=+el.dataset.day;save();renderCards();return;}
+      if(a==="dupsel"){duplicarSeleccion(el.dataset.bid,+el.dataset.day);return;}
+      if(a==="delsel"){quitarSeleccion(el.dataset.bid,+el.dataset.day);return;}
+      if(a==="cancelsel"){limpiarSeleccion();renderCards();return;}
+      if(a==="tab"){st.tab=el.dataset.tab;limpiarSeleccion();save();renderCards();return;}
+      if(a==="day"){st.day=+el.dataset.day;limpiarSeleccion();save();renderCards();return;}
       if(a==="additem"){
         const sel=holder.querySelector(`[data-addsel="${bid}"]`);
         if(sel&&sel.value){const d=+el.dataset.day;(st.schedule[d]=st.schedule[d]||[]).push({id:uid(),ref:sel.value,fixed:null});save();renderCards();}
@@ -2387,8 +2585,8 @@ function wireCardEvents(){
           st.schedule[td]=st.schedule[td]||[];
           if(a==="moveup")st.schedule[td].push(moved);      // al final del día anterior
           else st.schedule[td].unshift(moved);              // al inicio del día siguiente
-          st.day=td;                                        // seguir a la actividad
-          save();renderCards();
+          save();renderCards();                             // te quedas en el día actual
+          toast("Movida al día "+(td+1),{tipo:"ok",accion:{texto:"Deshacer",fn:undo}});
         }
         return;}
       if(a==="addcat"){editar("crear actividad",()=>{
@@ -2597,8 +2795,8 @@ function wireCardEvents(){
       const i=from.findIndex(x=>x.id===dragId);if(i<0)return;
       const [moved]=from.splice(i,1);
       st.schedule[td]=st.schedule[td]||[];st.schedule[td].push(moved);
-      st.day=td;                       // seguir a la actividad al nuevo día
-      save();renderCards();
+      save();renderCards();            // te quedas en el día actual
+      toast("Movida al día "+(td+1),{tipo:"ok",accion:{texto:"Deshacer",fn:undo}});
     });
   });
 }
