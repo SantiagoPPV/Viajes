@@ -456,6 +456,33 @@
     font-size:11px;color:var(--ink-soft);cursor:pointer;user-select:none;margin-bottom:8px}
   .selall input{width:17px;height:17px;accent-color:var(--jade);cursor:pointer}
 
+  /* ---------- tramos entre paradas y sus escalas ---------- */
+  .xfer input.legmode{width:130px;font-weight:600;color:var(--ink)}
+  .xfer input.legdet{flex:1;min-width:170px}
+  .xfer input.legdur{width:104px;font-family:"IBM Plex Mono",monospace;font-size:11.5px}
+  .escbadge{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--seal-deep);border:1px solid var(--seal);
+    border-radius:5px;padding:1px 7px;white-space:nowrap}
+  details.legmas{margin-top:8px}
+  details.legmas>summary{list-style:none;cursor:pointer;font-family:"IBM Plex Mono",monospace;
+    font-size:11px;color:var(--ink-soft);display:inline-flex;align-items:center;gap:8px;
+    padding:4px 10px;border:1px solid var(--line-soft);border-radius:8px;
+    background:rgba(255,255,255,.45);width:fit-content}
+  details.legmas>summary::-webkit-details-marker{display:none}
+  details.legmas>summary:hover{border-color:var(--jade);color:var(--jade)}
+  details.legmas[open]>summary{background:var(--card-2);border-color:var(--line)}
+  .legbody{padding:10px 2px 2px}
+  .esc-title{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--seal-deep);margin:14px 0 7px}
+  .escala{border:1px solid var(--line-soft);border-left:3px solid var(--seal);
+    border-radius:10px;padding:10px 12px;margin-bottom:9px;background:rgba(255,255,255,.42)}
+  .esc-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .esc-n{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--ink-soft);white-space:nowrap}
+  .esc-head input{flex:1;min-width:150px;font-weight:500}
+  .esc-line{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:7px}
+  .esc-espera{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--jade);white-space:nowrap}
+
   /* ---------- editor de notas con formato ---------- */
   .rte-wrap{border:1px dashed var(--line);border-radius:9px;background:rgba(255,255,255,.4);
     margin-top:6px;transition:border-color .15s,background .15s}
@@ -1465,6 +1492,81 @@ function migrarDia2HK(s){
   s.hkDia2v1=true;
 }
 
+/* ---- Añadidos de Hong Kong: comida del día 3, yate del día 2 y la escala de Tokio ---- */
+const HK_EXTRAS_2027={
+  yatTung:{cid:"hk-yattung",name:"Comida: Yat Tung Heen (dim sum, 1 Michelin)",type:"food",dur:105,
+    costos:[["Dim sum Yat Tung Heen (2)",2200]],
+    note:"<b>InterContinental Grand Stanford · 70 Mody Rd, Tsim Sha Tsui Este.</b> "+
+         "Cantonés con <b>1 estrella Michelin</b>, bastante más accesible que Lung King Heen.<br>"+
+         "<u>Lo que más se recomienda:</u>"+
+         "<ul><li><b>Sopas de doble cocción</b> — la especialidad de la casa</li>"+
+         "<li><b>Har gow</b> (dumpling de camarón) y <b>siu mai</b></li>"+
+         "<li><b>Bollos de cerdo BBQ al horno</b></li>"+
+         "<li>Rollos de tofu con salsa de ostión y <b>puff de taro crujiente</b></li>"+
+         "<li>Ganso o cerdo asado</li>"+
+         "<li>De postre: tofu de almendra o nido de ave</li></ul>"+
+         "<i>El dim sum solo se sirve a mediodía. Conviene reservar.</i>"},
+  yate:{cid:"hkd2-yate",name:"Tour nocturno en yate por Victoria Harbour",type:"tour",dur:90,fixed:"19:40",
+    costos:[["Tour nocturno en yate (2)",1800]],
+    note:"<b>19:40 · Victoria Harbour.</b> Desde el agua se ve la <b>Symphony of Lights de las 20:00</b>, "+
+         "que es el mejor sitio para verla.<br><i>Confirmar muelle de salida y si incluye bebidas; "+
+         "llevar algo de abrigo, en el agua refresca.</i>"}
+};
+function migrarExtrasHK(s){
+  if(s.hkExtrasV1)return;
+  const hk=s.bases&&s.bases.hk;
+  if(!hk||!Array.isArray(hk.catalog)){s.hkExtrasV1=true;return;}
+  const alta=a=>{
+    if(hk.catalog.some(x=>x.cid===a.cid))return;
+    hk.catalog.push({cid:a.cid,name:a.name,type:a.type,dur:a.dur,note:a.note,src:"",
+      costs:(a.costos||[]).map(([label,est])=>({id:uid(),label,est,real:0}))});
+  };
+  // --- Día 3: la comida pasa a ser Yat Tung Heen ---
+  alta(HK_EXTRAS_2027.yatTung);
+  const d3=hk.schedule[2]||(hk.schedule[2]=[]);
+  if(!d3.some(x=>x.ref==="hk-yattung")){
+    const i=d3.findIndex(x=>x.ref==="g-lunch");
+    const nuevo={id:uid(),ref:"hk-yattung",fixed:null};
+    if(i>=0)d3.splice(i,1,nuevo); else d3.push(nuevo);
+  }
+  if(Array.isArray(hk.food)&&!hk.food.some(f=>/Yat Tung Heen/i.test(f.name||"")))
+    hk.food.push({id:uid(),name:"Yat Tung Heen",kind:"rest",chosen:false,
+      note:HK_EXTRAS_2027.yatTung.note});
+  // --- Día 2: yate a las 19:40, justo después de la cena ---
+  alta(HK_EXTRAS_2027.yate);
+  const d2=hk.schedule[1]||(hk.schedule[1]=[]);
+  if(!d2.some(x=>x.ref==="hkd2-yate")){
+    const nuevo={id:uid(),ref:"hkd2-yate",fixed:"19:40"};
+    const iCena=d2.findIndex(x=>x.ref==="hkd2-cena");
+    const iReg=d2.findIndex(x=>x.ref==="hkd2-regreso");
+    if(iCena>=0)d2.splice(iCena+1,0,nuevo);
+    else if(iReg>=0)d2.splice(iReg,0,nuevo);
+    else d2.push(nuevo);
+  }
+  // la cena se ajusta a 70 min para cerrar justo a las 19:40 (solo si no la editaste)
+  const cena=hk.catalog.find(a=>a.cid==="hkd2-cena");
+  if(cena&&+cena.dur===90)cena.dur=70;
+  s.hkExtrasV1=true;
+}
+/* La escala de Tokio del vuelo de llegada, lista para poner el hotel del aeropuerto. */
+function migrarEscalaTokio(s){
+  if(s.escalaTokioV1)return;
+  if(!s.bases||!s.bases.hk){s.escalaTokioV1=true;return;}   // solo el viaje de China
+  s.legs=s.legs||{};
+  const L=s.legs._arrive=s.legs._arrive||{dep:"",arr:"",note:""};
+  if(!Array.isArray(L.costs))L.costs=[];
+  if(!Array.isArray(L.escalas))L.escalas=[];
+  if(!L.escalas.length){
+    L.escalas.push({id:uid(),lugar:"Tokio · Narita (NRT)",fecha:"",llegada:"",salida:"",
+      note:"<b>Escala larga camino a Hong Kong.</b> Aquí va el hotel del aeropuerto por horas.<br>"+
+           "<ul><li>Pon la <b>hora de llegada y de salida</b> y la app calcula sola cuánto dura la espera.</li>"+
+           "<li>Agrega el hotel como un costo de esta escala, no en Hong Kong: así no se mezcla con el hospedaje de allá.</li>"+
+           "<li>Anota terminal y si hay que salir de zona internacional (afecta si puedes usar el hotel).</li></ul>",
+      costs:[{id:uid(),label:"Hotel del aeropuerto por horas (2)",est:0,real:0}]});
+  }
+  s.escalaTokioV1=true;
+}
+
 /* Normaliza la estructura de un viaje cargado (genérico; no siembra China). */
 function normalizeTripState(s){
   if(!s||typeof s!=="object")s={};
@@ -1472,6 +1574,16 @@ function normalizeTripState(s){
   if(!s.checks)s.checks={};
   if(!s.legs)s.legs=defaultLegs();
   Object.entries(defaultLegs()).forEach(([k,v])=>{if(!s.legs[k])s.legs[k]=v;});
+  Object.values(s.legs).forEach(L=>{
+    if(!L||typeof L!=="object")return;
+    if(!Array.isArray(L.costs))L.costs=[];
+    if(!Array.isArray(L.escalas))L.escalas=[];
+    if(L.note&&pareceHTML(L.note))L.note=limpiarHTML(L.note);
+    L.escalas.forEach(e=>{
+      if(!Array.isArray(e.costs))e.costs=[];
+      if(e.note&&pareceHTML(e.note))e.note=limpiarHTML(e.note);
+    });
+  });
   if(!s.currency)s.currency="MXN";
   if(!s.budget)s.budget={flightsEst:0,flightsReal:0};
   if(!s.meta||typeof s.meta!=="object")s.meta={};
@@ -1511,6 +1623,8 @@ function normalizeTripState(s){
   migrarHotelesHK(s);
   migrarFormatoHotelesHK(s);
   migrarDia2HK(s);
+  migrarExtrasHK(s);
+  migrarEscalaTokio(s);
   return s;
 }
 /* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
@@ -1911,7 +2025,9 @@ function withDates(){let c=new Date(tripStart());return activeBases().map(o=>{
   const ci=new Date(c),co=addDays(c,o.st.nights);c=co;return{...o,checkin:ci,checkout:co};});}
 
 /* ---- Costos ---- */
-const openCost=new Set(); // qué actividades tienen el editor de costos abierto (sesión)
+const openCost=new Set();
+const legAbierto=new Set();   // tramos con el detalle desplegado
+const escAbierta=new Set();   // escalas con sus costos desplegados // qué actividades tienen el editor de costos abierto (sesión)
 const CURR={MXN:{s:"$",c:"MXN"},USD:{s:"US$",c:"USD"},EUR:{s:"€",c:"EUR"},CNY:{s:"¥",c:"CNY"}};
 function curSym(){return (CURR[state.currency]||CURR.MXN).s;}
 function fmtMoney(n){n=Math.round(+n||0);return curSym()+n.toLocaleString("es-MX");}
@@ -1938,7 +2054,18 @@ function baseTotals(st){const ac=baseActCosts(st),bg=st.budget||{};
   const real=ac.real+(+bg.lodgingReal||0)+(+bg.miscReal||0);
   return{est,real,act:ac};}
 function tripTotals(){const g=state.budget||{};let est=+g.flightsEst||0,real=+g.flightsReal||0;
-  activeBases().forEach(o=>{const t=baseTotals(o.st);est+=t.est;real+=t.real;});return{est,real};}
+  activeBases().forEach(o=>{const t=baseTotals(o.st);est+=t.est;real+=t.real;});
+  const tr=tramosTotales();est+=tr.est;real+=tr.real;      // vuelos/trenes y sus escalas
+  return{est,real};}
+/* Nombre legible de un tramo para el presupuesto. */
+function legNombre(key){
+  const L=(state.legs||{})[key]||{};
+  if(L.detalle)return L.detalle;
+  if(key==="_arrive")return "Vuelo internacional de llegada";
+  if(key==="_depart")return "Vuelo internacional de regreso";
+  const p=String(key).split("|");
+  const n=id=>((state.bases||{})[id]||{}).name||id;
+  return p.length===2?n(p[0])+" → "+n(p[1]):key;}
 
 /* Motor de horarios: encadena actividades; "fixed" ancla la hora */
 function computeDay(st,d){
@@ -2118,16 +2245,22 @@ function renderCards(){
         ${st.expanded?renderDetail(b,st):''}
       </div>`;
     // vuelo internacional de llegada, antes de la primera base activa
-    if(on&&dd&&b.id===firstActiveId&&state.meta&&state.meta.hasMap)
-      holder.appendChild(makeRibbon(xferRibbonHTML("_arrive","intl","Vuelo internacional",
-        "Guadalajara (GDL) → Tokio (escala) → "+b.name,"5 may → 7 may")));
+    // Tramo internacional de llegada: en todos los viajes, para poder registrar
+    // vuelo, fechas, escalas y costos. El texto por defecto cambia según el viaje.
+    if(on&&dd&&b.id===firstActiveId)
+      holder.appendChild(makeRibbon(state.meta&&state.meta.hasMap
+        ? xferRibbonHTML("_arrive","intl","Vuelo internacional",
+            "Guadalajara (GDL) → Tokio (escala) → "+b.name,"5 may → 7 may")
+        : xferRibbonHTML("_arrive","intl","Viaje de ida","→ "+b.name,"")));
     holder.appendChild(leg);
     if(on&&dd){const nx=dated[dated.indexOf(dd)+1];
       if(nx){const x=getXfer(b.id,nx.def.id);
         holder.appendChild(makeRibbon(xferRibbonHTML(b.id+"|"+nx.def.id,x.type,x.mode,x.detail,x.time)));}
-      else if(state.meta&&state.meta.hasMap) // última base activa → vuelo internacional de salida
-        holder.appendChild(makeRibbon(xferRibbonHTML("_depart","intl","Vuelo internacional",
-          b.name+" → Guadalajara (GDL)","29 may · mismo día (noche)")));
+      else // última parada activa → tramo internacional de regreso
+        holder.appendChild(makeRibbon(state.meta&&state.meta.hasMap
+          ? xferRibbonHTML("_depart","intl","Vuelo internacional",
+              b.name+" → Guadalajara (GDL)","29 may · mismo día (noche)")
+          : xferRibbonHTML("_depart","intl","Viaje de vuelta",b.name+" →","")));
     }
   });
   if(filtro&&!mostradas){
@@ -2151,20 +2284,122 @@ function renderCards(){
 }
 function makeRibbon(html){const rib=document.createElement("div");rib.className="leg";
   rib.innerHTML=`<span class="node" style="background:transparent;border-color:transparent;box-shadow:none"></span>`+html;return rib;}
+/* ---- Tramos entre paradas: vuelos, trenes y sus escalas ----
+   Cada tramo guarda modo, detalle, fechas, horas, nota, costos y una lista de
+   escalas. Cada escala tiene su lugar, fecha, horas, nota y sus propios costos:
+   ahí va, por ejemplo, el hotel del aeropuerto durante una espera larga. */
+function legDe(key){
+  const L=(state.legs&&state.legs[key])||{};
+  if(!Array.isArray(L.costs))L.costs=[];
+  if(!Array.isArray(L.escalas))L.escalas=[];
+  state.legs=state.legs||{};state.legs[key]=L;
+  return L;
+}
+const sumaCostos=(arr,campo)=>(arr||[]).reduce((s,c)=>s+(+c[campo]||0),0);
+function legTotales(L){
+  let est=sumaCostos(L.costs,"est"),real=sumaCostos(L.costs,"real");
+  (L.escalas||[]).forEach(e=>{est+=sumaCostos(e.costs,"est");real+=sumaCostos(e.costs,"real");});
+  return{est,real};
+}
+/* Suma de todos los tramos del viaje (incluye escalas). */
+function tramosTotales(){
+  let est=0,real=0;
+  Object.keys(state.legs||{}).forEach(k=>{
+    const t=legTotales(state.legs[k]);est+=t.est;real+=t.real;});
+  return{est,real};
+}
+function costRowsHTML(costs,attrs){
+  return (costs||[]).map(c=>`
+    <div class="costrow">
+      <input class="f clabel legcost" ${attrs} data-ccid="${esc(c.id)}" data-fld="label"
+        value="${esc(c.label)}" placeholder="Concepto (boleto, equipaje, hotel de escala…)">
+      <input type="number" class="f camt legcost" ${attrs} data-ccid="${esc(c.id)}" data-fld="est"
+        min="0" step="100" value="${c.est||''}" placeholder="0">
+      <input type="number" class="f camt legcost" ${attrs} data-ccid="${esc(c.id)}" data-fld="real"
+        min="0" step="100" value="${c.real||''}" placeholder="0">
+      <button class="del" data-act="dellegcost" ${attrs} data-ccid="${esc(c.id)}" title="Quitar">×</button>
+    </div>`).join("");
+}
 function xferRibbonHTML(key,type,mode,detail,estTime){
-  const L=(state.legs&&state.legs[key])||{dep:"",arr:"",note:""};
+  const L=legDe(key);
   const badgeLabel=type==='air'?'vuelo':type==='road'?'carretera':type==='intl'?'internacional':'tren';
   const cls=type==='intl'?'intl':type;
+  const t=legTotales(L);
+  const modo=L.modo!==undefined&&L.modo!==""?L.modo:mode;
+  const detalle=L.detalle!==undefined&&L.detalle!==""?L.detalle:detail;
+  const dur=L.dur!==undefined&&L.dur!==""?L.dur:estTime;
+  const nEsc=(L.escalas||[]).length;
+  const k=`data-key="${esc(key)}"`;
+
+  const escalas=(L.escalas||[]).map((e,i)=>`
+    <div class="escala" data-esc="${esc(e.id)}">
+      <div class="esc-head">
+        <span class="esc-n">Escala ${i+1}</span>
+        <input class="f escfield" ${k} data-eid="${esc(e.id)}" data-fld="lugar"
+          value="${esc(e.lugar||'')}" placeholder="Aeropuerto / ciudad (p. ej. Tokio · NRT)">
+        <button class="del" data-act="delescala" ${k} data-eid="${esc(e.id)}" title="Quitar escala">×</button>
+      </div>
+      <div class="esc-line">
+        <span class="lbl">fecha</span>
+        <input type="date" class="f escfield" ${k} data-eid="${esc(e.id)}" data-fld="fecha" value="${esc(e.fecha||'')}">
+        <span class="lbl">llega</span>
+        <input type="time" class="f escfield" ${k} data-eid="${esc(e.id)}" data-fld="llegada" value="${esc(e.llegada||'')}">
+        <span class="lbl">sale</span>
+        <input type="time" class="f escfield" ${k} data-eid="${esc(e.id)}" data-fld="salida" value="${esc(e.salida||'')}">
+        <span class="esc-espera">${esperaTxt(e)}</span>
+      </div>
+      ${rteHTML(`data-rtekind="escala" data-key="${esc(key)}" data-eid="${esc(e.id)}"`,e.note,
+        "✎ Qué hacer en la escala, terminal, hotel reservado, traslados…")}
+      <details class="costs" ${escAbierta.has(e.id)?'open':''} data-esccost="${esc(e.id)}">
+        <summary>💰 costos de la escala <b>${fmtMoney(sumaCostos(e.costs,"est"))}</b> · real <b>${fmtMoney(sumaCostos(e.costs,"real"))}</b></summary>
+        <div class="costgrid">
+          ${(e.costs||[]).length?'<div class="costhead"><span style="flex:1">concepto</span><span class="cxlbl">presupuesto</span><span class="cxlbl">real</span><span style="width:24px"></span></div>':''}
+          ${costRowsHTML(e.costs,`${k} data-eid="${esc(e.id)}"`)}
+          <button class="addbtn" data-act="addlegcost" ${k} data-eid="${esc(e.id)}">＋ Añadir costo (hotel, comida, tránsito…)</button>
+        </div>
+      </details>
+    </div>`).join("");
+
   return `<div class="xfer edit${type==='intl'?' intlrib':''}">
     <div class="line1"><span class="badge ${cls}">${badgeLabel}</span>
-      <span class="mode">${esc(mode)}</span><span class="arrow">→</span><span>${esc(detail)}</span>
-      <span class="arrow">·</span><span class="time">${esc(estTime)}</span></div>
-    <div class="line2">
-      <span class="lbl">salida</span><input type="time" class="f legfield" data-key="${key}" data-fld="dep" value="${esc(L.dep)}">
-      <span class="lbl">llegada</span><input type="time" class="f legfield" data-key="${key}" data-fld="arr" value="${esc(L.arr)}">
-      <input class="f legnote legfield" data-key="${key}" data-fld="note" value="${esc(L.note)}" placeholder="N.º de tren/vuelo, andén, notas…">
+      <input class="f legmode legfield" ${k} data-fld="modo" value="${esc(modo)}" placeholder="Modo (vuelo, tren bala…)">
+      <span class="arrow">→</span>
+      <input class="f legdet legfield" ${k} data-fld="detalle" value="${esc(detalle)}" placeholder="Trayecto / detalle">
+      <span class="arrow">·</span>
+      <input class="f legdur legfield" ${k} data-fld="dur" value="${esc(dur)}" placeholder="≈ duración">
+      ${t.est?`<span class="costtag">${fmtMoney(t.est)}</span>`:''}
+      ${nEsc?`<span class="escbadge">${nEsc} escala${nEsc===1?'':'s'}</span>`:''}
     </div>
+    <div class="line2">
+      <span class="lbl">sale</span>
+      <input type="date" class="f legfield" ${k} data-fld="fecha" value="${esc(L.fecha||'')}">
+      <input type="time" class="f legfield" ${k} data-fld="dep" value="${esc(L.dep||'')}">
+      <span class="lbl">llega</span>
+      <input type="date" class="f legfield" ${k} data-fld="fechaFin" value="${esc(L.fechaFin||'')}">
+      <input type="time" class="f legfield" ${k} data-fld="arr" value="${esc(L.arr||'')}">
+    </div>
+    <details class="legmas" ${legAbierto.has(key)?'open':''} data-legdet="${esc(key)}">
+      <summary>✎ escalas, costos y notas${t.est?` · <b>${fmtMoney(t.est)}</b>`:''}</summary>
+      <div class="legbody">
+        ${rteHTML(`data-rtekind="leg" data-key="${esc(key)}"`,L.note,
+          "✎ N.º de vuelo/tren, terminal, andén, asientos, equipaje…")}
+        <div class="costhead" style="margin-top:8px"><span style="flex:1">costo del tramo</span>
+          <span class="cxlbl">presupuesto</span><span class="cxlbl">real</span><span style="width:24px"></span></div>
+        ${costRowsHTML(L.costs,k)}
+        <button class="addbtn" data-act="addlegcost" ${k}>＋ Añadir costo del tramo</button>
+        <div class="esc-title">Escalas</div>
+        ${escalas||'<p class="hint2" style="margin:2px 0 8px">Sin escalas. Añade una si hay conexión con espera.</p>'}
+        <button class="addbtn" data-act="addescala" ${k}>＋ Añadir escala</button>
+      </div>
+    </details>
   </div>`;
+}
+/* Cuánto se espera en una escala, si están las dos horas. */
+function esperaTxt(e){
+  const a=toMin(e.llegada),b=toMin(e.salida);
+  if(a===null||b===null)return "";
+  let d=b-a;if(d<0)d+=1440;                 // cruza la medianoche
+  return "espera "+fmtDur(d);
 }
 
 function renderDetail(b,st){
@@ -2276,8 +2511,18 @@ function wireRTE(raiz){
   raiz.querySelectorAll(".rte-wrap").forEach(w=>{
     const ed=w.querySelector(".rte");if(!ed)return;
     const destino=()=>{
+      if(w.dataset.rtekind==="leg"||w.dataset.rtekind==="escala"){
+        const L=legDe(w.dataset.key);
+        if(w.dataset.rtekind==="leg")return L;
+        return (L.escalas||[]).find(e=>e.id===w.dataset.eid)||null;
+      }
       const st=state.bases[w.dataset.bid];if(!st)return null;
       const tipo=w.dataset.rtekind;
+      if(tipo==="leg")return legDe(w.dataset.key);
+      if(tipo==="escala"){
+        const L=legDe(w.dataset.key);
+        return (L.escalas||[]).find(e=>e.id===w.dataset.eid)||null;
+      }
       if(tipo==="item"){
         const arr=st.schedule[+w.dataset.day]||[];
         return arr.find(x=>x.id===w.dataset.item)||null;
@@ -2911,6 +3156,47 @@ function wireCardEvents(){
         },{full:true});
         setTimeout(()=>{const c=document.querySelector(`.card [data-bid="${nuevoId}"]`);if(c&&c.scrollIntoView)c.scrollIntoView({behavior:"smooth",block:"center"});},60);
         return;}
+      if(a==="addlegcost"){
+        const key=el.dataset.key,eid=el.dataset.eid;
+        editar("añadir costo del traslado",()=>{
+          const L=legDe(key);
+          const lista=eid?((L.escalas||[]).find(x=>x.id===eid)||{}).costs:L.costs;
+          if(lista)lista.push({id:uid(),label:"",est:0,real:0});
+          legAbierto.add(key);if(eid)escAbierta.add(eid);
+        },{full:true});
+        return;}
+      if(a==="dellegcost"){
+        const key=el.dataset.key,eid=el.dataset.eid,ccid=el.dataset.ccid;
+        editar("quitar costo del traslado",()=>{
+          const L=legDe(key);
+          if(eid){const e=(L.escalas||[]).find(x=>x.id===eid);
+            if(e)e.costs=(e.costs||[]).filter(c=>c.id!==ccid);escAbierta.add(eid);}
+          else L.costs=(L.costs||[]).filter(c=>c.id!==ccid);
+          legAbierto.add(key);
+        },{full:true});
+        return;}
+      if(a==="addescala"){
+        const key=el.dataset.key;let nuevo=null;
+        editar("añadir escala",()=>{
+          const L=legDe(key);
+          nuevo={id:uid(),lugar:"",fecha:"",llegada:"",salida:"",note:"",costs:[]};
+          L.escalas.push(nuevo);legAbierto.add(key);
+        },{full:true});
+        if(nuevo)escAbierta.add(nuevo.id);
+        toast("Escala añadida: ponle lugar, horas y sus costos",{tipo:"ok"});
+        return;}
+      if(a==="delescala"){
+        const key=el.dataset.key,eid=el.dataset.eid;
+        const L=legDe(key);const e=(L.escalas||[]).find(x=>x.id===eid);
+        const nombre=(e&&e.lugar)||"escala";
+        customConfirm(`¿Quitar la escala “${esc(nombre)}” y sus costos? Podrás deshacerlo con ↶.`,()=>{
+          editar("quitar escala",()=>{
+            const L2=legDe(key);L2.escalas=(L2.escalas||[]).filter(x=>x.id!==eid);
+            legAbierto.add(key);
+          },{full:true});
+          toast("Escala quitada",{accion:{texto:"Deshacer",fn:undo}});
+        },"Sí, quitar");
+        return;}
       if(a==="dupsel"){duplicarSeleccion(el.dataset.bid,+el.dataset.day);return;}
       if(a==="delsel"){quitarSeleccion(el.dataset.bid,+el.dataset.day);return;}
       if(a==="cancelsel"){limpiarSeleccion();renderCards();return;}
@@ -3101,13 +3387,40 @@ function wireCardEvents(){
   });
   /* traslados: trenes / vuelos editables */
   holder.querySelectorAll(".legfield").forEach(el=>{
-    const ev=el.type==="time"?"change":"input";
+    const ev=(el.type==="time"||el.type==="date")?"change":"input";
     el.addEventListener(ev,()=>{
-      const k=el.dataset.key;state.legs[k]=state.legs[k]||{dep:"",arr:"",note:""};
-      state.legs[k][el.dataset.fld]=el.value;
-      el.type==="time"?save():saveDebounced();
+      const L=legDe(el.dataset.key);
+      L[el.dataset.fld]=el.value;
+      (el.type==="time"||el.type==="date")?save():saveDebounced();
     });
   });
+  /* campos de cada escala */
+  holder.querySelectorAll(".escfield").forEach(el=>{
+    const ev=(el.type==="time"||el.type==="date")?"change":"input";
+    el.addEventListener(ev,()=>{
+      const L=legDe(el.dataset.key);
+      const e=(L.escalas||[]).find(x=>x.id===el.dataset.eid);if(!e)return;
+      e[el.dataset.fld]=el.value;
+      if(el.type==="time"||el.type==="date"){escAbierta.add(e.id);legAbierto.add(el.dataset.key);save();renderCards();}
+      else saveDebounced();
+    });
+  });
+  /* conceptos de costo de tramos y escalas */
+  holder.querySelectorAll(".legcost").forEach(el=>{
+    el.addEventListener("input",()=>{
+      const L=legDe(el.dataset.key);
+      const lista=el.dataset.eid?((L.escalas||[]).find(x=>x.id===el.dataset.eid)||{}).costs:L.costs;
+      const c=(lista||[]).find(x=>x.id===el.dataset.ccid);if(!c)return;
+      c[el.dataset.fld]=el.dataset.fld==="label"?el.value:(+el.value||0);
+      saveDebounced();refreshBudgetTotals();
+    });
+  });
+  /* recordar qué tramos/escalas quedan abiertos al re-dibujar */
+  holder.querySelectorAll("details.legmas").forEach(d=>d.addEventListener("toggle",()=>{
+    d.open?legAbierto.add(d.dataset.legdet):legAbierto.delete(d.dataset.legdet);}));
+  holder.querySelectorAll("details.costs[data-esccost]").forEach(d=>d.addEventListener("toggle",()=>{
+    d.open?escAbierta.add(d.dataset.esccost):escAbierta.delete(d.dataset.esccost);}));
+
   /* drag & drop para reordenar actividades del día (inicia desde el asa) */
   let dragId=null,dragBid=null,dragDay=null;
   holder.querySelectorAll(".dhandle").forEach(h=>{
@@ -3301,6 +3614,22 @@ function renderBudget(){
         <input type="number" class="f bamt gfield" data-fld="flightsEst" min="0" step="500" value="${g.flightsEst||''}" placeholder="0">
         <input type="number" class="f bamt gfield" data-fld="flightsReal" min="0" step="500" value="${g.flightsReal||''}" placeholder="0"></div>
       ${bases}
+      ${(()=>{
+        const conCosto=Object.keys(state.legs||{}).filter(k=>legTotales(state.legs[k]).est||legTotales(state.legs[k]).real);
+        if(!conCosto.length)return "";
+        let e=0,r=0;
+        const filas=conCosto.map(k=>{
+          const L=state.legs[k],t=legTotales(L);e+=t.est;r+=t.real;
+          const nEsc=(L.escalas||[]).length;
+          return `<div class="bline"><span class="blabel">${esc(legNombre(k))}
+            ${nEsc?`<span class="usage">(${nEsc} escala${nEsc===1?'':'s'})</span>`:''}</span>
+            <span class="ro">${fmtMoney(t.est)}</span><span class="ro">${fmtMoney(t.real)}</span></div>`;
+        }).join("");
+        return `<div class="bblock"><div class="bh"><span class="bn">Traslados entre paradas</span>
+          <span class="bsub">presup. <b style="color:var(--ink)">${fmtMoney(e)}</b> · real <b style="color:var(--ink)">${fmtMoney(r)}</b></span></div>
+          ${filas}
+          <div class="bline"><span class="usage">Se editan en cada tramo del itinerario, junto a sus escalas.</span></div></div>`;
+      })()}
       <div class="bglobal" style="border-bottom:0;border-top:2px solid var(--line);margin-top:4px">
         <span class="blabel" style="flex:1;font-weight:600;color:var(--ink)">TOTAL</span>
         <span class="ro" style="width:110px;font-weight:600">${fmtMoney(t.est)}</span>
