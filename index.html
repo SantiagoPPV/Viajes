@@ -456,6 +456,27 @@
     font-size:11px;color:var(--ink-soft);cursor:pointer;user-select:none;margin-bottom:8px}
   .selall input{width:17px;height:17px;accent-color:var(--jade);cursor:pointer}
 
+  /* ---------- precio de hotel por noche ---------- */
+  .hprice{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:2px 0}
+  input.hpinp{width:96px;text-align:right;font-family:"IBM Plex Mono",monospace;font-size:12.5px}
+  .htotal{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-soft)}
+  .htotal b{color:var(--jade);font-size:13px}
+  .hsin{opacity:.7;font-style:italic}
+  .hbadge{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--jade);border:1px solid var(--jade);
+    border-radius:5px;padding:1px 7px}
+  .autotag{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--jade);
+    border:1px solid var(--line-soft);border-radius:5px;padding:1px 6px;margin-left:6px;white-space:nowrap}
+  button.linkbtn{border:0;background:transparent;color:var(--ink-soft);cursor:pointer;
+    font-family:"IBM Plex Mono",monospace;font-size:10px;text-decoration:underline;
+    padding:2px 4px;margin-left:6px}
+  button.linkbtn:hover{color:var(--jade)}
+
+  textarea.hnote{width:100%;min-height:54px;resize:vertical;font-family:"Inter",sans-serif;
+    font-size:12.5px;line-height:1.5;color:var(--ink-soft);border:1px solid var(--line-soft);
+    background:rgba(255,255,255,.5);border-radius:8px;padding:7px 9px}
+  textarea.hnote:focus{outline:none;border-color:var(--jade);background:#fff;color:var(--ink)}
+
   /* ---------- buscador ---------- */
   .findbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:12px}
   .findbar input{flex:1;min-width:180px;font-size:13.5px;padding:10px 12px;border-radius:10px;
@@ -923,8 +944,12 @@ hk:{catalog:[
   [R("hk-lantau"),R("hk-polin"),R("hk-taio"),R("hk-back"),R("g-rest"),R("hk-aqua","18:45"),R("hk-seafood"),R("hk-ozone")],
   [R("hk-nanlian"),R("hk-mongkok"),R("g-lunch"),R("hk-repulse"),R("g-rest"),R("g-dinner")]
 ],hotels:[
+  {name:"The Ritz-Carlton Hong Kong",area:"ICC · Kowloon (pisos 102–118)",precio:12222,
+    note:"LUJO — la mejor vista al puerto (el hotel más alto de HK). 9.6, igual que Four Seasons pero $2,370 más barato. Total cotizado 3 noches: $36,667 (≈$12,222/noche)."},
+  {name:"W Hong Kong",area:"ICC · Kowloon (mismo edificio que el Ritz)",precio:7111,
+    note:"MEJOR RELACIÓN — mismas vistas, menor altura, casi la mitad. Alberca WET Deck piso 76. Total 3 noches: $21,333 ($15,334 menos que el Ritz)."},
   {name:"The Peninsula Hong Kong",area:"Tsim Sha Tsui",note:"El clásico legendario, alta gama"},
-  {name:"Rosewood Hong Kong",area:"Victoria Dockside",note:"Vistas de la bahía, muy romántico"},
+  {name:"Rosewood Hong Kong",area:"Victoria Dockside",note:"Vistas de la bahía, muy romántico. Descartado: 74% más caro que el Ritz ($63,457 / 3 noches)."},
   {name:"The Upper House",area:"Admiralty",note:"Minimalista, refinado, ideal pareja"}
 ],food:[
   {name:"Lung King Heen (Four Seasons)",kind:"rest",note:"Cantonés 3 estrellas Michelin"},
@@ -1276,7 +1301,7 @@ function seedBase(b){
     nights:b.nights,included:b.included,
     catalog,schedule,dayStart,
     budget:{lodgingEst:0,lodgingReal:0,miscEst:0,miscReal:0},
-    hotels:(plan.hotels||[]).map(h=>({id:uid(),name:h.name,area:h.area||"",note:h.note||"",chosen:false})),
+    hotels:(plan.hotels||[]).map(h=>({id:uid(),name:h.name,area:h.area||"",note:h.note||"",precio:+h.precio||0,chosen:false})),
     food:(plan.food||[]).map(f=>({id:uid(),name:f.name,kind:f.kind||"rest",note:f.note||"",chosen:false})),
     expanded:false,tab:"plan",day:0};
 }
@@ -1298,6 +1323,36 @@ function seedCustomBase(name,idx){
 function defaultLegs(){return{"_arrive":{dep:"",arr:"05:45",note:""},"_depart":{dep:"",arr:"",note:""}};}
 function freshState(){const bases={},order=[];DEFAULT_BASES.forEach(b=>{bases[b.id]=seedBase(b);order.push(b.id);});
   return{bases,order,checks:{},legs:defaultLegs(),currency:"MXN",budget:{flightsEst:0,flightsReal:0},costsSeeded:true,tokyoSwap:true,japanRoute:true};}
+
+/* ---- Comparativa de hoteles de Hong Kong (investigación may 2027) ----
+   Base de todas las cotizaciones: 6–9 may 2027 · 3 noches · 2 adultos ·
+   habitación con vista al puerto · sin desayuno · total con impuestos (~13%).
+   Se cargan sin elegir ninguno: la decisión se toma más adelante con ★. */
+const HOTELES_HK_2027=[
+  {name:"The Ritz-Carlton Hong Kong",area:"ICC · Kowloon (pisos 102–118)",precio:12222,
+   note:"LUJO — el mejor del grupo alto. El hotel más alto de Hong Kong: la mejor vista al puerto de la ciudad. "+
+        "Calificación 9.6, igual que Four Seasons, pero $2,370 más barato; y $26,790 menos que Rosewood por las mismas 3 noches. "+
+        "Total cotizado 3 noches: $36,667 (≈$12,222/noche; la app calcula $36,666 por el redondeo del peso).\n"+
+        "→ Elígelo si Hong Kong es donde quieren darse el lujazo de la luna de miel.\n"+
+        "Base: 6–9 may 2027, 2 adultos, vista al puerto, sin desayuno, impuestos incl. Re-cotizar con las fechas reales."},
+  {name:"W Hong Kong",area:"ICC · Kowloon (mismo edificio que el Ritz)",precio:7111,
+   note:"MEJOR RELACIÓN — mismas vistas al puerto que el Ritz, a menor altura y por casi la mitad. "+
+        "Alberca WET Deck en el piso 76, ambiente moderno. Total cotizado 3 noches: $21,333 ($7,111/noche exactos).\n"+
+        "→ Son $15,334 menos que el Ritz: alcanza para el vuelo Shanghái→Osaka de los dos, o el Fuji con cena de sushi.\n"+
+        "Empatado con Hotel ICON (solo $747 de diferencia); Kerry quedó fuera por acercarse demasiado al Ritz.\n"+
+        "Base: 6–9 may 2027, 2 adultos, vista al puerto, sin desayuno, impuestos incl. Re-cotizar con las fechas reales."}
+];
+/* Alta única: añade la comparativa a la parada de Hong Kong si aún no está. */
+function migrarHotelesHK(s){
+  if(s.hkHoteles2027)return;
+  const hk=s.bases&&s.bases.hk;
+  if(!hk||!Array.isArray(hk.hotels))return;      // solo el viaje que tiene la parada "hk"
+  const nuevos=HOTELES_HK_2027
+    .filter(h=>!hk.hotels.some(x=>(x.name||"").toLowerCase()===h.name.toLowerCase()))
+    .map(h=>({id:uid(),name:h.name,area:h.area,note:h.note,precio:h.precio,chosen:false}));
+  if(nuevos.length)hk.hotels.unshift(...nuevos);  // arriba, para verlos primero
+  s.hkHoteles2027=true;
+}
 
 /* Normaliza la estructura de un viaje cargado (genérico; no siembra China). */
 function normalizeTripState(s){
@@ -1331,6 +1386,7 @@ function normalizeTripState(s){
   if(!Array.isArray(s.order)||!s.order.length)s.order=Object.keys(s.bases);
   s.order=s.order.filter(id=>s.bases[id]);
   Object.keys(s.bases).forEach(id=>{if(!s.order.includes(id))s.order.push(id);});
+  migrarHotelesHK(s);
   return s;
 }
 /* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
@@ -1740,8 +1796,20 @@ function baseActCosts(st){let est=0,real=0;const nd=Math.max(1,st.nights),counts
   for(let d=0;d<nd;d++)(st.schedule[d]||[]).forEach(it=>{counts[it.ref]=(counts[it.ref]||0)+1;});
   (st.catalog||[]).forEach(a=>{const u=counts[a.cid]||0;if(u){est+=actEst(a)*u;real+=actReal(a)*u;}});
   return{est,real};}
+/* ---- Hospedaje: precio por noche × noches del plan ----
+   Si el hotel elegido (★) tiene precio por noche, el hospedaje se calcula solo
+   y se re-calcula al cambiar las noches. Se puede forzar a mano (lodgingAuto:false). */
+const hotelElegido=st=>(st.hotels||[]).find(h=>h.chosen&&(+h.precio>0))||null;
+const nochesDe=st=>Math.max(1,+st.nights||1);
+function lodgingAutoActivo(st){
+  return (st.budget||{}).lodgingAuto!==false && !!hotelElegido(st);
+}
+function lodgingEstDe(st){
+  if(lodgingAutoActivo(st))return (+hotelElegido(st).precio||0)*nochesDe(st);
+  return +((st.budget||{}).lodgingEst)||0;
+}
 function baseTotals(st){const ac=baseActCosts(st),bg=st.budget||{};
-  const est=ac.est+(+bg.lodgingEst||0)+(+bg.miscEst||0);
+  const est=ac.est+lodgingEstDe(st)+(+bg.miscEst||0);
   const real=ac.real+(+bg.lodgingReal||0)+(+bg.miscReal||0);
   return{est,real,act:ac};}
 function tripTotals(){const g=state.budget||{};let est=+g.flightsEst||0,real=+g.flightsReal||0;
@@ -2325,17 +2393,32 @@ function renderCatalog(b,st){
 }
 
 function renderHotels(b,st){
-  const list=st.hotels.map(h=>`
-    <div class="pcard ${h.chosen?'chosen':''}">
-      <button class="star" data-act="choosehotel" data-bid="${b.id}" data-item="${h.id}" title="Elegir">${h.chosen?'★':'☆'}</button>
+  const n=nochesDe(st);
+  const elegido=hotelElegido(st);
+  const list=st.hotels.map(h=>{
+    const p=+h.precio||0, tot=p*n;
+    return `<div class="pcard ${h.chosen?'chosen':''}">
+      <button class="star" data-act="choosehotel" data-bid="${b.id}" data-item="${h.id}" title="Elegir este hotel">${h.chosen?'★':'☆'}</button>
       <div class="pbody">
         <input class="f rtitle hfield" data-list="hotels" data-fld="name" data-bid="${b.id}" data-item="${h.id}" value="${esc(h.name)}" placeholder="Hotel">
         <input class="f pnote edit hfield" data-list="hotels" data-fld="area" data-bid="${b.id}" data-item="${h.id}" value="${esc(h.area)}" placeholder="Zona">
-        <input class="f pnote edit hfield" data-list="hotels" data-fld="note" data-bid="${b.id}" data-item="${h.id}" value="${esc(h.note)}" placeholder="Nota">
+        <div class="hprice">
+          <label class="mini">💵 <input type="number" class="f hpinp hfield" data-list="hotels" data-fld="precio"
+            data-bid="${b.id}" data-item="${h.id}" min="0" step="100" value="${p||''}" placeholder="0"> por noche</label>
+          <span class="htotal">${p?`× ${n} noche${n===1?'':'s'} = <b>${fmtMoney(tot)}</b>`:'<span class="hsin">sin precio</span>'}</span>
+          ${h.chosen&&p?'<span class="hbadge">cuenta en el presupuesto</span>':''}
+        </div>
+        <textarea class="f pnote edit hfield hnote" data-list="hotels" data-fld="note" data-bid="${b.id}" data-item="${h.id}" rows="2" placeholder="Nota / comparativa">${esc(h.note)}</textarea>
       </div>
       <button class="del" data-act="delhotel" data-bid="${b.id}" data-item="${h.id}">×</button>
-    </div>`).join("");
-  return `<div class="plist">${list||'<p style="color:var(--ink-soft);font-size:13px">Sin hoteles aún.</p>'}</div>
+    </div>`;
+  }).join("");
+  const aviso=elegido
+    ? `<p class="hint2">★ <b>${esc(elegido.name)||'(sin nombre)'}</b> es el elegido: su precio por noche
+       alimenta el hospedaje del presupuesto y se recalcula solo si cambias las noches de esta parada.</p>`
+    : (st.hotels.length?`<p class="hint2">Marca uno con ★ y ponle precio por noche para que el hospedaje
+       del presupuesto se calcule solo según las noches de esta parada.</p>`:"");
+  return aviso+`<div class="plist">${list||'<div class="empty"><div class="ebig">🏨</div><p>Sin hoteles aún. Añade opciones para compararlas y elige una con ★.</p></div>'}</div>
     <button class="addbtn block" data-act="addhotel" data-bid="${b.id}">＋ Añadir hotel</button>`;
 }
 
@@ -2632,7 +2715,11 @@ function wireCardEvents(){
         editar("borrar hotel",()=>{st.hotels=st.hotels.filter(x=>x.id!==el.dataset.item);});
         toast("Borrado: "+nombre,{accion:{texto:"Deshacer",fn:undo}});return;}
       if(a==="choosehotel"){const h=find(st.hotels,el.dataset.item);
-        if(h)editar("elegir hotel",()=>{h.chosen=!h.chosen;});return;}
+        if(h)editar("elegir hotel",()=>{
+          const activar=!h.chosen;
+          st.hotels.forEach(x=>x.chosen=false);   // uno solo: es el que cuenta en el presupuesto
+          h.chosen=activar;
+        },{full:true});return;}
       if(a==="addfood"){editar("añadir lugar",()=>{
         st.food.push({id:uid(),name:"",kind:"rest",note:"",chosen:false});});return;}
       if(a==="delfood"){
@@ -2731,7 +2818,19 @@ function wireCardEvents(){
       const st=state.bases[el.dataset.bid];
       const arr=el.dataset.list==="hotels"?st.hotels:st.food;
       const it=arr.find(x=>x.id===el.dataset.item);
-      if(!it)return;it[el.dataset.fld]=el.value;
+      if(!it)return;
+      if(el.dataset.fld==="precio"){
+        it.precio=+el.value||0;saveDebounced();
+        // refresca el total del hotel y el presupuesto sin perder el foco
+        const card=el.closest(".pcard"),tot=card&&card.querySelector(".htotal");
+        if(tot){const n=nochesDe(st);
+          tot.innerHTML=it.precio?`× ${n} noche${n===1?'':'s'} = <b>${fmtMoney(it.precio*n)}</b>`
+            :'<span class="hsin">sin precio</span>';}
+        const bc=el.closest(".card")&&el.closest(".card").querySelector(".basecost");
+        if(bc)bc.textContent="≈ "+fmtMoney(baseTotals(st).est);
+        refreshBudgetTotals();return;
+      }
+      it[el.dataset.fld]=el.value;
       if(el.tagName==="SELECT")save();else saveDebounced();
     });
   });
@@ -2899,9 +2998,19 @@ function renderBudget(){
         <span class="bsub">presup. <b style="color:var(--ink)">${fmtMoney(tot.est)}</b> · real <b style="color:var(--ink)">${fmtMoney(tot.real)}</b></span></div>
       <div class="bline"><span class="blabel">Actividades <span class="usage">(de sus costos)</span></span>
         <span class="ro">${fmtMoney(tot.act.est)}</span><span class="ro">${fmtMoney(tot.act.real)}</span></div>
-      <div class="bline"><span class="blabel">Hospedaje (${st.nights} noche${st.nights===1?'':'s'})</span>
-        <input type="number" class="f bamt bfield" data-bid="${o.def.id}" data-fld="lodgingEst" min="0" step="100" value="${bg.lodgingEst||''}" placeholder="0">
-        <input type="number" class="f bamt bfield" data-bid="${o.def.id}" data-fld="lodgingReal" min="0" step="100" value="${bg.lodgingReal||''}" placeholder="0"></div>
+      ${(()=>{
+        const auto=lodgingAutoActivo(st),h=hotelElegido(st),n=nochesDe(st);
+        const etiqueta=`Hospedaje (${st.nights} noche${st.nights===1?'':'s'})`;
+        if(auto)return `<div class="bline"><span class="blabel">${etiqueta}
+            <span class="autotag">🏨 ${esc(h.name)||'hotel'} · ${fmtMoney(+h.precio||0)}/noche × ${n}</span>
+            <button class="linkbtn" data-act="lodgingmanual" data-bid="${o.def.id}">editar a mano</button></span>
+          <span class="ro">${fmtMoney(lodgingEstDe(st))}</span>
+          <input type="number" class="f bamt bfield" data-bid="${o.def.id}" data-fld="lodgingReal" min="0" step="100" value="${bg.lodgingReal||''}" placeholder="0"></div>`;
+        return `<div class="bline"><span class="blabel">${etiqueta}
+            ${h?`<button class="linkbtn" data-act="lodgingauto" data-bid="${o.def.id}">usar ${esc(h.name)} (${fmtMoney(+h.precio||0)}/noche)</button>`:''}</span>
+          <input type="number" class="f bamt bfield" data-bid="${o.def.id}" data-fld="lodgingEst" min="0" step="100" value="${bg.lodgingEst||''}" placeholder="0">
+          <input type="number" class="f bamt bfield" data-bid="${o.def.id}" data-fld="lodgingReal" min="0" step="100" value="${bg.lodgingReal||''}" placeholder="0"></div>`;
+      })()}
       <div class="bline"><span class="blabel">Traslados locales / otros</span>
         <input type="number" class="f bamt bfield" data-bid="${o.def.id}" data-fld="miscEst" min="0" step="100" value="${bg.miscEst||''}" placeholder="0">
         <input type="number" class="f bamt bfield" data-bid="${o.def.id}" data-fld="miscReal" min="0" step="100" value="${bg.miscReal||''}" placeholder="0"></div>
@@ -2939,6 +3048,22 @@ function renderBudget(){
   el.querySelectorAll(".bfield").forEach(inp=>inp.addEventListener("input",()=>{
     const st=state.bases[inp.dataset.bid];st.budget=st.budget||{};st.budget[inp.dataset.fld]=+inp.value||0;
     saveDebounced();refreshBudgetTotals();}));
+  /* hospedaje: alternar entre el precio del hotel elegido y un monto a mano */
+  el.querySelectorAll('[data-act="lodgingmanual"]').forEach(btn=>btn.addEventListener("click",e=>{
+    e.preventDefault();
+    const st=state.bases[btn.dataset.bid];if(!st)return;
+    editar("hospedaje a mano",()=>{
+      st.budget=st.budget||{};
+      st.budget.lodgingEst=lodgingEstDe(st);   // parte del valor calculado
+      st.budget.lodgingAuto=false;
+    },{full:true});
+  }));
+  el.querySelectorAll('[data-act="lodgingauto"]').forEach(btn=>btn.addEventListener("click",e=>{
+    e.preventDefault();
+    const st=state.bases[btn.dataset.bid];if(!st)return;
+    editar("hospedaje automático",()=>{st.budget=st.budget||{};st.budget.lodgingAuto=true;},{full:true});
+    toast("El hospedaje se recalcula solo según las noches",{tipo:"ok"});
+  }));
   const cs=el.querySelector("#currencySel");
   if(cs)cs.addEventListener("change",()=>{state.currency=cs.value;save();renderAll();});
   if(!el._tw){el._tw=true;el.addEventListener("toggle",()=>{state.budgetOpen=el.open;saveDebounced();});}
