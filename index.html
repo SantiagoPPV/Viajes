@@ -502,11 +502,6 @@
     padding:2px 4px;margin-left:6px}
   button.linkbtn:hover{color:var(--jade)}
 
-  textarea.hnote{width:100%;min-height:54px;resize:vertical;font-family:"Inter",sans-serif;
-    font-size:12.5px;line-height:1.5;color:var(--ink-soft);border:1px solid var(--line-soft);
-    background:rgba(255,255,255,.5);border-radius:8px;padding:7px 9px}
-  textarea.hnote:focus{outline:none;border-color:var(--jade);background:#fff;color:var(--ink)}
-
   /* ---------- buscador ---------- */
   .findbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:12px}
   .findbar input{flex:1;min-width:180px;font-size:13.5px;padding:10px 12px;border-radius:10px;
@@ -1364,17 +1359,21 @@ function freshState(){const bases={},order=[];DEFAULT_BASES.forEach(b=>{bases[b.
    Se cargan sin elegir ninguno: la decisión se toma más adelante con ★. */
 const HOTELES_HK_2027=[
   {name:"The Ritz-Carlton Hong Kong",area:"ICC · Kowloon (pisos 102–118)",precio:12222,
-   note:"LUJO — el mejor del grupo alto. El hotel más alto de Hong Kong: la mejor vista al puerto de la ciudad. "+
-        "Calificación 9.6, igual que Four Seasons, pero $2,370 más barato; y $26,790 menos que Rosewood por las mismas 3 noches. "+
-        "Total cotizado 3 noches: $36,667 (≈$12,222/noche; la app calcula $36,666 por el redondeo del peso).\n"+
-        "→ Elígelo si Hong Kong es donde quieren darse el lujazo de la luna de miel.\n"+
-        "Base: 6–9 may 2027, 2 adultos, vista al puerto, sin desayuno, impuestos incl. Re-cotizar con las fechas reales."},
+   note:"<b>LUJO — el mejor del grupo alto.</b>"+
+        "<ul><li>El hotel <u>más alto de Hong Kong</u> (ICC, pisos 102–118): la mejor vista al puerto.</li>"+
+        "<li>Calificación 9.6, igual que Four Seasons, pero <b>$2,370 más barato</b>.</li>"+
+        "<li><b>$26,790 menos que Rosewood</b> por las mismas 3 noches.</li></ul>"+
+        "<div>Total cotizado 3 noches: <b>$36,667</b> (≈$12,222/noche; la app calcula $36,666 por el redondeo del peso).</div>"+
+        "<div>→ Elígelo si Hong Kong es donde quieren darse el lujazo de la luna de miel.</div>"+
+        "<div><i>Base: 6–9 may 2027, 2 adultos, vista al puerto, sin desayuno, impuestos incl. Re-cotizar con las fechas reales.</i></div>"},
   {name:"W Hong Kong",area:"ICC · Kowloon (mismo edificio que el Ritz)",precio:7111,
-   note:"MEJOR RELACIÓN — mismas vistas al puerto que el Ritz, a menor altura y por casi la mitad. "+
-        "Alberca WET Deck en el piso 76, ambiente moderno. Total cotizado 3 noches: $21,333 ($7,111/noche exactos).\n"+
-        "→ Son $15,334 menos que el Ritz: alcanza para el vuelo Shanghái→Osaka de los dos, o el Fuji con cena de sushi.\n"+
-        "Empatado con Hotel ICON (solo $747 de diferencia); Kerry quedó fuera por acercarse demasiado al Ritz.\n"+
-        "Base: 6–9 may 2027, 2 adultos, vista al puerto, sin desayuno, impuestos incl. Re-cotizar con las fechas reales."}
+   note:"<b>MEJOR RELACIÓN — mismas vistas, casi la mitad de precio.</b>"+
+        "<ul><li>Mismo edificio que el Ritz (ICC), a menor altura.</li>"+
+        "<li>Alberca <u>WET Deck</u> en el piso 76, ambiente moderno.</li>"+
+        "<li><b>$15,334 menos que el Ritz</b>: alcanza para el vuelo Shanghái→Osaka de los dos, o el Fuji con cena de sushi.</li>"+
+        "<li>Empatado con Hotel ICON (solo $747 de diferencia); Kerry quedó fuera por acercarse demasiado al Ritz.</li></ul>"+
+        "<div>Total cotizado 3 noches: <b>$21,333</b> ($7,111/noche exactos).</div>"+
+        "<div><i>Base: 6–9 may 2027, 2 adultos, vista al puerto, sin desayuno, impuestos incl. Re-cotizar con las fechas reales.</i></div>"}
 ];
 /* Alta única: añade la comparativa a la parada de Hong Kong si aún no está. */
 function migrarHotelesHK(s){
@@ -1386,6 +1385,19 @@ function migrarHotelesHK(s){
     .map(h=>({id:uid(),name:h.name,area:h.area,note:h.note,precio:h.precio,chosen:false}));
   if(nuevos.length)hk.hotels.unshift(...nuevos);  // arriba, para verlos primero
   s.hkHoteles2027=true;
+}
+/* Si la comparativa se sembró antes en texto plano, se pasa a formato con viñetas.
+   Solo toca las notas intactas: si ya las editaste, se respetan tal cual. */
+function migrarFormatoHotelesHK(s){
+  if(s.hkHotelesFormato)return;
+  const hk=s.bases&&s.bases.hk;
+  if(hk&&Array.isArray(hk.hotels))HOTELES_HK_2027.forEach(ref=>{
+    const h=hk.hotels.find(x=>(x.name||"").toLowerCase()===ref.name.toLowerCase());
+    if(!h||!h.note||pareceHTML(h.note))return;            // ya tiene formato o no está
+    const marca=textoPlano(ref.note).slice(0,22);
+    if(h.note.trim().startsWith(marca.slice(0,18)))h.note=ref.note;
+  });
+  s.hkHotelesFormato=true;
 }
 
 /* Normaliza la estructura de un viaje cargado (genérico; no siembra China). */
@@ -1418,6 +1430,9 @@ function normalizeTripState(s){
         if(it.note&&pareceHTML(it.note))it.note=limpiarHTML(it.note);
       });
     });
+    [st.hotels,st.food].forEach(arr=>(arr||[]).forEach(x=>{
+      if(x.note&&pareceHTML(x.note))x.note=limpiarHTML(x.note);
+    }));
     if(!st.budget)st.budget={lodgingEst:0,lodgingReal:0,miscEst:0,miscReal:0};
     if(st.expanded===undefined)st.expanded=false;
     if(st.tab===undefined)st.tab="plan";
@@ -1429,6 +1444,7 @@ function normalizeTripState(s){
   s.order=s.order.filter(id=>s.bases[id]);
   Object.keys(s.bases).forEach(id=>{if(!s.order.includes(id))s.order.push(id);});
   migrarHotelesHK(s);
+  migrarFormatoHotelesHK(s);
   return s;
 }
 /* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
@@ -2122,7 +2138,7 @@ function placeLinkHTML(st,type,it,bid,cur){
   return `<div class="placelink">
     <span class="pin">📍</span>
     <select class="f placesel" data-bid="${bid}" data-day="${cur}" data-item="${it.id}" ${empty?'disabled':''}>${opts.join("")}</select>
-    ${empty?`<span class="linknote">agrega lugares en la pestaña ${tabIcon}</span>`:(linked&&linked.note?`<span class="linknote">${esc(linked.note)}</span>`:'')}
+    ${empty?`<span class="linknote">agrega lugares en la pestaña ${tabIcon}</span>`:(linked&&textoPlano(linked.note)?`<span class="linknote">${esc(textoPlano(linked.note).slice(0,90))}</span>`:'')}
   </div>`;
 }
 /* ===================== Notas con formato (mini editor) =====================
@@ -2195,8 +2211,13 @@ function wireRTE(raiz){
     const ed=w.querySelector(".rte");if(!ed)return;
     const destino=()=>{
       const st=state.bases[w.dataset.bid];if(!st)return null;
-      if(w.dataset.rtekind==="item"){
+      const tipo=w.dataset.rtekind;
+      if(tipo==="item"){
         const arr=st.schedule[+w.dataset.day]||[];
+        return arr.find(x=>x.id===w.dataset.item)||null;
+      }
+      if(tipo==="hotel"||tipo==="food"){
+        const arr=(tipo==="hotel"?st.hotels:st.food)||[];
         return arr.find(x=>x.id===w.dataset.item)||null;
       }
       return st.catalog.find(a=>a.cid===w.dataset.cid)||null;
@@ -2585,7 +2606,7 @@ function renderHotels(b,st){
           <span class="htotal">${p?`× ${n} noche${n===1?'':'s'} = <b>${fmtMoney(tot)}</b>`:'<span class="hsin">sin precio</span>'}</span>
           ${h.chosen&&p?'<span class="hbadge">cuenta en el presupuesto</span>':''}
         </div>
-        <textarea class="f pnote edit hfield hnote" data-list="hotels" data-fld="note" data-bid="${b.id}" data-item="${h.id}" rows="2" placeholder="Nota / comparativa">${esc(h.note)}</textarea>
+        ${rteHTML(`data-rtekind="hotel" data-bid="${b.id}" data-item="${h.id}"`,h.note,"✎ Notas: qué incluye, comparativa, cancelación, qué pedir al reservar…")}
       </div>
       <button class="del" data-act="delhotel" data-bid="${b.id}" data-item="${h.id}">×</button>
     </div>`;
@@ -2611,7 +2632,7 @@ function renderFood(b,st){
             <option value="bar" ${f.kind==='bar'?'selected':''}>Bar</option>
           </select>
         </div>
-        <input class="f pnote edit hfield" data-list="food" data-fld="note" data-bid="${b.id}" data-item="${f.id}" value="${esc(f.note)}" placeholder="Nota">
+        ${rteHTML(`data-rtekind="food" data-bid="${b.id}" data-item="${f.id}"`,f.note,"✎ Notas: qué pedir, precio, si hay que reservar…")}
       </div>
       <button class="del" data-act="delfood" data-bid="${b.id}" data-item="${f.id}">×</button>
     </div>`).join("");
@@ -2664,7 +2685,7 @@ function coincidencias(st){
   const actividades=(st.catalog||[]).filter(a=>
     norm(a.name).includes(q)||norm(textoPlano(a.note)).includes(q)||norm(a.src).includes(q));
   const lugares=[].concat(st.hotels||[],st.food||[]).filter(p=>
-    norm(p.name).includes(q)||norm(p.note).includes(q)||norm(p.area).includes(q));
+    norm(p.name).includes(q)||norm(textoPlano(p.note)).includes(q)||norm(p.area).includes(q));
   return{base,actividades,lugares,total:(base?1:0)+actividades.length+lugares.length};
 }
 function aplicarFiltro(valor){
