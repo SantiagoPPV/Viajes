@@ -456,6 +456,36 @@
     font-size:11px;color:var(--ink-soft);cursor:pointer;user-select:none;margin-bottom:8px}
   .selall input{width:17px;height:17px;accent-color:var(--jade);cursor:pointer}
 
+  /* ---------- editor de notas con formato ---------- */
+  .rte-wrap{border:1px dashed var(--line);border-radius:9px;background:rgba(255,255,255,.4);
+    margin-top:6px;transition:border-color .15s,background .15s}
+  .rte-wrap:hover{border-color:var(--line)}
+  .rte-wrap:focus-within{border-style:solid;border-color:var(--jade);background:#fff;
+    box-shadow:0 2px 10px rgba(62,97,82,.10)}
+  .rte-tools{display:none;flex-wrap:wrap;align-items:center;gap:3px;padding:6px 7px;
+    border-bottom:1px solid var(--line-soft)}
+  .rte-wrap:focus-within .rte-tools{display:flex}
+  .rte-tools button{border:1px solid transparent;background:transparent;border-radius:6px;
+    min-width:31px;height:29px;cursor:pointer;font-size:12.5px;color:var(--ink-soft);
+    font-family:"IBM Plex Mono",monospace;padding:0 7px;line-height:1}
+  .rte-tools button:hover{background:var(--card-2);color:var(--jade);border-color:var(--line-soft)}
+  .rte-tools button.on{background:var(--jade);color:#fff;border-color:var(--jade)}
+  .rte-tools .rte-sep{width:1px;align-self:stretch;background:var(--line-soft);margin:3px 3px}
+  .rte{min-height:36px;padding:8px 10px;font-size:12.5px;line-height:1.55;color:var(--ink);
+    outline:none;word-wrap:break-word;overflow-wrap:anywhere}
+  .rte:empty::before{content:attr(data-ph);color:#a99f88;font-style:italic;pointer-events:none}
+  .rte ul,.rte ol{margin:5px 0;padding-left:22px}
+  .rte li{margin:2px 0}
+  .rte b,.rte strong{font-weight:600;color:var(--ink)}
+  .rte u{text-decoration:underline}
+  .rte s,.rte strike{opacity:.65}
+  .rte blockquote{margin:5px 0 5px 10px;padding-left:10px;border-left:2px solid var(--line)}
+  /* nota de solo lectura bajo el nombre de la actividad */
+  .rnote2 ul,.rnote2 ol{margin:3px 0;padding-left:20px}
+  .rnote2 li{margin:1px 0}
+  .rnote2 b,.rnote2 strong{font-weight:600;color:var(--ink)}
+  .rnote2 u{text-decoration:underline}
+
   /* ---------- precio de hotel por noche ---------- */
   .hprice{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:2px 0}
   input.hpinp{width:96px;text-align:right;font-family:"IBM Plex Mono",monospace;font-size:12.5px}
@@ -532,6 +562,10 @@
     .findbar input,.metagrid input,.mgrid input{font-size:16px!important;padding:9px 10px}
     input[type="time"].f{font-size:16px!important;padding:7px 8px}
     input.durinp{width:74px}
+    /* editor de notas cómodo para el dedo */
+    .rte{font-size:16px!important;min-height:42px;padding:10px}
+    .rte-tools button{min-width:38px;height:36px;font-size:14px}
+    .rte-tools{gap:4px;padding:7px}
     input.camt{font-size:16px!important}
     .card-head{padding:14px 13px;gap:10px}
     .card-ctl{padding:0 13px 13px}
@@ -1375,7 +1409,15 @@ function normalizeTripState(s){
   Object.entries(s.bases).forEach(([id,st])=>{
     st.id=st.id||id;
     if(st.cluster!==undefined)st.cluster=String(st.cluster);
-    if(st.catalog)st.catalog.forEach(a=>{if(!a.costs)a.costs=[];});
+    if(st.catalog)st.catalog.forEach(a=>{
+      if(!a.costs)a.costs=[];
+      if(a.note&&pareceHTML(a.note))a.note=limpiarHTML(a.note);   // sanea lo que llega sincronizado
+    });
+    if(st.schedule)Object.keys(st.schedule).forEach(d=>{
+      (st.schedule[d]||[]).forEach(it=>{
+        if(it.note&&pareceHTML(it.note))it.note=limpiarHTML(it.note);
+      });
+    });
     if(!st.budget)st.budget={lodgingEst:0,lodgingReal:0,miscEst:0,miscReal:0};
     if(st.expanded===undefined)st.expanded=false;
     if(st.tab===undefined)st.tab="plan";
@@ -1563,7 +1605,8 @@ let UID=null, PERFIL=null;
 let currentTripId=null, currentTripOwn=false;   // viaje abierto
 let trips=[];                                     // lista de "Mis viajes"
 let lastRev=0, pendingRemote=null, lastLocalEdit=0, pollTimer=null;
-const isTyping=()=>{const a=document.activeElement;return !!a&&/^(INPUT|SELECT|TEXTAREA)$/.test(a.tagName||"");};
+const isTyping=()=>{const a=document.activeElement;
+  return !!a&&(/^(INPUT|SELECT|TEXTAREA)$/.test(a.tagName||"")||a.isContentEditable);};
 const busy=()=>isTyping()||(Date.now()-lastLocalEdit<2500);
 
 let saveTimer=null;
@@ -2082,6 +2125,140 @@ function placeLinkHTML(st,type,it,bid,cur){
     ${empty?`<span class="linknote">agrega lugares en la pestaña ${tabIcon}</span>`:(linked&&linked.note?`<span class="linknote">${esc(linked.note)}</span>`:'')}
   </div>`;
 }
+/* ===================== Notas con formato (mini editor) =====================
+   Las notas se guardan como HTML muy acotado. Todo lo que entra —lo que escribes,
+   lo que pegas y lo que llega sincronizado de la otra persona— pasa por
+   limpiarHTML(), que reconstruye el árbol dejando solo etiquetas de formato y
+   BORRA TODOS los atributos. Así no puede colarse un onclick, un style ni un
+   script por la nota de una actividad. */
+const RTE_TAGS={B:1,STRONG:1,I:1,EM:1,U:1,S:1,STRIKE:1,UL:1,OL:1,LI:1,BR:1,
+  DIV:1,P:1,BLOCKQUOTE:1};
+function limpiarHTML(html){
+  if(!html)return "";
+  let origen;
+  try{origen=new DOMParser().parseFromString("<div>"+html+"</div>","text/html").body.firstChild;}
+  catch(e){return esc(String(html));}
+  if(!origen)return "";
+  const limpio=document.createElement("div");
+  (function copiar(desde,hacia){
+    Array.prototype.forEach.call(desde.childNodes,n=>{
+      if(n.nodeType===3){hacia.appendChild(document.createTextNode(n.nodeValue));return;}
+      if(n.nodeType!==1)return;                       // comentarios y demás: fuera
+      if(RTE_TAGS[n.tagName]){
+        const el=document.createElement(n.tagName.toLowerCase());  // sin ningún atributo
+        hacia.appendChild(el);copiar(n,el);
+      }else copiar(n,hacia);                          // etiqueta no permitida: se conserva su texto
+    });
+  })(origen,limpio);
+  return limpio.innerHTML;
+}
+/* ¿La nota guardada ya trae formato, o es texto plano de antes? */
+const pareceHTML=s=>/<(b|strong|i|em|u|s|strike|ul|ol|li|br|div|p|blockquote)\b[^>]*>/i.test(s||"");
+/* Texto guardado → HTML listo para mostrar/editar (respeta las notas antiguas). */
+const notaAHTML=s=>!s?"":(pareceHTML(s)?limpiarHTML(s):esc(s).replace(/\n/g,"<br>"));
+/* HTML → texto plano (para buscar y para saber si la nota está vacía). */
+function textoPlano(html){
+  if(!html)return "";
+  if(!pareceHTML(html))return String(html);
+  const d=document.createElement("div");d.innerHTML=limpiarHTML(html);
+  return (d.textContent||"").replace(/\s+/g," ").trim();
+}
+const notaVacia=s=>!textoPlano(s)&&!/<(ul|ol|li)\b/i.test(s||"");
+
+/* Editor: la barra de formato aparece al enfocar, para no saturar la vista. */
+function rteHTML(attrs,valor,placeholder){
+  const botones=[
+    {c:"bold",t:"<b>N</b>",l:"Negritas (Ctrl+B)"},
+    {c:"italic",t:"<i>K</i>",l:"Cursiva (Ctrl+I)"},
+    {c:"underline",t:"<u>S</u>",l:"Subrayado (Ctrl+U)"},
+    {c:"strikeThrough",t:"<s>T</s>",l:"Tachado"},
+    {sep:1},
+    {c:"insertUnorderedList",t:"•",l:"Viñetas"},
+    {c:"insertOrderedList",t:"1.",l:"Lista numerada"},
+    {sep:1},
+    {c:"outdent",t:"⇤",l:"Menos sangría (Shift+Tab)"},
+    {c:"indent",t:"⇥",l:"Más sangría (Tab)"},
+    {sep:1},
+    {c:"removeFormat",t:"✕",l:"Quitar formato"}
+  ].map(b=>b.sep?'<span class="rte-sep"></span>'
+    :`<button type="button" data-cmd="${b.c}" title="${esc(b.l)}" aria-label="${esc(b.l)}">${b.t}</button>`).join("");
+  return `<div class="rte-wrap" ${attrs}>
+    <div class="rte-tools" role="toolbar" aria-label="Formato de la nota">${botones}</div>
+    <div class="rte" contenteditable="true" role="textbox" aria-multiline="true"
+      data-ph="${esc(placeholder||'')}">${notaAHTML(valor)}</div>
+  </div>`;
+}
+/* Conecta los editores presentes en `raiz`. leer(w) devuelve el objeto a editar. */
+function wireRTE(raiz){
+  try{document.execCommand("styleWithCSS",false,false);}catch(e){}   // prefiere <b>/<u> sobre style=
+  raiz.querySelectorAll(".rte-wrap").forEach(w=>{
+    const ed=w.querySelector(".rte");if(!ed)return;
+    const destino=()=>{
+      const st=state.bases[w.dataset.bid];if(!st)return null;
+      if(w.dataset.rtekind==="item"){
+        const arr=st.schedule[+w.dataset.day]||[];
+        return arr.find(x=>x.id===w.dataset.item)||null;
+      }
+      return st.catalog.find(a=>a.cid===w.dataset.cid)||null;
+    };
+    let antes=null,guardar=null;
+    const sincronizar=()=>{
+      const o=destino();if(!o)return;
+      const limpio=limpiarHTML(ed.innerHTML);
+      if(o.note===limpio)return;
+      o.note=limpio;saveDebounced();
+    };
+    // marca en la barra qué formato está activo donde tienes el cursor
+    const refrescarBotones=()=>{
+      w.querySelectorAll(".rte-tools button").forEach(b=>{
+        let on=false;try{on=document.queryCommandState(b.dataset.cmd);}catch(e){}
+        b.classList.toggle("on",!!on);
+      });
+    };
+    w.querySelectorAll(".rte-tools button").forEach(b=>{
+      b.addEventListener("mousedown",e=>e.preventDefault());   // no perder la selección al pulsar
+      b.addEventListener("click",()=>{
+        if(!puedeEditar()){toast("Este viaje es de solo lectura",{tipo:"err"});return;}
+        ed.focus();
+        try{document.execCommand(b.dataset.cmd,false,null);}catch(e){}
+        sincronizar();refrescarBotones();
+      });
+    });
+    ed.addEventListener("keydown",e=>{
+      if(e.key==="Tab"){            // Tab = sangría / salto de nivel en las listas
+        e.preventDefault();
+        try{document.execCommand(e.shiftKey?"outdent":"indent",false,null);}catch(_){}
+        sincronizar();return;
+      }
+      if((e.ctrlKey||e.metaKey)&&/^[biu]$/i.test(e.key))setTimeout(refrescarBotones,0);
+      e.stopPropagation();          // Ctrl+Z dentro de la nota es el del navegador
+    });
+    ed.addEventListener("keyup",refrescarBotones);
+    ed.addEventListener("mouseup",refrescarBotones);
+    ed.addEventListener("input",()=>{clearTimeout(guardar);guardar=setTimeout(sincronizar,400);});
+    ed.addEventListener("focus",()=>{antes=limpiarHTML(ed.innerHTML);refrescarBotones();});
+    ed.addEventListener("blur",()=>{
+      clearTimeout(guardar);
+      const o=destino();if(!o)return;
+      const limpio=limpiarHTML(ed.innerHTML);
+      if(antes!==null&&antes!==limpio){
+        o.note=antes;pushUndo("editar nota");o.note=limpio;   // un solo paso de deshacer por edición
+        save();renderCards();
+      }else sincronizar();
+      antes=null;
+    });
+    // pegar siempre como texto plano: nada de estilos ni marcado de fuera
+    ed.addEventListener("paste",e=>{
+      e.preventDefault();
+      const txt=((e.clipboardData||window.clipboardData).getData("text/plain")||"");
+      try{document.execCommand("insertText",false,txt);}
+      catch(_){ed.appendChild(document.createTextNode(txt));}
+      sincronizar();
+    });
+    ed.addEventListener("drop",e=>e.preventDefault());
+  });
+}
+
 /* ===================== Selección múltiple ===================== */
 let seleccion=new Set();          // ids de actividades marcadas
 let selCtx=null;                  // {bid,dia} al que pertenece la selección
@@ -2305,13 +2482,13 @@ function renderPlan(b,st){
             placeholder="Nombre de la actividad" title="Se edita también en el catálogo">
           ${r.act.src?`<span class="src">${esc(r.act.src)}</span>`:''}${actEst(r.act)?`<span class="costtag">${fmtMoney(actEst(r.act))}</span>`:''}
         </div>
-        ${r.act.note?`<div class="rnote2">${esc(r.act.note)}</div>`:''}
+        ${notaVacia(r.act.note)?'':`<div class="rnote2">${notaAHTML(r.act.note)}</div>`}
         ${placeLinkHTML(st,r.act.type,r.it,b.id,cur)}
         <div class="rrow2">
           <label class="mini">⏱ <input type="number" class="f durinp" data-bid="${b.id}" data-cid="${r.act.cid}" min="5" max="900" step="5" value="${r.act.dur}"> min</label>
           <label class="mini">fijo <input type="time" class="f fixedinp" data-bid="${b.id}" data-day="${cur}" data-item="${r.it.id}" value="${r.it.fixed||''}"></label>
         </div>
-        <input class="f itemnote" data-bid="${b.id}" data-day="${cur}" data-item="${r.it.id}" value="${esc(r.it.note||'')}" placeholder="✎ Nota para este día (reservar, llevar efectivo, confirmar hora…)">
+        ${rteHTML(`data-rtekind="item" data-bid="${b.id}" data-day="${cur}" data-item="${r.it.id}"`,r.it.note,"✎ Nota para este día (reservar, llevar efectivo, confirmar hora…)")}
       </div>
       <div class="rowbtns">
         <button class="updn" data-act="moveup" data-bid="${b.id}" data-day="${cur}" data-item="${r.it.id}" title="Subir">▲</button>
@@ -2378,7 +2555,7 @@ function renderCatalog(b,st){
           <input class="f pnote edit catfield" style="max-width:170px" data-fld="src" data-bid="${b.id}" data-cid="${a.cid}" value="${esc(a.src)}" placeholder="Fuente (GetYourGuide…)">
           <span class="usage">${use?('×'+use+' en el plan'):'sin usar'}</span>
         </div>
-        <input class="f pnote edit catfield" data-fld="note" data-bid="${b.id}" data-cid="${a.cid}" value="${esc(a.note)}" placeholder="Nota">
+        ${rteHTML(`data-rtekind="cat" data-bid="${b.id}" data-cid="${a.cid}"`,a.note,"✎ Nota de la actividad: qué incluye, tips, qué llevar…")}
         ${costEditorHTML(b,a)}
       </div>
       <div class="rowbtns">
@@ -2485,7 +2662,7 @@ function coincidencias(st){
   const q=norm(filtro);if(!q)return null;
   const base=norm(st.name).includes(q)||norm(st.region).includes(q);
   const actividades=(st.catalog||[]).filter(a=>
-    norm(a.name).includes(q)||norm(a.note).includes(q)||norm(a.src).includes(q));
+    norm(a.name).includes(q)||norm(textoPlano(a.note)).includes(q)||norm(a.src).includes(q));
   const lugares=[].concat(st.hotels||[],st.food||[]).filter(p=>
     norm(p.name).includes(q)||norm(p.note).includes(q)||norm(p.area).includes(q));
   return{base,actividades,lugares,total:(base?1:0)+actividades.length+lugares.length};
@@ -2521,6 +2698,7 @@ function wireCardEvents(){
   const holder=document.getElementById("cards");
   const find=(arr,id)=>arr.find(x=>x.id===id);
   wireMenus(holder);
+  wireRTE(holder);
 
   /* nombre editable desde el día a día → edita la ficha del catálogo */
   holder.querySelectorAll("input.rnameinp").forEach(el=>{
