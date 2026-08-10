@@ -1400,6 +1400,71 @@ function migrarFormatoHotelesHK(s){
   s.hkHotelesFormato=true;
 }
 
+/* ---- Día 2 en Hong Kong: recorrido a pie + Peak (may 2027) ----
+   Nota sobre las direcciones: en la lista original el número que precedía a cada
+   dirección era el marcador de la parada SIGUIENTE, así que venían corridas un
+   lugar. Se corrigieron: 123 Hollywood Rd es Man Mo (la parada que se elimina),
+   310 Gloucester Rd es The Park Lane y 33 Garden Rd es la terminal del Peak Tram.
+   Duraciones y costos son estimados editables, en total para dos personas. */
+const HK_DIA2_2027=[
+  {cid:"hkd2-ferry",name:"Star Ferry · Muelle 7 (Central)",type:"transfer",dur:30,
+   costos:[["Star Ferry (2)",60]],
+   note:"<b>Parada 1.</b> Muelle 7 de Central. El cruce más bonito de la bahía; ir en la cubierta inferior por las vistas."},
+  {cid:"hkd2-escaleras",name:"Escaleras mecánicas de Niveles Medios + SoHo",type:"sight",dur:75,
+   note:"<b>Parada 2 · 138 Queen's Road Central.</b> Las escaleras al aire libre más largas del mundo. "+
+        "<u>De bajada solo hasta las 10:00</u>; después suben. Se recorre SoHo a pie de paso."},
+  {cid:"hkd2-causeway",name:"Causeway Bay · Sogo",type:"free",dur:90,
+   note:"<b>Parada 4.</b> Compras y ambiente local. <i>Sin costo asignado: depende de lo que compren.</i>"},
+  {cid:"hkd2-parklane",name:"The Park Lane Hong Kong",type:"sight",dur:45,
+   note:"<b>Parada 5 · 310 Gloucester Rd, Causeway Bay.</b> Frente a Victoria Park. "+
+        "Su bar en el piso 27 tiene buena vista si quieren una pausa."},
+  {cid:"hkd2-libre",name:"⭐ Por seleccionar (hueco libre)",type:"free",dur:60,
+   note:"<b>Hueco entre Causeway Bay y la comida.</b> Se van ~20 min en el traslado de regreso a Central (MTR). "+
+        "Con lo que queda, opciones cerca:"+
+        "<ul><li>Hong Kong Park y su pajarera (junto a la terminal del Peak Tram)</li>"+
+        "<li>Museo del Té de Flagstaff House (gratis, dentro del parque)</li>"+
+        "<li>Pacific Place para compras a cubierto</li>"+
+        "<li>Jardín Botánico y Zoológico (gratis, subiendo por Garden Rd)</li></ul>"},
+  {cid:"hkd2-lkh",name:"Comida: Lung King Heen (Four Seasons)",type:"food",dur:120,fixed:"14:00",
+   costos:[["Dim sum Lung King Heen (2)",3000]],
+   note:"<b>14:00 · Four Seasons, 8 Finance Street, Central.</b> Dim sum en el <b>3 estrellas Michelin</b>. "+
+        "<u>Reservar con semanas de antelación</u>; el menú de mediodía es bastante más accesible que la cena."},
+  {cid:"hkd2-peak",name:"Tranvía Peak → Victoria Peak",type:"tour",dur:150,
+   costos:[["Peak Tram + Sky Terrace 428 (2)",700]],
+   note:"<b>Parada 6 · 33 Garden Rd</b> (terminal baja del tranvía). "+
+        "<b>⚠ Faltan comprar las entradas</b> — conviene sacarlas en línea con horario para saltarse la fila."},
+  {cid:"hkd2-cena",name:"Cena en Sky Terrace o en el hotel",type:"food",dur:90,
+   costos:[["Cena (2)",1200]],
+   note:"Cenar arriba con la vista, o bajar y cenar en el hotel si el clima no acompaña."},
+  {cid:"hkd2-regreso",name:"Regreso al hotel (metro o Star Ferry)",type:"transfer",dur:45,
+   costos:[["MTR / Star Ferry (2)",60]],
+   note:"Bajar en tranvía y volver en MTR, o caminar al muelle y cruzar en Star Ferry de noche."}
+];
+/* Alta única del día 2 de Hong Kong: mueve lo que había al día 3, quita Man Mo
+   y arma el recorrido nuevo. */
+function migrarDia2HK(s){
+  if(s.hkDia2v1)return;
+  const hk=s.bases&&s.bases.hk;
+  if(!hk||!hk.schedule||!Array.isArray(hk.catalog)){s.hkDia2v1=true;return;}
+  // 1) lo que estaba en el día 2 se va al día 3, por delante de lo que ya había
+  const d2=hk.schedule[1]||[],d3=hk.schedule[2]||[];
+  if(d2.length)hk.schedule[2]=d2.concat(d3);
+  // 2) fuera Man Mo, del catálogo y de todos los días
+  hk.catalog=hk.catalog.filter(a=>a.cid!=="hk-manmo");
+  Object.keys(hk.schedule).forEach(d=>{
+    hk.schedule[d]=(hk.schedule[d]||[]).filter(x=>x.ref!=="hk-manmo");});
+  // 3) alta de las actividades del recorrido en el catálogo
+  HK_DIA2_2027.forEach(a=>{
+    if(hk.catalog.some(x=>x.cid===a.cid))return;
+    hk.catalog.push({cid:a.cid,name:a.name,type:a.type,dur:a.dur,note:a.note,src:"",
+      costs:(a.costos||[]).map(([label,est])=>({id:uid(),label,est,real:0}))});
+  });
+  // 4) el día 2 queda con el recorrido, en orden
+  hk.schedule[1]=HK_DIA2_2027.map(a=>({id:uid(),ref:a.cid,fixed:a.fixed||null}));
+  hk.dayStart=hk.dayStart||{};hk.dayStart[1]=hk.dayStart[1]||"09:00";
+  s.hkDia2v1=true;
+}
+
 /* Normaliza la estructura de un viaje cargado (genérico; no siembra China). */
 function normalizeTripState(s){
   if(!s||typeof s!=="object")s={};
@@ -1445,6 +1510,7 @@ function normalizeTripState(s){
   Object.keys(s.bases).forEach(id=>{if(!s.order.includes(id))s.order.push(id);});
   migrarHotelesHK(s);
   migrarFormatoHotelesHK(s);
+  migrarDia2HK(s);
   return s;
 }
 /* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
