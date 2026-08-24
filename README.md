@@ -74,6 +74,40 @@ El sitio no necesita build; sirve la raíz del repo (`publish = "."`, ver `netli
   → GitHub → elige `SantiagoPPV/Viajes` → *Publish directory* = `.` (o raíz) → *Deploy*.
   En *Site configuration › Build & deploy › Branches* elige la rama que quieras publicar.
 
+## Cambiar la ruta del viaje
+
+Todo el itinerario (orden de paradas, noches y fechas) vive en un solo bloque de
+`index.html`, marcado como **`RUTA DEL VIAJE · EDITA AQUÍ`**:
+
+```js
+const TRIP_START=new Date(2027,4,6);   // 6 de mayo de 2027 (en JS el mes 4 es mayo)
+const AVAILABLE_NIGHTS=23;             // noches del 6 al 29 de mayo
+const ROUTE=[
+  {id:"hk",       nights:3},   //  6 →  9 may
+  {id:"yangshuo", nights:2},   //  9 → 11 may
+  ...
+];
+const ROUTE_DROP=["osaka"];   // paradas que se eliminan por completo del viaje
+const ROUTE_VERSION=2;        // súbela al editar ROUTE para reaplicar la ruta
+```
+
+Para cambiar la ruta:
+
+1. Mueve, quita o agrega renglones en `ROUTE`. **El orden de la lista es el orden
+   del viaje** y `nights` son las noches que se duermen en cada parada.
+2. Si aparece un tramo nuevo, agrégalo a la tabla `XFER` con la clave
+   `"origen|destino"` (modo, detalle, duración y `type`: `rail`, `air` o `road`).
+3. Ajusta `TRIP_START` y `AVAILABLE_NIGHTS` si cambian las fechas.
+4. **Sube `ROUTE_VERSION` en 1.**
+
+Al recargar, el viaje ya guardado se reacomoda solo: orden, noches, fechas,
+encabezado y los textos de llegada de cada parada (que se re-escriben con el
+tramo que la trae). Nada se pierde: las paradas que salgan de `ROUTE` quedan
+**excluidas** (siguen en el viaje, fuera del plan, y se pueden reactivar desde su
+tarjeta); solo se borran de verdad las que pongas en `ROUTE_DROP`. Si una parada
+baja de noches, las actividades del día sobrante quedan ocultas y la app ofrece
+traerlas al último día o descartarlas.
+
 ## Estructura del repo
 
 | Archivo | Qué es |

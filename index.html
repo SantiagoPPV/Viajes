@@ -824,13 +824,53 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v8 · 24 ago 2026 · tramos con escalas";
-// La fecha de inicio y las noches disponibles vienen de cada viaje (state.meta).
-function tripStart(){const s=state&&state.meta&&state.meta.inicio;return s?new Date(s+"T00:00:00"):new Date();}
-function availNights(){const n=state&&state.meta&&+state.meta.noches;return n>0?n:totalNights();}
+const APP_VERSION="v9 · 24 ago 2026 · ruta editable (bloque ROUTE)";
+/* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
+   Este bloque es el único lugar donde vive la ruta. Para cambiarla:
+     1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
+        orden del viaje, y "nights" son las noches que se duermen ahí.
+     2. Si cambian los tramos, edita XFER más abajo (clave "origen|destino").
+     3. Ajusta TRIP_START y AVAILABLE_NIGHTS si cambian las fechas.
+     4. Sube ROUTE_VERSION en 1.
+   Al recargar, el viaje guardado se reacomoda solo: orden, noches, fechas y
+   textos de llegada, sin perder notas, costos ni hoteles. Las paradas que ya
+   no están en ROUTE quedan "excluidas" (siguen ahí, fuera del plan); solo se
+   borran de verdad las que pongas en ROUTE_DROP. */
+const TRIP_START=new Date(2027,4,6);   // 6 de mayo de 2027 (en JS el mes 4 es mayo)
+const AVAILABLE_NIGHTS=23;             // noches del 6 al 29 de mayo
+const ROUTE=[
+  {id:"hk",        nights:3},   //  6 →  9 may
+  {id:"yangshuo",  nights:2},   //  9 → 11 may
+  {id:"chengdu",   nights:2},   // 11 → 13 may
+  {id:"chongqing", nights:1},   // 13 → 14 may
+  {id:"zjj",       nights:3},   // 14 → 17 may
+  {id:"xian",      nights:2},   // 17 → 19 may
+  {id:"beijing",   nights:3},   // 19 → 22 may
+  {id:"shanghai",  nights:2},   // 22 → 24 may
+  {id:"kyoto",     nights:3},   // 24 → 27 may
+  {id:"tokyo",     nights:2}    // 27 → 29 may
+];
+const ROUTE_DROP=["osaka"];   // paradas que se eliminan por completo del viaje
+const ROUTE_VERSION=2;        // súbela al editar ROUTE para reaplicar la ruta
+const ROUTE_IDS=ROUTE.map(r=>r.id);
+const routeNights=id=>{const r=ROUTE.find(x=>x.id===id);return r?r.nights:null;};
+
+/* La fecha de inicio y las noches salen de cada viaje (state.meta); si el viaje
+   todavía no las tiene, se usan las de arriba. */
+function tripStart(){const s=state&&state.meta&&state.meta.inicio;
+  return s?new Date(s+"T00:00:00"):new Date(TRIP_START);}
+function availNights(){const n=state&&state.meta&&+state.meta.noches;return n>0?n:AVAILABLE_NIGHTS;}
 const MESES=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+const MESES_LARGOS=["enero","febrero","marzo","abril","mayo","junio","julio","agosto",
+  "septiembre","octubre","noviembre","diciembre"];
 const fmt=d=>d.getDate()+" "+MESES[d.getMonth()];
 const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x;};
+const isoDia=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+/* Fecha de fin y encabezado del viaje, calculados desde el bloque de arriba. */
+const tripEnd=()=>addDays(new Date(TRIP_START),AVAILABLE_NIGHTS);
+function tripEyebrow(){const a=new Date(TRIP_START),b=tripEnd();
+  return String(a.getDate()).padStart(2,"0")+" – "+b.getDate()+" "+MESES_LARGOS[b.getMonth()]
+    +" "+b.getFullYear()+" · "+(AVAILABLE_NIGHTS+1)+" días";}
 
 const CLUSTERS={jp:{name:"Japón",color:"#9a5b7d"},
   1:{name:"Puerta sur",color:"var(--c1)"},2:{name:"Guangxi",color:"var(--c2)"},
@@ -851,37 +891,40 @@ const fmtDur=min=>{min=+min||0;const h=Math.floor(min/60),m=min%60;
   return (h?h+" h ":"")+(m?m+" m":(h?"":"0 m"));};
 
 /* ===================== Bases y traslados ===================== */
+/* Ficha de cada parada: nombre, zona y su punto en el mapa. Las noches y el
+   orden NO se deciden aquí, sino en ROUTE (arriba). Una parada que no esté en
+   ROUTE existe en el viaje pero queda fuera del plan (se puede reactivar). */
 const DEFAULT_BASES=[
-  {id:"hk",name:"Hong Kong",region:"Puerta sur",cluster:1,nights:3,included:true,optional:false,x:552,y:472,ldx:14,ldy:4,anchor:"start"},
-  {id:"yangshuo",name:"Yangshuo",region:"Guangxi · Guilin",cluster:2,nights:3,included:true,optional:false,x:430,y:432,ldx:-14,ldy:4,anchor:"end"},
-  {id:"zjj",name:"Zhangjiajie",region:"Hunan",cluster:3,nights:3,included:true,optional:false,x:462,y:322,ldx:-14,ldy:0,anchor:"end"},
-  {id:"chongqing",name:"Chongqing",region:"Sichuan",cluster:4,nights:1,included:true,optional:true,x:362,y:292,ldx:0,ldy:20,anchor:"middle"},
-  {id:"chengdu",name:"Chengdu",region:"Sichuan",cluster:4,nights:2,included:true,optional:false,x:300,y:264,ldx:-14,ldy:0,anchor:"end"},
-  {id:"xian",name:"Xi'an",region:"Shaanxi",cluster:5,nights:2,included:true,optional:false,x:470,y:216,ldx:0,ldy:-12,anchor:"middle"},
-  {id:"beijing",name:"Pekín",region:"Capital",cluster:6,nights:3,included:true,optional:false,x:604,y:132,ldx:14,ldy:0,anchor:"start"},
-  {id:"huangshan",name:"Huangshan",region:"Anhui",cluster:"opt",nights:2,included:false,optional:true,x:612,y:332,ldx:14,ldy:0,anchor:"start"},
-  {id:"shanghai",name:"Shanghái",region:"Costa este",cluster:6,nights:3,included:true,optional:false,x:686,y:278,ldx:14,ldy:0,anchor:"start"},
-  {id:"osaka",name:"Osaka",region:"Japón · Kansai",cluster:"jp",nights:2,included:true,optional:true,x:734,y:238,ldx:-13,ldy:2,anchor:"end"},
-  {id:"kyoto",name:"Kyoto",region:"Japón · Kansai",cluster:"jp",nights:2,included:true,optional:true,x:756,y:206,ldx:-13,ldy:-2,anchor:"end"},
-  {id:"tokyo",name:"Tokio",region:"Japón · regreso",cluster:"jp",nights:2,included:true,optional:true,x:780,y:174,ldx:-13,ldy:-2,anchor:"end"}
+  {id:"hk",name:"Hong Kong",region:"Puerta sur",cluster:1,optional:false,x:552,y:472,ldx:14,ldy:4,anchor:"start"},
+  {id:"yangshuo",name:"Yangshuo",region:"Guangxi · Guilin",cluster:2,optional:false,x:430,y:432,ldx:-14,ldy:4,anchor:"end"},
+  {id:"chengdu",name:"Chengdu",region:"Sichuan",cluster:4,optional:false,x:300,y:264,ldx:-14,ldy:0,anchor:"end"},
+  {id:"chongqing",name:"Chongqing",region:"Sichuan",cluster:4,optional:true,x:362,y:292,ldx:0,ldy:20,anchor:"middle"},
+  {id:"zjj",name:"Zhangjiajie",region:"Hunan",cluster:3,optional:false,x:462,y:322,ldx:-14,ldy:0,anchor:"end"},
+  {id:"xian",name:"Xi'an",region:"Shaanxi",cluster:5,optional:false,x:470,y:216,ldx:0,ldy:-12,anchor:"middle"},
+  {id:"beijing",name:"Pekín",region:"Capital",cluster:6,optional:false,x:604,y:132,ldx:14,ldy:0,anchor:"start"},
+  {id:"shanghai",name:"Shanghái",region:"Costa este",cluster:6,optional:false,x:686,y:278,ldx:14,ldy:0,anchor:"start"},
+  {id:"kyoto",name:"Kyoto",region:"Japón · Kansai",cluster:"jp",optional:true,x:756,y:206,ldx:-13,ldy:-2,anchor:"end"},
+  {id:"tokyo",name:"Tokio",region:"Japón · regreso",cluster:"jp",optional:true,x:780,y:174,ldx:-13,ldy:-2,anchor:"end"},
+  {id:"huangshan",name:"Huangshan",region:"Anhui",cluster:"opt",optional:true,x:612,y:332,ldx:14,ldy:0,anchor:"start"}
 ];
 const STOP_FURONG={name:"Furong (parada ½ día)",x:414,y:346};
+/* Tramos entre paradas. La clave es "origen|destino": si cambias el orden en
+   ROUTE, agrega aquí el tramo nuevo y el itinerario lo toma solo. */
 const XFER={
-  "tokyo|hk":{mode:"Vuelo",detail:"Tokio (NRT/HND) → Hong Kong (HKG)",time:"≈4.5–5 h",type:"air"},
-  "shanghai|osaka":{mode:"Vuelo",detail:"Shanghái (PVG) → Osaka (KIX)",time:"≈2 h",type:"air"},
-  "osaka|kyoto":{mode:"Tren",detail:"Osaka → Kyoto (JR / Hankyu)",time:"≈15 min",type:"rail"},
-  "kyoto|tokyo":{mode:"Tren bala",detail:"Kyoto → Tokio (Shinkansen Nozomi)",time:"≈2 h 15",type:"rail"},
-  "hk|yangshuo":{mode:"Tren bala",detail:"West Kowloon → Yangshuo",time:"3.5–4 h",type:"rail"},
+  /* --- Tramos de la ruta actual, en orden --- */
+  "hk|yangshuo":{mode:"Tren bala",detail:"West Kowloon → Yangshuo (aduana en estación, llegar 60–75 min antes)",time:"3.5–4 h",type:"rail"},
+  "yangshuo|chengdu":{mode:"Tren bala",detail:"Yangshuo → Guilin North → Chengdu East (directo, ~21 salidas/día)",time:"~7 h puerta a puerta",type:"rail"},
+  "chengdu|chongqing":{mode:"Tren bala",detail:"Chengdu East → Chongqing",time:"1–1.5 h",type:"rail"},
+  "chongqing|zjj":{mode:"Tren bala",detail:"Chongqing → Zhangjiajie West (línea nueva 350 km/h)",time:"2 h",type:"rail"},
+  "zjj|xian":{mode:"Tren / vuelo",detail:"Zhangjiajie → Xi'an (transbordo o vuelo vía Changsha)",time:"5–6 h",type:"rail"},
+  "xian|beijing":{mode:"Tren bala",detail:"Xi'an N → Pekín Oeste",time:"4.5–6 h",type:"rail"},
+  "beijing|shanghai":{mode:"Tren bala",detail:"Pekín S → Shanghái Hongqiao",time:"4.5–6 h",type:"rail"},
+  "shanghai|kyoto":{mode:"Vuelo",detail:"Shanghái (PVG) → Osaka (KIX) 2 h + JR Haruka a Kyoto 75 min",time:"≈5 h total",type:"air"},
+  "kyoto|tokyo":{mode:"Tren bala",detail:"Kyoto → Tokio (Shinkansen Nozomi, asientos D/E para ver el Fuji)",time:"2 h 15",type:"rail"},
+  /* --- Alternativas, por si reacomodas la ruta --- */
   "yangshuo|zjj":{mode:"Tren bala",detail:"Transbordo Guilin o Huaihua",time:"3.5–4.5 h",type:"rail"},
-  "zjj|chongqing":{mode:"Vuelo",detail:"Zhangjiajie (DYG) → Chongqing (CKG)",time:"≈1 h",type:"air"},
-  "zjj|fenghuang":{mode:"Auto / bus",detail:"Parada en Furong Town en el camino",time:"≈4 h c/parada",type:"road"},
-  "fenghuang|chongqing":{mode:"Vuelo",detail:"Tongren (TEN) → Chongqing (CKG)",time:"≈1 h",type:"air"},
-  "chongqing|chengdu":{mode:"Tren bala",detail:"CKG → CTU",time:"1–1.5 h",type:"rail"},
+  "chongqing|chengdu":{mode:"Tren bala",detail:"Chongqing → Chengdu East",time:"1–1.5 h",type:"rail"},
   "chengdu|xian":{mode:"Tren bala",detail:"Chengdu Este → Xi'an Norte",time:"3.5–4 h",type:"rail"},
-  "xian|beijing":{mode:"Tren bala",detail:"Xi'an N → Pekín O (vuelo ≈2 h)",time:"4.5–6 h",type:"rail"},
-  "beijing|shanghai":{mode:"Tren bala",detail:"Pekín S → Shanghái Hongqiao (vuelo ≈2.5 h)",time:"4.5–6 h",type:"rail"},
-  "zjj|chengdu":{mode:"Vuelo",detail:"Zhangjiajie (DYG) → Chengdu (CTU)",time:"≈1.5 h",type:"air"},
-  "fenghuang|chengdu":{mode:"Vuelo",detail:"Tongren (TEN) → Chengdu (CTU)",time:"≈1.5 h",type:"air"},
   "chengdu|beijing":{mode:"Tren bala",detail:"Chengdu → Pekín (vuelo ≈2.5 h)",time:"7–8 h",type:"rail"},
   "xian|shanghai":{mode:"Tren bala",detail:"Xi'an N → Shanghái Hongqiao",time:"6–7 h",type:"rail"},
   "beijing|huangshan":{mode:"Tren bala",detail:"Pekín → Huangshan Norte",time:"6–7 h",type:"rail"},
@@ -904,31 +947,8 @@ const GENERICS=[
 ];
 
 const DEFAULT_PLAN={
-osaka:{catalog:[
-  A("os-arrive","Vuelo Shanghái → Osaka + tren al hotel","transfer",150,"KIX → Namba/Umeda; check-in"),
-  A("os-dotonbori","Dotonbori: neón y comida callejera","sight",120,"Glico, canal, Kani Doraku"),
-  A("os-namba","Bares de Namba / Amerikamura","bar",120),
-  A("os-castle","Castillo de Osaka + jardines","sight",120),
-  A("os-kuromon","Mercado Kuromon Ichiba","food",90,"Marisco, wagyu, fruta"),
-  A("os-umeda","Umeda Sky Building (mirador flotante)","sight",75),
-  A("os-shinsekai","Shinsekai + Tsutenkaku (kushikatsu)","sight",90,"Ambiente retro"),
-  A("os-nara","Excursión a Nara (ciervos + Todai-ji)","tour",300,"Gran Buda y ciervos libres","Viator"),
-  A("os-usj","Universal Studios Japan","tour",600,"Super Nintendo World (opcional)","GetYourGuide")
-],days:[
-  [R("os-arrive","14:00"),R("g-rest"),R("os-dotonbori"),R("g-dinner"),R("os-namba")],
-  [R("os-castle","09:00"),R("os-kuromon"),R("os-umeda"),R("os-shinsekai"),R("g-dinner")]
-],hotels:[
-  {name:"Conrad Osaka",area:"Nakanoshima",note:"Vistas de la ciudad, alta gama"},
-  {name:"The St. Regis Osaka",area:"Honmachi / Midosuji",note:"Elegante y céntrico"},
-  {name:"Swissôtel Nankai Osaka",area:"Namba",note:"Sobre la estación, súper conveniente"}
-],food:[
-  {name:"Takoyaki / okonomiyaki (Dotonbori)",kind:"rest",note:"Los clásicos de Osaka"},
-  {name:"Kushikatsu Daruma",kind:"rest",note:"Brochetas empanizadas de Shinsekai"},
-  {name:"Kuromon Ichiba",kind:"rest",note:"Mercado gastronómico"},
-  {name:"Bares de Amerikamura / Namba",kind:"bar",note:"Vida nocturna"}
-]},
 kyoto:{catalog:[
-  A("ky-arrive","Tren Osaka → Kyoto + hotel","transfer",60,"JR/Hankyu ~15 min; check-in"),
+  A("ky-arrive","Vuelo Shanghái → Osaka KIX + JR Haruka a Kyoto","transfer",300,"PVG → KIX ≈2 h + Haruka 75 min; check-in"),
   A("ky-fushimi","Fushimi Inari Taisha (miles de torii)","sight",120,"Ir temprano o al atardecer"),
   A("ky-pontocho","Pontocho: cena y bares junto al río","bar",120,"Callejón atmosférico"),
   A("ky-kinkakuji","Kinkaku-ji (Pabellón Dorado)","sight",75),
@@ -951,7 +971,7 @@ kyoto:{catalog:[
   {name:"Pontocho / Kiyamachi",kind:"bar",note:"Bares junto al canal"}
 ]},
 tokyo:{catalog:[
-  A("tk-arrive","Tren bala Kyoto → Tokio + hotel","transfer",90,"Shinkansen ~2h15; check-in"),
+  A("tk-arrive","Tren bala Kyoto → Tokio","transfer",135,"Shinkansen Nozomi 2 h 15, asientos D/E para ver el Fuji; check-in"),
   A("tk-shibuya","Cruce de Shibuya + estatua de Hachikō","sight",60,"El cruce peatonal más famoso del mundo"),
   A("tk-shibuyasky","Shibuya Sky (mirador)","sight",75,"Vista 360° del atardecer","GetYourGuide"),
   A("tk-izakaya","Cena en izakaya (Omoide Yokocho)","food",90,"Yakitori y sake en callejones"),
@@ -980,7 +1000,7 @@ tokyo:{catalog:[
   {name:"New York Bar (Park Hyatt)",kind:"bar",note:"Cócteles con vista, jazz en vivo"}
 ]},
 hk:{catalog:[
-  A("hk-arrive","Vuelo Tokio → Hong Kong + traslado al hotel","transfer",90,"Escala en Tokio al llegar de GDL"),
+  A("hk-arrive","Vuelo Tokio (escala) → Hong Kong, llegada 19:40","transfer",90,"Escala en Tokio al llegar de GDL; traslado al hotel"),
   A("hk-rest0","Descanso y desayuno en el hotel","rest",120,"Early check-in o dejar maletas; listos a las 9"),
   A("hk-peak","Victoria Peak: Peak Tram + Sky Terrace 428","tour",150,"Vista icónica de la bahía","GetYourGuide"),
   A("hk-timho","Dim sum en Tim Ho Wan","food",75,"Michelin económico"),
@@ -1022,20 +1042,24 @@ hk:{catalog:[
 ]},
 
 yangshuo:{catalog:[
-  A("ys-arrive","Llegada en tren + traslado al hotel","transfer",60),
+  A("ys-arrive","Tren bala Hong Kong → Yangshuo","transfer",60,"West Kowloon → Yangshuo 3.5–4 h; traslado al hotel"),
   A("ys-west","Paseo por West Street","sight",90,"Calle peatonal, cafés, tiendas"),
   A("ys-beerfish","Cena: pescado a la cerveza (beer fish)","food",90,"Especialidad local"),
   A("ys-li","Crucero por el Río Li (desde Guilin)","tour",300,"Incluye traslado a Guilin + 4 h de crucero; paisaje del billete de 20 CNY","GetYourGuide"),
   A("ys-yulong","Balsa de bambú por el Río Yulong","sight",120,"Aguas tranquilas, búfalos, arrozales"),
+  A("ys-liraft","Balsa de bambú por el Río Li (Yangdi–Xingping)","tour",240,"El tramo del billete de 20 CNY; salida temprano desde Yangdi","GetYourGuide"),
+  A("ys-alberca","Tarde de hotel y alberca","rest",180,"Llegada tranquila: check-in, alberca y vistas a los picos"),
   A("ys-impression","Espectáculo Impression Sanjie Liu","tour",75,"Zhang Yimou, 600 actores sobre el río","GetYourGuide"),
-  A("ys-bike","Bici por el campo (Ten-Mile Gallery)","sight",150,"Arrozales y picos, ritmo lento"),
+  A("ys-bike","Bici por los arrozales (Ten-Mile Gallery / Río Yulong)","sight",180,"Arrozales y picos, ritmo lento"),
   A("ys-xianggong","Mirador Xianggong Hill","sight",90,"Panorámica del Li"),
   A("ys-cooking","Clase de cocina local o Tai Chi","tour",150),
   A("ys-bars","Bares de West Street","bar",90)
 ],days:[
-  [R("ys-arrive","13:00"),R("g-rest"),R("ys-west"),R("g-free"),R("ys-beerfish","19:00")],
-  [R("ys-li","08:20"),R("g-lunch"),R("ys-yulong"),R("g-rest"),R("g-dinner"),R("ys-impression","20:00")],
-  [R("ys-bike"),R("ys-xianggong"),R("g-lunch"),R("ys-cooking"),R("g-rest"),R("g-dinner"),R("ys-bars")]
+  /* Día 1 · llegada ~13:00, tarde de hotel y show a las 20:00 (hora fija) */
+  [R("ys-arrive","13:00"),R("ys-alberca"),R("ys-beerfish","18:15"),R("ys-impression","20:00")],
+  /* Día 2 · balsa por el Li en la mañana, bici por los arrozales en la tarde */
+  [R("ys-liraft","08:20"),R("g-lunch"),R("ys-bike"),R("g-dinner")]
+  /* Día 3 · salida temprano a Chengdu: va en la primera jornada de Chengdu */
 ],hotels:[
   {name:"Alila Yangshuo",area:"Campo · antigua fábrica de azúcar",note:"Diseño premiado, piscina entre picos"},
   {name:"Yangshuo Mountain Retreat",area:"Río Yulong",note:"Tranquilo, vistas al río, romántico"},
@@ -1047,7 +1071,7 @@ yangshuo:{catalog:[
 ]},
 
 zjj:{catalog:[
-  A("zjj-arrive","Llegada en tren + traslado a Wulingyuan","transfer",90),
+  A("zjj-arrive","Tren bala Chongqing → Zhangjiajie","transfer",90,"Chongqing → Zhangjiajie West ≈2 h; traslado a Wulingyuan"),
   A("zjj-towers","72 Odd Towers (centro)","sight",90,"Si se alojan en el centro; desde Wulingyuan mejor descansar"),
   A("zjj-tujia","Cena cocina Tujia","food",90,"Picante estilo Hunan"),
   A("zjj-avatar","Parque Nacional: Bailong + Yuanjiajie (Avatar) + Tianzi","tour",540,"Tour privado día completo; ascensor de cristal, Hallelujah Mtn, Golden Whip","Viator"),
@@ -1090,7 +1114,7 @@ fenghuang:{catalog:[
 ]},
 
 chongqing:{catalog:[
-  A("cq-arrive","Vuelo TEN→CKG + traslado al hotel","transfer",90,"Base en Jiefangbei / Yuzhong"),
+  A("cq-arrive","Tren bala Chengdu → Chongqing","transfer",90,"Chengdu East → Chongqing 1–1.5 h; base en Jiefangbei / Yuzhong"),
   A("cq-liziba","Liziba: tren que atraviesa el edificio","sight",45),
   A("cq-cable","Yangtze River Cableway","sight",60,"Teleférico sobre el río, vistas 8D"),
   A("cq-hotpot","Hotpot de Chongqing","food",90,"La cuna del hotpot picante"),
@@ -1109,7 +1133,7 @@ chongqing:{catalog:[
 ]},
 
 chengdu:{catalog:[
-  A("cd-arrive","Tren CKG→CTU + traslado al hotel","transfer",150),
+  A("cd-arrive","Tren bala Yangshuo → Chengdu","transfer",420,"Vía Guilin North a Chengdu East, ~7 h puerta a puerta; traslado al hotel"),
   A("cd-kuanzhai","Kuanzhai Alley + casa de té en People's Park","sight",150,"Té y mahjong, muy local"),
   A("cd-opera","Ópera de Sichuan (cambio de máscaras)","tour",90,"Shu Feng Ya Yun, bianlian","GetYourGuide"),
   A("cd-pandas","Base de pandas gigantes","tour",210,"Llegar temprano: pandas activos al desayuno","GetYourGuide"),
@@ -1131,7 +1155,7 @@ chengdu:{catalog:[
 ]},
 
 xian:{catalog:[
-  A("xa-arrive","Tren CTU→Xi'an + traslado al hotel","transfer",90,"Cerca de la Torre de la Campana"),
+  A("xa-arrive","Tren / vuelo Zhangjiajie → Xi'an","transfer",330,"Transbordo o vuelo vía Changsha, 5–6 h; hotel cerca de la Torre de la Campana"),
   A("xa-wall","Muralla Ming en bicicleta","sight",120,"14 km sobre la muralla"),
   A("xa-belldrum","Bell & Drum Tower iluminadas","sight",45),
   A("xa-muslim","Barrio Musulmán: street food + Gran Mezquita","food",120,"Roujiamo, biangbiang noodles"),
@@ -1153,7 +1177,7 @@ xian:{catalog:[
 ]},
 
 beijing:{catalog:[
-  A("bj-arrive","Tren Xi'an→Pekín + traslado al hotel","transfer",90),
+  A("bj-arrive","Tren bala Xi'an → Pekín","transfer",90,"Xi'an N → Pekín Oeste 4.5–6 h; traslado al hotel"),
   A("bj-temple","Templo del Cielo","sight",120,"Parque y arquitectura imperial"),
   A("bj-duck","Pato laqueado de Pekín","food",105,"Dadong / Siji Minfu / Quanjude"),
   A("bj-qianmen","Qianmen / Wangfujing de noche","sight",75),
@@ -1195,7 +1219,7 @@ huangshan:{catalog:[
 ]},
 
 shanghai:{catalog:[
-  A("sh-arrive","Tren Pekín→Shanghái + traslado al hotel","transfer",90,"Bund o Concesión Francesa"),
+  A("sh-arrive","Tren bala Pekín → Shanghái","transfer",90,"Pekín S → Hongqiao 4.5–6 h; hotel en el Bund o Concesión Francesa"),
   A("sh-bund","El Bund al atardecer","sight",90,"Malecón histórico + skyline de Pudong"),
   A("sh-xlb","Cena: xiaolongbao","food",90,"Jia Jia Tang Bao / Din Tai Fung"),
   A("sh-rooftop","Rooftop: Bar Rouge / Flair","bar",90),
@@ -1231,17 +1255,7 @@ const DEFAULT_COSTS={
   "g-lunch":[["Comida (2)",550]],
   "g-dinner":[["Cena (2)",850]],
   // Vuelos/trenes de conexión de la ruta (tus tarifas ×2 personas)
-  "os-arrive":[["Vuelo Shanghái → Osaka (2)",8630]],
-  "ky-arrive":[["Tren Osaka → Kyoto (2)",130]],
-  // Osaka
-  "os-dotonbori":[["Comida callejera Dotonbori (2)",700]],
-  "os-namba":[["Bares de Namba (2)",700]],
-  "os-castle":[["Castillo de Osaka (2)",300]],
-  "os-kuromon":[["Mercado Kuromon (2)",600]],
-  "os-umeda":[["Umeda Sky (2)",350]],
-  "os-shinsekai":[["Kushikatsu Shinsekai (2)",600]],
-  "os-nara":[["Excursión a Nara (2)",1500]],
-  "os-usj":[["Universal Studios Japan (2)",2000]],
+  "ky-arrive":[["Vuelo Shanghái → Osaka KIX + JR Haruka a Kyoto (2)",8630]],
   // Kyoto
   "ky-fushimi":[["Fushimi Inari (2)",0]],
   "ky-pontocho":[["Cena/copas Pontocho (2)",900]],
@@ -1261,7 +1275,7 @@ const DEFAULT_COSTS={
   "tk-fuji":[["Excursión Fuji / Hakone (2)",4200]],
   "tk-sushi":[["Cena sushi omakase (2)",2800]],
   // Hong Kong
-  "hk-arrive":[["Vuelo Tokio → Hong Kong (2)",10600]],
+  "hk-arrive":[["Vuelo Tokio (escala) → Hong Kong (2)",10600]],
   "hk-peak":[["Peak Tram + Sky Terrace (2)",700]],
   "hk-timho":[["Dim sum Tim Ho Wan (2)",520]],
   "hk-ferry":[["Star Ferry (2)",60]],
@@ -1276,6 +1290,7 @@ const DEFAULT_COSTS={
   "ys-beerfish":[["Beer fish (2)",500]],
   "ys-li":[["Crucero Río Li (2)",1500]],
   "ys-yulong":[["Balsa Río Yulong (2)",500]],
+  "ys-liraft":[["Balsa Río Li Yangdi–Xingping (2)",900]],
   "ys-impression":[["Impression Sanjie Liu (2)",1200]],
   "ys-bike":[["Renta de bicis (2)",150]],
   "ys-xianggong":[["Mirador Xianggong (2)",300]],
@@ -1358,9 +1373,10 @@ function seedBase(b){
   const catalog=GENERICS.concat(plan.catalog).map(a=>({...a,costs:costsFor(a.cid)}));
   const schedule={},dayStart={};
   plan.days.forEach((day,di)=>{schedule[di]=day.map(x=>({id:uid(),ref:x.r,fixed:x.f||null}));dayStart[di]="09:00";});
+  const n=routeNights(b.id);                       // noches según ROUTE
   return{id:b.id,name:b.name,region:b.region,cluster:String(b.cluster),x:b.x,y:b.y,
     ldx:b.ldx,ldy:b.ldy,anchor:b.anchor,optional:b.optional,
-    nights:b.nights,included:b.included,
+    nights:n||b.nights||2,included:n!=null,
     catalog,schedule,dayStart,
     budget:{lodgingEst:0,lodgingReal:0,miscEst:0,miscReal:0},
     hotels:(plan.hotels||[]).map(h=>({id:uid(),name:h.name,area:h.area||"",note:h.note||"",precio:+h.precio||0,chosen:false})),
@@ -1383,8 +1399,16 @@ function seedCustomBase(name,idx){
     hotels:[],food:[],expanded:true,tab:"plan",day:0};
 }
 function defaultLegs(){return{"_arrive":{dep:"",arr:"05:45",note:""},"_depart":{dep:"",arr:"",note:""}};}
-function freshState(){const bases={},order=[];DEFAULT_BASES.forEach(b=>{bases[b.id]=seedBase(b);order.push(b.id);});
-  return{bases,order,checks:{},legs:defaultLegs(),currency:"MXN",budget:{flightsEst:0,flightsReal:0},costsSeeded:true,tokyoSwap:true,japanRoute:true};}
+function freshState(){
+  const bases={};DEFAULT_BASES.forEach(b=>{bases[b.id]=seedBase(b);});
+  // primero las paradas de ROUTE, en su orden; luego las que quedan fuera del plan
+  const order=ROUTE_IDS.filter(id=>bases[id])
+    .concat(DEFAULT_BASES.map(b=>b.id).filter(id=>!ROUTE_IDS.includes(id)));
+  return{bases,order,checks:{},legs:defaultLegs(),currency:"MXN",
+    meta:{titulo:"Luna de miel · China 2027",subtitulo:"Itinerario hora por hora con motor de horarios.",
+      eyebrow:tripEyebrow(),inicio:isoDia(new Date(TRIP_START)),personas:2,
+      noches:AVAILABLE_NIGHTS,hasMap:true},
+    budget:{flightsEst:0,flightsReal:0},costsSeeded:true,rutaVersion:ROUTE_VERSION};}
 
 /* ---- Comparativa de hoteles de Hong Kong (investigación may 2027) ----
    Base de todas las cotizaciones: 6–9 may 2027 · 3 noches · 2 adultos ·
@@ -1573,6 +1597,103 @@ function migrarEscalaTokio(s){
   s.escalaTokioV1=true;
 }
 
+/* ===================== Reacomodo automático de la ruta =====================
+   Aplica ROUTE (orden, noches y fechas) al viaje ya guardado. Corre una sola
+   vez por cada valor de ROUTE_VERSION: al editar la ruta arriba y subir el
+   número, el viaje se reacomoda solo en la próxima recarga. Nada se pierde —
+   las paradas fuera de ROUTE quedan excluidas, no borradas. */
+
+/* Actividad de "llegada" de cada parada: es la que se re-escribe con el tramo. */
+const ARRIVE_CID={hk:"hk-arrive",yangshuo:"ys-arrive",chengdu:"cd-arrive",
+  chongqing:"cq-arrive",zjj:"zjj-arrive",xian:"xa-arrive",beijing:"bj-arrive",
+  shanghai:"sh-arrive",kyoto:"ky-arrive",tokyo:"tk-arrive"};
+/* Llegadas con texto escrito a mano: no se derivan del tramo. */
+const ARRIVE_FIJO={
+  "hk-arrive":{name:"Vuelo Tokio (escala) → Hong Kong, llegada 19:40",
+               note:"Escala en Tokio al llegar de GDL; traslado al hotel"},
+  "ky-arrive":{name:"Vuelo Shanghái → Osaka KIX + JR Haruka a Kyoto",
+               note:"PVG → KIX ≈2 h + Haruka 75 min; check-in"},
+  "tk-arrive":{name:"Tren bala Kyoto → Tokio",
+               note:"Shinkansen Nozomi 2 h 15, asientos D/E para ver el Fuji; check-in"}
+};
+/* Plan de Yangshuo con 2 noches (se re-siembra si la parada sigue con el viejo). */
+const YANGSHUO_V2={
+  catalog:[
+    {cid:"ys-liraft",name:"Balsa de bambú por el Río Li (Yangdi–Xingping)",type:"tour",dur:240,
+     note:"El tramo del billete de 20 CNY; salida temprano desde Yangdi",src:"GetYourGuide"},
+    {cid:"ys-alberca",name:"Tarde de hotel y alberca",type:"rest",dur:180,
+     note:"Llegada tranquila: check-in, alberca y vistas a los picos",src:""}
+  ],
+  days:[
+    {start:"13:00",items:[["ys-arrive","13:00"],["ys-alberca",null],["ys-beerfish","18:15"],["ys-impression","20:00"]]},
+    {start:"08:20",items:[["ys-liraft","08:20"],["g-lunch",null],["ys-bike",null],["g-dinner",null]]}
+  ]
+};
+function migrarRuta(s){
+  if(s.rutaVersion===ROUTE_VERSION)return;
+  if(!s.bases||!s.bases.hk){s.rutaVersion=ROUTE_VERSION;return;}   // solo el viaje de China
+
+  // 1. paradas que salen por completo
+  ROUTE_DROP.forEach(id=>{delete s.bases[id];});
+  s.order=(s.order||[]).filter(id=>s.bases[id]);
+
+  // 2. noches y "en el viaje" según ROUTE; lo que no está en ROUTE queda excluido
+  Object.entries(s.bases).forEach(([id,st])=>{
+    const n=routeNights(id);
+    if(n==null){st.included=false;return;}
+    st.included=true;st.nights=n;
+  });
+
+  // 3. el orden de ROUTE manda; las excluidas se van al final
+  const enRuta=ROUTE_IDS.filter(id=>s.bases[id]);
+  s.order=enRuta.concat(Object.keys(s.bases).filter(id=>!enRuta.includes(id)));
+
+  // 4. fechas del viaje
+  s.meta=s.meta||{};
+  s.meta.inicio=isoDia(new Date(TRIP_START));
+  s.meta.noches=AVAILABLE_NIGHTS;
+  s.meta.eyebrow=tripEyebrow();
+
+  // 5. el texto de cada llegada se re-escribe con el tramo que la trae
+  enRuta.forEach((id,i)=>{
+    const st=s.bases[id],cid=ARRIVE_CID[id];
+    if(!st||!cid||!Array.isArray(st.catalog))return;
+    const act=st.catalog.find(a=>a.cid===cid);if(!act)return;
+    const fijo=ARRIVE_FIJO[cid];
+    if(fijo){act.name=fijo.name;act.note=fijo.note;return;}
+    const prev=i>0?s.bases[enRuta[i-1]]:null;if(!prev)return;
+    const x=getXfer(enRuta[i-1],id);
+    act.name=x.mode+" "+prev.name+" → "+st.name;
+    act.note=x.detail+" · "+x.time;
+  });
+
+  // 6. costo de la llegada a Kyoto: ahora es el vuelo Shanghái → Osaka
+  const ky=s.bases.kyoto&&(s.bases.kyoto.catalog||[]).find(a=>a.cid==="ky-arrive");
+  if(ky)ky.costs=[{id:uid(),label:"Vuelo Shanghái → Osaka KIX + JR Haruka a Kyoto (2)",est:8630,real:0}];
+  const tk=s.bases.tokyo&&(s.bases.tokyo.catalog||[]).find(a=>a.cid==="tk-arrive");
+  if(tk)tk.costs=[{id:uid(),label:"Tren bala Kyoto → Tokio (2)",est:3300,real:0}];
+
+  // 7. Yangshuo: plan nuevo de 2 noches
+  const ys=s.bases.yangshuo;
+  if(ys&&Array.isArray(ys.catalog)){
+    YANGSHUO_V2.catalog.forEach(a=>{
+      if(ys.catalog.some(x=>x.cid===a.cid))return;
+      ys.catalog.push({...a,costs:costsFor(a.cid)});
+    });
+    const bici=ys.catalog.find(a=>a.cid==="ys-bike");
+    if(bici){bici.name="Bici por los arrozales (Ten-Mile Gallery / Río Yulong)";bici.dur=180;}
+    ys.schedule=ys.schedule||{};ys.dayStart=ys.dayStart||{};
+    YANGSHUO_V2.days.forEach((day,di)=>{
+      ys.schedule[di]=day.items.map(([ref,f])=>({id:uid(),ref,fixed:f}));
+      ys.dayStart[di]=day.start;
+    });
+    // el 3er día (de las 3 noches viejas) no se borra: queda oculto y la app
+    // ofrece traerlo al último día o descartarlo desde la tarjeta de la parada
+    if(ys.day>=YANGSHUO_V2.days.length)ys.day=0;
+  }
+
+  s.rutaVersion=ROUTE_VERSION;
+}
 /* Normaliza la estructura de un viaje cargado (genérico; no siembra China). */
 function normalizeTripState(s){
   if(!s||typeof s!=="object")s={};
@@ -1631,6 +1752,7 @@ function normalizeTripState(s){
   migrarDia2HK(s);
   migrarExtrasHK(s);
   migrarEscalaTokio(s);
+  migrarRuta(s);          // deja el viaje con el orden y las noches de ROUTE
   return s;
 }
 /* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
@@ -1976,7 +2098,8 @@ async function migrateChinaIfNeeded(){
   if(!legacy||!legacy.bases)return;
   legacy=normalizeTripState(legacy);
   legacy.meta={titulo:"Luna de miel · China 2027",subtitulo:"Itinerario hora por hora con motor de horarios.",
-    eyebrow:"05 – 29 mayo 2027 · 24 días",inicio:"2027-05-07",personas:2,noches:22,hasMap:true};
+    eyebrow:tripEyebrow(),inicio:isoDia(new Date(TRIP_START)),personas:2,
+    noches:AVAILABLE_NIGHTS,hasMap:true};
   delete legacy._rev;
   try{await Auth.sb.from("viajes").insert({propietario:UID,titulo:legacy.meta.titulo,datos:legacy});await refreshTrips();}catch(e){}
 }
@@ -2256,7 +2379,8 @@ function renderCards(){
     if(on&&dd&&b.id===firstActiveId)
       holder.appendChild(makeRibbon(state.meta&&state.meta.hasMap
         ? xferRibbonHTML("_arrive","intl","Vuelo internacional",
-            "Guadalajara (GDL) → Tokio (escala) → "+b.name,"5 may → 7 may")
+            "Guadalajara (GDL) → Tokio (escala) → "+b.name,
+            fmt(addDays(dd.checkin,-1))+" → "+fmt(dd.checkin))
         : xferRibbonHTML("_arrive","intl","Viaje de ida","→ "+b.name,"")));
     holder.appendChild(leg);
     if(on&&dd){const nx=dated[dated.indexOf(dd)+1];
@@ -2265,7 +2389,7 @@ function renderCards(){
       else // última parada activa → tramo internacional de regreso
         holder.appendChild(makeRibbon(state.meta&&state.meta.hasMap
           ? xferRibbonHTML("_depart","intl","Vuelo internacional",
-              b.name+" → Guadalajara (GDL)","29 may · mismo día (noche)")
+              b.name+" → Guadalajara (GDL)",fmt(dd.checkout)+" · mismo día (noche)")
           : xferRibbonHTML("_depart","intl","Viaje de vuelta",b.name+" →","")));
     }
   });
