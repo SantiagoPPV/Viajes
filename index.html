@@ -824,14 +824,17 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v11 · 24 ago 2026 · Chongqing hora por hora";
+const APP_VERSION="v12 · 24 ago 2026 · Xi'an y vuelos internacionales";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
         orden del viaje, y "nights" son las noches que se duermen ahí.
-     2. Si cambian los tramos, edita XFER más abajo (clave "origen|destino").
-     3. Ajusta TRIP_START y AVAILABLE_NIGHTS si cambian las fechas.
-     4. Sube ROUTE_VERSION en 1.
+     2. "sale" es la hora a la que arrancan el traslado hacia esa parada. La
+        duración del viaje NO se pone aquí: sale del tramo en XFER ("dur", en
+        minutos), así que la hora de llegada se calcula sola.
+     3. Si cambian los tramos, edita XFER más abajo (clave "origen|destino").
+     4. Ajusta TRIP_START y AVAILABLE_NIGHTS si cambian las fechas.
+     5. Sube ROUTE_VERSION en 1.
    Al recargar, el viaje guardado se reacomoda solo: orden, noches, fechas y
    textos de llegada, sin perder notas, costos ni hoteles. Las paradas que ya
    no están en ROUTE quedan "excluidas" (siguen ahí, fuera del plan); solo se
@@ -839,21 +842,35 @@ const APP_VERSION="v11 · 24 ago 2026 · Chongqing hora por hora";
 const TRIP_START=new Date(2027,4,6);   // 6 de mayo de 2027 (en JS el mes 4 es mayo)
 const AVAILABLE_NIGHTS=23;             // noches del 6 al 29 de mayo
 const ROUTE=[
-  {id:"hk",        nights:3},   //  6 →  9 may
-  {id:"yangshuo",  nights:2},   //  9 → 11 may
-  {id:"chengdu",   nights:2},   // 11 → 13 may
-  {id:"chongqing", nights:1},   // 13 → 14 may
-  {id:"zjj",       nights:3},   // 14 → 17 may
-  {id:"xian",      nights:2},   // 17 → 19 may
-  {id:"beijing",   nights:3},   // 19 → 22 may
-  {id:"shanghai",  nights:2},   // 22 → 24 may
-  {id:"kyoto",     nights:2},   // 24 → 26 may
-  {id:"tokyo",     nights:3}    // 26 → 29 may
+  {id:"hk",        nights:3},                //  6 →  9 may
+  {id:"yangshuo",  nights:2, sale:"09:15"},  //  9 → 11 may · llega 13:00
+  {id:"chengdu",   nights:2, sale:"08:00"},  // 11 → 13 may · llega 15:00
+  {id:"chongqing", nights:1, sale:"09:00"},  // 13 → 14 may · llega 10:30
+  {id:"zjj",       nights:3, sale:"14:00"},  // 14 → 17 may · llega 16:00
+  {id:"xian",      nights:2, sale:"08:00"},  // 17 → 19 may · llega 12:30
+  {id:"beijing",   nights:3, sale:"12:30"},  // 19 → 22 may · llega 16:45
+  {id:"shanghai",  nights:2, sale:"09:00"},  // 22 → 24 may · llega 14:00
+  {id:"kyoto",     nights:2, sale:"07:30"},  // 24 → 26 may · llega 12:30
+  {id:"tokyo",     nights:3, sale:"13:00"}   // 26 → 29 may · llega 15:15
 ];
+/* Vuelos internacionales de ida y de regreso. La ida trae una escala larga en
+   Tokio: ahí va el hotel del aeropuerto por horas, que se registra como costo
+   de la escala (no del hospedaje de Hong Kong).
+   "salePrevios" son los días que el vuelo de ida sale ANTES del check-in de la
+   primera parada: la ida cruza la línea de cambio de fecha y se come dos días.
+   El regreso, al revés, aterriza el mismo día en que sale. */
+const VUELOS_INTL={
+  ida:{origen:"Monterrey (MTY)",destino:"Hong Kong (HKG)",
+       sale:"13:35",llega:"19:40",salePrevios:2,
+       escala:{lugar:"Tokio · Narita (NRT)",llegada:"06:30",salida:"15:40"}},
+  vuelta:{origen:"Tokio (NRT/HND)",destino:"Ciudad de México (MEX)",
+          sale:"09:35",llega:"07:10"}
+};
 const ROUTE_DROP=["osaka"];   // paradas que se eliminan por completo del viaje
-const ROUTE_VERSION=3;        // súbela al editar ROUTE para reaplicar la ruta
+const ROUTE_VERSION=4;        // súbela al editar ROUTE para reaplicar la ruta
 const ROUTE_IDS=ROUTE.map(r=>r.id);
 const routeNights=id=>{const r=ROUTE.find(x=>x.id===id);return r?r.nights:null;};
+const routeSale=id=>{const r=ROUTE.find(x=>x.id===id);return r&&r.sale||null;};
 
 /* La fecha de inicio y las noches salen de cada viaje (state.meta); si el viaje
    todavía no las tiene, se usan las de arriba. */
@@ -868,6 +885,10 @@ const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x;};
 const isoDia=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 /* Fecha de fin y encabezado del viaje, calculados desde el bloque de arriba. */
 const tripEnd=()=>addDays(new Date(TRIP_START),AVAILABLE_NIGHTS);
+/* Día en que despega el vuelo de ida, y día en que se vuela de regreso. */
+const vueloIdaSale=()=>addDays(new Date(TRIP_START),-(VUELOS_INTL.ida.salePrevios||0));
+const vueloIdaLlega=()=>new Date(TRIP_START);   // llega el día del check-in
+const vueloVuelta=()=>tripEnd();
 function tripEyebrow(){const a=new Date(TRIP_START),b=tripEnd();
   return String(a.getDate()).padStart(2,"0")+" – "+b.getDate()+" "+MESES_LARGOS[b.getMonth()]
     +" "+b.getFullYear()+" · "+(AVAILABLE_NIGHTS+1)+" días";}
@@ -909,26 +930,33 @@ const DEFAULT_BASES=[
 ];
 const STOP_FURONG={name:"Furong (parada ½ día)",x:414,y:346};
 /* Tramos entre paradas. La clave es "origen|destino": si cambias el orden en
-   ROUTE, agrega aquí el tramo nuevo y el itinerario lo toma solo. */
+   ROUTE, agrega aquí el tramo nuevo y el itinerario lo toma solo.
+   "dur" son los minutos PUERTA A PUERTA (de salir del hotel de una parada a
+   llegar al de la siguiente). De ahí sale la duración de la actividad de
+   llegada, así que la hora a la que aterrizan se calcula sola: no hay que
+   volver a cuadrarla a mano cada vez que se reordena la ruta. */
 const XFER={
   /* --- Tramos de la ruta actual, en orden --- */
-  "hk|yangshuo":{mode:"Tren bala",detail:"West Kowloon → Yangshuo (aduana en estación, llegar 60–75 min antes)",time:"3.5–4 h",type:"rail"},
-  "yangshuo|chengdu":{mode:"Tren bala",detail:"Yangshuo → Guilin North → Chengdu East (directo, ~21 salidas/día)",time:"~7 h puerta a puerta",type:"rail"},
-  "chengdu|chongqing":{mode:"Tren bala",detail:"Chengdu East → Chongqing",time:"1–1.5 h",type:"rail"},
-  "chongqing|zjj":{mode:"Tren bala",detail:"Chongqing → Zhangjiajie West (línea nueva 350 km/h)",time:"2 h",type:"rail"},
-  "zjj|xian":{mode:"Tren / vuelo",detail:"Zhangjiajie → Xi'an (transbordo o vuelo vía Changsha)",time:"5–6 h",type:"rail"},
-  "xian|beijing":{mode:"Tren bala",detail:"Xi'an N → Pekín Oeste",time:"4.5–6 h",type:"rail"},
-  "beijing|shanghai":{mode:"Tren bala",detail:"Pekín S → Shanghái Hongqiao",time:"4.5–6 h",type:"rail"},
-  "shanghai|kyoto":{mode:"Vuelo",detail:"Shanghái (PVG) → Osaka (KIX) 2 h + JR Haruka a Kyoto 75 min",time:"≈5 h total",type:"air"},
-  "kyoto|tokyo":{mode:"Tren bala",detail:"Kyoto → Tokio (Shinkansen Nozomi, asientos D/E para ver el Fuji)",time:"2 h 15",type:"rail"},
+  "hk|yangshuo":{mode:"Tren bala",detail:"West Kowloon → Yangshuo (aduana en estación, llegar 60–75 min antes)",time:"3.5–4 h",dur:225,type:"rail"},
+  "yangshuo|chengdu":{mode:"Tren bala",detail:"Yangshuo → Guilin North → Chengdu East (directo, ~21 salidas/día)",time:"~7 h puerta a puerta",dur:420,type:"rail"},
+  "chengdu|chongqing":{mode:"Tren bala",detail:"Chengdu East → Chongqing",time:"1–1.5 h",dur:90,type:"rail"},
+  "chongqing|zjj":{mode:"Tren bala",detail:"Chongqing → Zhangjiajie West (línea nueva 350 km/h)",time:"2 h",dur:120,type:"rail"},
+  /* Verificado ago 2026: el tren directo Zhangjiajie Oeste → Xi'an Norte es UNO
+     al día y tarda 9 h 48. Solo funciona volando: DYG → XIY directo son 1 h 30,
+     pero hay ~2 vuelos al día y el más temprano sale 11:05. */
+  "zjj|xian":{mode:"Vuelo",detail:"Zhangjiajie (DYG) → Xi'an (XIY) directo 1 h 30 · el tren directo son 9 h 48, no sirve",time:"4.5 h puerta a puerta",dur:270,type:"air"},
+  "xian|beijing":{mode:"Tren bala",detail:"Xi'an Norte → Pekín Oeste (el G más rápido hace 4 h 10)",time:"4.5–6 h",dur:255,type:"rail"},
+  "beijing|shanghai":{mode:"Tren bala",detail:"Pekín S → Shanghái Hongqiao",time:"4.5–6 h",dur:300,type:"rail"},
+  "shanghai|kyoto":{mode:"Vuelo",detail:"Shanghái (PVG) → Osaka (KIX) 2 h + JR Haruka a Kyoto 75 min",time:"≈5 h total",dur:300,type:"air"},
+  "kyoto|tokyo":{mode:"Tren bala",detail:"Kyoto → Tokio (Shinkansen Nozomi, asientos D/E para ver el Fuji)",time:"2 h 15",dur:135,type:"rail"},
   /* --- Alternativas, por si reacomodas la ruta --- */
-  "yangshuo|zjj":{mode:"Tren bala",detail:"Transbordo Guilin o Huaihua",time:"3.5–4.5 h",type:"rail"},
-  "chongqing|chengdu":{mode:"Tren bala",detail:"Chongqing → Chengdu East",time:"1–1.5 h",type:"rail"},
-  "chengdu|xian":{mode:"Tren bala",detail:"Chengdu Este → Xi'an Norte",time:"3.5–4 h",type:"rail"},
-  "chengdu|beijing":{mode:"Tren bala",detail:"Chengdu → Pekín (vuelo ≈2.5 h)",time:"7–8 h",type:"rail"},
-  "xian|shanghai":{mode:"Tren bala",detail:"Xi'an N → Shanghái Hongqiao",time:"6–7 h",type:"rail"},
-  "beijing|huangshan":{mode:"Tren bala",detail:"Pekín → Huangshan Norte",time:"6–7 h",type:"rail"},
-  "huangshan|shanghai":{mode:"Tren bala",detail:"Huangshan → Shanghái Hongqiao",time:"≈3 h",type:"rail"}
+  "yangshuo|zjj":{mode:"Tren bala",detail:"Transbordo Guilin o Huaihua",time:"3.5–4.5 h",dur:255,type:"rail"},
+  "chongqing|chengdu":{mode:"Tren bala",detail:"Chongqing → Chengdu East",time:"1–1.5 h",dur:90,type:"rail"},
+  "chengdu|xian":{mode:"Tren bala",detail:"Chengdu Este → Xi'an Norte",time:"3.5–4 h",dur:240,type:"rail"},
+  "chengdu|beijing":{mode:"Tren bala",detail:"Chengdu → Pekín (vuelo ≈2.5 h)",time:"7–8 h",dur:450,type:"rail"},
+  "xian|shanghai":{mode:"Tren bala",detail:"Xi'an N → Shanghái Hongqiao",time:"6–7 h",dur:390,type:"rail"},
+  "beijing|huangshan":{mode:"Tren bala",detail:"Pekín → Huangshan Norte",time:"6–7 h",dur:390,type:"rail"},
+  "huangshan|shanghai":{mode:"Tren bala",detail:"Huangshan → Shanghái Hongqiao",time:"≈3 h",dur:180,type:"rail"}
 };
 const getXfer=(a,b)=>XFER[a+"|"+b]||{mode:"Tren bala / vuelo",detail:"Verificar conexión",time:"—",type:"rail"};
 
@@ -958,7 +986,7 @@ kyoto:{catalog:[
   A("ky-nishiki","Mercado Nishiki","food",75,"'La cocina de Kyoto'"),
   A("ky-tea","Ceremonia del té / kimono","tour",120,"Experiencia cultural","GetYourGuide")
 ],days:[
-  [R("ky-arrive","12:30"),R("g-rest"),R("ky-fushimi","15:30"),R("g-dinner"),R("ky-pontocho")],
+  [R("ky-arrive"),R("g-rest"),R("ky-fushimi","15:30"),R("g-dinner"),R("ky-pontocho")],
   [R("ky-kinkakuji","09:00"),R("ky-arashiyama"),R("ky-nishiki"),R("ky-gion"),R("ky-kiyomizu"),R("g-dinner")]
 ],hotels:[
   {name:"The Ritz-Carlton Kyoto",area:"Río Kamogawa",note:"Lujo junto al río, muy romántico"},
@@ -985,7 +1013,7 @@ tokyo:{catalog:[
   A("tk-fuji","Excursión al Monte Fuji / Hakone (día completo)","tour",540,"Día completo con guía","Viator"),
   A("tk-sushi","Cena de sushi omakase","food",120,"Experiencia gastronómica")
 ],days:[
-  [R("tk-arrive","16:00"),R("g-rest"),R("tk-shibuya"),R("tk-shibuyasky","18:00"),R("tk-izakaya")],
+  [R("tk-arrive"),R("g-rest"),R("tk-shibuya"),R("tk-shibuyasky","18:00"),R("tk-izakaya")],
   [R("tk-sensoji","08:00"),R("tk-skytree"),R("g-lunch"),R("tk-teamlab"),R("tk-meiji"),R("g-dinner"),R("tk-shinjuku")],
   [R("tk-fuji","08:00"),R("g-dinner"),R("tk-sushi","20:00")]
 ],hotels:[
@@ -1031,7 +1059,8 @@ hk:{catalog:[
   A("hk-mongkok","Mercados de Mong Kok","sight",120,"Ladies' Market, Flower Market"),
   A("hk-repulse","Repulse Bay o compras","free",150)
 ],days:[
-  [R("hk-arrive"),R("hk-rest0"),R("hk-peak"),R("hk-timho"),R("hk-manmo"),R("hk-soho"),R("g-rest"),R("hk-ferry"),R("hk-aos"),R("hk-dinner-tst"),R("hk-sol","20:00"),R("hk-temple")],
+  /* Día 1 · jue 6 may: el vuelo de Tokio aterriza 19:40. Llegar y cenar. */
+  [R("hk-arrive","19:40"),R("hk-dinner-tst")],
   [R("hk-lantau"),R("hk-polin"),R("hk-taio"),R("hk-back"),R("g-rest"),R("hk-aqua","18:45"),R("hk-seafood"),R("hk-ozone")],
   /* Día 3 · mañana en Lantau, comida 12:45 y tarde en Wong Tai Sin / Diamond Hill */
   [R("g-breakfast"),R("hkd3-mtr-lantau"),R("hk-lantau"),R("hkd3-buda"),R("hkd3-bajada"),
@@ -1069,7 +1098,7 @@ yangshuo:{catalog:[
   A("ys-bars","Bares de West Street","bar",90)
 ],days:[
   /* Día 1 · llegada ~13:00, tarde de hotel y show a las 20:00 (hora fija) */
-  [R("ys-arrive","13:00"),R("ys-alberca"),R("ys-beerfish","18:15"),R("ys-impression","20:00")],
+  [R("ys-arrive"),R("ys-alberca"),R("ys-beerfish","18:15"),R("ys-impression","20:00")],
   /* Día 2 · balsa por el Li en la mañana, bici por los arrozales en la tarde */
   [R("ys-liraft","08:20"),R("g-lunch"),R("ys-bike"),R("g-dinner")]
   /* Día 3 · salida temprano a Chengdu: va en la primera jornada de Chengdu */
@@ -1097,7 +1126,7 @@ zjj:{catalog:[
 ],days:[
   /* Día 1 · 14 may: la mañana todavía es en Chongqing, la noche ya en Wulingyuan */
   [R("g-breakfast","08:00"),R("zjjd0-mirador","09:00"),R("zjjd0-maletas","11:30"),R("zjjd0-comida","12:30"),
-   R("zjj-arrive","14:00"),R("zjjd0-wulingyuan","17:00"),R("zjj-tujia")],
+   R("zjj-arrive"),R("zjjd0-wulingyuan","17:00"),R("zjj-tujia")],
   [R("zjj-avatar","07:30"),R("g-rest"),R("g-dinner")],
   [R("zjj-tianmen","08:00"),R("g-lunch"),R("zjj-glass"),R("g-dinner")]
 ],hotels:[
@@ -1145,7 +1174,7 @@ chongqing:{catalog:[
 ],days:[
   /* Día único · 13 may. Ciqikou de tarde, y Liziba / teleférico / Hongyadong al
      caer la luz. Todas las horas van fijas: los huecos son el traslado. */
-  [R("cq-arrive","09:00"),R("cqd1-checkin","10:30"),R("cq-xiaomian","12:00"),R("cq-ciqikou","13:30"),
+  [R("cq-arrive"),R("cqd1-checkin","10:30"),R("cq-xiaomian","12:00"),R("cq-ciqikou","13:30"),
    R("cq-liziba","16:30"),R("cq-cable","17:30"),R("cq-hotpot","19:00"),R("cq-hongya","20:45"),
    R("cq-cruise","22:00")]
 ],hotels:[
@@ -1167,7 +1196,7 @@ chengdu:{catalog:[
   A("cd-jinli","Wuhou Shrine + Jinli Ancient Street","sight",120),
   A("cd-taikoo","Taikoo Li + río Jin de noche","bar",120)
 ],days:[
-  [R("cd-arrive","11:30"),R("cd-kuanzhai"),R("g-rest"),R("g-dinner"),R("cd-opera","20:00")],
+  [R("cd-arrive"),R("cd-kuanzhai"),R("g-rest"),R("g-dinner"),R("cd-opera","20:00")],
   [R("cd-pandas","07:30"),R("cd-leshan"),R("cd-jinli"),R("g-dinner"),R("cd-taikoo")]
 ],hotels:[
   {name:"The Temple House (Swire)",area:"Taikoo Li",note:"Chic, céntrico, muy romántico"},
@@ -1181,17 +1210,48 @@ chengdu:{catalog:[
 ]},
 
 xian:{catalog:[
-  A("xa-arrive","Tren / vuelo Zhangjiajie → Xi'an","transfer",330,"Transbordo o vuelo vía Changsha, 5–6 h; hotel cerca de la Torre de la Campana"),
-  A("xa-wall","Muralla Ming en bicicleta","sight",120,"14 km sobre la muralla"),
+  A("xa-arrive","Vuelo Zhangjiajie → Xi'an","transfer",270,"DYG → XIY directo 1 h 30; el primer vuelo sale 11:05"),
+  A("xa-checkin","Aeropuerto XIY → hotel + check-in","transfer",105,"Taxi oficial (placas 陕A/陕U); el metro L14+L2 son 2 h con maletas"),
+  A("xa-mur-ir","Hotel → Puerta Sur de la muralla","transfer",25,"A pie 1.5 km por Nan Dajie, o metro L2 a 永宁门 salida D2"),
+  A("xa-ceremonia","Ceremonia de apertura de la ciudad","sight",15,"Gratis y sin subir: guerreros de armadura dorada en la plaza del puente levadizo"),
+  A("xa-mur-boleto","Canje de boletos + renta del tándem","transfer",45,"Extranjeros: canje en ventanilla física (人工窗口) con pasaporte; depósito ¥100"),
+  A("xa-wall","Muralla Ming en tándem al atardecer","sight",100,"Puerta Sur → Puerta Este → regreso, 7–8 km; ocaso 19:40"),
+  A("xa-mur-fin","Devolver el tándem y bajar de la muralla","transfer",20,"La Puerta Sur es la única abierta después de las 20:00"),
+  A("xa-muslim","Cena de picoteo en el Barrio Musulmán","food",105,"Entrar por el oeste: Sajinqiao → Dapiyuan → Beiguangji → Xiyangshi"),
+  A("xa-mur-vuelta","Regreso al hotel","transfer",15,"10 min a pie desde la Torre del Tambor"),
+  A("xa-terra-ir","Hotel → Terracota en coche privado","transfer",90,"40 km; cerrar precio por día completo con hora de regreso escrita"),
+  A("xa-terracota","Ejército de Terracota: Foso 1 → 3 → 2 + Sala de Exposición","tour",195,"Foso 1 primero: los grupos llegan 9:30–10:00","GetYourGuide"),
+  A("xa-shuttle","Shuttle gratis al Lishan Yuan","transfer",35,"Se aborda en el lado oeste de la Puerta Norte; mismo boleto"),
+  A("xa-lishan","Lishan Yuan: carros de bronce + túmulo","sight",90,"Lo que se pierde el 80% de los visitantes"),
+  A("xa-lintong-comida","Comida en Lintong","food",45),
+  A("xa-terra-vuelta","Regreso a la ciudad","transfer",95,"El regreso es el trayecto malo del día"),
+  A("xa-datang-ir","Metro / DiDi al sur de Datang Everbright City","transfer",35,"Bajar en 大唐芙蓉园 (L4) para caminar el bulevar de sur a norte"),
+  A("xa-cena-tang","Cena en 长安大牌档 Chang'an Da Pai Dang","food",90,"Sucursal del B1 de Datang Everbright City; menú en inglés con fotos"),
+  A("xa-datang","Datang Everbright City de sur a norte","sight",60,"Gratis; el efecto real empieza 19:45 y el apogeo es 20:00–22:30"),
+  A("xa-fuentes","Fuentes de la Plaza Norte del Ganso Salvaje","sight",20,"El martes solo hay funciones de 19:00 y 21:00; la buena es la de 21:00"),
+  A("xa-datang-vuelta","Regreso en metro","transfer",40,"Último L3 en 大雁塔 ~23:00: estar en el andén antes de 22:40"),
   A("xa-belldrum","Bell & Drum Tower iluminadas","sight",45),
-  A("xa-muslim","Barrio Musulmán: street food + Gran Mezquita","food",120,"Roujiamo, biangbiang noodles"),
-  A("xa-terracota","Ejército de Terracota (tour privado)","tour",300,"8ª maravilla, tumba de Qin Shi Huang","GetYourGuide"),
-  A("xa-shaanxi","Museo de Historia de Shaanxi o Palacio Huaqing","sight",120),
-  A("xa-pagoda","Gran Pagoda del Ganso Salvaje + fuente","sight",90),
-  A("xa-tang","Show Dinastía Tang + cena de dumplings","tour",150,"Danza y banquete","GetYourGuide")
+  A("xa-shaanxi","Museo de Historia de Shaanxi","sight",150,"CIERRA LOS LUNES; última entrada 16:30 y hay que reservar 5 días antes"),
+  A("xa-pagoda","Gran Pagoda del Ganso Salvaje (ascenso)","sight",90,"Corte de entrada 16:30; probable cierre del ascenso los lunes"),
+  A("xa-huaqing","Palacio Huaqing + termas de Yang Guifei","sight",135,"Entrar antes de las 18:00; el monte Lishan son 3 h más y no cabe"),
+  A("xa-changhenge","Show 长恨歌 Canción del Dolor Eterno (Huaqing)","tour",70,"20:10 · al aire libre con el monte Li de fondo; exige coche contratado","GetYourGuide"),
+  A("xa-tang","Show Dinastía Tang + cena de dumplings","tour",150,"Trampa turística documentada: dumplings fríos y teatro sin ambiente","GetYourGuide")
 ],days:[
-  [R("xa-arrive","13:30"),R("g-rest"),R("xa-wall"),R("xa-belldrum"),R("xa-muslim")],
-  [R("xa-terracota","08:30"),R("g-lunch"),R("xa-shaanxi"),R("xa-pagoda"),R("xa-tang","19:30")]
+  /* Día 1 · lun 17 may. Vuelan porque el tren directo desde Zhangjiajie son
+     9 h 48; el primer vuelo DYG→XIY sale 11:05, así que la tarde empieza a las
+     14:15. La muralla se pedalea al atardecer: ocaso 19:40, farolillos desde 20:00. */
+  [R("xa-arrive"),R("xa-checkin","12:30"),R("g-lunch"),R("g-rest"),R("xa-mur-ir"),
+   R("xa-ceremonia","17:00"),R("xa-mur-boleto"),R("xa-wall","18:15"),R("xa-mur-fin"),
+   R("xa-muslim","20:30"),R("xa-mur-vuelta")],
+  /* Día 2 · mar 18 may. Terracota completo por la mañana (incluido el Lishan
+     Yuan, que casi nadie ve) y la noche Tang en Datang Everbright City, que es
+     gratis y mejor que cualquiera de los shows de pago de la ciudad. */
+  [R("g-breakfast","06:30"),R("xa-terra-ir","07:00"),R("xa-terracota","08:30"),R("xa-shuttle"),
+   R("xa-lishan"),R("xa-lintong-comida"),R("xa-terra-vuelta","14:45"),R("g-rest"),
+   R("xa-datang-ir","17:45"),R("xa-cena-tang","18:30"),R("xa-datang","20:00"),
+   R("xa-fuentes","21:00"),R("xa-datang-vuelta")]
+  /* Día 3 · mié 19 may: desayuno de calle, Torre del Tambor y tren a Pekín.
+     Va en la primera jornada de Pekín, que es donde se duerme esa noche. */
 ],hotels:[
   {name:"Sofitel Legend People's Grand",area:"Renmin Square",note:"Histórico, elegante"},
   {name:"The Ritz-Carlton Xi'an",area:"Centro",note:"Lujo moderno"},
@@ -1203,7 +1263,12 @@ xian:{catalog:[
 ]},
 
 beijing:{catalog:[
-  A("bj-arrive","Tren bala Xi'an → Pekín","transfer",90,"Xi'an N → Pekín Oeste 4.5–6 h; traslado al hotel"),
+  A("bj-arrive","Tren bala Xi'an → Pekín","transfer",255,"Xi'an Norte → Pekín Oeste; el G más rápido hace 4 h 10"),
+  A("bjd0-desayuno","Desayuno de calle en Sajinqiao (Xi'an)","food",60,"胡辣汤 y 甑糕: solo se venden por la mañana"),
+  A("bjd0-torre","Torre del Tambor a la apertura (Xi'an)","sight",60,"Desde la terraza se ve la Torre de la Campana; abre 8:30"),
+  A("bjd0-maletas","Regreso al hotel por las maletas","transfer",45),
+  A("bjd0-estacion","Hotel → estación Xi'an Norte","transfer",75,"Salir 2 h antes del tren; extranjeros pasan por el 人工通道 con pasaporte"),
+  A("bjd0-taxi","Estación Pekín Oeste → hotel + check-in","transfer",75),
   A("bj-temple","Templo del Cielo","sight",120,"Parque y arquitectura imperial"),
   A("bj-duck","Pato laqueado de Pekín","food",105,"Dadong / Siji Minfu / Quanjude"),
   A("bj-qianmen","Qianmen / Wangfujing de noche","sight",75),
@@ -1214,7 +1279,10 @@ beijing:{catalog:[
   A("bj-hutong","Hutongs de Houhai en rickshaw + patio","tour",120,"Visita a un siheyuan"),
   A("bj-houhai","Bares de Houhai","bar",90)
 ],days:[
-  [R("bj-arrive","14:00"),R("bj-temple"),R("g-rest"),R("bj-duck","19:00"),R("bj-qianmen")],
+  /* Día 1 · mié 19 may: la mañana todavía es en Xi'an y el tren se lleva la
+     tarde, así que el Templo del Cielo se movió a otro día. */
+  [R("bjd0-desayuno","07:00"),R("bjd0-torre","08:30"),R("bjd0-maletas"),R("bjd0-estacion","10:30"),
+   R("bj-arrive"),R("bjd0-taxi"),R("bj-duck","19:00"),R("bj-qianmen")],
   [R("bj-wall","07:30"),R("g-rest"),R("g-dinner"),R("bj-acro","19:45")],
   [R("bj-forbidden","08:30"),R("g-lunch"),R("bj-jingshan"),R("bj-hutong"),R("g-rest"),R("g-dinner"),R("bj-houhai")]
 ],hotels:[
@@ -1258,7 +1326,7 @@ shanghai:{catalog:[
   A("sh-fcc","Concesión Francesa: Tianzifang + Xintiandi","sight",180,"Calles arboladas, cafés, boutiques"),
   A("sh-farewell","Cena de despedida","food",120)
 ],days:[
-  [R("sh-arrive","15:00"),R("g-rest"),R("sh-bund"),R("sh-xlb"),R("sh-rooftop")],
+  [R("sh-arrive"),R("g-rest"),R("sh-bund"),R("sh-xlb"),R("sh-rooftop")],
   [R("sh-yu"),R("sh-jade"),R("g-lunch"),R("sh-tower"),R("sh-nanjing"),R("g-rest"),R("g-dinner"),R("sh-cruise","20:00")],
   [R("sh-zhu","09:00"),R("sh-fcc"),R("g-free"),R("sh-farewell")]
 ],hotels:[
@@ -1358,14 +1426,28 @@ const DEFAULT_COSTS={
   "cd-pandas":[["Entradas base de pandas (2)",300],["Tour + transporte",1200]],
   "cd-leshan":[["Gran Buda de Leshan tour (2)",2100]],
   "cd-taikoo":[["Copas en Taikoo Li (2)",600]],
-  // Xi'an
-  "xa-wall":[["Muralla + bici (2)",500]],
-  "xa-belldrum":[["Torre Campana / Tambor (2)",250]],
-  "xa-muslim":[["Street food Barrio Musulmán (2)",400]],
-  "xa-terracota":[["Entradas Terracota (2)",600],["Tour privado guía + chofer",2600]],
-  "xa-shaanxi":[["Museo / Palacio Huaqing (2)",500]],
-  "xa-pagoda":[["Gran Pagoda del Ganso (2)",250]],
+  // Xi'an · día 1 (llegada y muralla)
+  "xa-checkin":[["Taxi XIY → hotel (2)",380]],
+  "xa-wall":[["Muralla + tándem (2)",500]],
+  "xa-muslim":[["Picoteo Barrio Musulmán (2)",400]],
+  // Xi'an · día 2 (Terracota y noche Tang)
+  "xa-terracota":[["Entradas Terracota (2)",588],["Chofer privado día completo",2600],["Audioguías (2)",147]],
+  "xa-lintong-comida":[["Comida en Lintong (2)",450]],
+  "xa-datang-ir":[["Metro / DiDi (2)",75]],
+  "xa-cena-tang":[["Cena Chang'an Da Pai Dang (2)",550]],
+  "xa-datang-vuelta":[["Metro (2)",15]],
+  // Xi'an · en el catálogo pero fuera del plan
+  "xa-belldrum":[["Torre Campana / Tambor (2)",245]],
+  "xa-shaanxi":[["Museo de Historia de Shaanxi (2)",0]],
+  "xa-pagoda":[["Templo Da Ci'en + ascenso (2)",319]],
+  "xa-huaqing":[["Palacio Huaqing (2)",588]],
+  "xa-changhenge":[["Show 长恨歌, zona Centro A (2)",1901]],
   "xa-tang":[["Show Tang + cena dumplings (2)",1800]],
+  // Pekín · mañana del miércoles, todavía en Xi'an
+  "bjd0-desayuno":[["Desayuno de calle (2)",100]],
+  "bjd0-torre":[["Torre del Tambor (2)",150]],
+  "bjd0-estacion":[["DiDi hotel → Xi'an Norte (2)",150]],
+  "bjd0-taxi":[["Taxi estación → hotel (2)",200]],
   // Pekín
   "bj-temple":[["Templo del Cielo (2)",200]],
   "bj-duck":[["Pato laqueado (2)",1200]],
@@ -1439,7 +1521,10 @@ function seedCustomBase(name,idx){
     budget:{lodgingEst:0,lodgingReal:0,miscEst:0,miscReal:0},
     hotels:[],food:[],expanded:true,tab:"plan",day:0};
 }
-function defaultLegs(){return{"_arrive":{dep:"",arr:"05:45",note:""},"_depart":{dep:"",arr:"",note:""}};}
+function defaultLegs(){
+  const I=VUELOS_INTL.ida,V=VUELOS_INTL.vuelta;
+  return{"_arrive":{dep:I.sale,arr:I.llega,note:""},
+         "_depart":{dep:V.sale,arr:V.llega,note:""}};}
 function freshState(){
   const bases={};DEFAULT_BASES.forEach(b=>{bases[b.id]=seedBase(b);});
   // primero las paradas de ROUTE, en su orden; luego las que quedan fuera del plan
@@ -1449,7 +1534,7 @@ function freshState(){
     meta:{titulo:"Luna de miel · China 2027",subtitulo:"Itinerario hora por hora con motor de horarios.",
       eyebrow:tripEyebrow(),inicio:isoDia(new Date(TRIP_START)),personas:2,
       noches:AVAILABLE_NIGHTS,hasMap:true},
-    budget:{flightsEst:0,flightsReal:0},costsSeeded:true,rutaVersion:ROUTE_VERSION};}
+    budget:{flightsEst:0,flightsReal:0},costsSeeded:true};}
 
 /* ---- Comparativa de hoteles de Hong Kong (investigación may 2027) ----
    Base de todas las cotizaciones: 6–9 may 2027 · 3 noches · 2 adultos ·
@@ -1746,7 +1831,7 @@ function migrarDia3HK(s){
    conviene recortar. Todas las horas van fijas, así que los huecos entre una y
    otra son el traslado. */
 const CQ_DIA1_2027=[
-  {cid:"cq-arrive",dur:90,fixed:"09:00"},        // el nombre lo pone la ruta (XFER)
+  {cid:"cq-arrive"},                             // texto, duración y hora: de ROUTE/XFER
   {cid:"cqd1-checkin",name:"Llegada a Chongqing + check-in / dejar maletas",type:"transfer",dur:60,fixed:"10:30",
    costos:[["Taxi estación → hotel (2)",150]],
    note:"<b>Estación Chongqing Norte (o Shapingba).</b> Taxi al hotel en Jiefangbei / Yuzhong, 20–30 min.<br>"+
@@ -1796,7 +1881,7 @@ const ZJJ_DIA1_2027=[
   {cid:"zjjd0-comida",name:"Comida ligera cerca de la estación",type:"food",dur:60,fixed:"12:30",
    costos:[["Comida ligera (2)",350]],
    note:"Algo ligero: vienen 2 h de tren por delante."},
-  {cid:"zjj-arrive",dur:120,fixed:"14:00"},      // el nombre lo pone la ruta (XFER)
+  {cid:"zjj-arrive"},                            // texto, duración y hora: de ROUTE/XFER
   {cid:"zjjd0-wulingyuan",name:"Traslado a Wulingyuan y check-in",type:"transfer",dur:60,fixed:"17:00",
    costos:[["Traslado a Wulingyuan (2)",550]],
    note:"<b>Zhangjiajie West → Wulingyuan</b>, unos 40 min en coche.<br>"+
@@ -1839,10 +1924,220 @@ const YANGSHUO_V2={
      note:"Llegada tranquila: check-in, alberca y vistas a los picos",src:""}
   ],
   days:[
-    {start:"13:00",items:[["ys-arrive","13:00"],["ys-alberca",null],["ys-beerfish","18:15"],["ys-impression","20:00"]]},
+    {start:"09:15",items:[["ys-arrive",null],["ys-alberca",null],["ys-beerfish","18:15"],["ys-impression","20:00"]]},
     {start:"08:20",items:[["ys-liraft","08:20"],["g-lunch",null],["ys-bike",null],["g-dinner",null]]}
   ]
 };
+/* ---- Dos días que quedaron chocando al cuadrar los vuelos ----
+   1. Hong Kong día 1. El vuelo de Tokio aterriza a las 19:40, así que el día
+      de llegada es solo eso: llegar y cenar. El programa que traía (Peak, Tim
+      Ho Wan, SoHo, Star Ferry, Symphony of Lights) ya estaba duplicado en el
+      día 2, que se rearmó como recorrido a pie con el Peak y el yate desde el
+      que se ve la Symphony. Todo sigue en el catálogo de la parada.
+   2. Chengdu día 1. El tren de 7 h ahora sale a las 8:00 y llega a las 15:00;
+      con el descanso de 90 min la cena se comía la Ópera de Sichuan de las
+      20:00. El descanso baja a 45 min y todo cuadra. */
+const HK_LLEGADA_2027=[
+  {cid:"hk-arrive",dur:90,fixed:"19:40",
+   note:"<b>Vuelo Tokio (escala) → Hong Kong, aterriza 19:40.</b> Migración, maletas y traslado al hotel: "+
+        "cuenten 90 min hasta estar en la habitación.<br>"+
+        "<i>Vienen de casi 30 h de viaje desde Monterrey. El día de llegada no da para más que cenar.</i>"},
+  {cid:"hk-dinner-tst",dur:75,
+   note:"<b>Cena tardía en Tsim Sha Tsui</b>, cerca del hotel. Muchos locales de la zona sirven hasta "+
+        "pasada la medianoche.<br>"+
+        "<i>Si les queda cuerda, el Temple Street Night Market está a un paso y aguanta hasta las 23:00.</i>"}
+];
+function migrarLlegadas(s){
+  if(s.llegadasV1)return;
+  sembrarDia(s.bases&&s.bases.hk,0,HK_LLEGADA_2027,"19:40");
+  const cd=s.bases&&s.bases.chengdu;               // el descanso previo a la ópera
+  if(cd&&Array.isArray(cd.catalog)){
+    const rest=cd.catalog.find(a=>a.cid==="g-rest");
+    if(rest)rest.dur=45;
+  }
+  s.llegadasV1=true;
+}
+
+/* ---- Xi'an: llegada y muralla el lunes, Terracota y noche Tang el martes ----
+   La parada tiene 2 noches: lunes 17 (llegada) y martes 18 (día completo). La
+   mañana del miércoles 19 cae en el primer día de Pekín, que es donde duermen
+   esa noche.
+
+   Tres datos verificados en la web (ago 2026) que decidieron este plan:
+     · El Museo de Historia de Shaanxi CIERRA LOS LUNES y su última entrada es
+       16:30 — el lunes está cerrado y el martes se lo come Terracota, así que
+       queda fuera del itinerario (sigue en el catálogo por si se reacomoda).
+     · El tren directo Zhangjiajie Oeste → Xi'an Norte es uno al día y tarda
+       9 h 48. Solo funciona volando, y el primer DYG→XIY sale 11:05.
+     · Terracota abre los 7 días pero deja de checar boletos a las 17:00, y los
+       boletos se liberan 7 días antes (para el mar 18 → el mar 11 de mayo).
+
+   Las horas fijas del lunes son la ceremonia de las 17:00 y el atardecer
+   (ocaso 19:40); las del martes, la apertura de Terracota y las fuentes de las
+   21:00. Los huecos entre actividades son el traslado. */
+const XA_DIA1_2027=[
+  {cid:"xa-arrive"},                             // texto, duración y hora: de ROUTE/XFER
+  {cid:"xa-checkin",name:"Aeropuerto XIY → hotel + check-in",type:"transfer",dur:105,fixed:"12:30",
+   costos:[["Taxi XIY → hotel (2)",380]],
+   note:"<b>Taxi oficial</b>, placas 陕A o 陕U, ¥130-165. El metro L14 + L2 son <b>más de 2 h</b> con maletas.<br>"+
+        "<i>El aeropuerto está en Xianyang, a una hora larga del centro: no lo subestimen.</i>"},
+  {cid:"g-lunch",dur:60},
+  {cid:"g-rest",dur:75,note:"Llevan desde las 8 de la mañana moviéndose."},
+  {cid:"xa-mur-ir",name:"Hotel → Puerta Sur de la muralla",type:"transfer",dur:25,
+   note:"A pie 1.5 km por 南大街, o <b>metro L2 una parada a 永宁门, salida D2</b> (2 min a la taquilla)."},
+  {cid:"xa-ceremonia",name:"Ceremonia de apertura de la ciudad",type:"sight",dur:15,fixed:"17:00",
+   note:"<b>Gratis y sin subir a la muralla.</b> Guerreros de armadura dorada en la plaza del puente "+
+        "levadizo de la Puerta Sur. Hay otra a las 9:00 y formación de guerreros 10:30 y 16:30."},
+  {cid:"xa-mur-boleto",name:"Canje de boletos + renta del tándem",type:"transfer",dur:45,
+   note:"<b>⚠ Extranjeros: el QR no basta.</b> Hay que canjearlo por comprobante en papel en la "+
+        "<b>ventanilla física (人工窗口)</b> con pasaporte, y luego escanear papel + reconocimiento facial. "+
+        "Depósito del tándem ¥100.<br>"+
+        "<i>Pregunten la duración exacta de la renta ANTES de pagar: las fuentes dicen 100 min o 3 h, "+
+        "y de eso depende si alcanzan la vuelta completa. Recargo ¥10 por cada 10 min.</i>"},
+  {cid:"xa-wall",name:"Muralla Ming en tándem al atardecer",type:"sight",dur:100,fixed:"18:15",
+   note:"<b>Puerta Sur → Puerta Este → regreso</b>, 7-8 km. La vuelta completa son 13.74 km y "+
+        "1h45-2h sin parar: con renta de 100 min no cabe.<br>"+
+        "<b>Ocaso 19:40; los farolillos se ven bien desde las 20:00.</b><br>"+
+        "<i>El boleto es de UNA SOLA ENTRADA: si bajan y salen, se anula. Y no la caminen: son "+
+        "3.5-4 h sin sombra sobre ladrillo irregular.</i>"},
+  {cid:"xa-mur-fin",name:"Devolver el tándem y bajar de la muralla",type:"transfer",dur:20,
+   note:"Devolución en la <b>Puerta Sur</b>: las puertas Norte, Este y Oeste cierran a las 20:00 en punto."},
+  {cid:"xa-muslim",name:"Cena de picoteo en el Barrio Musulmán",type:"food",dur:105,fixed:"20:30",
+   note:"<b>Entren por el OESTE, no por Beiyuanmen.</b> Ruta: 洒金桥 Sajinqiao → 大皮院 Dapiyuan → "+
+        "北广济街 → 西羊市 Xiyangshi → 北院门 Beiyuanmen al final.<br>"+
+        "<u>Qué pedir:</u><ul>"+
+        "<li><b>定家小酥肉</b> (Dapiyuan) — res empanizada frita y al vapor, se deshace con los palillos</li>"+
+        "<li><b>贾三灌汤包</b>, sede de 西羊市121 — dumplings de sopa. NO la sucursal de Beiyuanmen</li>"+
+        "<li><b>盛志望麻酱凉皮</b> — fideos fríos con ajonjolí</li>"+
+        "<li><b>柿子饼</b> de 伊古斋 — buñuelos de caqui, cómanselos calientes</li></ul>"+
+        "<b>⚠ TRAMPA: el bloque de nuez de Xinjiang (切糕).</b> Anuncian precio por pieza y cobran POR GRAMO "+
+        "después de cortarles un pedazo. Hay casos de ¥500 por un trozo del tamaño de la palma. "+
+        "<b>Si les acercan un cuchillo a ese bloque, digan que no y sigan caminando.</b>"},
+  {cid:"xa-mur-vuelta",name:"Regreso al hotel",type:"transfer",dur:15,
+   note:"10 min a pie desde la Torre del Tambor."}
+];
+const XA_DIA2_2027=[
+  {cid:"g-breakfast",dur:30,fixed:"06:30"},
+  {cid:"xa-terra-ir",name:"Hotel → Terracota en coche privado",type:"transfer",dur:90,fixed:"07:00",
+   note:"<b>40 km.</b> Saliendo a las 7:00 son 55-65 min de carretera más 20-25 de caminata interna.<br>"+
+        "<i>Cierren precio por DÍA COMPLETO con la hora de regreso ESCRITA, no por base de 5 h + extras. "+
+        "¥900-1,400 sin guía. No usen el bus 游5/306: el paradero cambió en 2019 y las guías en inglés "+
+        "siguen mandando a la plaza equivocada, donde operan los buses-trampa.</i>"},
+  {cid:"xa-terracota",name:"Ejército de Terracota: Foso 1 → 3 → 2 + Sala de Exposición",type:"tour",dur:195,fixed:"08:30",
+   note:"<b>Abre 8:30 · deja de checar boletos a las 17:00 · cierra 18:30. Abre los 7 días.</b><br>"+
+        "<b>Foso 1 primero:</b> los grupos aterrizan entre 9:30 y 10:00. Luego Foso 3, Foso 2 y la Sala de Exposición.<br>"+
+        "<b>Del estacionamiento al Foso 1 hay 20-25 min de caminata</b> — está señalizado, nadie los "+
+        "tiene que 'ayudar'.<br>"+
+        "<b>Contraten audioguía (¥30 c/u) como mínimo:</b> sin ella el Foso 1 son estatuas a 40 m detrás "+
+        "de una barandilla.<br>"+
+        "<i>⚠ Reserva nominativa con pasaporte, 7 días antes = martes 11 de mayo de 2027 en bmy.com.cn. "+
+        "Pidan la franja de 8:30-9:30. La hora de liberación está en disputa (00:00, 17:00 o 20:00 hora "+
+        "de Pekín): cubran las tres con los datos de pasaporte ya capturados.</i>"},
+  {cid:"xa-shuttle",name:"Shuttle gratis al Lishan Yuan",type:"transfer",dur:35,
+   note:"Se aborda en el <b>lado OESTE de la Puerta Norte</b> del museo de los guerreros y llega a la "+
+        "Puerta Este del Lishan Yuan. <b>Es gratis con el mismo boleto.</b> 10-15 min de trayecto + 10-20 de espera."},
+  {cid:"xa-lishan",name:"Lishan Yuan: carros de bronce + túmulo",type:"sight",dur:90,
+   note:"<b>Esto es lo que se pierde el 80% de los visitantes.</b> Los carros de bronce ya no están junto "+
+        "a los fosos: están aquí, y son objetivamente las piezas mejor conservadas del complejo. "+
+        "También el túmulo del emperador, el foso K9901 de los acróbatas y el K0006.<br>"+
+        "<i>Todo entra en el mismo boleto de ¥120.</i>"},
+  {cid:"xa-lintong-comida",name:"Comida en Lintong",type:"food",dur:45,
+   costos:[["Comida en Lintong (2)",450]]},
+  {cid:"xa-terra-vuelta",name:"Regreso a la ciudad",type:"transfer",dur:95,fixed:"14:45",
+   note:"<b>El regreso es el trayecto malo del día:</b> 1h45-2h05 si salen entre las 17:00 y las 19:30. "+
+        "Saliendo a las 14:45 son unos 95 min."},
+  {cid:"g-rest",dur:75,note:"Descanso y cambiarse: la noche Tang termina pasadas las 22:00."},
+  {cid:"xa-datang-ir",name:"Metro / DiDi al sur de Datang Everbright City",type:"transfer",dur:35,fixed:"17:45",
+   costos:[["Metro / DiDi (2)",75]],
+   note:"<b>Bajen en 大唐芙蓉园 (L4)</b>, no en 大雁塔: así caminan el bulevar <b>de SUR a NORTE</b> y "+
+        "terminan en la pagoda justo para las fuentes. El trayecto largo va a favor."},
+  {cid:"xa-cena-tang",name:"Cena en 长安大牌档 Chang'an Da Pai Dang",type:"food",dur:90,fixed:"18:30",
+   costos:[["Cena Chang'an Da Pai Dang (2)",550]],
+   note:"<b>Sucursal del B1 de Datang Everbright City.</b> Taberna estilo Tang con meseros de época y "+
+        "<b>menú en inglés con fotos</b>. Todo Shaanxi en una sentada: <b>葫芦鸡</b> (pollo calabaza), "+
+        "biangbiang estirados frente a la mesa, paomo, liangpi, 甑糕.<br>"+
+        "<i>Espera de 30-60 min en hora pico: saquen ficha y paseen mientras. ¥160-260 los dos.</i><br>"+
+        "<i>Nota: Michelin NO cubre Xi'an. Cualquier restaurante que se anuncie con estrella miente. "+
+        "Guarden el presupuesto de alta cocina para Pekín.</i>"},
+  {cid:"xa-datang",name:"Datang Everbright City de sur a norte",type:"sight",dur:60,fixed:"20:00",
+   note:"<b>Gratis, y mejor espectáculo que cualquiera de los shows de pago de la ciudad.</b> "+
+        "Encendido nominal 18:30, pero el efecto real empieza 19:45-20:00 porque el sol se mete a las 19:40. "+
+        "Después de las 21:00 el gentío baja como 60%.<br>"+
+        "<u>Shows callejeros que vale la pena cronometrar</u> (cartelera en Weibo @西安大唐不夜城):"+
+        "<ul><li><b>盛唐密盒</b> 'Caja Secreta' — 19:00 / 20:00 / 21:00 / 22:00</li>"+
+        "<li><b>不倒翁小姐姐</b> 'Señorita Tentetieso' — 19:30 / 20:30 / 21:30</li>"+
+        "<li><b>太白灯彩</b> con el poeta Li Bai — ~20:25</li></ul>"+
+        "<i>De día no vale nada: las guías chinas dicen literalmente 不建议白天特地前往.</i>"},
+  {cid:"xa-fuentes",name:"Fuentes de la Plaza Norte del Ganso Salvaje",type:"sight",dur:20,fixed:"21:00",
+   note:"<b>Gratis, 10 min de función. El martes solo hay dos: 19:00 y 21:00</b> (las de 12:00 y 16:00 "+
+        "se cancelan por mantenimiento). <b>La de las 19:00 se ve a plena luz: la buena es la de las 21:00.</b><br>"+
+        "<i>Párense mirando al SUR, con la pagoda de fondo detrás del agua — plataforma del tercer nivel "+
+        "o escaleras del 山门 del templo. Lleguen 20 min antes.</i>"},
+  {cid:"xa-datang-vuelta",name:"Regreso en metro",type:"transfer",dur:40,
+   costos:[["Metro (2)",15]],
+   note:"<b>Conseguir DiDi ahí entre 21:30 y 22:30 es difícil</b>, mejor el metro. "+
+        "<b>Último L3 en 大雁塔 alrededor de las 23:00: estén en el andén antes de las 22:40.</b>"}
+];
+/* 19 de mayo · la mañana todavía es en Xi'an y el tren se lleva la tarde. Va en
+   el primer día de Pekín porque esa noche ya se duerme allá.
+   El tren se movió a las 12:30 (no 11:00) para que quepa la Torre del Tambor:
+   con salida a las 11:00 hay que dejar el hotel a las 9:00 y no da tiempo.
+   A cambio, el Templo del Cielo sale de esta tarde y hay que reacomodarlo. */
+const BJ_DIA1_2027=[
+  {cid:"bjd0-desayuno",name:"Desayuno de calle en Sajinqiao (Xi'an)",type:"food",dur:60,fixed:"07:00",
+   costos:[["Desayuno de calle (2)",100]],
+   note:"<b>胡辣汤</b> (sopa espesa de desayuno; el picor es de <b>pimienta blanca</b>, punzante en la "+
+        "garganta, no de chile) y <b>甑糕</b> (pastel de arroz glutinoso con dátil).<br>"+
+        "<i>Las dos cosas solo se venden por la mañana y se acaban: se pierden si desayunan en el bufet del hotel.</i>"},
+  {cid:"bjd0-torre",name:"Torre del Tambor a la apertura (Xi'an)",type:"sight",dur:60,fixed:"08:30",
+   costos:[["Torre del Tambor (2)",150]],
+   note:"<b>¥30 por persona. Abre 8:30.</b> Si suben a una sola torre, que sea esta: se ve la Torre de la "+
+        "Campana iluminada desde la terraza, tiene el mayor tambor de China y está pegada al Barrio Musulmán.<br>"+
+        "<i>Confirmen la cartelera de funciones del día en la taquilla del paso subterráneo: los calendarios "+
+        "que circulan se contradicen.</i>"},
+  {cid:"bjd0-maletas",name:"Regreso al hotel por las maletas",type:"transfer",dur:45},
+  {cid:"bjd0-estacion",name:"Hotel → estación Xi'an Norte",type:"transfer",dur:75,fixed:"10:30",
+   costos:[["DiDi hotel → Xi'an Norte (2)",150]],
+   note:"<b>Salgan del hotel 2 h antes del tren.</b> DiDi 35-50 min + 12-15 min de caminata interna en 北客站.<br>"+
+        "<b>⚠ Los extranjeros pasan por el 人工通道</b> (canal manual con pasaporte), no por los torniquetes "+
+        "automáticos. El torniquete de andén cierra <b>3-5 min ANTES</b> de la salida."},
+  {cid:"bj-arrive"},                             // texto, duración y hora: de ROUTE/XFER
+  {cid:"bjd0-taxi",name:"Estación Pekín Oeste → hotel + check-in",type:"transfer",dur:75,
+   costos:[["Taxi estación → hotel (2)",200]]},
+  {cid:"bj-duck",fixed:"19:00"},
+  {cid:"bj-qianmen"}
+];
+function migrarXian(s){
+  if(s.xaPlanV1)return;
+  sembrarDia(s.bases&&s.bases.xian,0,XA_DIA1_2027,"08:00");
+  sembrarDia(s.bases&&s.bases.xian,1,XA_DIA2_2027,"06:30");
+  sembrarDia(s.bases&&s.bases.beijing,0,BJ_DIA1_2027,"07:00");
+  s.xaPlanV1=true;
+}
+
+/* Los horarios reales de los dos vuelos internacionales y de la escala de Tokio. */
+function migrarVuelosIntl(s){
+  if(s.vuelosIntlV1)return;
+  if(!s.bases||!s.bases.hk){s.vuelosIntlV1=true;return;}   // solo el viaje de China
+  const I=VUELOS_INTL.ida,V=VUELOS_INTL.vuelta;
+  s.legs=s.legs||{};
+  const A=s.legs._arrive=s.legs._arrive||{dep:"",arr:"",note:""};
+  A.dep=I.sale;A.arr=I.llega;
+  if(!Array.isArray(A.costs))A.costs=[];
+  if(!Array.isArray(A.escalas))A.escalas=[];
+  const esc=A.escalas[0];
+  if(esc){                       // la escala de Tokio ya existe: se le ponen las horas
+    esc.lugar=I.escala.lugar;
+    esc.llegada=I.escala.llegada;
+    esc.salida=I.escala.salida;
+    esc.fecha=isoDia(vueloIdaLlega());
+  }
+  const D=s.legs._depart=s.legs._depart||{dep:"",arr:"",note:""};
+  D.dep=V.sale;D.arr=V.llega;
+  if(!Array.isArray(D.costs))D.costs=[];
+  if(!Array.isArray(D.escalas))D.escalas=[];
+  s.vuelosIntlV1=true;
+}
 function migrarRuta(s){
   if(s.rutaVersion===ROUTE_VERSION)return;
   if(!s.bases||!s.bases.hk){s.rutaVersion=ROUTE_VERSION;return;}   // solo el viaje de China
@@ -1868,26 +2163,13 @@ function migrarRuta(s){
   s.meta.noches=AVAILABLE_NIGHTS;
   s.meta.eyebrow=tripEyebrow();
 
-  // 5. el texto de cada llegada se re-escribe con el tramo que la trae
-  enRuta.forEach((id,i)=>{
-    const st=s.bases[id],cid=ARRIVE_CID[id];
-    if(!st||!cid||!Array.isArray(st.catalog))return;
-    const act=st.catalog.find(a=>a.cid===cid);if(!act)return;
-    const fijo=ARRIVE_FIJO[cid];
-    if(fijo){act.name=fijo.name;act.note=fijo.note;return;}
-    const prev=i>0?s.bases[enRuta[i-1]]:null;if(!prev)return;
-    const x=getXfer(enRuta[i-1],id);
-    act.name=x.mode+" "+prev.name+" → "+st.name;
-    act.note=x.detail+" · "+x.time;
-  });
-
-  // 6. costo de la llegada a Kyoto: ahora es el vuelo Shanghái → Osaka
+  // 5. costo de la llegada a Kyoto: ahora es el vuelo Shanghái → Osaka
   const ky=s.bases.kyoto&&(s.bases.kyoto.catalog||[]).find(a=>a.cid==="ky-arrive");
   if(ky)ky.costs=[{id:uid(),label:"Vuelo Shanghái → Osaka KIX + JR Haruka a Kyoto (2)",est:8630,real:0}];
   const tk=s.bases.tokyo&&(s.bases.tokyo.catalog||[]).find(a=>a.cid==="tk-arrive");
   if(tk)tk.costs=[{id:uid(),label:"Tren bala Kyoto → Tokio (2)",est:3300,real:0}];
 
-  // 7. Yangshuo: plan nuevo de 2 noches
+  // 6. Yangshuo: plan nuevo de 2 noches
   const ys=s.bases.yangshuo;
   if(ys&&Array.isArray(ys.catalog)){
     YANGSHUO_V2.catalog.forEach(a=>{
@@ -1905,6 +2187,32 @@ function migrarRuta(s){
     // ofrece traerlo al último día o descartarlo desde la tarjeta de la parada
     if(ys.day>=YANGSHUO_V2.days.length)ys.day=0;
   }
+
+  // 7. Al final, con todos los días ya sembrados: cada llegada toma del tramo
+  //    su texto y su duración, y de ROUTE la hora a la que arrancan. Así la
+  //    hora a la que aterrizan se calcula sola y no hay que volver a cuadrarla
+  //    a mano cada vez que se reordena la ruta.
+  enRuta.forEach((id,i)=>{
+    const st=s.bases[id],cid=ARRIVE_CID[id];
+    if(!st||!cid||!Array.isArray(st.catalog))return;
+    const x=i>0?getXfer(enRuta[i-1],id):null;
+    const act=st.catalog.find(a=>a.cid===cid);
+    if(act){
+      if(x&&x.dur)act.dur=x.dur;                    // duración puerta a puerta
+      const fijo=ARRIVE_FIJO[cid];
+      if(fijo){act.name=fijo.name;act.note=fijo.note;}
+      else if(x){
+        const prev=s.bases[enRuta[i-1]];
+        if(prev){act.name=x.mode+" "+prev.name+" → "+st.name;
+                 act.note=x.detail+" · "+x.time;}
+      }
+    }
+    const sale=routeSale(id);                        // hora de salida, de ROUTE
+    if(sale&&st.schedule&&Array.isArray(st.schedule[0])){
+      const it=st.schedule[0].find(y=>y.ref===cid);
+      if(it)it.fixed=sale;
+    }
+  });
 
   s.rutaVersion=ROUTE_VERSION;
 }
@@ -1967,7 +2275,10 @@ function normalizeTripState(s){
   migrarExtrasHK(s);
   migrarDia3HK(s);
   migrarChongqing(s);
+  migrarXian(s);
+  migrarLlegadas(s);
   migrarEscalaTokio(s);
+  migrarVuelosIntl(s);
   migrarRuta(s);          // deja el viaje con el orden y las noches de ROUTE
   return s;
 }
@@ -2595,8 +2906,8 @@ function renderCards(){
     if(on&&dd&&b.id===firstActiveId)
       holder.appendChild(makeRibbon(state.meta&&state.meta.hasMap
         ? xferRibbonHTML("_arrive","intl","Vuelo internacional",
-            "Guadalajara (GDL) → Tokio (escala) → "+b.name,
-            fmt(addDays(dd.checkin,-1))+" → "+fmt(dd.checkin))
+            VUELOS_INTL.ida.origen+" → "+VUELOS_INTL.ida.escala.lugar+" (escala) → "+b.name,
+            fmt(vueloIdaSale())+" "+VUELOS_INTL.ida.sale+" → "+fmt(dd.checkin)+" "+VUELOS_INTL.ida.llega)
         : xferRibbonHTML("_arrive","intl","Viaje de ida","→ "+b.name,"")));
     holder.appendChild(leg);
     if(on&&dd){const nx=dated[dated.indexOf(dd)+1];
@@ -2605,7 +2916,8 @@ function renderCards(){
       else // última parada activa → tramo internacional de regreso
         holder.appendChild(makeRibbon(state.meta&&state.meta.hasMap
           ? xferRibbonHTML("_depart","intl","Vuelo internacional",
-              b.name+" → Guadalajara (GDL)",fmt(dd.checkout)+" · mismo día (noche)")
+              b.name+" → "+VUELOS_INTL.vuelta.destino,
+              fmt(dd.checkout)+" · sale "+VUELOS_INTL.vuelta.sale+", llega "+VUELOS_INTL.vuelta.llega+" el mismo día")
           : xferRibbonHTML("_depart","intl","Viaje de vuelta",b.name+" →","")));
     }
   });
@@ -3826,8 +4138,11 @@ function wireCardEvents(){
 function buildTransportItems(){
   const active=activeBases();
   const items=(state.meta&&state.meta.hasMap)?[{grp:"Vuelos internacionales"},
-    {id:"fl-intl-out",t:"Guadalajara (GDL) → Tokio (NRT/HND)",s:"sale 5 may · llega 7 may"},
-    {id:"fl-intl-ret",t:"Shanghái (PVG) → Guadalajara (GDL)",s:"sale 29 may · llega mismo día (noche)"}]:[];
+    {id:"fl-intl-out",t:VUELOS_INTL.ida.origen+" → "+VUELOS_INTL.ida.escala.lugar+" → "+VUELOS_INTL.ida.destino,
+     s:"sale "+fmt(vueloIdaSale())+" "+VUELOS_INTL.ida.sale+" · escala en Tokio "+VUELOS_INTL.ida.escala.llegada
+       +"–"+VUELOS_INTL.ida.escala.salida+" · llega "+fmt(vueloIdaLlega())+" "+VUELOS_INTL.ida.llega},
+    {id:"fl-intl-ret",t:VUELOS_INTL.vuelta.origen+" → "+VUELOS_INTL.vuelta.destino,
+     s:"sale "+fmt(vueloVuelta())+" "+VUELOS_INTL.vuelta.sale+" · llega "+VUELOS_INTL.vuelta.llega+" el mismo día"}]:[];
   const air=[],rail=[],road=[];
   for(let i=0;i<active.length-1;i++){const a=active[i].def,b=active[i+1].def,x=getXfer(a.id,b.id);
     const row={id:"tr-"+a.id+"-"+b.id,t:`${a.name} → ${b.name}`,s:`${x.mode} · ${x.detail} · ${x.time}`};

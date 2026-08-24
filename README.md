@@ -83,22 +83,39 @@ Todo el itinerario (orden de paradas, noches y fechas) vive en un solo bloque de
 const TRIP_START=new Date(2027,4,6);   // 6 de mayo de 2027 (en JS el mes 4 es mayo)
 const AVAILABLE_NIGHTS=23;             // noches del 6 al 29 de mayo
 const ROUTE=[
-  {id:"hk",       nights:3},   //  6 →  9 may
-  {id:"yangshuo", nights:2},   //  9 → 11 may
+  {id:"hk",       nights:3},                //  6 →  9 may
+  {id:"yangshuo", nights:2, sale:"09:15"},  //  9 → 11 may · llega 13:00
   ...
 ];
 const ROUTE_DROP=["osaka"];   // paradas que se eliminan por completo del viaje
-const ROUTE_VERSION=3;        // súbela al editar ROUTE para reaplicar la ruta
+const ROUTE_VERSION=4;        // súbela al editar ROUTE para reaplicar la ruta
 ```
+
+Cada tramo de `XFER` lleva su duración **puerta a puerta** en minutos:
+
+```js
+"hk|yangshuo":{mode:"Tren bala", detail:"West Kowloon → Yangshuo",
+               time:"3.5–4 h", dur:225, type:"rail"},
+```
+
+De ahí sale la duración de la actividad de llegada, y `sale` en `ROUTE` es la hora
+a la que arrancan. **La hora a la que aterrizan se calcula sola:** no hay que
+volver a cuadrarla a mano cada vez que se reordena la ruta.
 
 Para cambiar la ruta:
 
 1. Mueve, quita o agrega renglones en `ROUTE`. **El orden de la lista es el orden
-   del viaje** y `nights` son las noches que se duermen en cada parada.
+   del viaje**, `nights` son las noches que se duermen en cada parada y `sale` la
+   hora a la que salen hacia ella.
 2. Si aparece un tramo nuevo, agrégalo a la tabla `XFER` con la clave
-   `"origen|destino"` (modo, detalle, duración y `type`: `rail`, `air` o `road`).
+   `"origen|destino"` (modo, detalle, texto de duración, `dur` en minutos y
+   `type`: `rail`, `air` o `road`).
 3. Ajusta `TRIP_START` y `AVAILABLE_NIGHTS` si cambian las fechas.
 4. **Sube `ROUTE_VERSION` en 1.**
+
+Los vuelos internacionales viven en el bloque `VUELOS_INTL`, justo abajo: origen,
+destino, horas de salida y llegada, y la escala. De ahí salen los dos listones del
+itinerario, la lista de transportes por reservar y las horas de la escala.
 
 Al recargar, el viaje ya guardado se reacomoda solo: orden, noches, fechas,
 encabezado y los textos de llegada de cada parada (que se re-escriben con el
