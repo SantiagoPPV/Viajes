@@ -824,7 +824,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v10 · 24 ago 2026 · ruta editable + día 3 de HK";
+const APP_VERSION="v11 · 24 ago 2026 · Chongqing hora por hora";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -1084,14 +1084,20 @@ yangshuo:{catalog:[
 ]},
 
 zjj:{catalog:[
-  A("zjj-arrive","Tren bala Chongqing → Zhangjiajie","transfer",90,"Chongqing → Zhangjiajie West ≈2 h; traslado a Wulingyuan"),
+  A("zjj-arrive","Tren bala Chongqing → Zhangjiajie","transfer",120,"Chongqing → Zhangjiajie West ≈2 h"),
+  A("zjjd0-mirador","Mirador de Nanshan / E'ling Park o Museo de las Tres Gargantas","sight",120,"Última mañana en Chongqing; el museo es entrada libre"),
+  A("zjjd0-maletas","Regreso al hotel y recoger maletas","transfer",45),
+  A("zjjd0-comida","Comida ligera cerca de la estación","food",60,"Vienen 2 h de tren por delante"),
+  A("zjjd0-wulingyuan","Traslado a Wulingyuan y check-in","transfer",60,"Zhangjiajie West → Wulingyuan, ~40 min en coche"),
   A("zjj-towers","72 Odd Towers (centro)","sight",90,"Si se alojan en el centro; desde Wulingyuan mejor descansar"),
   A("zjj-tujia","Cena cocina Tujia","food",90,"Picante estilo Hunan"),
   A("zjj-avatar","Parque Nacional: Bailong + Yuanjiajie (Avatar) + Tianzi","tour",540,"Tour privado día completo; ascensor de cristal, Hallelujah Mtn, Golden Whip","Viator"),
   A("zjj-tianmen","Montaña Tianmen: teleférico + Puerta del Cielo + skywalk","tour",300,"Teleférico más largo del mundo, 99 curvas","GetYourGuide"),
   A("zjj-glass","Gran Cañón + Puente de Cristal","tour",240,"Puente de cristal de 430 m","Viator")
 ],days:[
-  [R("zjj-arrive","13:30"),R("g-rest"),R("zjj-towers"),R("zjj-tujia")],
+  /* Día 1 · 14 may: la mañana todavía es en Chongqing, la noche ya en Wulingyuan */
+  [R("g-breakfast","08:00"),R("zjjd0-mirador","09:00"),R("zjjd0-maletas","11:30"),R("zjjd0-comida","12:30"),
+   R("zjj-arrive","14:00"),R("zjjd0-wulingyuan","17:00"),R("zjj-tujia")],
   [R("zjj-avatar","07:30"),R("g-rest"),R("g-dinner")],
   [R("zjj-tianmen","08:00"),R("g-lunch"),R("zjj-glass"),R("g-dinner")]
 ],hotels:[
@@ -1128,13 +1134,20 @@ fenghuang:{catalog:[
 
 chongqing:{catalog:[
   A("cq-arrive","Tren bala Chengdu → Chongqing","transfer",90,"Chengdu East → Chongqing 1–1.5 h; base en Jiefangbei / Yuzhong"),
-  A("cq-liziba","Liziba: tren que atraviesa el edificio","sight",45),
-  A("cq-cable","Yangtze River Cableway","sight",60,"Teleférico sobre el río, vistas 8D"),
-  A("cq-hotpot","Hotpot de Chongqing","food",90,"La cuna del hotpot picante"),
-  A("cq-hongya","Hongyadong iluminado","sight",60,"Luces desde ~19:30, tipo 'El viaje de Chihiro'"),
-  A("cq-cruise","Crucero nocturno por los dos ríos","tour",90,"Skyline iluminado","Viator")
+  A("cqd1-checkin","Llegada a Chongqing + check-in / dejar maletas","transfer",60,"Taxi de la estación al hotel en Jiefangbei / Yuzhong, 20–30 min"),
+  A("cq-xiaomian","Comida: xiaomian (fideos picantes locales)","food",60,"El plato de diario: fideos con chile y pimienta de Sichuan"),
+  A("cq-ciqikou","Ciqikou: pueblo antiguo, callejones y té","sight",150,"Metro Línea 1; de día luce mejor que de noche"),
+  A("cq-liziba","Liziba: el metro que atraviesa el edificio","sight",45,"Metro Línea 2; la plataforma de fotos está enfrente"),
+  A("cq-cable","Teleférico del Yangtsé (ida y vuelta, atardecer)","sight",60,"Estación Xinhua Lu; cruza el río por encima"),
+  A("cq-hotpot","Hotpot de Chongqing — la cuna del hotpot","food",90,"Sartén de nueve cuadros; pedir yuanyang si no aguantan el mala"),
+  A("cq-hongya","Hongyadong iluminado (las casas colgantes)","sight",60,"Luces desde ~19:30; la foto es desde el puente Qiansimen"),
+  A("cq-cruise","Crucero nocturno por los dos ríos (opcional)","tour",60,"Muelle de Chaotianmen, skyline iluminado","Viator")
 ],days:[
-  [R("cq-arrive","13:00"),R("g-rest"),R("cq-liziba"),R("cq-cable"),R("cq-hotpot"),R("cq-hongya"),R("cq-cruise","21:00")]
+  /* Día único · 13 may. Ciqikou de tarde, y Liziba / teleférico / Hongyadong al
+     caer la luz. Todas las horas van fijas: los huecos son el traslado. */
+  [R("cq-arrive","09:00"),R("cqd1-checkin","10:30"),R("cq-xiaomian","12:00"),R("cq-ciqikou","13:30"),
+   R("cq-liziba","16:30"),R("cq-cable","17:30"),R("cq-hotpot","19:00"),R("cq-hongya","20:45"),
+   R("cq-cruise","22:00")]
 ],hotels:[
   {name:"Niccolo Chongqing",area:"Jiefangbei (rascacielos)",note:"Vistas de los dos ríos, lujo"},
   {name:"InterContinental Chongqing",area:"Yuzhong",note:"Céntrico, buen estándar"},
@@ -1328,9 +1341,17 @@ const DEFAULT_COSTS={
   "fh-bars":[["Bares del río (2)",400]],
   "fh-miao":[["Excursión aldea Miao (2)",500]],
   // Chongqing
+  "cqd1-checkin":[["Taxi estación → hotel (2)",150]],
+  "cq-xiaomian":[["Xiaomian (2)",150]],
+  "cq-ciqikou":[["Té y antojitos en Ciqikou (2)",300]],
   "cq-cable":[["Teleférico Yangtze (2)",150]],
   "cq-hotpot":[["Hotpot Chongqing (2)",700]],
   "cq-cruise":[["Crucero dos ríos (2)",750]],
+  // Zhangjiajie · mañana de salida de Chongqing
+  "zjjd0-mirador":[["Mirador / museo (2)",200]],
+  "zjjd0-maletas":[["Taxi hotel → estación (2)",180]],
+  "zjjd0-comida":[["Comida ligera (2)",350]],
+  "zjjd0-wulingyuan":[["Traslado a Wulingyuan (2)",550]],
   // Chengdu
   "cd-kuanzhai":[["Casa de té (2)",250]],
   "cd-opera":[["Ópera de Sichuan (2)",900]],
@@ -1682,27 +1703,112 @@ const HK_DIA3_2027=[
 /* Alta única del día 3 de Hong Kong: da de alta lo que falte en el catálogo y
    deja el día armado con sus horas. Lo que estaba antes en el día 3 (Aqua Luna,
    Ozone, Tai O, Mong Kok, Repulse Bay…) sigue en el catálogo de la parada. */
-function migrarDia3HK(s){
-  if(s.hkDia3v1)return;
-  const hk=s.bases&&s.bases.hk;
-  if(!hk||!hk.schedule||!Array.isArray(hk.catalog)){s.hkDia3v1=true;return;}
-  HK_DIA3_2027.forEach(a=>{
-    const act=hk.catalog.find(x=>x.cid===a.cid);
+/* ---- Sembrar el plan de un día en una parada ----
+   lista: [{cid, name?, type?, dur?, note?, costos?, fixed?, src?}]. Si el cid ya
+   está en el catálogo se le afina lo que venga; si no, se da de alta. Un renglón
+   con solo {cid} referencia algo que ya existe (las genéricas: g-lunch, g-rest…)
+   sin repetir su ficha. El día queda con esas actividades, en ese orden. */
+function sembrarDia(base,dia,lista,start){
+  if(!base||!base.schedule||!Array.isArray(base.catalog))return false;
+  lista.forEach(a=>{
+    const act=base.catalog.find(x=>x.cid===a.cid);
     if(act){                                  // ya existía: se afina lo que cambió
       if(a.name)act.name=a.name;
+      if(a.type)act.type=a.type;
       if(a.note)act.note=a.note;
       if(a.dur)act.dur=a.dur;
       return;
     }
     if(!a.name)return;                        // genérica que no está: se omite
-    hk.catalog.push({cid:a.cid,name:a.name,type:a.type,dur:a.dur,note:a.note||"",src:"",
+    base.catalog.push({cid:a.cid,name:a.name,type:a.type,dur:a.dur,note:a.note||"",src:a.src||"",
       costs:(a.costos||[]).map(([label,est])=>({id:uid(),label,est,real:0}))});
   });
-  hk.schedule[2]=HK_DIA3_2027
-    .filter(a=>hk.catalog.some(x=>x.cid===a.cid))
+  base.schedule[dia]=lista.filter(a=>base.catalog.some(x=>x.cid===a.cid))
     .map(a=>({id:uid(),ref:a.cid,fixed:a.fixed||null}));
-  hk.dayStart=hk.dayStart||{};hk.dayStart[2]="07:15";
+  base.dayStart=base.dayStart||{};
+  if(start)base.dayStart[dia]=start;
+  return true;
+}
+function migrarDia3HK(s){
+  if(s.hkDia3v1)return;
+  sembrarDia(s.bases&&s.bases.hk,2,HK_DIA3_2027,"07:15");
   s.hkDia3v1=true;
+}
+
+/* ---- Chongqing: la ciudad 8D en un día, y la mañana de salida ----
+   La parada tiene 1 noche, así que el 13 de mayo es el día completo aquí y el
+   14 (mañana en Chongqing + tren a Zhangjiajie) cae en el primer día de
+   Zhangjiajie, que es donde se duerme esa noche.
+
+   El orden del 13 no es casual: Ciqikou va de tarde porque de día luce mejor, y
+   Liziba, el teleférico y Hongyadong se juntan al caer la luz, que es cuando la
+   ciudad se pone espectacular. Si llegan cansados, Ciqikou es lo primero que
+   conviene recortar. Todas las horas van fijas, así que los huecos entre una y
+   otra son el traslado. */
+const CQ_DIA1_2027=[
+  {cid:"cq-arrive",dur:90,fixed:"09:00"},        // el nombre lo pone la ruta (XFER)
+  {cid:"cqd1-checkin",name:"Llegada a Chongqing + check-in / dejar maletas",type:"transfer",dur:60,fixed:"10:30",
+   costos:[["Taxi estación → hotel (2)",150]],
+   note:"<b>Estación Chongqing Norte (o Shapingba).</b> Taxi al hotel en Jiefangbei / Yuzhong, 20–30 min.<br>"+
+        "<i>Si no hay early check-in, se dejan las maletas y el día sigue igual.</i>"},
+  {cid:"cq-xiaomian",name:"Comida: xiaomian (fideos picantes locales)",type:"food",dur:60,fixed:"12:00",
+   costos:[["Xiaomian (2)",150]],
+   note:"<b>El plato de diario de la ciudad:</b> fideos en caldo con chile y pimienta de Sichuan. "+
+        "Se pide por <i>liang</i> — con 2 liang cada uno alcanza de sobra.<br>"+
+        "<i>Puestos de barrio, sin menú en inglés y baratísimos: eso es buena señal.</i>"},
+  {cid:"cq-ciqikou",name:"Ciqikou: pueblo antiguo, callejones y té",type:"sight",dur:150,fixed:"13:30",
+   costos:[["Té y antojitos en Ciqikou (2)",300]],
+   note:"<b>Metro Línea 1, estación Ciqikou</b> (~30 min desde Jiefangbei). Pueblo antiguo sobre el Jialing: "+
+        "callejones empedrados, casas de té, <i>mahua</i> (trenza frita) y tofu picante.<br>"+
+        "<i>De día luce mucho mejor que de noche. Si el tren los dejó cansados, esta es la primera que se recorta.</i>"},
+  {cid:"cq-liziba",name:"Liziba: el metro que atraviesa el edificio",type:"sight",dur:45,fixed:"16:30",
+   note:"<b>Metro Línea 2, estación Liziba.</b> El monorriel entra por el piso 6 de un edificio de "+
+        "departamentos y sale por el otro lado.<br>"+
+        "<i>La plataforma de fotos está enfrente, cruzando la calle — desde el andén no se ve nada.</i>"},
+  {cid:"cq-cable",name:"Teleférico del Yangtsé (ida y vuelta, atardecer)",type:"sight",dur:60,fixed:"17:30",
+   note:"<b>Estación Xinhua Lu</b> (metro Línea 1/6, Xiaoshizi). Cruza el Yangtsé por encima; al atardecer "+
+        "se van prendiendo las luces de las dos orillas.<br>"+
+        "<i>Comprar el boleto redondo. La fila crece mucho después de las 18:00.</i>"},
+  {cid:"cq-hotpot",name:"Hotpot de Chongqing — la cuna del hotpot",type:"food",dur:90,fixed:"19:00",
+   note:"<b>Aquí nació.</b> Sartén de nueve cuadros, caldo de sebo de res y chile. "+
+        "Si no aguantan el <i>mala</i>, pedir <b>yuanyang</b>: mitad picante, mitad caldo suave.<br>"+
+        "<i>Liuyishou, Zhou Shi Zhu Rou o el local del barrio que esté lleno.</i>"},
+  {cid:"cq-hongya",name:"Hongyadong iluminado (las casas colgantes)",type:"sight",dur:60,fixed:"20:45",
+   note:"<b>A pie desde Jiefangbei.</b> Las casas colgantes <i>diaojiaolou</i> se iluminan alrededor de las 19:30.<br>"+
+        "<i>La foto buena es desde el puente Qiansimen, de frente — no desde adentro.</i>"},
+  {cid:"cq-cruise",name:"Crucero nocturno por los dos ríos (opcional)",type:"tour",dur:60,fixed:"22:00",
+   note:"<b>Muelle de Chaotianmen.</b> Una hora por el Yangtsé y el Jialing con el skyline encendido.<br>"+
+        "<i>Es el opcional del día: si se hizo largo, Hongyadong ya dejó la foto y se puede saltar.</i>"}
+];
+/* 14 de mayo · mañana ligera en Chongqing y tren a Zhangjiajie. Va en el primer
+   día de Zhangjiajie porque esa noche ya se duerme en Wulingyuan. */
+const ZJJ_DIA1_2027=[
+  {cid:"g-breakfast",fixed:"08:00"},
+  {cid:"zjjd0-mirador",name:"Mirador de Nanshan / E'ling Park o Museo de las Tres Gargantas",type:"sight",dur:120,fixed:"09:00",
+   costos:[["Mirador / museo (2)",200]],
+   note:"<b>Dos opciones, la que amanezca mejor:</b>"+
+        "<ul><li><b>Mirador de Nanshan / E'ling Park</b> — la panorámica clásica de la península de Yuzhong.</li>"+
+        "<li><b>Museo de las Tres Gargantas</b> — entrada libre, frente al Gran Salón del Pueblo; "+
+        "mejor plan si el día amanece nublado.</li></ul>"},
+  {cid:"zjjd0-maletas",name:"Regreso al hotel y recoger maletas",type:"transfer",dur:45,fixed:"11:30",
+   costos:[["Taxi hotel → estación (2)",180]],
+   note:"Pasar por las maletas y salir hacia la estación con tiempo."},
+  {cid:"zjjd0-comida",name:"Comida ligera cerca de la estación",type:"food",dur:60,fixed:"12:30",
+   costos:[["Comida ligera (2)",350]],
+   note:"Algo ligero: vienen 2 h de tren por delante."},
+  {cid:"zjj-arrive",dur:120,fixed:"14:00"},      // el nombre lo pone la ruta (XFER)
+  {cid:"zjjd0-wulingyuan",name:"Traslado a Wulingyuan y check-in",type:"transfer",dur:60,fixed:"17:00",
+   costos:[["Traslado a Wulingyuan (2)",550]],
+   note:"<b>Zhangjiajie West → Wulingyuan</b>, unos 40 min en coche.<br>"+
+        "<i>La hora entre la llegada y esto es colchón para salir de la estación y encontrar transporte; "+
+        "conviene dejarlo arreglado con el hotel desde antes.</i>"},
+  {cid:"zjj-tujia"}                              // cena Tujia, ya en el catálogo
+];
+function migrarChongqing(s){
+  if(s.cqPlanV1)return;
+  sembrarDia(s.bases&&s.bases.chongqing,0,CQ_DIA1_2027,"09:00");
+  sembrarDia(s.bases&&s.bases.zjj,0,ZJJ_DIA1_2027,"08:00");
+  s.cqPlanV1=true;
 }
 
 /* ===================== Reacomodo automático de la ruta =====================
@@ -1860,6 +1966,7 @@ function normalizeTripState(s){
   migrarDia2HK(s);
   migrarExtrasHK(s);
   migrarDia3HK(s);
+  migrarChongqing(s);
   migrarEscalaTokio(s);
   migrarRuta(s);          // deja el viaje con el orden y las noches de ROUTE
   return s;
