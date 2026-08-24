@@ -824,7 +824,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v9 · 24 ago 2026 · ruta editable (bloque ROUTE)";
+const APP_VERSION="v10 · 24 ago 2026 · ruta editable + día 3 de HK";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -847,11 +847,11 @@ const ROUTE=[
   {id:"xian",      nights:2},   // 17 → 19 may
   {id:"beijing",   nights:3},   // 19 → 22 may
   {id:"shanghai",  nights:2},   // 22 → 24 may
-  {id:"kyoto",     nights:3},   // 24 → 27 may
-  {id:"tokyo",     nights:2}    // 27 → 29 may
+  {id:"kyoto",     nights:2},   // 24 → 26 may
+  {id:"tokyo",     nights:3}    // 26 → 29 may
 ];
 const ROUTE_DROP=["osaka"];   // paradas que se eliminan por completo del viaje
-const ROUTE_VERSION=2;        // súbela al editar ROUTE para reaplicar la ruta
+const ROUTE_VERSION=3;        // súbela al editar ROUTE para reaplicar la ruta
 const ROUTE_IDS=ROUTE.map(r=>r.id);
 const routeNights=id=>{const r=ROUTE.find(x=>x.id===id);return r?r.nights:null;};
 
@@ -1011,20 +1011,32 @@ hk:{catalog:[
   A("hk-dinner-tst","Cena en Tsim Sha Tsui","food",75),
   A("hk-sol","Symphony of Lights (malecón)","sight",30,"Show de luces, todos los días a las 20:00"),
   A("hk-temple","Temple Street Night Market","sight",60,"Paseo nocturno"),
-  A("hk-lantau","Ngong Ping 360 + Big Buddha (Lantau)","tour",210,"Teleférico + Tian Tan Buddha + Po Lin","GetYourGuide"),
+  A("hk-lantau","Teleférico Ngong Ping 360 · subida a Lantau","tour",45,"Crystal Cabin desde Tung Chung, ~25 min de trayecto; comprar en línea con horario","GetYourGuide"),
+  A("hkd3-mtr-lantau","MTR Kowloon → Tung Chung","transfer",35,"Línea Tung Chung; la terminal del teleférico está saliendo de la estación"),
+  A("hkd3-buda","Gran Buda Tian Tan + Monasterio Po Lin","sight",95,"268 escalones al Buda, monasterio y Ngong Ping Village"),
+  A("hkd3-bajada","Teleférico de bajada + taxi a Yat Tung Heen","transfer",85,"Bajar a Tung Chung y taxi por el puente hasta Tsim Sha Tsui Este"),
+  A("hkd3-mtr-wts","MTR Jordan → Prince Edward → Wong Tai Sin","transfer",30,"Línea roja (Tsuen Wan) hasta Prince Edward y cambio a la verde (Kwun Tong)"),
+  A("hkd3-wongtaisin","Templo Wong Tai Sin","sight",45,"Cierra 16:30 · el templo taoísta más concurrido de la ciudad"),
+  A("hkd3-mtr-dh","MTR Wong Tai Sin → Diamond Hill","transfer",15,"Una estación en la línea verde; Chi Lin y Nan Lian están juntos a la salida"),
+  A("hkd3-chilin","Chi Lin Nunnery (convento budista)","sight",40,"Cierra 16:30 · madera de ciprés ensamblada sin un solo clavo"),
+  A("hkd3-regreso","MTR Diamond Hill → Lai King → Kowloon","transfer",45,"Verde hasta Prince Edward, roja hasta Lai King y ahí cambio a la línea Tung Chung"),
+  A("hkd3-tinlung","Cena en Tin Lung Heen","food",120,"Reservación 20:30 · cantonés 1 Michelin en el ICC, piso 102"),
   A("hk-polin","Almuerzo vegetariano en Po Lin","food",60),
   A("hk-taio","Pueblo pesquero Tai O","sight",105,"Casas sobre pilotes"),
   A("hk-back","Regreso a la ciudad","transfer",75),
   A("hk-aqua","Aqua Luna: junk al atardecer","tour",45,"Velero rojo por Victoria Harbour","Viator"),
   A("hk-seafood","Cena de mariscos","food",90),
   A("hk-ozone","Copas en Ozone (ICC, piso 118)","bar",90),
-  A("hk-nanlian","Nan Lian Garden + Chi Lin Nunnery","sight",120,"Jardín clásico, tranquilo"),
+  A("hk-nanlian","Nan Lian Garden (jardín clásico Tang)","sight",95,"Cierra 21:00 · pegado a Chi Lin, se cruza por la pasarela"),
   A("hk-mongkok","Mercados de Mong Kok","sight",120,"Ladies' Market, Flower Market"),
   A("hk-repulse","Repulse Bay o compras","free",150)
 ],days:[
   [R("hk-arrive"),R("hk-rest0"),R("hk-peak"),R("hk-timho"),R("hk-manmo"),R("hk-soho"),R("g-rest"),R("hk-ferry"),R("hk-aos"),R("hk-dinner-tst"),R("hk-sol","20:00"),R("hk-temple")],
   [R("hk-lantau"),R("hk-polin"),R("hk-taio"),R("hk-back"),R("g-rest"),R("hk-aqua","18:45"),R("hk-seafood"),R("hk-ozone")],
-  [R("hk-nanlian"),R("hk-mongkok"),R("g-lunch"),R("hk-repulse"),R("g-rest"),R("g-dinner")]
+  /* Día 3 · mañana en Lantau, comida 12:45 y tarde en Wong Tai Sin / Diamond Hill */
+  [R("g-breakfast"),R("hkd3-mtr-lantau"),R("hk-lantau"),R("hkd3-buda"),R("hkd3-bajada"),
+   R("hk-yattung","12:45"),R("hkd3-mtr-wts"),R("hkd3-wongtaisin"),R("hkd3-mtr-dh"),
+   R("hkd3-chilin"),R("hk-nanlian"),R("hkd3-regreso"),R("g-rest"),R("hkd3-tinlung","20:30")]
 ],hotels:[
   {name:"The Ritz-Carlton Hong Kong",area:"ICC · Kowloon (pisos 102–118)",precio:12222,
     note:"LUJO — la mejor vista al puerto (el hotel más alto de HK). 9.6, igual que Four Seasons pero $2,370 más barato. Total cotizado 3 noches: $36,667 (≈$12,222/noche)."},
@@ -1038,7 +1050,8 @@ hk:{catalog:[
   {name:"Tim Ho Wan",kind:"rest",note:"Dim sum Michelin, precio accesible"},
   {name:"Kam's Roast Goose",kind:"rest",note:"Ganso asado, 1 Michelin"},
   {name:"Ozone @ Ritz-Carlton",kind:"bar",note:"Bar más alto de la ciudad, piso 118"},
-  {name:"Temple Street Night Market",kind:"rest",note:"Dai pai dong y ambiente callejero"}
+  {name:"Temple Street Night Market",kind:"rest",note:"Dai pai dong y ambiente callejero"},
+  {name:"Tin Lung Heen (Ritz-Carlton, piso 102)",kind:"rest",note:"Cantonés 1 Michelin en el ICC, con vista a la bahía"}
 ]},
 
 yangshuo:{catalog:[
@@ -1280,7 +1293,14 @@ const DEFAULT_COSTS={
   "hk-timho":[["Dim sum Tim Ho Wan (2)",520]],
   "hk-ferry":[["Star Ferry (2)",60]],
   "hk-dinner-tst":[["Cena en TST (2)",800]],
-  "hk-lantau":[["Ngong Ping 360 crystal (2)",1200],["Entradas / bus (2)",250]],
+  "hk-lantau":[["Ngong Ping 360 crystal, redondo (2)",1200]],
+  "hkd3-mtr-lantau":[["MTR Kowloon → Tung Chung (2)",60]],
+  "hkd3-bajada":[["Taxi Tung Chung → Tsim Sha Tsui (2)",420]],
+  "hkd3-mtr-wts":[["MTR (2)",50]],
+  "hkd3-wongtaisin":[["Donativo / incienso Wong Tai Sin (2)",60]],
+  "hkd3-mtr-dh":[["MTR (2)",30]],
+  "hkd3-regreso":[["MTR (2)",60]],
+  "hkd3-tinlung":[["Cena Tin Lung Heen (2)",3200]],
   "hk-polin":[["Almuerzo vegetariano (2)",450]],
   "hk-taio":[["Paseo en bote Tai O (2)",200]],
   "hk-aqua":[["Aqua Luna atardecer (2)",1350]],
@@ -1597,6 +1617,94 @@ function migrarEscalaTokio(s){
   s.escalaTokioV1=true;
 }
 
+/* ---- Día 3 en Hong Kong: Lantau por la mañana, Kowloon Este por la tarde ----
+   El día se sostiene sobre tres horas fijas: la comida de 12:45 en Yat Tung
+   Heen, los cierres de 16:30 de Wong Tai Sin y Chi Lin, y la cena de 20:30 en
+   Tin Lung Heen. Todo lo demás son duraciones estimadas, editables desde la
+   tarjeta de la parada. */
+const HK_DIA3_2027=[
+  {cid:"g-breakfast"},                       // genérica: ya está en el catálogo
+  {cid:"hkd3-mtr-lantau",name:"MTR Kowloon → Tung Chung",type:"transfer",dur:35,
+   costos:[["MTR Kowloon → Tung Chung (2)",60]],
+   note:"<b>Kowloon → Tung Chung · línea Tung Chung.</b> Unos 25 min de viaje. "+
+        "La terminal del teleférico queda saliendo de la estación, junto a Citygate."},
+  {cid:"hk-lantau",name:"Teleférico Ngong Ping 360 · subida a Lantau",type:"tour",dur:45,
+   note:"<b>Ngong Ping 360.</b> El trayecto es de ~25 min con vistas al aeropuerto y a la montaña. "+
+        "<u>Ojo con el horario:</u> abre 9:00 en fin de semana y 10:00 entre semana — "+
+        "el día 3 cae en <b>sábado</b>, así que 9:00.<br>"+
+        "<i>Comprar el boleto en línea, redondo y con hora, para no hacer fila.</i>"},
+  {cid:"hkd3-buda",name:"Gran Buda Tian Tan + Monasterio Po Lin",type:"sight",dur:95,
+   note:"<b>Ngong Ping.</b> <b>268 escalones</b> hasta el Buda (34 m, de bronce). "+
+        "Abajo, el <b>Monasterio Po Lin</b> y el pueblo de Ngong Ping.<br>"+
+        "<i>Entrada libre al Buda; el Salón de las Diez Mil Budas y el museo se pagan aparte.</i>"},
+  {cid:"hkd3-bajada",name:"Teleférico de bajada + taxi a Yat Tung Heen",type:"transfer",dur:85,
+   costos:[["Taxi Tung Chung → Tsim Sha Tsui (2)",420]],
+   note:"Bajar en el teleférico a Tung Chung y de ahí <b>taxi</b> por el puente de Lantau "+
+        "hasta el restaurante (~40 min).<br>"+
+        "<i>Alternativa más barata: la misma línea Tung Chung hasta Kowloon y un taxi corto.</i>"},
+  {cid:"hk-yattung",fixed:"12:45",dur:90},   // la comida ya está en el catálogo
+  {cid:"hkd3-mtr-wts",name:"MTR Jordan → Prince Edward → Wong Tai Sin",type:"transfer",dur:30,
+   costos:[["MTR (2)",50]],
+   note:"<b>Jordan → Prince Edward</b> por la línea roja (Tsuen Wan) y ahí <b>cambio a la verde</b> "+
+        "(Kwun Tong) hasta Wong Tai Sin.<br>"+
+        "<i>Desde Tsim Sha Tsui Este es la misma línea roja: se puede subir ahí y ahorrarse el taxi.</i>"},
+  {cid:"hkd3-wongtaisin",name:"Templo Wong Tai Sin",type:"sight",dur:45,
+   costos:[["Donativo / incienso Wong Tai Sin (2)",60]],
+   note:"<b>⚠ Cierra 16:30.</b> A la salida de la estación del mismo nombre. "+
+        "Es el templo taoísta más concurrido de la ciudad: incienso, kau cim (las varillas de la suerte) "+
+        "y el jardín de los Nueve Dragones."},
+  {cid:"hkd3-mtr-dh",name:"MTR Wong Tai Sin → Diamond Hill",type:"transfer",dur:15,
+   costos:[["MTR (2)",30]],
+   note:"<b>Una estación</b> en la línea verde. Chi Lin Nunnery y Nan Lian Garden están "+
+        "los dos a la salida, comunicados entre sí por una pasarela."},
+  {cid:"hkd3-chilin",name:"Chi Lin Nunnery (convento budista)",type:"sight",dur:40,
+   note:"<b>⚠ Cierra 16:30.</b> Convento de estilo Tang, de madera de ciprés <b>ensamblada sin un solo clavo</b>. "+
+        "Salas de loto, patios y silencio en medio de los rascacielos.<br>"+
+        "<i>Es el punto más apretado del día: si la comida se alarga, este es el que se sacrifica.</i>"},
+  {cid:"hk-nanlian",name:"Nan Lian Garden (jardín clásico Tang)",type:"sight",dur:95,
+   note:"<b>Cierra 21:00</b>, así que aquí ya no hay prisa. Jardín Tang de trazo perfecto: "+
+        "el pabellón dorado sobre el estanque, la colección de rocas y la cascada.<br>"+
+        "<i>Tiene casa de té y un restaurante vegetariano detrás de la cascada, por si dan ganas de una pausa.</i>"},
+  {cid:"hkd3-regreso",name:"MTR Diamond Hill → Lai King → Kowloon",type:"transfer",dur:45,
+   costos:[["MTR (2)",60]],
+   note:"<b>Verde</b> (Kwun Tong) hasta Prince Edward → <b>roja</b> (Tsuen Wan) hasta Lai King → "+
+        "ahí <b>cambio a la línea Tung Chung</b>, la misma de la mañana, hasta Kowloon.<br>"+
+        "<i>En Lai King el cambio es cruzando el andén, no hay que salir.</i>"},
+  {cid:"g-rest",dur:90},                     // descanso y cambiarse para la cena
+  {cid:"hkd3-tinlung",name:"Cena en Tin Lung Heen",type:"food",dur:120,fixed:"20:30",
+   costos:[["Cena Tin Lung Heen (2)",3200]],
+   note:"<b>20:30 · Ritz-Carlton, ICC piso 102.</b> Cantonés con <b>1 estrella Michelin</b>, en el mismo "+
+        "edificio del hotel.<br>"+
+        "<u>Lo que más se pide:</u> cerdo ibérico BBQ con miel, sopa de doble cocción, "+
+        "abalón y el carrito de dim sum si alcanzan.<br>"+
+        "<i>Código de vestimenta smart casual. Confirmar la reservación y pedir mesa junto a la ventana.</i>"}
+];
+/* Alta única del día 3 de Hong Kong: da de alta lo que falte en el catálogo y
+   deja el día armado con sus horas. Lo que estaba antes en el día 3 (Aqua Luna,
+   Ozone, Tai O, Mong Kok, Repulse Bay…) sigue en el catálogo de la parada. */
+function migrarDia3HK(s){
+  if(s.hkDia3v1)return;
+  const hk=s.bases&&s.bases.hk;
+  if(!hk||!hk.schedule||!Array.isArray(hk.catalog)){s.hkDia3v1=true;return;}
+  HK_DIA3_2027.forEach(a=>{
+    const act=hk.catalog.find(x=>x.cid===a.cid);
+    if(act){                                  // ya existía: se afina lo que cambió
+      if(a.name)act.name=a.name;
+      if(a.note)act.note=a.note;
+      if(a.dur)act.dur=a.dur;
+      return;
+    }
+    if(!a.name)return;                        // genérica que no está: se omite
+    hk.catalog.push({cid:a.cid,name:a.name,type:a.type,dur:a.dur,note:a.note||"",src:"",
+      costs:(a.costos||[]).map(([label,est])=>({id:uid(),label,est,real:0}))});
+  });
+  hk.schedule[2]=HK_DIA3_2027
+    .filter(a=>hk.catalog.some(x=>x.cid===a.cid))
+    .map(a=>({id:uid(),ref:a.cid,fixed:a.fixed||null}));
+  hk.dayStart=hk.dayStart||{};hk.dayStart[2]="07:15";
+  s.hkDia3v1=true;
+}
+
 /* ===================== Reacomodo automático de la ruta =====================
    Aplica ROUTE (orden, noches y fechas) al viaje ya guardado. Corre una sola
    vez por cada valor de ROUTE_VERSION: al editar la ruta arriba y subir el
@@ -1751,6 +1859,7 @@ function normalizeTripState(s){
   migrarFormatoHotelesHK(s);
   migrarDia2HK(s);
   migrarExtrasHK(s);
+  migrarDia3HK(s);
   migrarEscalaTokio(s);
   migrarRuta(s);          // deja el viaje con el orden y las noches de ROUTE
   return s;

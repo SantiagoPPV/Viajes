@@ -88,7 +88,7 @@ const ROUTE=[
   ...
 ];
 const ROUTE_DROP=["osaka"];   // paradas que se eliminan por completo del viaje
-const ROUTE_VERSION=2;        // súbela al editar ROUTE para reaplicar la ruta
+const ROUTE_VERSION=3;        // súbela al editar ROUTE para reaplicar la ruta
 ```
 
 Para cambiar la ruta:
