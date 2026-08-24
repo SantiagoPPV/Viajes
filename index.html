@@ -456,6 +456,9 @@
     font-size:11px;color:var(--ink-soft);cursor:pointer;user-select:none;margin-bottom:8px}
   .selall input{width:17px;height:17px;accent-color:var(--jade);cursor:pointer}
 
+  .appver{display:block;font-family:"IBM Plex Mono",monospace;font-size:10px;
+    letter-spacing:.08em;color:var(--ink-soft);opacity:.75;margin-bottom:6px}
+
   /* ---------- tramos entre paradas y sus escalas ---------- */
   .xfer input.legmode{width:130px;font-weight:600;color:var(--ink)}
   .xfer input.legdet{flex:1;min-width:170px}
@@ -792,7 +795,7 @@
     <span class="saved" id="savedFlag">Guardado ✓</span>
   </div>
 
-  <p class="foot">Tours, hoteles y restaurantes son sugerencias con buena reputación (GetYourGuide, Viator, Tripadvisor, guías locales y Michelin); confirma precios, horarios y disponibilidad antes de reservar. Los tiempos son estimados editables. Tus cambios se guardan y sincronizan automáticamente en la nube.</p>
+  <p class="foot"><span id="appver" class="appver" title="Versión publicada de la app"></span>Tours, hoteles y restaurantes son sugerencias con buena reputación (GetYourGuide, Viator, Tripadvisor, guías locales y Michelin); confirma precios, horarios y disponibilidad antes de reservar. Los tiempos son estimados editables. Tus cambios se guardan y sincronizan automáticamente en la nube.</p>
   </div><!-- /#tripEditor -->
 </div>
 
@@ -819,6 +822,9 @@
 
 <script>
 /* ===================== Constantes ===================== */
+/* Sello de versión: sirve para saber, desde cualquier computadora, si el
+   navegador está mostrando la versión publicada o una vieja guardada en caché. */
+const APP_VERSION="v8 · 24 ago 2026 · tramos con escalas";
 // La fecha de inicio y las noches disponibles vienen de cada viaje (state.meta).
 function tripStart(){const s=state&&state.meta&&state.meta.inicio;return s?new Date(s+"T00:00:00"):new Date();}
 function availNights(){const n=state&&state.meta&&+state.meta.noches;return n>0?n:totalNights();}
@@ -3677,6 +3683,8 @@ function refreshBudgetTotals(){
 /* ===================== Countdown + maestro ===================== */
 function renderAll(){renderMasthead();renderSummary();renderMap();renderCards();renderBudget();renderChecklists();}
 
+(function(){const v=document.getElementById("appver");
+  if(v)v.textContent="Versión "+APP_VERSION;})();
 document.getElementById("printBtn").addEventListener("click",()=>window.print());
 document.getElementById("syncBtn").addEventListener("click",()=>{setSync("live");poll();});
 document.getElementById("backToList").addEventListener("click",showList);

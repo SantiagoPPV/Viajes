@@ -9,3 +9,21 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     X-Frame-Options = "SAMEORIGIN"
+
+# El HTML y el JS de sesión llevan TODA la app dentro, así que nunca deben
+# servirse desde la caché sin revalidar: si no, al entrar desde otra computadora
+# se sigue viendo una versión vieja aunque ya se haya publicado la nueva.
+[[headers]]
+  for = "/"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
