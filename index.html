@@ -663,65 +663,78 @@
 
   /* ===================== Impresión / PDF =====================
      En pantalla la app solo tiene en el DOM la parada abierta y el día que
-     estás viendo, así que imprimir tal cual dejaría fuera casi todo. Al tocar
-     "Imprimir / PDF" se arma el itinerario COMPLETO dentro de #printview y en
-     el papel se oculta el resto de la página. */
-  #printview{display:none}
+     estás viendo, así que imprimir tal cual dejaría fuera casi todo. Los dos
+     botones de PDF arman el itinerario COMPLETO dentro de #printview.
+
+     Los estilos de abajo viven FUERA de @media print a propósito: el botón de
+     un clic rasteriza el DOM tal como se ve en pantalla, y dentro de @media
+     print no los vería. #printview está oculto por defecto, así que no estorban.
+
+     .pv-render + .pv-cage son para el botón de un clic. html2canvas devuelve un
+     lienzo de altura CERO si el elemento está posicionado fuera de flujo —
+     probado con position fixed y absolute, dentro y fuera de la pantalla— así
+     que tiene que estar en flujo normal. Para que no empuje la página mientras
+     se genera, se mete en una jaula de alto cero con overflow oculto: adentro
+     conserva su alto real y afuera no se nota nada. */
+  #printview{display:none;font-family:"Inter",system-ui,sans-serif;color:#26251f;
+    font-size:10.5pt;line-height:1.45;background:#fff}
+  #printview *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #printview.pv-render{display:block;width:794px}   /* 794px = A4 a 96 ppp */
+  .pv-cage{height:0;overflow:hidden}
+  #printview .pv-head{border-bottom:2px solid #26251f;padding-bottom:10px;margin-bottom:16px}
+  #printview .pv-eyebrow{font-family:"IBM Plex Mono",monospace;font-size:8.5pt;letter-spacing:.14em;
+    text-transform:uppercase;color:#7a7263}
+  #printview .pv-head h1{font-family:"Cormorant Garamond",serif;font-size:26pt;font-weight:600;margin:4px 0 2px}
+  #printview .pv-sub{font-size:10pt;color:#5c5648}
+  #printview .pv-meta{font-family:"IBM Plex Mono",monospace;font-size:8.5pt;color:#7a7263;margin-top:6px}
+  #printview .pv-base{break-inside:auto;margin:0 0 14px}
+  #printview .pv-base+.pv-base,#printview .pv-leg+.pv-base{break-before:auto}
+  #printview .pv-base h2{font-family:"Cormorant Garamond",serif;font-size:16pt;font-weight:600;
+    margin:0 0 2px;display:flex;align-items:baseline;gap:8px;break-after:avoid;page-break-after:avoid}
+  #printview .pv-num{font-family:"IBM Plex Mono",monospace;font-size:9pt;color:#fff;background:#b73e3e;
+    border-radius:4px;padding:1px 6px}
+  #printview .pv-base h2 small{font-family:"Inter",sans-serif;font-size:9pt;font-weight:400;color:#7a7263}
+  #printview .pv-dates{font-family:"IBM Plex Mono",monospace;font-size:9pt;color:#5c5648;margin-bottom:4px}
+  #printview .pv-pick{font-size:9.5pt;color:#5c5648;margin:2px 0 6px}
+  #printview .pv-pick b{color:#26251f}
+  #printview .pv-day{break-inside:avoid;page-break-inside:avoid;margin:8px 0 0}
+  #printview .pv-day h3{font-family:"IBM Plex Mono",monospace;font-size:9pt;font-weight:600;
+    letter-spacing:.06em;text-transform:uppercase;color:#7a7263;
+    border-bottom:1px solid #d9d0bd;padding-bottom:2px;margin:0 0 4px;break-after:avoid;page-break-after:avoid}
+  #printview .pv-day table{width:100%;border-collapse:collapse}
+  #printview .pv-day td{vertical-align:top;padding:3px 0;border-bottom:1px solid #efe9dc}
+  #printview .pv-t{font-family:"IBM Plex Mono",monospace;font-size:8.5pt;white-space:nowrap;
+    width:78px;padding-right:8px!important;color:#5c5648}
+  #printview .pv-t.fx{font-weight:600;color:#b73e3e}
+  #printview .pv-c{font-family:"IBM Plex Mono",monospace;font-size:8.5pt;text-align:right;
+    white-space:nowrap;width:70px;color:#5c5648}
+  #printview .pv-act b{font-weight:600}
+  #printview .pv-act .pv-dur{font-family:"IBM Plex Mono",monospace;font-size:8pt;color:#9a9082;margin-left:5px}
+  #printview .pv-note{font-size:8.5pt;color:#5c5648;margin-top:1px}
+  #printview .pv-note ul{margin:2px 0;padding-left:16px}
+  #printview .pv-note li{margin:0}
+  #printview .pv-note2{font-size:8.5pt;color:#2f6b52;margin-top:1px}
+  #printview .pv-gap{font-family:"IBM Plex Mono",monospace;font-size:8pt;color:#9a9082;font-style:italic}
+  #printview .pv-leg{break-inside:avoid;page-break-inside:avoid;margin:10px 0;padding:6px 10px;background:#f4efe3;
+    border-left:3px solid #b73e3e;font-size:9.5pt}
+  #printview .pv-leg b{font-family:"IBM Plex Mono",monospace;font-size:8.5pt;letter-spacing:.08em;
+    text-transform:uppercase;color:#b73e3e;display:block}
+  #printview .pv-sec{break-before:page;page-break-before:always;margin-top:0}
+  #printview .pv-sec h2{font-family:"Cormorant Garamond",serif;font-size:18pt;font-weight:600;
+    border-bottom:1px solid #d9d0bd;padding-bottom:4px;margin:0 0 8px}
+  #printview .pv-tot{width:100%;border-collapse:collapse;font-size:9.5pt}
+  #printview .pv-tot td{padding:3px 0;border-bottom:1px solid #efe9dc}
+  #printview .pv-tot td:last-child{text-align:right;font-family:"IBM Plex Mono",monospace}
+  #printview .pv-tot tr.big td{font-weight:600;font-size:11pt;border-bottom:none;border-top:2px solid #26251f;
+    padding-top:6px}
+  #printview .pv-foot{margin-top:14px;padding-top:8px;border-top:1px solid #d9d0bd;
+    font-size:8pt;color:#9a9082}
   @page{size:A4;margin:14mm 12mm}
   @media print{
     body>*{display:none!important}
-    body>#printview{display:block!important}
+    body>#printview{display:block!important;position:static!important;
+      left:auto!important;width:auto!important}
     body{background:#fff}
-    #printview{font-family:"Inter",system-ui,sans-serif;color:#26251f;font-size:10.5pt;line-height:1.45}
-    #printview *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-    .pv-head{border-bottom:2px solid #26251f;padding-bottom:10px;margin-bottom:16px}
-    .pv-eyebrow{font-family:"IBM Plex Mono",monospace;font-size:8.5pt;letter-spacing:.14em;
-      text-transform:uppercase;color:#7a7263}
-    .pv-head h1{font-family:"Cormorant Garamond",serif;font-size:26pt;font-weight:600;margin:4px 0 2px}
-    .pv-sub{font-size:10pt;color:#5c5648}
-    .pv-meta{font-family:"IBM Plex Mono",monospace;font-size:8.5pt;color:#7a7263;margin-top:6px}
-    .pv-base{break-inside:auto;margin:0 0 14px}
-    .pv-base+.pv-base,.pv-leg+.pv-base{break-before:auto}
-    .pv-base h2{font-family:"Cormorant Garamond",serif;font-size:16pt;font-weight:600;
-      margin:0 0 2px;display:flex;align-items:baseline;gap:8px;break-after:avoid}
-    .pv-num{font-family:"IBM Plex Mono",monospace;font-size:9pt;color:#fff;background:#b73e3e;
-      border-radius:4px;padding:1px 6px}
-    .pv-base h2 small{font-family:"Inter",sans-serif;font-size:9pt;font-weight:400;color:#7a7263}
-    .pv-dates{font-family:"IBM Plex Mono",monospace;font-size:9pt;color:#5c5648;margin-bottom:4px}
-    .pv-pick{font-size:9.5pt;color:#5c5648;margin:2px 0 6px}
-    .pv-pick b{color:#26251f}
-    .pv-day{break-inside:avoid;margin:8px 0 0}
-    .pv-day h3{font-family:"IBM Plex Mono",monospace;font-size:9pt;font-weight:600;
-      letter-spacing:.06em;text-transform:uppercase;color:#7a7263;
-      border-bottom:1px solid #d9d0bd;padding-bottom:2px;margin:0 0 4px;break-after:avoid}
-    .pv-day table{width:100%;border-collapse:collapse}
-    .pv-day td{vertical-align:top;padding:3px 0;border-bottom:1px solid #efe9dc}
-    .pv-t{font-family:"IBM Plex Mono",monospace;font-size:8.5pt;white-space:nowrap;
-      width:78px;padding-right:8px!important;color:#5c5648}
-    .pv-t.fx{font-weight:600;color:#b73e3e}
-    .pv-c{font-family:"IBM Plex Mono",monospace;font-size:8.5pt;text-align:right;
-      white-space:nowrap;width:70px;color:#5c5648}
-    .pv-act b{font-weight:600}
-    .pv-act .pv-dur{font-family:"IBM Plex Mono",monospace;font-size:8pt;color:#9a9082;margin-left:5px}
-    .pv-note{font-size:8.5pt;color:#5c5648;margin-top:1px}
-    .pv-note ul{margin:2px 0;padding-left:16px}
-    .pv-note li{margin:0}
-    .pv-note2{font-size:8.5pt;color:#2f6b52;margin-top:1px}
-    .pv-gap{font-family:"IBM Plex Mono",monospace;font-size:8pt;color:#9a9082;font-style:italic}
-    .pv-leg{break-inside:avoid;margin:10px 0;padding:6px 10px;background:#f4efe3;
-      border-left:3px solid #b73e3e;font-size:9.5pt}
-    .pv-leg b{font-family:"IBM Plex Mono",monospace;font-size:8.5pt;letter-spacing:.08em;
-      text-transform:uppercase;color:#b73e3e;display:block}
-    .pv-sec{break-before:page;margin-top:0}
-    .pv-sec h2{font-family:"Cormorant Garamond",serif;font-size:18pt;font-weight:600;
-      border-bottom:1px solid #d9d0bd;padding-bottom:4px;margin:0 0 8px}
-    .pv-tot{width:100%;border-collapse:collapse;font-size:9.5pt}
-    .pv-tot td{padding:3px 0;border-bottom:1px solid #efe9dc}
-    .pv-tot td:last-child{text-align:right;font-family:"IBM Plex Mono",monospace}
-    .pv-tot tr.big td{font-weight:600;font-size:11pt;border-bottom:none;border-top:2px solid #26251f;
-      padding-top:6px}
-    .pv-foot{margin-top:14px;padding-top:8px;border-top:1px solid #d9d0bd;
-      font-size:8pt;color:#9a9082}
   }
 </style>
 </head>
@@ -850,7 +863,8 @@
   <div class="controls">
     <button class="btn" id="undoBtn" title="Deshacer" disabled>↶ Deshacer</button>
     <button class="btn" id="redoBtn" title="Rehacer" disabled>↷ Rehacer</button>
-    <button class="btn" id="printBtn" title="Descargar el itinerario completo en PDF">⬇ Descargar PDF</button>
+    <button class="btn" id="printBtn" title="Mejor calidad: texto seleccionable y ~0.5 MB. Pasa por el diálogo del navegador, donde eliges Guardar como PDF">⬇ Descargar PDF</button>
+    <button class="btn" id="pdf1Btn" title="Se baja solo, sin diálogo. El PDF va como imagen: pesa varios MB y el texto no se puede seleccionar ni buscar">⚡ PDF de un clic</button>
     <button class="btn" id="exportBtn" title="Descargar una copia de seguridad del viaje">⬇ Exportar</button>
     <button class="btn" id="importBtn" title="Reemplazar este viaje con un archivo exportado">⬆ Importar</button>
     <button class="btn" id="syncBtn">Sincronizar ahora</button>
@@ -891,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v16 · 24 ago 2026 · descarga del itinerario en PDF";
+const APP_VERSION="v17 · 24 ago 2026 · PDF de un clic además del de calidad";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -4751,6 +4765,79 @@ function descargarPDF(){
   catch(e){restaurar();toast("Tu navegador bloqueó la impresión: "+(e.message||e),{tipo:"err"});}
 }
 document.getElementById("printBtn").addEventListener("click",descargarPDF);
+
+/* ---- PDF de un clic ----
+   Se baja sin pasar por el diálogo, a cambio de calidad: la librería toma una
+   foto de la página y la mete en el PDF, así que el texto deja de ser
+   seleccionable y el archivo pasa de ~0.5 MB a varios MB. Sirve cuando lo
+   importante es tener el archivo rápido — mandarlo por WhatsApp, por ejemplo.
+   La librería (~800 KB) se carga solo la primera vez que se usa el botón: no
+   tiene por qué pesar en cada visita. */
+const HTML2PDF_URL="https://cdn.jsdelivr.net/npm/html2pdf.js@0.14.0/dist/html2pdf.bundle.min.js";
+let _cargandoHtml2Pdf=null;
+function cargarHtml2Pdf(){
+  if(window.html2pdf)return Promise.resolve(window.html2pdf);
+  if(_cargandoHtml2Pdf)return _cargandoHtml2Pdf;
+  _cargandoHtml2Pdf=new Promise((ok,err)=>{
+    const sc=document.createElement("script");
+    sc.src=HTML2PDF_URL;
+    sc.onload=()=>window.html2pdf?ok(window.html2pdf):err(new Error("la librería cargó incompleta"));
+    sc.onerror=()=>{_cargandoHtml2Pdf=null;err(new Error("no se pudo descargar la librería (¿sin conexión?)"));};
+    document.head.appendChild(sc);
+  });
+  return _cargandoHtml2Pdf;
+}
+/* Deja el elemento en flujo normal —única forma de que html2canvas lo vea—
+   pero encerrado en una jaula de alto cero para que la página no se mueva.
+   Lo devuelve a su lugar pase lo que pase. */
+async function enJaula(el,fn){
+  const padre=el.parentNode,siguiente=el.nextSibling;
+  const jaula=document.createElement("div");
+  jaula.className="pv-cage";
+  padre.insertBefore(jaula,el);
+  jaula.appendChild(el);
+  el.classList.add("pv-render");
+  try{return await fn();}
+  finally{
+    el.classList.remove("pv-render");
+    padre.insertBefore(el,siguiente);
+    jaula.remove();
+  }
+}
+async function descargarPDFDirecto(){
+  if(!state){toast("Abre un viaje primero",{tipo:"err"});return;}
+  const btn=document.getElementById("pdf1Btn");
+  const cont=document.getElementById("printview");
+  if(!cont){toast("No se encontró el contenedor de impresión",{tipo:"err"});return;}
+  const etiqueta=btn?btn.textContent:"";
+  const ocupado=t=>{if(btn){btn.disabled=true;btn.textContent=t;}};
+  let cerrarAviso=null;
+  try{
+    ocupado("⏳ Cargando…");
+    const html2pdf=await cargarHtml2Pdf();
+    ocupado("⏳ Armando…");
+    cont.innerHTML=armarImpresion();
+    cerrarAviso=toast("Armando el PDF… puede tardar medio minuto",{ms:180000});
+    // el lienzo del itinerario completo es enorme; en pantallas chicas se baja
+    // la resolución para no quedarse sin memoria
+    const escala=window.innerWidth<700?1.5:2;
+    await enJaula(cont,()=>html2pdf().set({
+      margin:[14,12,14,12],
+      filename:nombreArchivoPDF()+".pdf",
+      image:{type:"jpeg",quality:0.95},
+      html2canvas:{scale:escala,backgroundColor:"#ffffff",windowWidth:794,logging:false},
+      jsPDF:{unit:"mm",format:"a4",orientation:"portrait",compress:true},
+      pagebreak:{mode:["css","legacy"],avoid:[".pv-day",".pv-leg"]}
+    }).from(cont).save());
+    toast("PDF descargado",{tipo:"ok"});
+  }catch(e){
+    toast("No se pudo generar el PDF: "+(e.message||e)+". Prueba con «Descargar PDF».",{tipo:"err",ms:8000});
+  }finally{
+    if(cerrarAviso)cerrarAviso();
+    if(btn){btn.disabled=false;btn.textContent=etiqueta;}
+  }
+}
+document.getElementById("pdf1Btn").addEventListener("click",descargarPDFDirecto);
 document.getElementById("syncBtn").addEventListener("click",()=>{setSync("live");poll();});
 document.getElementById("backToList").addEventListener("click",showList);
 (function(){
