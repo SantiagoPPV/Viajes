@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v18 · 17 sep 2026 · hotel de Hong Kong reservado (Wan Chai)";
+const APP_VERSION="v19 · 17 sep 2026 · cena del día 1 de HK con opciones";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -2069,9 +2069,24 @@ const HK_POR_HOTEL=[
         "y ahí taxi corto. A esa hora el taxi directo es lo más simple con maletas.<br>"+
         "<i>Vienen de Monterrey, con la escala de Tokio de 06:30 a 15:40. El día de llegada no da para más que cenar.</i>"},
   {cid:"hk-dinner-tst",name:"Cena tardía en Wan Chai",
-   note:"<b>Cerca del hotel</b>, en Wan Chai. La zona tiene de todo abierto hasta tarde: cha chaan tengs, "+
-        "wonton noodles y la calle de bares de Lockhart Road.<br>"+
-        "<i>Antes decía Tsim Sha Tsui, que era lo cerca cuando el plan suponía un hotel en Kowloon. "+
+   note:"<b>Llegan al hotel 21:10, así que lo que importa es que sigan abiertos.</b> Los tres están "+
+        "caminando desde 1 Harbour Road:<br>"+
+        "<ul>"+
+        "<li><b>甘牌燒鵝 Kam's Roast Goose</b> — 226 Hennessy Rd, ~12 min a pie. <b>Una estrella Michelin</b> "+
+        "y de los más baratos del mundo con estrella. Medio ganso HK$270 (~620 MXN) alcanza para los dos con "+
+        "arroz y verdura. <u>Cierra 22:30</u>: si eligen este, vayan directo del hotel sin escalas. "+
+        "Suele haber fila de 10-20 personas, pero a esa hora ya baja.</li>"+
+        "<li><b>翠華餐廳 Tsui Wah</b> — 2/F, The Broadway, 54-62 Lockhart Rd. <b>Abierto hasta las 23:00</b>, "+
+        "así que es el seguro: cha chaan teng con menú en inglés y fotos. HK$150-200 los dos (~350-460 MXN). "+
+        "Pidan bollo de piña con mantequilla, wonton noodles y té con leche.</li>"+
+        "<li><b>華星冰室 Capital Café</b> — Shop B1, 6 Heard St. El más auténtico de los tres: la "+
+        "<b>tostada de huevo revuelto con trufa negra</b> es lo que la hizo famosa. HK$120-160 los dos "+
+        "(~280-370 MXN). <u>Cierra 22:00</u>, el más apretado — solo si llegan puntuales.</li>"+
+        "</ul>"+
+        "<b>Si el vuelo se retrasa:</b> los dai pai dong de <b>Bowrington Road</b> (鵝頸橋), a 15 min a pie, "+
+        "aguantan hasta la madrugada — cangrejo estilo typhoon shelter y mariscos al wok. "+
+        "<i>Confirmen horarios el mismo día: es de los datos que más cambian.</i><br>"+
+        "<i>Antes esta cena decía Tsim Sha Tsui, que era lo cerca cuando el plan suponía un hotel en Kowloon. "+
         "Desde Wan Chai eso es cruzar el puerto, y llegando de 30 h de viaje no tiene sentido.</i>"},
   {cid:"hkd2-ferry",name:"Tranvía (ding ding) Wan Chai → Central",type:"transfer",dur:30,
    note:"<b>Parada 1.</b> El tranvía de dos pisos pasa por Hennessy Road, a unas cuadras del hotel. "+
@@ -2331,10 +2346,7 @@ const HK_LLEGADA_2027=[
         "hasta estar en la habitación.<br>"+
         "<i>Vienen de "+VUELOS_INTL.ida.origen+", con la escala de Tokio de "+VUELOS_INTL.ida.escala.llegada+
         " a "+VUELOS_INTL.ida.escala.salida+". El día de llegada no da para más que cenar.</i>"},
-  {cid:"hk-dinner-tst",dur:75,
-   note:"<b>Cena tardía en Tsim Sha Tsui</b>, cerca del hotel. Muchos locales de la zona sirven hasta "+
-        "pasada la medianoche.<br>"+
-        "<i>Si les queda cuerda, el Temple Street Night Market está a un paso y aguanta hasta las 23:00.</i>"}
+  {cid:"hk-dinner-tst",dur:75}   // el nombre y la nota los pone migrarHotelHK
 ];
 function migrarEsencialVuelo(s){
   if(s.esencialGdlMty)return;
@@ -2672,8 +2684,8 @@ function normalizeTripState(s){
   migrarChongqing(s);
   migrarXian(s);
   migrarXianDosHoteles(s);
-  migrarHotelHK(s);
   migrarLlegadas(s);
+  migrarHotelHK(s);       // va después: corrige lo que dependía de dormir en el ICC
   migrarEsencialVuelo(s);
   migrarEscalaTokio(s);
   migrarVuelosIntl(s);
