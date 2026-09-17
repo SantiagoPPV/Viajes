@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v19 · 17 sep 2026 · cena del día 1 de HK con opciones";
+const APP_VERSION="v20 · 17 sep 2026 · día 2 de HK corregido";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -2032,6 +2032,107 @@ const YANGSHUO_V2={
     {start:"08:20",items:[["ys-liraft","08:20"],["g-lunch",null],["ys-bike",null],["g-dinner",null]]}
   ]
 };
+/* ---- Día 2 de Hong Kong: tres correcciones ----
+   El día lo armó una migración anterior suponiendo un hotel en Kowloon, y al
+   revisarlo salieron tres problemas reales:
+
+   1. La cena del Peak terminaba 19:40 y el yate salía 19:40: CERO minutos para
+      bajar del Peak y llegar al muelle, que son 30-45 entre el tranvía de
+      bajada, la fila y el traslado. Tal como estaba no se podía hacer. Y
+      tampoco tenía sentido cenar a las 18:30 saliendo de un almuerzo de dos
+      horas en un tres estrellas. La cena se pasa al final, ya de vuelta en
+      Wan Chai.
+   2. Las escaleras de Niveles Medios BAJAN hasta las 10:00 y después suben.
+      Llegando a las 9:30 desde Central, que es abajo, solo se podía subir a
+      pie. Ahora se entra a las 12:30, cuando ya van hacia arriba.
+   3. El recorrido zigzagueaba: Central → Causeway Bay → de regreso a Central,
+      pasando dos veces frente al hotel. Ahora va de este a oeste sin repetir
+      camino: Causeway Bay, Central, el Peak, el puerto y Wan Chai.
+
+   De paso se renumeran las paradas, que saltaban del 2 al 4 desde que otra
+   migración eliminó el Templo Man Mo y dejó los números huérfanos.
+
+   Sale del día el hueco libre "⭐ Por seleccionar": ya no cabe entre la comida
+   y el Peak, y sus cuatro opciones estaban todas junto a la terminal del
+   tranvía, así que pasan a la nota del traslado. Sigue en el catálogo. */
+const HK_DIA2_V2=[
+  {cid:"hkd2-ferry",name:"Tranvía (ding ding) Wan Chai → Causeway Bay",type:"transfer",dur:20,
+   costos:[["Tranvía (2)",15]],
+   note:"<b>El tranvía de dos pisos corre por Hennessy Road</b>, a unas cuadras del hotel, y Sogo está "+
+        "en el 555 de esa misma calle: los deja en la puerta.<br>"+
+        "HK$3 por persona, se paga al BAJAR. <b>Siéntense adelante en el piso de arriba.</b><br>"+
+        "<i>El plan traía aquí el Star Ferry al muelle 7 de Central, que era la forma de cruzar desde "+
+        "Kowloon. Desde Wan Chai ya están del lado bueno; el Star Ferry se pasa al regreso de la noche.</i>"},
+  {cid:"hkd2-causeway",name:"Parada 1 · Causeway Bay y Sogo",type:"free",dur:80,fixed:"10:00",
+   note:"<b>Parada 1 · Sogo, 555 Hennessy Rd. Abre 10:00</b> (por eso el día arranca 9:40 y no antes).<br>"+
+        "17 pisos de tienda departamental, y alrededor el barrio más denso de compras de la ciudad.<br>"+
+        "<i>Sin costo asignado: depende de lo que compren.</i>"},
+  {cid:"hkd2-parklane",name:"Parada 2 · The Park Lane Hong Kong",
+   note:"<b>Parada 2 · 310 Gloucester Rd</b>, frente a Victoria Park, a 5 min a pie de Sogo. "+
+        "Su bar del piso 27 tiene buena vista si quieren una pausa antes de cruzar a Central."},
+  {cid:"hkd2-ir-central",name:"MTR Causeway Bay → Central",type:"transfer",dur:25,
+   costos:[["MTR (2)",30]],
+   note:"<b>Línea Isla, 3 paradas.</b> De aquí en adelante el día va hacia el oeste y ya no se repite camino.<br>"+
+        "<i>Pasan por debajo de su propio hotel: si algo les estorba de las compras, es el momento de dejarlo.</i>"},
+  {cid:"hkd2-escaleras",name:"Parada 3 · Escaleras de Niveles Medios + SoHo",
+   note:"<b>Parada 3 · 138 Queen's Road Central.</b> Las escaleras mecánicas al aire libre más largas del mundo, "+
+        "800 m subiendo la ladera.<br>"+
+        "<b>⚠ Ojo con el sentido:</b> bajan hasta las 10:00 y <u>después suben</u>. A esta hora van hacia "+
+        "arriba, que es lo que les sirve. <i>Antes esta parada estaba a las 9:30, cuando todavía bajaban y "+
+        "habrían tenido que subir SoHo a pie.</i><br>"+
+        "Se recorre SoHo de paso: galerías, murales y las calles de bares de Staunton y Elgin."},
+  {cid:"hkd2-lkh",name:"Parada 4 · Comida: Lung King Heen (Four Seasons)",fixed:"14:00",
+   note:"<b>Parada 4 · 14:00 · Four Seasons, 8 Finance Street, Central.</b> Dim sum en el "+
+        "<b>3 estrellas Michelin</b>.<br>"+
+        "<u>Reservar con semanas de antelación</u>; el menú de mediodía es bastante más accesible que la cena.<br>"+
+        "<i>Son dos horas de comida. Por eso la cena del día se movió al final: a las 18:30 nadie va a "+
+        "tener hambre.</i>"},
+  {cid:"hkd2-ir-peak",name:"A la terminal del Peak Tram",type:"transfer",dur:15,
+   costos:[["Taxi / a pie (2)",50]],
+   note:"<b>33 Garden Rd</b>, 10-15 min desde el Four Seasons.<br>"+
+        "<u>Si llegan con tiempo antes del tranvía</u>, todo esto está pegado a la terminal:"+
+        "<ul><li>Hong Kong Park y su pajarera</li>"+
+        "<li>Museo del Té de Flagstaff House (gratis, dentro del parque)</li>"+
+        "<li>Pacific Place, si hay que refugiarse de la lluvia</li>"+
+        "<li>Jardín Botánico y Zoológico (gratis, subiendo por Garden Rd)</li></ul>"},
+  {cid:"hkd2-peak",name:"Parada 5 · Tranvía Peak → Victoria Peak",dur:150,fixed:"16:15",
+   note:"<b>Parada 5 · 33 Garden Rd</b> (terminal baja del tranvía) + Sky Terrace 428.<br>"+
+        "<b>⚠ Faltan comprar las entradas</b> — sáquenlas en línea con horario para saltarse la fila, "+
+        "que en la tarde es larga.<br>"+
+        "<i>Suben con luz y bajan casi al atardecer (en mayo el sol se mete ~19:00). El skyline encendido "+
+        "lo van a ver desde el agua, que es mejor sitio todavía.</i>"},
+  {cid:"hkd2-ir-muelle",name:"Bajar del Peak e ir al muelle",type:"transfer",dur:40,
+   costos:[["Tranvía de bajada + taxi (2)",180]],
+   note:"<b>Este traslado no existía y era el error más grave del día:</b> la cena terminaba a las 19:40 "+
+        "y el yate salía a las 19:40, sin un minuto para bajar del Peak.<br>"+
+        "Entre el tranvía de bajada, la fila y llegar al muelle son 30-45 min. <b>Confirmen el muelle de "+
+        "salida al reservar el yate</b> y salgan del Peak con margen."},
+  {cid:"hkd2-yate",name:"Parada 6 · Tour nocturno en yate por Victoria Harbour",fixed:"19:40",
+   note:"<b>Parada 6 · 19:40 · Victoria Harbour.</b> Desde el agua se ve la <b>Symphony of Lights de las "+
+        "20:00</b>, que es el mejor sitio para verla.<br>"+
+        "<i>Confirmar muelle de salida y si incluye bebidas; llevar algo de abrigo, en el agua refresca.</i>"},
+  {cid:"hkd2-regreso",name:"Regreso al hotel",type:"transfer",dur:35,
+   note:"<b>Al Renaissance, en Wan Chai.</b><br>"+
+        "<i>Si el yate los deja del lado de Kowloon y quieren el Star Ferry de noche —vale la pena— "+
+        "crucen a Wan Chai: el muelle está a 5 min del hotel.</i>"},
+  {cid:"hkd2-cena",name:"Parada 7 · Cena tardía en Wan Chai",type:"food",dur:75,
+   costos:[["Cena tardía (2)",800]],
+   note:"<b>Parada 7 · de vuelta en Wan Chai, ~21:45.</b> Sirven los mismos tres del día 1: "+
+        "<b>Tsui Wah</b> (hasta las 23:00) es el que mejor aguanta a esta hora, y los dai pai dong de "+
+        "<b>Bowrington Road</b> siguen hasta la madrugada.<br>"+
+        "<i>Antes esta cena era en el Sky Terrace a las 18:30, dos horas y media después del almuerzo en "+
+        "el tres estrellas y sin tiempo para llegar al yate. Movida acá, el día cierra bien.</i>"}
+];
+function migrarDia2HKv2(s){
+  if(s.hkDia2v2)return;
+  const hk=s.bases&&s.bases.hk;
+  sembrarDia(hk,1,HK_DIA2_V2,"09:40");
+  // la cena dejó de ser la del Sky Terrace: baja de $1,200 a $800
+  const cena=hk&&(hk.catalog||[]).find(a=>a.cid==="hkd2-cena");
+  if(cena)cena.costs=[{id:uid(),label:"Cena tardía en Wan Chai (2)",est:800,real:0}];
+  s.hkDia2v2=true;
+}
+
 /* ---- Hong Kong: hotel reservado, Renaissance Harbour View ----
    Reservado el 6-9 de mayo, 3 noches, $15,000 en total.
 
@@ -2088,17 +2189,6 @@ const HK_POR_HOTEL=[
         "<i>Confirmen horarios el mismo día: es de los datos que más cambian.</i><br>"+
         "<i>Antes esta cena decía Tsim Sha Tsui, que era lo cerca cuando el plan suponía un hotel en Kowloon. "+
         "Desde Wan Chai eso es cruzar el puerto, y llegando de 30 h de viaje no tiene sentido.</i>"},
-  {cid:"hkd2-ferry",name:"Tranvía (ding ding) Wan Chai → Central",type:"transfer",dur:30,
-   note:"<b>Parada 1.</b> El tranvía de dos pisos pasa por Hennessy Road, a unas cuadras del hotel. "+
-        "HK$3 por persona, se paga al bajar. <b>Siéntense adelante en el piso de arriba.</b><br>"+
-        "<i>El plan traía aquí el Star Ferry llegando al muelle 7 de Central, que era la forma de cruzar "+
-        "desde Kowloon. Desde Wan Chai ya están del lado bueno, así que el Star Ferry se pasa al regreso "+
-        "de la noche. El muelle de Wan Chai queda a 5 min a pie del hotel si lo quieren hacer otro día.</i>"},
-  {cid:"hkd2-regreso",name:"Regreso al hotel (tranvía o Star Ferry)",
-   note:"<b>Al Renaissance, en Wan Chai.</b> Bajar del Peak en tranvía y volver en MTR o en el tranvía "+
-        "de Hennessy Road.<br>"+
-        "<i>Si quieren el Star Ferry de noche —vale la pena— crucen de Central a Tsim Sha Tsui y regresen "+
-        "al muelle de Wan Chai, que está a 5 min del hotel.</i>"},
   {cid:"hkd3-mtr-lantau",name:"MTR Wan Chai → Tung Chung",dur:50,
    note:"<b>Línea Isla hasta Central, pasillo a Hong Kong Station y línea Tung Chung hasta el final.</b> "+
         "Unos 45-50 min con los transbordos.<br>"+
@@ -2686,6 +2776,7 @@ function normalizeTripState(s){
   migrarXianDosHoteles(s);
   migrarLlegadas(s);
   migrarHotelHK(s);       // va después: corrige lo que dependía de dormir en el ICC
+  migrarDia2HKv2(s);      // y este al final, que es el dueño del día 2
   migrarEsencialVuelo(s);
   migrarEscalaTokio(s);
   migrarVuelosIntl(s);
