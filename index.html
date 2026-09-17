@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v17 · 24 ago 2026 · PDF de un clic además del de calidad";
+const APP_VERSION="v18 · 17 sep 2026 · hotel de Hong Kong reservado (Wan Chai)";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -2032,6 +2032,128 @@ const YANGSHUO_V2={
     {start:"08:20",items:[["ys-liraft","08:20"],["g-lunch",null],["ys-bike",null],["g-dinner",null]]}
   ]
 };
+/* ---- Hong Kong: hotel reservado, Renaissance Harbour View ----
+   Reservado el 6-9 de mayo, 3 noches, $15,000 en total.
+
+   Está en <b>1 Harbour Road, Wan Chai</b>: en la ISLA de Hong Kong, no en
+   Kowloon. El plan de esta parada se había armado suponiendo la torre ICC
+   (Ritz-Carlton / W), que está encima de la estación Kowloon, así que varias
+   actividades daban indicaciones que ya no aplican:
+
+     · la cena del día 1 era "en Tsim Sha Tsui, cerca del hotel" — TST queda
+       cruzando el puerto;
+     · el día 2 arrancaba llegando en Star Ferry al muelle 7 de Central, que
+       tenía sentido saliendo de Kowloon; desde Wan Chai a Central se va por
+       tierra en minutos;
+     · el día 3 salía y volvía a la estación Kowloon;
+     · Tin Lung Heen se describía como "en el mismo edificio del hotel", y ya
+       no lo es.
+
+   Lo que sigue corrige todo eso. La buena noticia es el regreso del día 3:
+   desde Diamond Hill se puede tomar la línea Tuen Ma a Hung Hom y ahí la East
+   Rail, que cruza el puerto y para en Exhibition Centre, a 3 minutos a pie del
+   hotel. Sale mejor que la ruta anterior. */
+const HK_RENAISSANCE={name:"Renaissance Hong Kong Harbour View",area:"1 Harbour Road, Wan Chai · isla de Hong Kong",
+  precio:5000,chosen:true,
+  note:"<b>★ RESERVADO.</b> 6-9 de mayo, 3 noches, <b>$15,000 en total</b> ($5,000 por noche).<br>"+
+       "En el malecón de Wan Chai, con acceso directo al Centro de Convenciones. "+
+       "<b>Estación Exhibition Centre (East Rail) a 3 min a pie</b> y Wan Chai (línea Isla) a 10 min "+
+       "por pasillos techados.<br>"+
+       "<i>Ojo: está en la ISLA, no en Kowloon. El plan de esta parada se había armado suponiendo la "+
+       "torre ICC, así que los traslados de los tres días ya vienen corregidos a Wan Chai.</i>"};
+/* Lo que cambia en cada día por el cambio de lado del puerto. */
+const HK_POR_HOTEL=[
+  {cid:"hk-arrive",
+   note:"<b>Aterriza 19:40.</b> Migración, maletas y traslado al hotel: cuenten 90 min hasta estar en la habitación.<br>"+
+        "<b>Al Renaissance (Wan Chai):</b> taxi directo ~40 min, o Airport Express a Hong Kong Station (24 min) "+
+        "y ahí taxi corto. A esa hora el taxi directo es lo más simple con maletas.<br>"+
+        "<i>Vienen de Monterrey, con la escala de Tokio de 06:30 a 15:40. El día de llegada no da para más que cenar.</i>"},
+  {cid:"hk-dinner-tst",name:"Cena tardía en Wan Chai",
+   note:"<b>Cerca del hotel</b>, en Wan Chai. La zona tiene de todo abierto hasta tarde: cha chaan tengs, "+
+        "wonton noodles y la calle de bares de Lockhart Road.<br>"+
+        "<i>Antes decía Tsim Sha Tsui, que era lo cerca cuando el plan suponía un hotel en Kowloon. "+
+        "Desde Wan Chai eso es cruzar el puerto, y llegando de 30 h de viaje no tiene sentido.</i>"},
+  {cid:"hkd2-ferry",name:"Tranvía (ding ding) Wan Chai → Central",type:"transfer",dur:30,
+   note:"<b>Parada 1.</b> El tranvía de dos pisos pasa por Hennessy Road, a unas cuadras del hotel. "+
+        "HK$3 por persona, se paga al bajar. <b>Siéntense adelante en el piso de arriba.</b><br>"+
+        "<i>El plan traía aquí el Star Ferry llegando al muelle 7 de Central, que era la forma de cruzar "+
+        "desde Kowloon. Desde Wan Chai ya están del lado bueno, así que el Star Ferry se pasa al regreso "+
+        "de la noche. El muelle de Wan Chai queda a 5 min a pie del hotel si lo quieren hacer otro día.</i>"},
+  {cid:"hkd2-regreso",name:"Regreso al hotel (tranvía o Star Ferry)",
+   note:"<b>Al Renaissance, en Wan Chai.</b> Bajar del Peak en tranvía y volver en MTR o en el tranvía "+
+        "de Hennessy Road.<br>"+
+        "<i>Si quieren el Star Ferry de noche —vale la pena— crucen de Central a Tsim Sha Tsui y regresen "+
+        "al muelle de Wan Chai, que está a 5 min del hotel.</i>"},
+  {cid:"hkd3-mtr-lantau",name:"MTR Wan Chai → Tung Chung",dur:50,
+   note:"<b>Línea Isla hasta Central, pasillo a Hong Kong Station y línea Tung Chung hasta el final.</b> "+
+        "Unos 45-50 min con los transbordos.<br>"+
+        "<i>Son 15 min más que desde Kowloon, que es lo que cuesta estar del lado de la isla. Por eso el "+
+        "desayuno se adelantó a las 7:00.</i>"},
+  {cid:"g-rest",dur:60,
+   note:"Descanso y cambiarse para la cena.<br>"+
+        "<i>Más corto que antes: Tin Lung Heen ya no está en el hotel y hay que cruzar el puerto.</i>"},
+  {cid:"hkd3-regreso",name:"MTR Diamond Hill → Hung Hom → Exhibition Centre",dur:40,
+   costos:[["MTR (2)",70]],
+   note:"<b>Línea Tuen Ma hasta Hung Hom y ahí la East Rail, que cruza el puerto.</b> Se bajan en "+
+        "<b>Exhibition Centre, a 3 min a pie del hotel</b>.<br>"+
+        "<i>Esta ruta salió mejor que la anterior: la extensión de la East Rail bajo el puerto los deja "+
+        "en la puerta, sin los tres transbordos que hacían falta para llegar a Kowloon.</i>"},
+  {cid:"hkd3-tinlung-ir",name:"Wan Chai → ICC (Tin Lung Heen)",type:"transfer",dur:25,
+   costos:[["MTR (2)",40]],
+   note:"<b>Línea Isla a Central, pasillo a Hong Kong Station y una parada de la línea Tung Chung a Kowloon.</b> "+
+        "El ICC está encima de esa estación.<br>"+
+        "<i>Este traslado no existía: el plan suponía que cenaban en su propio hotel. Si prefieren no cruzar "+
+        "el puerto al final del día, cambien la cena por un cantonés de la isla y borren esta actividad.</i>"},
+  {cid:"hkd3-tinlung",
+   note:"<b>20:30 · Ritz-Carlton, ICC piso 102, Kowloon.</b> Cantonés con <b>1 estrella Michelin</b> y vista "+
+        "a la bahía desde el piso 102.<br>"+
+        "<u>Lo que más se pide:</u> cerdo ibérico BBQ con miel, sopa de doble cocción, abalón y el carrito "+
+        "de dim sum si alcanzan.<br>"+
+        "<b>⚠ Ya NO es su hotel.</b> Cuando se eligió, el plan suponía que dormían en el ICC y se bajaba en "+
+        "elevador. Desde el Renaissance son 25 min de MTR de ida y otros tantos de vuelta: terminan de cenar "+
+        "22:30 y llegan al hotel ~23:00.<br>"+
+        "<i>Código de vestimenta smart casual. Confirmar la reservación y pedir mesa junto a la ventana.</i>"}
+];
+function migrarHotelHK(s){
+  if(s.hkRenaissanceV1)return;
+  const hk=s.bases&&s.bases.hk;
+  if(!hk){s.hkRenaissanceV1=true;return;}
+  // el hotel reservado, hasta arriba y marcado
+  if(Array.isArray(hk.hotels)&&!hk.hotels.some(h=>/Renaissance/i.test(h.name||""))){
+    hk.hotels.forEach(h=>{h.chosen=false;});
+    hk.hotels.unshift({id:uid(),name:HK_RENAISSANCE.name,area:HK_RENAISSANCE.area,
+      note:HK_RENAISSANCE.note,precio:HK_RENAISSANCE.precio,noches:0,chosen:true});
+    hk.budget=hk.budget||{};
+    delete hk.budget.lodgingAuto;        // que lo calcule solo: $5,000 × 3 noches
+  }
+  // los textos y tiempos que dependían de dormir en la torre ICC
+  if(Array.isArray(hk.catalog)){
+    HK_POR_HOTEL.forEach(a=>{
+      let act=hk.catalog.find(x=>x.cid===a.cid);
+      if(!act){
+        if(!a.name)return;
+        act={cid:a.cid,name:a.name,type:a.type||"transfer",dur:a.dur||30,note:"",src:"",
+             costs:(a.costos||[]).map(([label,est])=>({id:uid(),label,est,real:0}))};
+        hk.catalog.push(act);
+      }
+      if(a.name)act.name=a.name;
+      if(a.type)act.type=a.type;
+      if(a.dur)act.dur=a.dur;
+      if(a.note)act.note=a.note;
+    });
+    // el traslado a la cena entra antes de Tin Lung Heen, en el día 3
+    const d3=hk.schedule&&hk.schedule[2];
+    if(Array.isArray(d3)&&!d3.some(x=>x.ref==="hkd3-tinlung-ir")){
+      const i=d3.findIndex(x=>x.ref==="hkd3-tinlung");
+      const fila={id:uid(),ref:"hkd3-tinlung-ir",fixed:"19:55"};
+      if(i>=0)d3.splice(i,0,fila); else d3.push(fila);
+    }
+    hk.dayStart=hk.dayStart||{};
+    hk.dayStart[2]="07:00";              // se adelanta: Lantau queda 15 min más lejos
+  }
+  s.hkRenaissanceV1=true;
+}
+
 /* ---- Xi'an: estancia partida entre dos hoteles, para caminar las dos noches ----
    El itinerario tiene su centro de gravedad en dos sitios opuestos de la ciudad:
    el lunes es dentro de la muralla (Puerta Sur y Barrio Musulmán) y el martes
@@ -2550,6 +2672,7 @@ function normalizeTripState(s){
   migrarChongqing(s);
   migrarXian(s);
   migrarXianDosHoteles(s);
+  migrarHotelHK(s);
   migrarLlegadas(s);
   migrarEsencialVuelo(s);
   migrarEscalaTokio(s);
