@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v23 · 21 sep 2026 · HK día 2: pausa en el hotel y cena en el Peak";
+const APP_VERSION="v24 · 21 sep 2026 · HK día 2: Lung King Heen a la cena, Tai Kwun repuesto";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -2644,6 +2644,131 @@ function migrarHKv5(s){
   costo("hkd2-bajar-peak","Tranvía de bajada + taxi al hotel (2)",240);
   s.hkV5=true;
 }
+/* ---- Día 2 de Hong Kong, versión 6: Lung King Heen pasa a la cena ----
+   El cambio de fondo: la comida deja de ser el bloque de dos horas en el
+   tres... dos estrellas y se vuelve algo tranquilo de una hora. Lung King
+   Heen se pasa a la cena, después del Peak. Eso libera 60 min que se
+   reparten entre el hotel y un té en Hong Kong Park.
+
+   POR QUÉ LA CENA ES EN EL DÍA 2 Y NO AL SIGUIENTE. Se pidió "a cenar el
+   día siguiente, o si alcanzamos después del Peak". El día siguiente no
+   sirve: el día 3 ya tiene Tin Lung Heen a las 20:30 en el ICC, y ese día
+   termina en Kowloon después del yate — Lung King Heen está en Central, del
+   otro lado del puerto. Después del Peak sí: bajan a Central, que es donde
+   está el Four Seasons.
+
+   POR QUÉ 20:45 Y NO 21:00. Lung King Heen sirve cena de 18:00 a 22:00 y
+   hay fuentes que ponen la ÚLTIMA ORDEN a las 21:00. Una reservación a las
+   21:00 quedaría justo en el filo. A las 20:45 alcanzan igual (bajan del
+   Peak 20:25 y el Four Seasons está a 15 min) y hay margen real.
+   ⚠ CONFIRMAR EL HORARIO DE ÚLTIMA ORDEN AL RESERVAR.
+
+   TRES COSAS QUE CAMBIAN AL PASARLO A LA CENA, y que conviene tener escritas:
+     1. El dim sum de Lung King Heen SOLO SE SIRVE A MEDIODÍA. Pasarlo a la
+        cena es renunciar a lo que lo hizo famoso.
+     2. El precio se dispara: el menú de degustación de la cena son HK$1,680
+        + 10% por persona (~$8,600 MXN para dos) contra el mínimo de HK$700
+        + 10% del mediodía (~$3,540). A la carta queda en medio. El costo del
+        día sube de ~$6,700 a ~$9,400.
+     3. El día termina a las 22:45 y el día 3 arranca a las 6:50 para
+        alcanzar el teleférico de las 9:00: son menos de 8 horas de sueño.
+
+   EL REPARTO DE LOS 60 MINUTOS LIBERADOS. Se pidió "40 al hotel y 20 a un
+   café en la zona de Hong Kong Park". Salieron 30 y 20: reponer Tai Kwun
+   cuesta 45 min y quitarle media hora al museo del té solo liberó 30. El
+   hotel queda en 1h50 (era 1h20) y el té en 20 min. */
+const HK_DIA2_V6=[
+  {cid:"g-breakfast"},
+  {cid:"hkd2-bowrington"},
+  {cid:"hkd2-causeway",fixed:"10:00",dur:45},
+  {cid:"hkd2-ferry",dur:25},
+  {cid:"hkd2-hotel",name:"Pausa en el hotel",dur:110,
+   note:"<b>1h50 en el Renaissance, Wan Chai.</b> Bañarse, dejar lo de Sogo, cambiarse.<br>"+
+        "<b>Esto no cuesta recorrido:</b> el hotel está justo entre Causeway Bay y Central, así que es "+
+        "una escala en el camino, no un desvío. De aquí se sigue al oeste y ya no se vuelve hasta la noche.<br>"+
+        "<i>Creció media hora al pasar Lung King Heen a la cena. Se pidieron 40 min más, pero reponer Tai "+
+        "Kwun cuesta 45 y quitarle media hora al museo del té solo liberó 30.</i>"},
+  {cid:"hkd2-ir-central",dur:20},
+  {cid:"hkd2-escaleras",dur:60},
+  {cid:"hkd2-taikwun",name:"Parada 4 · Tai Kwun",type:"sight",dur:45,
+   note:"<b>Parada 4 · 10 Hollywood Rd. Abre 10:00-23:00 todos los días, entrada libre.</b> Las escaleras "+
+        "pasan justo al lado: se cruza Hollywood Road y ya está.<br>"+
+        "La vieja Comisaría Central —cuartel, tribunal y prisión Victoria— convertida en centro de "+
+        "patrimonio y arte. \"Tai Kwun\" quiere decir literalmente \"la estación grande\".<br>"+
+        "<i>Había salido del día al meter la pausa en el hotel; vuelve porque la comida dejó de ser un "+
+        "bloque de dos horas. Las exposiciones del JC Contemporary a veces cobran aparte.</i>"},
+  {cid:"hkd2-comida",name:"Parada 5 · Comida tranquila",type:"food",dur:60,
+   costos:[["Comida ligera (2)",600]],
+   note:"<b>Parada 5 · una hora, sin ceremonia.</b> Lung King Heen se fue a la cena, así que esto es "+
+        "comer bien y seguir.<br>"+
+        "<u>Sin moverse:</u> los patios de <b>Tai Kwun</b> tienen varios restaurantes y bares, y es donde "+
+        "ya están parados.<br>"+
+        "<u>A 5 min a pie:</u> <b>SoHo</b> entero —Staunton, Elgin, Gough— con decenas de opciones, desde "+
+        "fideos de res de puesto hasta cocina de autor.<br>"+
+        "<i>La idea es no volver a sentarse dos horas: la cena de hoy ya es de dos horas y en un dos "+
+        "estrellas.</i>"},
+  {cid:"hkd2-ir-park",name:"Caminar a Hong Kong Park",type:"transfer",dur:20,
+   note:"<b>20 min a pie</b> de Tai Kwun a Hong Kong Park, bajando por Central hacia Admiralty.<br>"+
+        "<i>El parque está pegado a la terminal baja del Peak Tram, así que esta caminata sirve para "+
+        "las dos cosas que siguen.</i>"},
+  {cid:"hkd2-hkpark",name:"Parada 6 · Hong Kong Park",type:"sight",dur:45,
+   note:"<b>Parada 6 · Hong Kong Park. Gratis, abre 6:00-23:00.</b> Pajarera Edward Youde, cascada, "+
+        "invernadero y estanques, metido entre los rascacielos de Admiralty.<br>"+
+        "<b>Bajó de 75 a 45 min</b>, quitándole el tiempo al museo del té. El <b>Museo del Té de "+
+        "Flagstaff House</b> (10:00-18:00, cerrado martes, gratis) sigue ahí y es la casa occidental más "+
+        "vieja en pie de Hong Kong (1846): si les llama, son 15 min de vistazo y está de camino a la "+
+        "parada siguiente.<br>"+
+        "<i>El día 2 es viernes, así que el museo abre.</i>"},
+  {cid:"hkd2-lockcha",name:"Parada 7 · Té en LockCha",type:"food",dur:20,
+   costos:[["Té y dim sum vegetariano (2)",400]],
+   note:"<b>Parada 7 · LockCha Tea House · G/F, K.S. Lo Gallery, Hong Kong Park, 10 Cotton Tree Drive.</b><br>"+
+        "<b>Lun-vie 10:00-20:00</b> (cierra el segundo martes de cada mes). El día 2 es viernes: abre.<br>"+
+        "Casa de té china de verdad —servicio gongfu, té pesado y servido en la mesa— con dim sum "+
+        "vegetariano. <b>Está en el mismo edificio que el Museo del Té</b>, el anexo de Flagstaff House, "+
+        "así que el rato que se le quita al museo se gana aquí sin caminar un metro.<br>"+
+        "<i>Son 20 min: un té y a la terminal del tranvía, que está saliendo del parque. Si quieren "+
+        "sentarse en serio, róbenle tiempo al parque.</i>"},
+  {cid:"hkd2-ir-peak",dur:15},
+  {cid:"hkd2-peak",name:"Parada 8 · Peak Tram, Sky Terrace 428 y el show de luces",dur:115,fixed:"17:45"},
+  {cid:"hkd2-bajar-peak",name:"Bajar del Peak a Central",type:"transfer",dur:45,
+   note:"<b>Salen en cuanto acabe el show de las 19:30.</b> Entre la fila del tranvía de bajada y el "+
+        "traslado son 40-45 min; el último tranvía baja a las 23:00, así que no hay riesgo de quedarse "+
+        "arriba.<br>"+
+        "<i>Alternativa: el minibús 1 o el autobús 15 bajan a Central y a veces son más rápidos que "+
+        "formarse. También hay taxis en la puerta del Peak Tower.</i>"},
+  {cid:"hkd2-ir-ifc",name:"Caminar al Four Seasons",type:"transfer",dur:15,
+   note:"<b>15 min</b> de la terminal del tranvía (33 Garden Rd) al Four Seasons, en el IFC."},
+  {cid:"hkd2-lkh",name:"Parada 9 · Cena: Lung King Heen (Four Seasons)",fixed:"20:45",dur:105,
+   note:"<b>Parada 9 · 20:45 · Four Seasons, 8 Finance Street, Central.</b> Cantonés con "+
+        "<b>2 estrellas Michelin</b> — tenía tres y perdió una en 2023.<br>"+
+        "<b>⚠ Horario, y es el punto delicado:</b> la cena se sirve de 18:00 a 22:00 y hay fuentes que "+
+        "ponen la <u>última orden a las 21:00</u>. Por eso quedó a las 20:45 y no a las 21:00. "+
+        "<b>Confirmar el horario de última orden al reservar</b> y avisar que llegan del Peak.<br>"+
+        "<b>⚠ Lo que se pierde al pasarlo de la comida a la cena:</b>"+
+        "<ul><li><b>El dim sum solo se sirve a mediodía.</b> Es lo que hizo famoso al restaurante y en la "+
+        "cena no está.</li>"+
+        "<li><b>El precio se dispara.</b> El menú de degustación de la cena son HK$1,680 + 10% de "+
+        "servicio por persona (~$8,600 MXN para dos); a mediodía el piso eran HK$700 + 10% (~$3,540). "+
+        "A la carta queda en medio — el costo cargado aquí es una estimación de eso.</li></ul>"+
+        "<u>Reservar con 1-2 meses de anticipación.</u><br>"+
+        "<i>Si al final prefieren el dim sum, esto se regresa a las 14:00 en un clic y la cena vuelve "+
+        "al Peak.</i>"},
+  {cid:"hkd2-regreso",name:"Regreso al hotel",type:"transfer",dur:15,
+   note:"<b>Al Renaissance, en Wan Chai.</b> Del IFC son 10-15 min en taxi o dos paradas de MTR.<br>"+
+        "<b>⚠ El día cierra 22:45 y el día 3 arranca a las 6:50</b> para alcanzar el teleférico de las "+
+        "9:00. Son menos de 8 horas: dejen la maleta lista antes de salir hoy."}
+];
+function migrarHKv6(s){
+  if(s.hkV6)return;
+  const hk=s.bases&&s.bases.hk;
+  if(!hk||!Array.isArray(hk.catalog)){s.hkV6=true;return;}
+  sembrarDia(hk,1,HK_DIA2_V6,"08:00");
+  const a=hk.catalog.find(x=>x.cid==="hkd2-lkh");
+  // la cena a la carta de un 2 estrellas, entre el mínimo de mediodía y el
+  // menú de degustación de HK$1,680+10% por persona
+  if(a)a.costs=[{id:uid(),label:"Cena Lung King Heen (2)",est:7000,real:0}];
+  s.hkV6=true;
+}
 
 /* ---- Hong Kong: hotel reservado, Renaissance Harbour View ----
    Reservado el 6-9 de mayo, 3 noches, $15,000 en total.
@@ -3291,7 +3416,8 @@ function normalizeTripState(s){
   migrarDia2HKv2(s);
   migrarHKv3(s);          // dueño del día 3 de Hong Kong
   migrarHKv4(s);
-  migrarHKv5(s);          // dueño actual del día 2: pausa en el hotel y cena en el Peak
+  migrarHKv5(s);
+  migrarHKv6(s);          // dueño actual del día 2: Lung King Heen pasa a la cena
   migrarEsencialVuelo(s);
   migrarEscalaTokio(s);
   migrarVuelosIntl(s);
