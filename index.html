@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v22 · 21 sep 2026 · HK día 2: desayuno en el hotel, Causeway Bay y las escaleras";
+const APP_VERSION="v23 · 21 sep 2026 · HK día 2: pausa en el hotel y cena en el Peak";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -2519,6 +2519,131 @@ function migrarHKv4(s){
   sembrarDia(hk,1,HK_DIA2_V4,"08:00");
   s.hkV4=true;
 }
+/* ---- Día 2 de Hong Kong, versión 5: pausa en el hotel y cena en el Peak ----
+   Tres cambios pedidos, todos sobre el mismo problema: la zona de Central /
+   SoHo tenía cuatro paradas pegadas y no necesitaba tanto tiempo.
+
+   1. PAUSA EN EL HOTEL ANTES DE CENTRAL. Saliendo de Sogo se regresa a Wan
+      Chai y se está 1h20 en el hotel. Sale gratis en recorrido porque el
+      hotel está justo ENTRE Causeway Bay y Central: no es un desvío, es una
+      escala en el camino. Los minutos salen de quitar Graham Street y Lan
+      Fong Yuen (25 min) y de apretar el Central Market con las escaleras.
+
+      El regreso se hace en el TRANVÍA de dos pisos, que había salido del
+      itinerario hace dos versiones: corre por Hennessy Road de Causeway Bay
+      a Wan Chai, es más lento que el MTR y esa es justamente la gracia.
+
+   2. CENTRAL MARKET Y ESCALERAS EN UNA HORA, JUNTOS. Son la misma parada:
+      el Central Market es el pie de las escaleras, se sale por la puerta de
+      arriba. Antes eran 40 + 60 min en dos bloques; ahora son 60 en uno.
+      La hora sigue funcionando: llegan 12:50 y las escaleras suben desde
+      las 10:20.
+
+   3. CENA EN EL PEAK, Y DEL PEAK AL HOTEL. Antes bajaban a las 20:00 a cenar
+      en Central. Ahora se quedan: atardecer (~19:00), el show de luces de
+      las 19:30 y cena arriba. El tranvía baja hasta las 23:00 y el Sky
+      Terrace cierra a las 22:00, así que cabe de sobra.
+
+      ⚠ Ojo: Sky Terrace 428 es una terraza al aire libre, NO tiene
+      restaurante propio. "Cenar en el Sky Terrace" en la práctica es cenar
+      en el Peak: las opciones reales están en la nota de la cena.
+
+   SALE DEL DÍA: Tai Kwun, Graham Street y Lan Fong Yuen. Tai Kwun no lo
+   pediste quitar, pero con 1h20 en el hotel ya no cabe entre la comida y
+   las escaleras; queda en el catálogo, y está a dos minutos de las
+   escaleras si prefieren cambiarlo por media hora de hotel. */
+const HK_DIA2_V5=[
+  {cid:"g-breakfast"},                       // genérica de 60 min, arrancando 8:00
+  {cid:"hkd2-bowrington"},
+  {cid:"hkd2-causeway",fixed:"10:00",dur:45},
+  {cid:"hkd2-ferry",name:"Tranvía (ding ding) Causeway Bay → Wan Chai",type:"transfer",dur:25,
+   note:"<b>El tranvía de dos pisos corre por Hennessy Road</b> y Sogo está en el 555 de esa misma calle: "+
+        "se sube en la puerta y se baja en Wan Chai.<br>"+
+        "HK$3.30 por persona (subió en mayo de 2025), se paga al BAJAR. <b>Siéntense adelante en el piso "+
+        "de arriba.</b><br>"+
+        "<i>Es más lento que el MTR y esa es la gracia: son 25 min viendo pasar la ciudad a ras de calle. "+
+        "El ding ding llevaba dos versiones fuera del itinerario; aquí es donde encaja.</i>"},
+  {cid:"hkd2-hotel",name:"Pausa en el hotel",type:"rest",dur:80,
+   note:"<b>1h20 en el Renaissance, Wan Chai.</b> Bañarse, dejar lo de Sogo, cambiarse para la comida.<br>"+
+        "<b>Esto no cuesta recorrido:</b> el hotel está justo entre Causeway Bay y Central, así que es "+
+        "una escala en el camino, no un desvío. De aquí se sigue al oeste y ya no se vuelve hasta la noche.<br>"+
+        "<i>Salen a la 1:20 con todo el día por delante y la comida a las 2:00. Si quieren estirarla "+
+        "media hora más, lo que se sacrifica es el Central Market.</i>"},
+  {cid:"hkd2-ir-central",name:"MTR Wan Chai → Central",type:"transfer",dur:20,
+   note:"<b>Línea Isla, 2 paradas.</b> Contando la caminata del hotel a la estación y de Central al "+
+        "mercado, son unos 20 min puerta a puerta.<br>"+
+        "<i>De aquí en adelante el día va hacia el oeste y ya no se repite camino.</i>"},
+  {cid:"hkd2-escaleras",name:"Parada 3 · Central Market y Escaleras de Niveles Medios",type:"sight",dur:60,
+   note:"<b>Parada 3 · 93 Queen's Rd Central / 80 Des Voeux Rd Central. Una hora para las dos cosas, "+
+        "porque son la misma esquina.</b><br>"+
+        "<b>Central Market</b> (abre 10:00-22:00): el mercado municipal de 1939, edificio histórico grado 3, "+
+        "revitalizado en 2021 con casi cien locales de comida, café y diseño, conservando las escaleras y "+
+        "la estructura original. <i>~25 min alcanzan para recorrerlo.</i><br>"+
+        "<b>Escaleras de Niveles Medios</b>: se sale por la puerta de arriba del mercado y ya están ahí. "+
+        "800 m de escaleras mecánicas al aire libre, las más largas del mundo.<br>"+
+        "<b>Sentido:</b> bajan de 6:00 a 10:00 y <u>suben de 10:20 a medianoche</u>. A las 12:50 van hacia "+
+        "arriba, que es lo que sirve.<br>"+
+        "<i>Se suben unos tramos hasta SoHo —Staunton, Elgin— y se regresa a pie cuesta abajo, que es "+
+        "fácil y rápido. El recorrido completo de punta a punta son 20-25 min, pero hoy no hace falta "+
+        "llegar hasta arriba.</i>"},
+  {cid:"hkd2-ir-ifc",name:"Caminar al Four Seasons",type:"transfer",dur:10,
+   note:"<b>10 min a pie</b> de Central Market al IFC, casi todo por pasarelas techadas."},
+  {cid:"hkd2-lkh",name:"Parada 4 · Comida: Lung King Heen (Four Seasons)",fixed:"14:00"},
+  {cid:"hkd2-ir-park",dur:15},
+  {cid:"hkd2-hkpark",name:"Parada 5 · Hong Kong Park y Museo del Té",dur:75},
+  {cid:"hkd2-ir-peak",dur:15},
+  {cid:"hkd2-peak",name:"Parada 6 · Peak Tram, Sky Terrace 428 y el show de luces",dur:115,fixed:"17:45",
+   note:"<b>Parada 6 · 17:45 · 33 Garden Rd + Sky Terrace 428.</b> Combo tranvía redondo + mirador "+
+        "<b>desde HK$131 por persona</b> (~$600 para dos).<br>"+
+        "<b>Horarios:</b> el tranvía corre 7:30-23:00 (el último baja a las 23:00) y el Sky Terrace abre "+
+        "10:00-22:00 entre semana. Hay tiempo de sobra para quedarse a cenar arriba.<br>"+
+        "<u>Cómo se reparten las dos horas:</u>"+
+        "<ul><li><b>~19:00</b> · atardecer desde la terraza (en mayo el sol se mete a esa hora)</li>"+
+        "<li><b>19:15</b> · la ciudad encendiéndose, que es el mejor momento del mirador</li>"+
+        "<li><b>19:30</b> · <b>HSBC Life Illuminations at The Peak</b>, show 3D de 10 min en el Peak Tower. "+
+        "Funciones 19:30 / 20:30 / 21:30, arrancó el 13 de junio de 2026 y no tiene fecha de cierre "+
+        "anunciada. <i>Confirmar más cerca de la fecha que siga vigente.</i></li></ul>"+
+        "<b>⚠ Faltan comprar las entradas</b> — en línea y con horario. Hay fila virtual por código QR "+
+        "(\"Queue Easy\") desde mayo de 2026.<br>"+
+        "<i>Si el show ya no existe en 2027, el plan no cambia: se suben igual por el atardecer y las luces.</i>"},
+  {cid:"hkd2-cena",name:"Parada 7 · Cena en el Peak",type:"food",dur:100,
+   note:"<b>Parada 7 · 19:40, arriba, sin bajar.</b><br>"+
+        "<b>⚠ El Sky Terrace 428 es una terraza al aire libre y no tiene restaurante propio</b>, así que "+
+        "\"cenar en el Sky Terrace\" es cenar en el Peak. Las opciones:"+
+        "<ul><li><b>The Peak Lookout</b> · 121 Peak Road, cruzando la calle desde el Peak Tower. Edificio "+
+        "colonial de 1901 con terraza-jardín bajo los árboles. Cocina internacional: parrilla al carbón, "+
+        "horno tandoor, pollo hainanés, mariscos. <u>Es el bonito</u> — no tiene vista al puerto, tiene "+
+        "ambiente. Conviene reservar.</li>"+
+        "<li><b>Bubba Gump Shrimp Co.</b> · dentro del Peak Tower, con los ventanales hacia el puerto. "+
+        "Es una cadena temática y la comida es lo de menos, pero <u>la vista desde la mesa es la razón "+
+        "por la que se viene</u>.</li>"+
+        "<li>El Peak Tower y el Peak Galleria tienen más locales; conviene revisar la lista vigente en "+
+        "thepeak.com.hk antes del viaje.</li></ul>"+
+        "<b>⚠ Vienen de dos horas en Lung King Heen que terminaron a las 4:00.</b> A las 7:40 puede que no "+
+        "haya mucha hambre: pidan ligero, o conviertan la cena en unos tragos con algo de picar en la "+
+        "terraza del Peak Lookout. El punto de esta parada es el lugar, no el volumen."},
+  {cid:"hkd2-bajar-peak",name:"Bajar del Peak y regreso al hotel",type:"transfer",dur:45,
+   note:"<b>Directo al Renaissance, en Wan Chai.</b> Entre la fila del tranvía de bajada y el traslado "+
+        "son 40-45 min. El último tranvía baja a las 23:00, así que a las 21:20 no hay ninguna prisa.<br>"+
+        "<i>Alternativa: el minibús 1 o el autobús 15 bajan a Central y a veces son más rápidos que "+
+        "formarse. También hay taxis en la puerta del Peak Tower.</i>"}
+];
+function migrarHKv5(s){
+  if(s.hkV5)return;
+  const hk=s.bases&&s.bases.hk;
+  if(!hk||!Array.isArray(hk.catalog)){s.hkV5=true;return;}
+  sembrarDia(hk,1,HK_DIA2_V5,"08:00");
+  const costo=(cid,label,est)=>{
+    const a=hk.catalog.find(x=>x.cid===cid);
+    if(a)a.costs=[{id:uid(),label,est,real:0}];
+  };
+  // el tranvía arrastraba los $60 del Star Ferry, que es lo que era antes de
+  // renombrarlo: HK$3.30 x 2 son ~$16 MXN
+  costo("hkd2-ferry","Tranvía ding ding (2)",16);
+  costo("hkd2-cena","Cena en el Peak (2)",1800);
+  costo("hkd2-bajar-peak","Tranvía de bajada + taxi al hotel (2)",240);
+  s.hkV5=true;
+}
 
 /* ---- Hong Kong: hotel reservado, Renaissance Harbour View ----
    Reservado el 6-9 de mayo, 3 noches, $15,000 en total.
@@ -3165,7 +3290,8 @@ function normalizeTripState(s){
   migrarHotelHK(s);       // va después: corrige lo que dependía de dormir en el ICC
   migrarDia2HKv2(s);
   migrarHKv3(s);          // dueño del día 3 de Hong Kong
-  migrarHKv4(s);          // y este del día 2, que se rearmó para arrancar en el hotel
+  migrarHKv4(s);
+  migrarHKv5(s);          // dueño actual del día 2: pausa en el hotel y cena en el Peak
   migrarEsencialVuelo(s);
   migrarEscalaTokio(s);
   migrarVuelosIntl(s);
