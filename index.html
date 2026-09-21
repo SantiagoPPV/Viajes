@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v21 · 21 sep 2026 · HK: mañana de Sheung Wan, Peak con show, yate al día 3";
+const APP_VERSION="v22 · 21 sep 2026 · HK día 2: desayuno en el hotel, Causeway Bay y las escaleras";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -2413,6 +2413,112 @@ function migrarHKv3(s){
   costo("hkd3-regreso","MTR Diamond Hill → Tsim Sha Tsui (2)",40);
   s.hkV3=true;
 }
+/* ---- Día 2 de Hong Kong, versión 4: el día arranca en el hotel ----
+   Cambio pedido: desayunar con calma en el hotel, caminar temprano hacia
+   Causeway Bay, y de ahí a las escaleras y al Central Market. El resto del
+   día (Lung King Heen, Hong Kong Park, el Peak con el show) no se toca.
+
+   POR QUÉ ESTE ORDEN SÍ FUNCIONA. Las escaleras de Niveles Medios BAJAN de
+   6:00 a 10:00 y suben de 10:20 a medianoche. Arrancar el día con ellas
+   habría significado encontrarlas en contra; pasando primero por Causeway
+   Bay se llega a Central ~11:10, cuando ya van hacia arriba. El Central
+   Market abre 10:00 y también queda del lado bueno de la hora.
+
+   QUÉ NO ABRE TEMPRANO EN CAUSEWAY BAY. Sogo abre 10:00 y Jardine's
+   Crescent 11:00, así que "caminar temprano a Sogo" no puede ser Sogo: a
+   las 9:15 el barrio de compras está con las cortinas abajo. El tai chi
+   masivo de Victoria Park es de 6:00 a 8:00, también fuera de alcance.
+   Lo que sí está en pie a esa hora, y además en el camino, es el MERCADO
+   DE BOWRINGTON ROAD (abre 6:00), a 10 min del hotel, con los pega-villanos
+   trabajando bajo el paso de Canal Road. Esa es la caminata temprana.
+
+   QUÉ SALE DEL DÍA. Sheung Wan completo: la calle del marisco seco, el dim
+   sum de carritos de Lin Heung Kui, Cat Street y Tai Ping Shan. El desayuno
+   en el hotel desplaza al dim sum, y sin esa ancla en el oeste el resto de
+   Sheung Wan queda colgado del otro extremo de la ciudad. Todo sigue en el
+   catálogo de la parada, pero conviene saber que en este viaje ya no tiene
+   otro hueco donde caber: el día 1 es la llegada de las 19:40, el día 3 es
+   Lantau más Kowloon más el yate, y el día 4 salen 9:15 a Yangshuo. */
+const HK_DIA2_V4=[
+  {cid:"g-breakfast"},                       // genérica de 60 min, arrancando 8:00
+  {cid:"hkd2-bowrington",name:"Parada 1 · Mercado de Bowrington Road y los pega-villanos",type:"sight",dur:60,
+   costos:[["Algo de picar en el mercado (2)",150]],
+   note:"<b>Parada 1 · 21 Bowrington Rd, Wan Chai. Abre 6:00-20:00.</b> A 10 min a pie del hotel, "+
+        "justo donde Wan Chai se vuelve Causeway Bay.<br>"+
+        "Mercado húmedo de verdad, en calle y en un complejo de varios pisos: pescado vivo, aves, fruta, "+
+        "y arriba un centro de comida cocinada donde desayunan los del barrio.<br>"+
+        "<b>Bajo el paso de Canal Road, al lado:</b> las señoras del <b>打小人 (\"pegarle al villano\")</b>, "+
+        "un rito de décadas en el que se golpea con una chancla un muñequito de papel con el nombre de "+
+        "quien te está estorbando, y luego se quema. Trabajan todo el año, aunque el día grande es en "+
+        "marzo (Jingzhe). <i>Si están montadas, vale los diez minutos de verlo.</i><br>"+
+        "<i>Esta es la caminata temprana: en Causeway Bay propiamente no abre nada antes de las 10:00.</i>"},
+  {cid:"hkd2-causeway",name:"Parada 2 · Sogo y Causeway Bay",type:"free",dur:45,fixed:"10:00",
+   note:"<b>Parada 2 · Sogo, 555 Hennessy Rd. Abre 10:00-22:00.</b> Diez minutos más adelante en la misma "+
+        "caminata; llegan justo a que abran.<br>"+
+        "17 pisos de tienda departamental —el sótano de comida es lo mejor— y alrededor el barrio más "+
+        "denso de compras de la ciudad.<br>"+
+        "<i>Jardine's Crescent, el mercado callejero de ropa barata de aquí al lado, abre 11:00 y se pone "+
+        "bueno de noche. Está a 10 min a pie del hotel: se ve cualquier otra noche sin gastar itinerario.</i>"},
+  {cid:"hkd2-ir-central",name:"MTR Causeway Bay → Central",type:"transfer",dur:25,
+   note:"<b>Línea Isla, 3 paradas.</b> De aquí en adelante el día va hacia el oeste y ya no se repite camino.<br>"+
+        "<b>Y aquí está el motivo del orden:</b> llegan a Central ~11:10, o sea con las escaleras ya "+
+        "subiendo. Si el día hubiera arrancado con ellas, las habrían encontrado en contra.<br>"+
+        "<i>Pasan por debajo de su propio hotel: si algo les estorba de Sogo, es el momento de dejarlo.</i>"},
+  {cid:"hkd2-mercado-central",name:"Parada 3 · Central Market",type:"sight",dur:40,
+   costos:[["Café o antojo en Central Market (2)",150]],
+   note:"<b>Parada 3 · 93 Queen's Rd Central / 80 Des Voeux Rd Central. Abre 10:00-22:00.</b><br>"+
+        "El mercado municipal de 1939 —edificio histórico grado 3— revitalizado en 2021 con casi cien "+
+        "locales de comida, café y diseño, conservando las escaleras y la estructura original.<br>"+
+        "<i>Está literalmente al pie de las escaleras de Niveles Medios, así que la parada siguiente "+
+        "empieza saliendo por la puerta de arriba. No hay traslado entre las dos.</i>"},
+  {cid:"hkd2-escaleras",name:"Parada 4 · Escaleras de Niveles Medios + SoHo",type:"sight",dur:60,
+   note:"<b>Parada 4 · saliendo del Central Market.</b> Las escaleras mecánicas al aire libre más largas "+
+        "del mundo: 800 m subiendo la ladera, 20 escaleras y tres pasillos móviles.<br>"+
+        "<b>Sentido:</b> bajan de 6:00 a 10:00 (se detienen 10:00-10:20) y <u>suben de 10:20 a "+
+        "medianoche</u>. A esta hora van hacia arriba, que es lo que sirve.<br>"+
+        "El recorrido completo son 20-25 min de punta a punta, pero la idea es bajarse en el camino: "+
+        "<b>SoHo</b> —Staunton, Elgin, Shelley— con galerías, murales y las calles de bares.<br>"+
+        "<i>Se sube con ellas y se regresa a pie cuesta abajo, que es fácil.</i>"},
+  {cid:"hkd2-taikwun",name:"Parada 5 · Tai Kwun",type:"sight",dur:45,
+   note:"<b>Parada 5 · 10 Hollywood Rd. Abre 10:00-23:00 todos los días, entrada libre.</b> Las escaleras "+
+        "pasan justo al lado: se cruza Hollywood Road y ya está.<br>"+
+        "La vieja Comisaría Central —cuartel, tribunal y prisión Victoria— convertida en centro de "+
+        "patrimonio y arte. \"Tai Kwun\" quiere decir literalmente \"la estación grande\".<br>"+
+        "<i>Las exposiciones del JC Contemporary a veces cobran aparte. Si vienen cansados, esta es la "+
+        "parada que yo recortaría: llegan antes a comer y no pasa nada.</i>"},
+  {cid:"hkd2-graham",name:"Parada 6 · Graham Street y Lan Fong Yuen",type:"food",dur:25,
+   note:"<b>Parada 6 · bajando por Graham Street de Hollywood Rd al IFC.</b> El mercado callejero más "+
+        "viejo de la ciudad, en pie desde 1840: fruta, pescado, verdura y puestos sobre la banqueta.<br>"+
+        "<b>En la esquina, Lan Fong Yuen · 2 Gage Street · lun-sáb 07:30-18:00</b> (el día 2 es viernes, "+
+        "abre). Aquí se inventó el <b>té con leche de \"media de seda\"</b>, colado en una bolsa de tela "+
+        "que ya tomó el color del té.<br>"+
+        "<b>⚠ Son 25 min y vienen de camino a una comida de dos horas:</b> esto es un té con leche de pie "+
+        "y seguir. La entrada es un changarro angosto que se pasa de largo — busquen el letrero y métanse "+
+        "hasta el fondo. <i>Si quieren sentarse, róbenle 20 min a SoHo.</i>"},
+  {cid:"hkd2-lkh",name:"Parada 7 · Comida: Lung King Heen (Four Seasons)",fixed:"14:00",
+   note:"<b>Parada 7 · 14:00 · Four Seasons, 8 Finance Street, Central.</b> Cantonés con "+
+        "<b>2 estrellas Michelin</b> — tenía tres y perdió una en 2023.<br>"+
+        "<b>⚠ Consumo mínimo:</b> desde el 1 de enero de 2026 cobran un mínimo de <b>HK$700 + 10% de "+
+        "servicio por persona</b>. O sea que el piso son ~$3,540 MXN para dos: no hay forma de gastar "+
+        "menos, aunque pidan poco.<br>"+
+        "<u>Reservar con 1-2 meses de anticipación.</u> El menú de mediodía sigue siendo bastante más "+
+        "accesible que el de la cena.<br>"+
+        "<i>Son dos horas de comida. Por eso la cena del día está hasta las 20:45.</i>"},
+  {cid:"hkd2-ir-park",dur:15},
+  {cid:"hkd2-hkpark",name:"Parada 8 · Hong Kong Park y Museo del Té",dur:75},
+  {cid:"hkd2-ir-peak",dur:15},
+  {cid:"hkd2-peak",name:"Parada 9 · Peak Tram, Sky Terrace 428 y el show de luces",dur:135,fixed:"17:45"},
+  {cid:"hkd2-bajar-peak",dur:40},
+  {cid:"hkd2-cena",name:"Parada 10 · Cena en Central o Wan Chai",dur:90},
+  {cid:"hkd2-regreso",dur:15}
+];
+function migrarHKv4(s){
+  if(s.hkV4)return;
+  const hk=s.bases&&s.bases.hk;
+  if(!hk||!Array.isArray(hk.catalog)){s.hkV4=true;return;}
+  sembrarDia(hk,1,HK_DIA2_V4,"08:00");
+  s.hkV4=true;
+}
 
 /* ---- Hong Kong: hotel reservado, Renaissance Harbour View ----
    Reservado el 6-9 de mayo, 3 noches, $15,000 en total.
@@ -3058,7 +3164,8 @@ function normalizeTripState(s){
   migrarLlegadas(s);
   migrarHotelHK(s);       // va después: corrige lo que dependía de dormir en el ICC
   migrarDia2HKv2(s);
-  migrarHKv3(s);          // dueño actual de los días 2 y 3 de Hong Kong
+  migrarHKv3(s);          // dueño del día 3 de Hong Kong
+  migrarHKv4(s);          // y este del día 2, que se rearmó para arrancar en el hotel
   migrarEsencialVuelo(s);
   migrarEscalaTokio(s);
   migrarVuelosIntl(s);
