@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v20 · 17 sep 2026 · día 2 de HK corregido";
+const APP_VERSION="v21 · 21 sep 2026 · HK: mañana de Sheung Wan, Peak con show, yate al día 3";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -1118,7 +1118,7 @@ hk:{catalog:[
   A("hk-ferry","Star Ferry a Tsim Sha Tsui","transfer",30,"El cruce más bonito de la bahía"),
   A("hk-aos","Avenue of Stars + Clock Tower","sight",45),
   A("hk-dinner-tst","Cena en Tsim Sha Tsui","food",75),
-  A("hk-sol","Symphony of Lights (malecón)","sight",30,"Show de luces, todos los días a las 20:00"),
+  A("hk-sol","Symphony of Lights (malecón)","sight",30,"⚠ Se retira en la segunda mitad de 2026: en mayo de 2027 ya no existe"),
   A("hk-temple","Temple Street Night Market","sight",60,"Paseo nocturno"),
   A("hk-lantau","Teleférico Ngong Ping 360 · subida a Lantau","tour",45,"Crystal Cabin desde Tung Chung, ~25 min de trayecto; comprar en línea con horario","GetYourGuide"),
   A("hkd3-mtr-lantau","MTR Kowloon → Tung Chung","transfer",35,"Línea Tung Chung; la terminal del teleférico está saliendo de la estación"),
@@ -1156,7 +1156,7 @@ hk:{catalog:[
   {name:"Rosewood Hong Kong",area:"Victoria Dockside",note:"Vistas de la bahía, muy romántico. Descartado: 74% más caro que el Ritz ($63,457 / 3 noches)."},
   {name:"The Upper House",area:"Admiralty",note:"Minimalista, refinado, ideal pareja"}
 ],food:[
-  {name:"Lung King Heen (Four Seasons)",kind:"rest",note:"Cantonés 3 estrellas Michelin"},
+  {name:"Lung King Heen (Four Seasons)",kind:"rest",note:"Cantonés 2 estrellas Michelin · consumo mínimo HK$700 + 10% por persona"},
   {name:"Tim Ho Wan",kind:"rest",note:"Dim sum Michelin, precio accesible"},
   {name:"Kam's Roast Goose",kind:"rest",note:"Ganso asado, 1 Michelin"},
   {name:"Ozone @ Ritz-Carlton",kind:"bar",note:"Bar más alto de la ciudad, piso 118"},
@@ -1712,8 +1712,9 @@ const HK_DIA2_2027=[
         "<li>Pacific Place para compras a cubierto</li>"+
         "<li>Jardín Botánico y Zoológico (gratis, subiendo por Garden Rd)</li></ul>"},
   {cid:"hkd2-lkh",name:"Comida: Lung King Heen (Four Seasons)",type:"food",dur:120,fixed:"14:00",
-   costos:[["Dim sum Lung King Heen (2)",3000]],
-   note:"<b>14:00 · Four Seasons, 8 Finance Street, Central.</b> Dim sum en el <b>3 estrellas Michelin</b>. "+
+   costos:[["Consumo mínimo Lung King Heen (2)",3600]],
+   note:"<b>14:00 · Four Seasons, 8 Finance Street, Central.</b> Cantonés con <b>2 estrellas Michelin</b> "+
+        "(perdió la tercera en 2023) y consumo mínimo de HK$700 + 10% por persona desde enero de 2026. "+
         "<u>Reservar con semanas de antelación</u>; el menú de mediodía es bastante más accesible que la cena."},
   {cid:"hkd2-peak",name:"Tranvía Peak → Victoria Peak",type:"tour",dur:150,
    costos:[["Peak Tram + Sky Terrace 428 (2)",700]],
@@ -1767,8 +1768,9 @@ const HK_EXTRAS_2027={
          "<i>El dim sum solo se sirve a mediodía. Conviene reservar.</i>"},
   yate:{cid:"hkd2-yate",name:"Tour nocturno en yate por Victoria Harbour",type:"tour",dur:90,fixed:"19:40",
     costos:[["Tour nocturno en yate (2)",1800]],
-    note:"<b>19:40 · Victoria Harbour.</b> Desde el agua se ve la <b>Symphony of Lights de las 20:00</b>, "+
-         "que es el mejor sitio para verla.<br><i>Confirmar muelle de salida y si incluye bebidas; "+
+    note:"<b>Victoria Harbour.</b> El skyline desde el agua. <b>⚠ La Symphony of Lights se retira en la "+
+         "segunda mitad de 2026</b>: en mayo de 2027 ya no hay show diario de las 20:00, así que conviene "+
+         "un zarpe de atardecer y no uno nocturno.<br><i>Confirmar muelle de salida y si incluye bebidas; "+
          "llevar algo de abrigo, en el agua refresca.</i>"}
 };
 function migrarExtrasHK(s){
@@ -2060,7 +2062,8 @@ const HK_DIA2_V2=[
    costos:[["Tranvía (2)",15]],
    note:"<b>El tranvía de dos pisos corre por Hennessy Road</b>, a unas cuadras del hotel, y Sogo está "+
         "en el 555 de esa misma calle: los deja en la puerta.<br>"+
-        "HK$3 por persona, se paga al BAJAR. <b>Siéntense adelante en el piso de arriba.</b><br>"+
+        "HK$3.30 por persona (subió en mayo de 2025), se paga al BAJAR. <b>Siéntense adelante en el piso de "+
+        "arriba.</b><br>"+
         "<i>El plan traía aquí el Star Ferry al muelle 7 de Central, que era la forma de cruzar desde "+
         "Kowloon. Desde Wan Chai ya están del lado bueno; el Star Ferry se pasa al regreso de la noche.</i>"},
   {cid:"hkd2-causeway",name:"Parada 1 · Causeway Bay y Sogo",type:"free",dur:80,fixed:"10:00",
@@ -2083,7 +2086,7 @@ const HK_DIA2_V2=[
         "Se recorre SoHo de paso: galerías, murales y las calles de bares de Staunton y Elgin."},
   {cid:"hkd2-lkh",name:"Parada 4 · Comida: Lung King Heen (Four Seasons)",fixed:"14:00",
    note:"<b>Parada 4 · 14:00 · Four Seasons, 8 Finance Street, Central.</b> Dim sum en el "+
-        "<b>3 estrellas Michelin</b>.<br>"+
+        "<b>2 estrellas Michelin</b> (perdió la tercera en 2023).<br>"+
         "<u>Reservar con semanas de antelación</u>; el menú de mediodía es bastante más accesible que la cena.<br>"+
         "<i>Son dos horas de comida. Por eso la cena del día se movió al final: a las 18:30 nadie va a "+
         "tener hambre.</i>"},
@@ -2108,8 +2111,8 @@ const HK_DIA2_V2=[
         "Entre el tranvía de bajada, la fila y llegar al muelle son 30-45 min. <b>Confirmen el muelle de "+
         "salida al reservar el yate</b> y salgan del Peak con margen."},
   {cid:"hkd2-yate",name:"Parada 6 · Tour nocturno en yate por Victoria Harbour",fixed:"19:40",
-   note:"<b>Parada 6 · 19:40 · Victoria Harbour.</b> Desde el agua se ve la <b>Symphony of Lights de las "+
-        "20:00</b>, que es el mejor sitio para verla.<br>"+
+   note:"<b>Parada 6 · 19:40 · Victoria Harbour.</b> El skyline desde el agua. <b>⚠ La Symphony of Lights "+
+        "se retira en la segunda mitad de 2026</b> y en 2027 ya no existe.<br>"+
         "<i>Confirmar muelle de salida y si incluye bebidas; llevar algo de abrigo, en el agua refresca.</i>"},
   {cid:"hkd2-regreso",name:"Regreso al hotel",type:"transfer",dur:35,
    note:"<b>Al Renaissance, en Wan Chai.</b><br>"+
@@ -2131,6 +2134,284 @@ function migrarDia2HKv2(s){
   const cena=hk&&(hk.catalog||[]).find(a=>a.cid==="hkd2-cena");
   if(cena)cena.costs=[{id:uid(),label:"Cena tardía en Wan Chai (2)",est:800,real:0}];
   s.hkDia2v2=true;
+}
+/* ---- Días 2 y 3 de Hong Kong, versión 3 ----
+   Dos cambios de fondo, más el arrastre de haber movido el hotel a Wan Chai.
+
+   A. EL DÍA 2 ARRANCA A LAS 7:45, NO A LAS 9:40.
+      Lo único que forzaba las 9:40 era que Sogo abre a las 10:00. Sogo era
+      además lo más flojo del día (una tienda departamental), así que sale, y
+      con él el Park Lane. A cambio entra la mañana de Sheung Wan, que SOLO
+      funciona temprano: la calle del marisco seco se pone a tope desde las
+      8:00 y el dim sum de carritos es de mañana o no es. Se ganan ~1h30 de
+      contenido real.
+
+      Eso invierte el sentido del día: ahora va de OESTE a ESTE y de arriba
+      hacia abajo, en una sola caminata continua desde Sai Ying Pun hasta el
+      IFC. No se repite una cuadra.
+
+   B. EL YATE SE PASA AL DÍA 3 Y EL PEAK SE QUEDA CON LA NOCHE DEL DÍA 2.
+      Tal como estaba, el día 2 los bajaba del Peak a las 18:50 para alcanzar
+      el yate de las 19:40 — o sea, diez minutos ANTES de que se metiera el
+      sol (~19:00 en mayo), que es justo para lo que uno sube al Peak en la
+      tarde. Ahora se quedan hasta las 20:00: atardecer, la ciudad
+      encendiéndose y el show de luces de las 19:30 en el Peak Tower.
+
+      El yate cae en el día 3, en los 105 minutos que quedaron muertos ahí
+      (ver C), y deja de ser "tour nocturno" para ser crucero de ATARDECER
+      18:30-20:00, con el sol metiéndose ya desde el agua. Ahora que la
+      Symphony of Lights desaparece, un zarpe a las 19:40 en oscuridad total
+      valía bastante menos que uno a las 18:30.
+
+   C. EL DÍA 3 TODAVÍA CREÍA QUE DORMÍAN EN KOWLOON.
+      Se escribió antes de reservar el Renaissance. Decía "MTR Kowloon →
+      Tung Chung, 35 min" (desde Wan Chai son ~50, pasando por Central y
+      Hong Kong Station) y al final los regresaba a "Kowloon" a descansar
+      90 minutos en un hotel que ya no está de ese lado del puerto. Ese
+      descanso era imposible: son los 105 min que ahora ocupa el yate.
+
+   Lo que se sacrifica: 35 min de Nan Lian (95 → 60) y el descanso antes de
+   la cena del día 3 — hay que salir presentables desde la mañana, porque
+   Tin Lung Heen pide smart casual. Y hay que empacar el sábado temprano: se
+   vuelve al hotel a las 23:00 y el domingo salen 9:15 a Yangshuo.
+
+   Lo que NO se pierde: Sogo, el Park Lane, el tranvía ding ding y la
+   Symphony siguen en el catálogo de la parada por si quieren reponerlos. */
+const HK_DIA2_V3=[
+  {cid:"hkd2-ir-sheungwan",name:"MTR Wan Chai → Sai Ying Pun",type:"transfer",dur:25,
+   costos:[["MTR (2)",30]],
+   note:"<b>Línea Isla, directo, 5 paradas.</b> Salen del hotel a las 7:45 y en 25 min puerta a puerta "+
+        "están en el extremo oeste, que es donde empieza el día.<br>"+
+        "<i>Salida A2 de Sai Ying Pun. De aquí en adelante todo es una sola caminata hacia el este y "+
+        "hacia abajo: no se vuelve a tomar transporte hasta el Four Seasons.</i>"},
+  {cid:"hkd2-marisco",name:"Parada 1 · Calle del Marisco Seco y Calle de la Medicina",type:"sight",dur:45,
+   note:"<b>Parada 1 · Des Voeux Rd West + Ko Shing Street, Sheung Wan. Gratis.</b><br>"+
+        "Costales abiertos de vieira seca, abulón, pepino de mar, ginseng y nido de golondrina. "+
+        "No es un mercado para turistas: es el mayoreo de verdad, el mismo que lleva ahí desde mediados "+
+        "del siglo XIX entre Des Voeux Rd West, Wing Lok Street y Bonham Strand.<br>"+
+        "<b>⚠ Por eso el día arranca temprano:</b> se pone a tope <u>desde las 8:00</u>, cuando llegan los "+
+        "compradores mayoristas. A las 11:00 ya bajó el movimiento.<br>"+
+        "<i>Ko Shing Street es la de la medicina china; huele distinto y vale el desvío de dos cuadras.</i>"},
+  {cid:"hkd2-linheung",name:"Parada 2 · Dim sum de carritos en Lin Heung Kui",type:"food",dur:80,
+   costos:[["Dim sum Lin Heung Kui (2)",500]],
+   note:"<b>Parada 2 · 蓮香居 · 2-3/F, 46-50 Des Voeux Rd West.</b> Abre <b>06:00</b> (el dim sum se sirve "+
+        "hasta las 15:30). A dos minutos de la parada anterior.<br>"+
+        "Es de 1926 y de los últimos lugares de Hong Kong donde el dim sum sigue saliendo en "+
+        "<b>carritos empujados</b>: no anuncian nada, hay que interceptar el carrito y destapar las "+
+        "vaporeras para ver qué traen. Mesas comunales, ruido, y nadie va a hablar inglés.<br>"+
+        "<u>Cómo funciona:</u>"+
+        "<ul><li>Te sientan donde haya lugar, aunque sea con desconocidos</li>"+
+        "<li>Te dan una tarjeta que van sellando: no la pierdan, es la cuenta</li>"+
+        "<li>El té se pide al llegar; para que lo rellenen, se destapa la tetera</li>"+
+        "<li>Levantarse a perseguir el carrito está bien visto</li></ul>"+
+        "<i>Esto reemplaza el desayuno del hotel y, de paso, al Templo Man Mo que estaba aquí antes: "+
+        "sale más barato en tiempo y es más difícil de repetir en otro viaje.</i>"},
+  {cid:"hkd2-taipingshan",name:"Parada 3 · Ladder Street y Tai Ping Shan",type:"free",dur:45,
+   note:"<b>Parada 3 · subiendo de Sheung Wan hacia Hollywood Road. Gratis.</b><br>"+
+        "Se sube a pie por <b>Ladder Street</b> —escalones de piedra de 1840— hasta Tai Ping Shan Street "+
+        "y Po Hing Fong: la cuesta más bonita de Sheung Wan, con galerías chicas, cafés y murales.<br>"+
+        "<i>Las galerías abren hasta las 11:00, así que a esta hora es sobre todo la caminata y el barrio. "+
+        "Vale la pena igual, y es lo que hace tiempo hasta que abre Cat Street.</i>"},
+  {cid:"hkd2-catstreet",name:"Parada 4 · Cat Street (Upper Lascar Row)",type:"sight",dur:40,
+   costos:[["Chácharas en Cat Street (2)",200]],
+   note:"<b>Parada 4 · Upper Lascar Row. ⚠ Abre 11:00, lunes a sábado</b> — el día 2 es <b>viernes</b>, "+
+        "así que abre; los domingos está cerrada.<br>"+
+        "Anticuarios y puestos de chácharas: propaganda vieja, relojes, cámaras, jade de dudosa "+
+        "procedencia y bustos de Mao a granel.<br>"+
+        "<i>Se regatea. Pidan la mitad y suban de ahí. Nada de lo que se vende aquí es antiguo de verdad, "+
+        "así que compren lo que les guste, no lo que crean que es una inversión.</i>"},
+  {cid:"hkd2-hollywood",name:"Hollywood Road hacia el este",type:"transfer",dur:20,
+   note:"<b>Caminata de 20 min</b> por Hollywood Road, de Sheung Wan a Central. Todo es bajada suave.<br>"+
+        "<i>Es la calle de los anticuarios: las tiendas serias están de este lado. Se pasa frente al "+
+        "Templo Man Mo — si al verlo les dan ganas de entrar son 15 min, abre 8:00-18:00.</i>"},
+  {cid:"hkd2-taikwun",name:"Parada 5 · Tai Kwun",type:"sight",dur:45,
+   note:"<b>Parada 5 · 10 Hollywood Rd. Abre 10:00-23:00 todos los días, entrada libre.</b><br>"+
+        "La vieja Comisaría Central —cuartel, tribunal y prisión Victoria— convertida en centro de "+
+        "patrimonio y arte. \"Tai Kwun\" quiere decir literalmente \"la estación grande\".<br>"+
+        "<i>Las exposiciones temporales del JC Contemporary a veces sí cobran. Si vienen cansados, esta "+
+        "es la parada que yo recortaría: llegan antes a comer y no pasa nada.</i>"},
+  {cid:"hkd2-graham",name:"Parada 6 · Mercado de Graham Street y Lan Fong Yuen",type:"food",dur:40,
+   costos:[["Té con leche y algo de picar (2)",120]],
+   note:"<b>Parada 6 · bajando por Graham Street desde Hollywood Rd.</b> El mercado callejero más viejo "+
+        "de la ciudad, en pie desde 1840: fruta, pescado, verdura y puestos armados sobre la banqueta.<br>"+
+        "<b>En la esquina, Lan Fong Yuen · 2 Gage Street · lun-sáb 07:30-18:00</b> (viernes, abre; "+
+        "domingos cierra). Aquí se inventó el <b>té con leche de \"media de seda\"</b>, colado a través de "+
+        "una bolsa de tela que ya tomó el color del té.<br>"+
+        "<i>La entrada es un changarro angosto que se pasa de largo: busquen el letrero y métanse hasta "+
+        "el fondo. Piden el té con leche y, si les queda hueco, el bollo de chuleta de cerdo.</i>"},
+  {cid:"hkd2-escaleras",name:"Parada 7 · Central Market y Escaleras de Niveles Medios",type:"sight",dur:25,
+   note:"<b>Parada 7 · Central Market · 93 Queen's Rd Central / 80 Des Voeux Rd Central. Abre 10:00-22:00.</b><br>"+
+        "El mercado municipal de 1939, edificio histórico grado 3, revitalizado en 2021 con casi cien "+
+        "locales de comida y diseño. Está al pie de las <b>Escaleras de Niveles Medios</b>, los 800 m de "+
+        "escaleras mecánicas al aire libre más largas del mundo.<br>"+
+        "<b>Sentido de las escaleras:</b> bajan de 6:00 a 10:00 y <u>suben de 10:20 a medianoche</u>. A esta "+
+        "hora van hacia arriba, así que se sube un tramo por el gusto de subirlo y se regresa.<br>"+
+        "<i>El recorrido completo son 20-25 min de punta a punta, pero hoy no hace falta: SoHo ya quedó "+
+        "atrás, por Hollywood Road.</i>"},
+  {cid:"hkd2-ir-ifc",name:"Caminar a IFC",type:"transfer",dur:10,
+   note:"<b>10 min a pie</b> de Central Market al IFC, casi todo por pasarelas techadas.<br>"+
+        "<i>El Four Seasons está pegado a Hong Kong Station.</i>"},
+  {cid:"hkd2-lkh",name:"Parada 8 · Comida: Lung King Heen (Four Seasons)",fixed:"14:00",
+   note:"<b>Parada 8 · 14:00 · Four Seasons, 8 Finance Street, Central.</b> Cantonés con "+
+        "<b>2 estrellas Michelin</b> — tenía tres y perdió una en 2023.<br>"+
+        "<b>⚠ Consumo mínimo:</b> desde el 1 de enero de 2026 cobran un mínimo de <b>HK$700 + 10% de "+
+        "servicio por persona</b>. O sea que el piso son ~$3,540 MXN para dos: no hay forma de gastar "+
+        "menos, aunque pidan poco.<br>"+
+        "<u>Reservar con 1-2 meses de anticipación.</u> El menú de mediodía sigue siendo bastante más "+
+        "accesible que el de la cena.<br>"+
+        "<i>Son dos horas de comida. Por eso la cena del día está hasta las 20:45.</i>"},
+  {cid:"hkd2-ir-park",name:"Caminar a Hong Kong Park",type:"transfer",dur:15,
+   note:"<b>15 min a pie</b> del IFC a Hong Kong Park, por pasarelas.<br>"+
+        "<i>El parque está pegado a la terminal baja del Peak Tram, así que esta caminata sirve para las "+
+        "dos cosas.</i>"},
+  {cid:"hkd2-hkpark",name:"Parada 9 · Hong Kong Park y Museo del Té",type:"sight",dur:75,
+   note:"<b>Parada 9 · Hong Kong Park. Gratis.</b> Pajarera Edward Youde, cascada, invernadero y "+
+        "estanques, metido entre los rascacielos de Admiralty.<br>"+
+        "<b>Museo del Té de Flagstaff House · 10:00-18:00, cerrado martes, entrada libre.</b> El día 2 es "+
+        "viernes. Es la <b>casa occidental más vieja que queda en pie en Hong Kong</b> (1846): fue la "+
+        "residencia del comandante británico hasta 1978 y hoy guarda una colección de teteras y utensilios "+
+        "de té.<br>"+
+        "<i>Esto es nuevo en el día: antes estaba solo como sugerencia \"por si llegan con tiempo\". Con el "+
+        "Peak movido a las 17:45, hay tiempo de sobra y es gratis.</i>"},
+  {cid:"hkd2-ir-peak",name:"A la terminal del Peak Tram",type:"transfer",dur:15,
+   note:"<b>33 Garden Rd</b>, saliendo del parque. 10-15 min.<br>"+
+        "<i>Hay un servicio de fila virtual por código QR (\"Queue Easy\") desde mayo de 2026: se escanea "+
+        "al llegar y te avisa cuándo subir, en lugar de formarte.</i>"},
+  {cid:"hkd2-peak",name:"Parada 10 · Peak Tram, Sky Terrace 428 y el show de luces",dur:135,fixed:"17:45",
+   note:"<b>Parada 10 · 17:45 · 33 Garden Rd + Sky Terrace 428.</b> Combo tranvía redondo + mirador "+
+        "<b>desde HK$131 por persona</b> (~$600 para dos). Sky Terrace abre 8:30-22:00.<br>"+
+        "<b>Aquí está el cambio grande del día:</b> antes los bajaba a las 18:50 para alcanzar el yate de "+
+        "las 19:40 — diez minutos <u>antes</u> de que se metiera el sol. Ahora se quedan las dos horas "+
+        "buenas:"+
+        "<ul><li><b>~19:00</b> · atardecer desde arriba (en mayo el sol se mete a esa hora)</li>"+
+        "<li><b>19:15-19:30</b> · la ciudad encendiéndose, que es el mejor momento del mirador</li>"+
+        "<li><b>19:30</b> · <b>HSBC Life Illuminations at The Peak</b>, show 3D de 10 min en el Peak Tower. "+
+        "Funciones 19:30 / 20:30 / 21:30, arrancó el 13 de junio de 2026 y no tiene fecha de cierre "+
+        "anunciada. <i>Confirmar más cerca de la fecha que siga vigente.</i></li></ul>"+
+        "<b>⚠ Faltan comprar las entradas</b> — en línea y con horario.<br>"+
+        "<i>Si el show ya no existe en 2027, el plan no cambia: se suben igual por el atardecer y las luces.</i>"},
+  {cid:"hkd2-bajar-peak",name:"Bajar del Peak",type:"transfer",dur:40,
+   costos:[["Tranvía de bajada + taxi (2)",180]],
+   note:"<b>Entre la fila del tranvía de bajada y el traslado son 30-45 min.</b><br>"+
+        "<i>Alternativa: el minibús 1 o el autobús 15 bajan a Central y a veces son más rápidos que "+
+        "formarse para el tranvía a esta hora.</i>"},
+  {cid:"hkd2-cena",name:"Parada 11 · Cena en Central o Wan Chai",type:"food",dur:90,
+   note:"<b>Parada 11 · ~20:45.</b> Cena tranquila, ya sin prisa y sin nada después.<br>"+
+        "<u>Cerca del hotel, los mismos tres del día 1:</u>"+
+        "<ul><li><b>Tsui Wah</b> · cha chaan teng clásico, abierto hasta las 23:00</li>"+
+        "<li><b>Kam's Roast Goose</b> · ganso asado, 1 estrella Michelin, barato</li>"+
+        "<li><b>Dai pai dong de Bowrington Road</b> · puestos de calle, siguen hasta la madrugada</li></ul>"+
+        "<i>Si quieren rematar: Causeway Bay de noche está a 10 min a pie del hotel y Sogo cierra a las "+
+        "22:00. Salió del itinerario pero lo tienen en la puerta cualquier noche.</i>"},
+  {cid:"hkd2-regreso",name:"Regreso al hotel",type:"transfer",dur:15,
+   note:"<b>Al Renaissance, en Wan Chai.</b>"}
+];
+const HK_DIA3_V2=[
+  {cid:"g-breakfast"},                       // genérica: 60 min, arrancando 6:50
+  {cid:"hkd3-mtr-lantau",name:"MTR Wan Chai → Central → Hong Kong → Tung Chung",type:"transfer",dur:50,
+   note:"<b>⚠ Este traslado estaba mal:</b> decía \"Kowloon → Tung Chung, 35 min\", de cuando el hotel "+
+        "estaba en el ICC. Desde Wan Chai son <b>~50 min puerta a puerta</b>:<br>"+
+        "<ul><li><b>Wan Chai → Central</b> por la línea Isla, 2 paradas</li>"+
+        "<li>Caminar de Central a <b>Hong Kong Station</b> por dentro del IFC, 6-8 min</li>"+
+        "<li><b>Línea Tung Chung</b> hasta el final, ~28 min</li></ul>"+
+        "La terminal del teleférico queda saliendo de la estación, junto a Citygate.<br>"+
+        "<i>Por eso el día arranca 6:50: el teleférico abre a las 9:00 y conviene estar ahí antes.</i>"},
+  {cid:"hk-lantau",fixed:"09:00",dur:45,
+   note:"<b>9:00 · Ngong Ping 360.</b> ~25 min de trayecto con vistas al aeropuerto y a la montaña.<br>"+
+        "<b>Horario:</b> fines de semana y días festivos 9:00-18:30; entre semana 10:00-18:00. El día 3 "+
+        "cae en <b>sábado</b>, así que 9:00.<br>"+
+        "<i>Comprar el boleto en línea, redondo y con hora, para no hacer fila. La Crystal Cabin (piso de "+
+        "cristal) cuesta más y vale la pena a la subida.</i>"},
+  {cid:"hkd3-buda",dur:95},
+  {cid:"hkd3-bajada",name:"Teleférico de bajada + taxi a Tsim Sha Tsui",type:"transfer",dur:85,
+   note:"Bajar en el teleférico a Tung Chung y de ahí <b>taxi</b> por el puente de Lantau hasta el "+
+        "restaurante (~40 min).<br>"+
+        "<i>Alternativa más barata: la línea Tung Chung hasta Kowloon y un taxi corto.</i>"},
+  {cid:"hk-yattung",fixed:"12:45",dur:90},
+  {cid:"hkd3-mtr-wts",name:"MTR Tsim Sha Tsui → Wong Tai Sin",type:"transfer",dur:30,
+   note:"<b>Línea roja (Tsuen Wan)</b> hasta Prince Edward y ahí <b>cambio a la verde</b> (Kwun Tong) "+
+        "hasta Wong Tai Sin.<br>"+
+        "<i>Desde Tsim Sha Tsui Este se camina a la estación de Tsim Sha Tsui, o se toma en East Tsim "+
+        "Sha Tsui y se cambia en Hung Hom.</i>"},
+  {cid:"hkd3-wongtaisin",name:"Templo Wong Tai Sin",dur:45,
+   note:"<b>Abre 7:30-16:30, entrada libre.</b> A la salida de la estación del mismo nombre. "+
+        "Es el templo taoísta más concurrido de la ciudad: incienso, <b>kau cim</b> (las varillas de la "+
+        "suerte) y el jardín de los Nueve Dragones."},
+  {cid:"hkd3-mtr-dh",dur:15},
+  {cid:"hkd3-chilin",name:"Chi Lin Nunnery (convento budista)",dur:40,
+   note:"<b>⚠ Los salones abren 9:00-16:30 y ustedes entran 15:45: son 45 min de margen.</b> Es el punto "+
+        "más frágil del día — si la comida se alarga, este es el que se cae.<br>"+
+        "Convento de estilo Tang, de madera de ciprés <b>ensamblada sin un solo clavo</b>. Salas de loto, "+
+        "patios y silencio en medio de los rascacielos.<br>"+
+        "<i>El jardín de afuera abre más temprano y cierra más tarde que los salones.</i>"},
+  {cid:"hk-nanlian",name:"Nan Lian Garden (jardín clásico Tang)",dur:60,
+   note:"<b>Abre 7:00-21:00 (última entrada 20:30), entrada libre.</b> Pegado a Chi Lin, se cruza por la "+
+        "pasarela.<br>"+
+        "Jardín Tang de trazo perfecto: el pabellón dorado sobre el estanque, la colección de rocas y la "+
+        "cascada.<br>"+
+        "<b>⚠ Recortado de 95 a 60 min</b> para alcanzar el zarpe del yate a las 18:30. Si deciden no "+
+        "subir al barco, devuélvanle los 35 min: aquí no hay prisa, cierra a las 21:00.<br>"+
+        "<i>Tiene casa de té y un restaurante vegetariano detrás de la cascada.</i>"},
+  {cid:"hkd3-regreso",name:"MTR Diamond Hill → Tsim Sha Tsui",type:"transfer",dur:35,
+   note:"<b>Verde</b> (Kwun Tong) hasta Prince Edward → <b>roja</b> (Tsuen Wan) hasta Tsim Sha Tsui.<br>"+
+        "<i>Antes este traslado los regresaba a Kowloon Station a descansar 90 min en el hotel, de cuando "+
+        "dormían en el ICC. Con el hotel en Wan Chai ese descanso era imposible: esos 105 minutos muertos "+
+        "son los que ahora ocupa el yate.</i>"},
+  {cid:"hkd3-muelle",name:"Caminar al muelle",type:"transfer",dur:30,
+   note:"<b>30 min con margen incluido</b> hasta el muelle de Tsim Sha Tsui.<br>"+
+        "<b>⚠ Confirmar el muelle de salida al reservar</b>: los zarpes salen del muelle público de TST "+
+        "(junto al Star Ferry) o del muelle 9 de Central, y no es lo mismo.<br>"+
+        "<i>Si sobra tiempo, el Avenue of Stars y el Reloj está justo ahí.</i>"},
+  {cid:"hkd2-yate",name:"Crucero en yate · atardecer en Victoria Harbour",type:"tour",dur:90,fixed:"18:30",
+   note:"<b>18:30-20:00 · Victoria Harbour.</b> Se pasó aquí desde el día 2, y de paso dejó de ser "+
+        "nocturno para ser de atardecer — que es mejor: <b>el sol se mete ~19:00</b>, o sea a la mitad del "+
+        "zarpe. Salen con luz, ven la hora dorada desde el agua y regresan con el skyline ya encendido.<br>"+
+        "<b>🔴 Ojo, esto cambió:</b> la <b>Symphony of Lights se retira en la segunda mitad de 2026</b>. En "+
+        "mayo de 2027 ya no va a haber show sincronizado de las 20:00 — lo que queda son instalaciones "+
+        "de temporada (Navidad, Año Nuevo Chino), no un espectáculo diario. El plan anterior ponía el yate "+
+        "a las 19:40 justo para verla; ya no tiene caso esperar a que oscurezca.<br>"+
+        "<i>Confirmar si incluye bebidas y llevar algo de abrigo: en el agua refresca. Alternativa más "+
+        "barata y más corta: el <b>Aqua Luna</b>, el junco de velas rojas, hace zarpes de 45 min por "+
+        "~$1,350 — está en el catálogo de la parada.</i>"},
+  {cid:"hkd3-ir-icc",name:"Tsim Sha Tsui → ICC",type:"transfer",dur:25,
+   costos:[["Taxi a ICC (2)",120]],
+   note:"<b>Del muelle al ICC son 15-20 min en taxi</b>, o una parada de MTR hasta Kowloon Station.<br>"+
+        "<i>Salen del barco a las 20:00 y la mesa es a las 20:30: alcanza, pero sin pasear.</i>"},
+  {cid:"hkd3-tinlung",name:"Cena en Tin Lung Heen",dur:120,fixed:"20:30",
+   note:"<b>20:30 · Ritz-Carlton, ICC piso 102.</b> Cantonés con <b>1 estrella Michelin</b>.<br>"+
+        "<u>Lo que más se pide:</u> cerdo ibérico BBQ con miel, sopa de doble cocción, abalón y el carrito "+
+        "de dim sum si alcanzan.<br>"+
+        "<b>⚠ Ya no hay descanso antes de esta cena</b> (el hotel quedó del otro lado del puerto): van a "+
+        "llegar con la ropa del día, después del Buda y de un barco. El código es <b>smart casual</b>, así "+
+        "que salgan presentables desde la mañana.<br>"+
+        "<i>Confirmar la reservación y pedir mesa junto a la ventana.</i>"},
+  {cid:"hkd3-vuelta-hotel",name:"ICC → Renaissance (Wan Chai)",type:"transfer",dur:30,
+   costos:[["Taxi por el túnel (2)",180]],
+   note:"<b>Taxi por el túnel cruzado, ~25-30 min</b> a esta hora.<br>"+
+        "<b>⚠ Empacar el sábado en la mañana, no en la noche:</b> vuelven al hotel a las 23:00 y el "+
+        "domingo salen a las 9:15 rumbo a Yangshuo.<br>"+
+        "<i>En MTR sería Kowloon → Hong Kong Station (línea Tung Chung) y caminar, pero a las 22:30 con "+
+        "maletas mentales el taxi gana.</i>"}
+];
+function migrarHKv3(s){
+  if(s.hkV3)return;
+  const hk=s.bases&&s.bases.hk;
+  if(!hk||!Array.isArray(hk.catalog)){s.hkV3=true;return;}
+  sembrarDia(hk,1,HK_DIA2_V3,"07:45");
+  sembrarDia(hk,2,HK_DIA3_V2,"06:50");
+  /* sembrarDia afina nombre, tipo, nota y duración, pero nunca toca los costos
+     de algo que ya existía. Los que cambiaron van explícitos: */
+  const costo=(cid,label,est)=>{
+    const a=hk.catalog.find(x=>x.cid===cid);
+    if(a)a.costs=[{id:uid(),label,est,real:0}];
+  };
+  costo("hkd2-lkh","Consumo mínimo Lung King Heen (2)",3600);   // HK$700+10% p/p desde ene 2026
+  costo("hkd2-peak","Peak Tram + Sky Terrace 428 (2)",600);     // el combo real es HK$131 p/p
+  costo("hkd2-ir-peak","A pie desde Hong Kong Park",0);         // ya no hace falta taxi
+  costo("hkd2-cena","Cena en Central o Wan Chai (2)",1200);     // cena de verdad, no un tentempié
+  costo("hkd3-mtr-lantau","MTR Wan Chai → Tung Chung (2)",60);
+  costo("hkd3-regreso","MTR Diamond Hill → Tsim Sha Tsui (2)",40);
+  s.hkV3=true;
 }
 
 /* ---- Hong Kong: hotel reservado, Renaissance Harbour View ----
@@ -2424,8 +2705,8 @@ function migrarXianDosHoteles(s){
    1. Hong Kong día 1. El vuelo de Tokio aterriza a las 19:40, así que el día
       de llegada es solo eso: llegar y cenar. El programa que traía (Peak, Tim
       Ho Wan, SoHo, Star Ferry, Symphony of Lights) ya estaba duplicado en el
-      día 2, que se rearmó como recorrido a pie con el Peak y el yate desde el
-      que se ve la Symphony. Todo sigue en el catálogo de la parada.
+      día 2, que se rearmó como recorrido a pie con el Peak y el yate. Todo
+      sigue en el catálogo de la parada.
    2. Chengdu día 1. El tren de 7 h ahora sale a las 8:00 y llega a las 15:00;
       con el descanso de 90 min la cena se comía la Ópera de Sichuan de las
       20:00. El descanso baja a 45 min y todo cuadra. */
@@ -2776,7 +3057,8 @@ function normalizeTripState(s){
   migrarXianDosHoteles(s);
   migrarLlegadas(s);
   migrarHotelHK(s);       // va después: corrige lo que dependía de dormir en el ICC
-  migrarDia2HKv2(s);      // y este al final, que es el dueño del día 2
+  migrarDia2HKv2(s);
+  migrarHKv3(s);          // dueño actual de los días 2 y 3 de Hong Kong
   migrarEsencialVuelo(s);
   migrarEscalaTokio(s);
   migrarVuelosIntl(s);
