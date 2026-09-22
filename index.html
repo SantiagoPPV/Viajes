@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v24 · 21 sep 2026 · HK día 2: Lung King Heen a la cena, Tai Kwun repuesto";
+const APP_VERSION="v25 · 22 sep 2026 · HK día 3: de vuelta en metro, comida a la 1:30 y tarde libre";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -2769,6 +2769,152 @@ function migrarHKv6(s){
   if(a)a.costs=[{id:uid(),label:"Cena Lung King Heen (2)",est:7000,real:0}];
   s.hkV6=true;
 }
+/* ---- Día 3 de Hong Kong, versión 3: se afloja toda la tarde ----
+   La mañana no se toca (teleférico, Gran Buda, Po Lin). Lo que cambia es
+   todo lo que venía después de bajar de Lantau.
+
+   1. DE VUELTA EN METRO, NO EN TAXI. El taxi cruzaba el puente de Lantau
+      hasta Tsim Sha Tsui por $420. El MTR va directo a Wong Tai Sin por
+      ~$120: Tung Chung → Lai King (cambio cruzando el andén) → Prince
+      Edward → Wong Tai Sin. Son ~90 min desde arriba de Ngong Ping
+      contando la bajada del teleférico.
+
+   2. EL ORDEN CAMBIA: TEMPLO, COMER, CHI LIN, NAN LIAN. Antes se comía
+      primero en Tsim Sha Tsui y el templo quedaba a las 14:45. Ahora el
+      templo es lo primero al llegar y la comida cae a las 13:30, que es lo
+      que se pidió.
+
+   3. LA COMIDA BAJA DE CATEGORÍA A PROPÓSITO. Sale Yat Tung Heen (1
+      estrella Michelin en el InterContinental, $2,200) y entra una casa
+      cantonesa normal y buena en Diamond Hill, sobre la estación misma.
+      ⚠ No hay restaurante de hotel de ese nivel en este corredor: Wong Tai
+      Sin y Diamond Hill son barrios residenciales. Para comer en un hotel
+      habría que devolverse a Tsim Sha Tsui y son 40 min de traslados extra.
+      La alternativa buena está en la nota de la comida.
+
+   4. CHI LIN DEJA DE SER EL PUNTO FRÁGIL. Entraba 15:45 con los salones
+      cerrando 16:30: cinco minutos de margen. Ahora entra 15:00 con 45 min
+      de margen y 45 min de visita en lugar de 40.
+
+   5. LA TARDE Y LA NOCHE SE VACÍAN. Después de Nan Lian se vuelve al hotel,
+      se descansa 1h25 y se cena a las 19:30 cerca. El día cierra 21:30 en
+      lugar de 23:00, que es lo que hacía falta porque el domingo salen a
+      las 9:15 a Yangshuo.
+
+   LO QUE SALE DEL DÍA — y hay que decirlo claro:
+     · EL CRUCERO EN YATE. Con esto el puerto desde el agua queda FUERA DE
+       TODO EL VIAJE: el día 1 es la llegada de las 19:40, el día 2 está
+       lleno con el Peak y Lung King Heen, y el día 4 salen 9:15. El
+       sustituto que no cuesta nada está en la nota de la cena: el Star
+       Ferry de noche desde el muelle de Wan Chai, a 5 min del hotel.
+     · TIN LUNG HEEN (Ritz-Carlton, piso 102) y YAT TUNG HEEN. Los dos
+       siguen en el catálogo de la parada.
+   El día pasa de ~$9,660 a ~$3,750.
+
+   Único ajuste a la mañana: el Gran Buda baja de 95 a 85 min. Es lo que
+   costaba llegar a comer a la 1:30 sin recortar el templo — los 268
+   escalones, el monasterio y el pueblo caben en 85. */
+const HK_DIA3_V3=[
+  {cid:"g-breakfast"},
+  {cid:"hkd3-mtr-lantau",dur:50},
+  {cid:"hk-lantau",fixed:"09:00",dur:45},
+  {cid:"hkd3-buda",name:"Gran Buda Tian Tan + Monasterio Po Lin",dur:85,
+   note:"<b>Ngong Ping.</b> <b>268 escalones</b> hasta el Buda (34 m, de bronce). Abajo, el "+
+        "<b>Monasterio Po Lin</b> y el pueblo de Ngong Ping.<br>"+
+        "<i>Entrada libre al Buda; el Salón de las Diez Mil Budas y el museo se pagan aparte.</i><br>"+
+        "<i>Bajó de 95 a 85 min: es lo que costaba llegar a comer a la 1:30 sin recortarle al templo "+
+        "Wong Tai Sin. Sigue alcanzando de sobra para subir, bajar y ver el monasterio.</i>"},
+  {cid:"hkd3-bajada",name:"Teleférico de bajada + MTR a Wong Tai Sin",type:"transfer",dur:90,
+   note:"<b>Antes era un taxi por el puente de Lantau hasta Tsim Sha Tsui ($420). Ahora es MTR ($120).</b><br>"+
+        "<ul><li>Teleférico de bajada a Tung Chung, ~25 min más la fila</li>"+
+        "<li>5 min a pie de la terminal a la estación</li>"+
+        "<li><b>Línea Tung Chung</b> hasta <b>Lai King</b>, ~22 min</li>"+
+        "<li>En Lai King el cambio a la <b>línea roja</b> (Tsuen Wan) es cruzando el andén, no hay que salir</li>"+
+        "<li>Roja hasta <b>Prince Edward</b> y ahí cambio a la <b>verde</b> (Kwun Tong) hasta Wong Tai Sin</li></ul>"+
+        "<i>Son 90 min puerta a puerta contando todo. El taxi ahorraba ~20 min y costaba el triple.</i>"},
+  {cid:"hkd3-wongtaisin",name:"Templo Wong Tai Sin",dur:35,
+   note:"<b>Abre 7:30-16:30, entrada libre.</b> A la salida de la estación del mismo nombre, lo primero "+
+        "al llegar de Lantau.<br>"+
+        "Es el templo taoísta más concurrido de la ciudad: incienso, <b>kau cim</b> (se agita el bote hasta "+
+        "que cae una varilla y un intérprete la lee) y el jardín de los Nueve Dragones.<br>"+
+        "<i>35 min alcanzan para el salón principal, las varillas y el jardín. Si quieren más, róbenle "+
+        "tiempo a Nan Lian, que cierra a las 21:00 y no tiene prisa.</i>"},
+  {cid:"hkd3-mtr-dh",name:"MTR Wong Tai Sin → Diamond Hill",type:"transfer",dur:15,
+   note:"<b>Una estación</b> en la línea verde. Plaza Hollywood está sobre la estación, y Chi Lin y Nan "+
+        "Lian están a la misma salida: de aquí a la noche ya no se vuelve a tomar transporte."},
+  {cid:"hkd3-comida",name:"Comida en Diamond Hill",type:"food",dur:90,fixed:"13:30",
+   costos:[["Comida cantonesa (2)",700]],
+   note:"<b>13:30 · Federal Banquet (聯盛宴) · Shop 306, 3/F, Plaza Hollywood, 3 Lung Poon St.</b> "+
+        "Sobre la estación de Diamond Hill, a la misma salida que Chi Lin y Nan Lian.<br>"+
+        "Casa cantonesa de banquete y dim sum, de las normales y buenas: ~HK$150 por persona "+
+        "(~$700 para dos). <i>Confirmar el horario de comida antes de ir; Plaza Hollywood tiene más "+
+        "opciones en el mismo piso si estuviera cerrado.</i><br>"+
+        "<b>⚠ Por qué no es un restaurante de hotel:</b> en este corredor no hay ninguno de ese nivel — "+
+        "Wong Tai Sin y Diamond Hill son barrios residenciales. Para comer en un hotel habría que "+
+        "devolverse a Tsim Sha Tsui, y son 40 min de traslados extra.<br>"+
+        "<b>La alternativa buena, si quieren algo más especial:</b> <b>Chi Lin Vegetarian</b>, detrás de la "+
+        "cascada dentro de Nan Lian Garden. Cocina vegetariana cantonesa en un sitio que no se parece a "+
+        "nada. <u>Entre semana solo sirve 12:00-15:00, pero el día 3 es sábado y abre toda la tarde</u> "+
+        "(~12:00-17:30). Conviene reservar, sobre todo en fin de semana. Eso sí, invierte el orden: "+
+        "habría que entrar a Nan Lian primero y dejar Chi Lin Nunnery para después — y los salones del "+
+        "convento cierran a las 16:30, así que hay que cuidar el reloj.<br>"+
+        "<i>Sale del día Yat Tung Heen (1 estrella Michelin, $2,200): quedaba en Tsim Sha Tsui, que es "+
+        "adonde llegaba el taxi. Sigue en el catálogo.</i>"},
+  {cid:"hkd3-chilin",name:"Chi Lin Nunnery (convento budista)",dur:45,
+   note:"<b>Abre 9:00-16:30, entrada libre.</b> Convento de estilo Tang, de madera de ciprés "+
+        "<b>ensamblada sin un solo clavo</b>. Salas de loto, patios y silencio en medio de los rascacielos.<br>"+
+        "<i>Antes era el punto frágil del día: entraban 15:45 con los salones cerrando 16:30, cinco "+
+        "minutos de margen. Ahora entran a las 15:00 con 45 min de holgura.</i>"},
+  {cid:"hk-nanlian",name:"Nan Lian Garden (jardín clásico Tang)",dur:80,
+   note:"<b>Abre 7:00-21:00 (última entrada 20:30), entrada libre.</b> Pegado a Chi Lin, se cruza por la "+
+        "pasarela.<br>"+
+        "Jardín Tang de trazo perfecto: el pabellón dorado sobre el estanque, la colección de rocas y la "+
+        "cascada del Silver Strand.<br>"+
+        "<i>Subió de 60 a 80 min. Se había recortado para alcanzar el yate de las 18:30; sin yate, aquí "+
+        "ya no hay prisa y es el mejor sitio del día para sentarse un rato.</i>"},
+  {cid:"hkd3-regreso",name:"MTR Diamond Hill → Wan Chai",type:"transfer",dur:45,
+   note:"<b>Verde</b> (Kwun Tong) hasta Prince Edward → <b>roja</b> (Tsuen Wan) hasta Admiralty → "+
+        "<b>línea Isla</b> una parada hasta Wan Chai.<br>"+
+        "<i>Alternativa: taxi por el túnel cruzado, ~30 min y unos $220 para dos.</i>"},
+  {cid:"hkd3-descanso",name:"Descanso en el hotel",type:"rest",dur:85,
+   note:"<b>1h25 en el Renaissance.</b> Bañarse, cambiarse y —esto importa— <b>empacar</b>.<br>"+
+        "<b>⚠ El domingo salen a las 9:15 rumbo a Yangshuo</b>, y esta es la última noche en Hong Kong. "+
+        "Dejar la maleta lista hoy es lo que hace que mañana no sea una carrera.<br>"+
+        "<i>Antes este descanso no existía: el día terminaba a las 23:00 con el yate y Tin Lung Heen.</i>"},
+  {cid:"hkd3-ir-cena",name:"Salir a cenar",type:"transfer",dur:15,
+   note:"<b>15 min</b>, casi todo a pie: Wan Chai tiene la comida a la vuelta del hotel."},
+  {cid:"hkd3-cena",name:"Cena en Wan Chai",type:"food",dur:105,fixed:"19:30",
+   costos:[["Cena en Wan Chai (2)",1200]],
+   note:"<b>19:30 · cerca del hotel, sin prisa.</b> Última noche en Hong Kong.<br>"+
+        "<u>Las opciones del barrio:</u>"+
+        "<ul><li><b>Kam's Roast Goose</b> · ganso asado, 1 estrella Michelin, barato y rapidísimo</li>"+
+        "<li><b>Tsui Wah</b> · cha chaan teng clásico, abierto hasta las 23:00</li>"+
+        "<li><b>Dai pai dong de Bowrington Road</b> · puestos de calle, los mismos del mercado de la "+
+        "mañana del día 2</li></ul>"+
+        "<b>🔴 El puerto desde el agua se perdió con el yate</b>, y no cabe en ningún otro día del viaje. "+
+        "El sustituto que no cuesta nada: el <b>Star Ferry de noche</b>. El muelle de Wan Chai está a 5 "+
+        "min a pie del hotel, cruza a Tsim Sha Tsui por HK$6 por persona y de ida y vuelta son 25 min con "+
+        "el mismo skyline que se veía desde el yate. <i>Encaja perfecto después de cenar.</i><br>"+
+        "<i>Si prefieren cerrar el viaje arriba, <b>Tin Lung Heen</b> (Ritz-Carlton, ICC piso 102, 1 "+
+        "estrella) sigue en el catálogo: son ~30 min de traslado y $3,200.</i>"},
+  {cid:"hkd3-vuelta-hotel",name:"Regreso al hotel",type:"transfer",dur:15,
+   note:"<b>Al Renaissance, a pie.</b><br>"+
+        "<i>El día cierra 21:30 en lugar de las 23:00 de antes. Mañana salen a las 9:15 a Yangshuo.</i>"}
+];
+function migrarHKv7(s){
+  if(s.hkV7)return;
+  const hk=s.bases&&s.bases.hk;
+  if(!hk||!Array.isArray(hk.catalog)){s.hkV7=true;return;}
+  sembrarDia(hk,2,HK_DIA3_V3,"06:50");
+  const costo=(cid,label,est)=>{
+    const a=hk.catalog.find(x=>x.cid===cid);
+    if(a)a.costs=[{id:uid(),label,est,real:0}];
+  };
+  costo("hkd3-bajada","MTR Tung Chung → Wong Tai Sin (2)",120);   // era taxi de $420
+  costo("hkd3-regreso","MTR Diamond Hill → Wan Chai (2)",80);
+  costo("hkd3-vuelta-hotel","A pie",0);                           // era taxi del ICC
+  s.hkV7=true;
+}
 
 /* ---- Hong Kong: hotel reservado, Renaissance Harbour View ----
    Reservado el 6-9 de mayo, 3 noches, $15,000 en total.
@@ -3417,7 +3563,8 @@ function normalizeTripState(s){
   migrarHKv3(s);          // dueño del día 3 de Hong Kong
   migrarHKv4(s);
   migrarHKv5(s);
-  migrarHKv6(s);          // dueño actual del día 2: Lung King Heen pasa a la cena
+  migrarHKv6(s);          // dueño del día 2: Lung King Heen pasa a la cena
+  migrarHKv7(s);          // y este del día 3, que aflojó toda la tarde
   migrarEsencialVuelo(s);
   migrarEscalaTokio(s);
   migrarVuelosIntl(s);
