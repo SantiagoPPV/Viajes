@@ -84,7 +84,7 @@ const TRIP_START=new Date(2027,4,6);   // 6 de mayo de 2027 (en JS el mes 4 es m
 const AVAILABLE_NIGHTS=23;             // noches del 6 al 29 de mayo
 const ROUTE=[
   {id:"hk",       nights:3},                //  6 →  9 may
-  {id:"yangshuo", nights:2, sale:"09:15"},  //  9 → 11 may · llega 13:00
+  {id:"yangshuo", nights:2, sale:"07:10"},  //  9 → 11 may · llega 14:25
   ...
 ];
 const ROUTE_DROP=["osaka"];   // paradas que se eliminan por completo del viaje
@@ -94,8 +94,8 @@ const ROUTE_VERSION=4;        // súbela al editar ROUTE para reaplicar la ruta
 Cada tramo de `XFER` lleva su duración **puerta a puerta** en minutos:
 
 ```js
-"hk|yangshuo":{mode:"Tren bala", detail:"West Kowloon → Yangshuo",
-               time:"3.5–4 h", dur:225, type:"rail"},
+"hk|yangshuo":{mode:"Tren bala", detail:"West Kowloon → Cantón Sur → Yangshuo (Xingping)…",
+               time:"~7 h puerta a puerta", dur:375, type:"rail"},
 ```
 
 De ahí sale la duración de la actividad de llegada, y `sale` en `ROUTE` es la hora

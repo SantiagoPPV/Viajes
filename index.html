@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v25.1 · 22 sep 2026 · HK día 3: comparación real MTR vs taxi desde Lantau";
+const APP_VERSION="v26 · 5 oct 2026 · llegada a Yangshuo paso a paso: trenes, frontera y los 22 km de Xingping";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -924,7 +924,7 @@ const TRIP_START=new Date(2027,4,6);   // 6 de mayo de 2027 (en JS el mes 4 es m
 const AVAILABLE_NIGHTS=23;             // noches del 6 al 29 de mayo
 const ROUTE=[
   {id:"hk",        nights:3},                //  6 →  9 may
-  {id:"yangshuo",  nights:2, sale:"09:15"},  //  9 → 11 may · llega 13:00
+  {id:"yangshuo",  nights:2, sale:"07:10"},  //  9 → 11 may · llega 14:25
   {id:"chengdu",   nights:2, sale:"08:00"},  // 11 → 13 may · llega 15:00
   {id:"chongqing", nights:1, sale:"09:00"},  // 13 → 14 may · llega 10:30
   {id:"zjj",       nights:3, sale:"14:00"},  // 14 → 17 may · llega 16:00
@@ -1018,7 +1018,10 @@ const STOP_FURONG={name:"Furong (parada ½ día)",x:414,y:346};
    volver a cuadrarla a mano cada vez que se reordena la ruta. */
 const XFER={
   /* --- Tramos de la ruta actual, en orden --- */
-  "hk|yangshuo":{mode:"Tren bala",detail:"West Kowloon → Yangshuo (aduana en estación, llegar 60–75 min antes)",time:"3.5–4 h",dur:225,type:"rail"},
+  // No hay directo: se transborda en Cantón Sur. Y la estación "Yangshuo" está
+  // en Xingping, a 22 km del centro. El desglose paso a paso está en el día 1
+  // de la parada (YS_LLEGADA_2027).
+  "hk|yangshuo":{mode:"Tren bala",detail:"West Kowloon → Cantón Sur → Yangshuo (Xingping) + 22 km a West Street · frontera dentro de la estación, nivel B3, llegar 90 min antes",time:"~7 h puerta a puerta",dur:375,type:"rail"},
   "yangshuo|chengdu":{mode:"Tren bala",detail:"Yangshuo → Guilin North → Chengdu East (directo, ~21 salidas/día)",time:"~7 h puerta a puerta",dur:420,type:"rail"},
   "chengdu|chongqing":{mode:"Tren bala",detail:"Chengdu East → Chongqing",time:"1–1.5 h",dur:90,type:"rail"},
   "chongqing|zjj":{mode:"Tren bala",detail:"Chongqing → Zhangjiajie West (línea nueva 350 km/h)",time:"2 h",dur:120,type:"rail"},
@@ -1573,8 +1576,15 @@ function costsFor(cid){return (DEFAULT_COSTS[cid]||[]).map(([label,est])=>({id:u
 const ESSENTIAL_GDL_MTY={id:"ess-gdl-mty",t:"Vuelo Guadalajara → Monterrey (comprado aparte)",
   s:"conecta con el "+VUELOS_INTL.ida.origen+" → Tokio de las "+VUELOS_INTL.ida.sale
     +" del "+fmt(vueloIdaSale())+" · confirmar hora y si las maletas se documentan hasta Hong Kong"};
+/* La ventana de 15 días para comprar los trenes es una fecha límite dura y no
+   estaba anotada en ninguna parte. Va en ESSENTIALS para los viajes nuevos y
+   la empuja migrarYangshuoLlegada en los ya guardados. */
+const ESSENTIAL_TRENES={id:"ess-tren15",t:"Boletos de tren Hong Kong → Yangshuo",
+  s:"la venta abre 15 días antes (12306 / highspeed.mtr.com.hk) · 28 días en ventanilla · "+
+    "boleto electrónico: se aborda con pasaporte"};
 const ESSENTIALS=[
   ESSENTIAL_GDL_MTY,
+  ESSENTIAL_TRENES,
   {id:"ess-jp",t:"Japón: Visit Japan Web + boleto de salida",s:"mexicanos sin visa (exención de turista)"},
   {id:"ess-visa",t:"Visa de turista China (L)",s:"tramitar 1–2 meses antes"},
   {id:"ess-pass",t:"Pasaporte 6+ meses de vigencia",s:"revisar ambos"},
@@ -2016,6 +2026,9 @@ const ARRIVE_FIJO={
   /* hk-arrive no va aquí: Hong Kong es la primera parada y no la trae ningún
      tramo de XFER, sino el vuelo internacional. Su texto sale de VUELOS_INTL,
      en HK_LLEGADA_2027. */
+  "ys-arrive":{name:"Check-out, taxi a West Kowloon y cruce de frontera",
+               note:"Hong Kong West Kowloon, nivel B3: salida de Hong Kong y entrada a China seguidas. "+
+                    "Llegar 90 min antes; el acceso al andén cierra 30 min antes de la salida."},
   "ky-arrive":{name:"Vuelo Shanghái → Osaka KIX + JR Haruka a Kyoto",
                note:"PVG → KIX ≈2 h + Haruka 75 min; check-in"},
   "tk-arrive":{name:"Tren bala Kyoto → Tokio",
@@ -3581,7 +3594,139 @@ function normalizeTripState(s){
   migrarEscalaTokio(s);
   migrarVuelosIntl(s);
   migrarRuta(s);          // deja el viaje con el orden y las noches de ROUTE
+  migrarYangshuoLlegada(s);  // DESPUÉS de migrarRuta: su paso 6 resiembra Yangshuo
   return s;
+}
+/* ---- Llegada a Yangshuo: domingo 9 de mayo de 2027, paso a paso ----
+   El plan decía "West Kowloon → Yangshuo 3.5-4 h, llega 13:00". Al buscar los
+   trenes de verdad resultó que eso no existe, y por tres razones:
+
+     1. NO HAY TREN DIRECTO Hong Kong → Yangshuo. Hay que transbordar, y el
+        transbordo bueno es en Cantón Sur (Guangzhou South). Los únicos
+        directos de West Kowloon hacia Guangxi van a GUILIN WEST, que queda a
+        80 km de Yangshuo por carretera.
+     2. LA ESTACIÓN DE YANGSHUO NO ESTÁ EN YANGSHUO. Está en Xingping, a
+        22 km del centro: una hora más de camino que nadie cuenta.
+     3. EL CRUCE DE FRONTERA ES EN LA ESTACIÓN, antes de subir. Son dos
+        filtros seguidos —salida de Hong Kong y entrada a China— y el corte
+        de acceso al andén es 30 min antes de la salida, sin excepción.
+
+   Puerta a puerta son ~7 h, no 4. Salen del hotel 7:10 y están en West
+   Street a las 14:25, con la tarde libre y el show de las 20:00 intacto.
+
+   ⚠ ESTA MIGRACIÓN VA DESPUÉS DE migrarRuta A PROPÓSITO: el paso 6 de
+   migrarRuta vuelve a sembrar los días de Yangshuo desde YANGSHUO_V2, así
+   que si corriera antes, este plan se borraría. ys-arrive se deja como
+   PRIMERA actividad del día para que el paso 7 de migrarRuta —que le pone a
+   ys-arrive la hora de salida de ROUTE— siga apuntando al renglón correcto
+   si algún día se sube ROUTE_VERSION.
+
+   ⚠ LOS NÚMEROS DE TREN SON DEL ITINERARIO VIGENTE HOY, como plantilla. El
+   horario de mayo de 2027 no existe todavía y China reajusta la tabla varias
+   veces al año (la última revisión de estos trenes es del 10 feb 2026). Lo
+   que sí es estable es la FRECUENCIA, y de ahí sale el plan: ~50 trenes
+   diarios a Cantón desde las 7:20 y ~29 de Cantón a Yangshuo entre 6:37 y
+   18:52. La pareja exacta se escoge 15 días antes, que es cuando se abre la
+   venta. */
+const YS_LLEGADA_2027=[
+  {cid:"ys-arrive",name:"Check-out, taxi a West Kowloon y cruce de frontera",type:"transfer",
+   dur:110,fixed:"07:10",
+   costos:[["Taxi Wan Chai → West Kowloon (2)",250]],
+   note:"<b>Estación: Hong Kong West Kowloon (香港西九龍站) · Austin Road West, West Kowloon.</b> "+
+        "Está debajo del complejo del ICC y Elements, junto a las estaciones de MTR Austin y Kowloon — "+
+        "la misma zona donde estaba el hotel viejo.<br>"+
+        "<b>Del Renaissance:</b> taxi por el túnel occidental, 15-20 min, ~HK$110 más casetas. Con "+
+        "maletas grandes no hay discusión: taxi.<br>"+
+        "<b>⚠ Llegar 90 min antes.</b> La recomendación oficial es 45 min entre semana y 60-90 en fin de "+
+        "semana — <u>el 9 de mayo de 2027 es domingo</u>. Y el dato duro: <b>el acceso al andén se cierra "+
+        "30 minutos antes de la salida</b>, sin excepción.<br>"+
+        "<b>El cruce de frontera, en el nivel B3.</b> Dos filtros seguidos sin salir del edificio:"+
+        "<ol><li><b>Salida de Hong Kong</b> + rayos X</li>"+
+        "<li><b>Entrada a China continental</b> + rayos X otra vez. Esta parte de la estación es el "+
+        "<i>Mainland Port Area</i>: legalmente ya es territorio chino, aunque estén en Kowloon. Aquí "+
+        "toman huellas y foto.</li></ol>"+
+        "El cruce completo son <b>~40 min</b> en día normal. De aquí en adelante todo es doméstico: en "+
+        "Cantón Sur ya no hay ningún trámite.<br>"+
+        "<b>⚠ LO QUE HAY QUE TRAER — esto es lo que puede tronar el viaje:</b>"+
+        "<ul><li><b>Visa de turista china (tipo L).</b> Los mexicanos <u>sí la necesitan</u>: no hay "+
+        "exención ni visa en la frontera. Trámite en consulado o centro autorizado, 4-7 días hábiles. "+
+        "<i>Hong Kong es aparte — ahí los mexicanos entran sin visa hasta 90 días.</i></li>"+
+        "<li><b>No les sirve la exención de tránsito de 240 horas.</b> Entrar a China en tren desde Hong "+
+        "Kong sí califica para ese programa, pero son 240 h = 10 días y ustedes se quedan <b>15 noches</b> "+
+        "(360 h). Visa completa, sin atajos.</li>"+
+        "<li>Pasaporte con <b>6+ meses de vigencia</b> y dos páginas en blanco.</li>"+
+        "<li><b>Alipay y WeChat Pay con tarjeta internacional</b>, configurados <u>antes</u> de volar. En "+
+        "China el pago por QR no es una comodidad, es muchas veces la única forma.</li>"+
+        "<li><b>eSIM + VPN.</b> Con SIM del continente están bloqueados Google, WhatsApp, Instagram y "+
+        "YouTube. El VPN se instala antes de entrar, no después.</li>"+
+        "<li><b>~¥500 en efectivo</b> para Yangshuo y Xingping, que son pueblo.</li></ul>"},
+  {cid:"ys-tren1",name:"Tren West Kowloon → Cantón Sur (Guangzhou South)",type:"transfer",
+   dur:60,fixed:"09:08",
+   costos:[["Tren West Kowloon → Cantón Sur, 2a clase (2)",1000]],
+   note:"<b>~1 h de viaje</b> (entre 47 min y 1 h 30 según el tren). Pasa por Futian, Shenzhen North, "+
+        "Guangmingcheng, Humen y Qingsheng.<br>"+
+        "<b>Frecuencia:</b> ~50 trenes al día entre las 7:20 y las 23:43, prácticamente cada hora.<br>"+
+        "<u>Candidatos del horario vigente hoy</u> (confirmar, ver abajo): <b>G388 7:20 · G6080 8:07 · "+
+        "G6582 8:22 · G6510 9:08 · G904 9:18</b>. El plan usa el de las <b>9:08</b>.<br>"+
+        "2a clase ~HK$217 por persona.<br>"+
+        "<b>⚠ Los boletos se abren 15 DÍAS ANTES</b> en 12306 y en la web del MTR "+
+        "(highspeed.mtr.com.hk); en ventanilla de estación, 28 días. <b>Hay boleto electrónico</b> desde "+
+        "2023: se pasa el filtro con el <u>pasaporte</u>, no hace falta recoger nada en papel. "+
+        "<i>El mismo pasaporte con el que compren es el que tienen que presentar.</i><br>"+
+        "<i>El horario de mayo de 2027 no existe todavía y China reajusta la tabla varias veces al año. "+
+        "Estos números son plantilla: la pareja real se escoge el día que abre la venta.</i>"},
+  {cid:"ys-transbordo",name:"Transbordo en Cantón Sur",type:"transfer",dur:70,
+   costos:[["Algo de comer en la estación (2)",200]],
+   note:"<b>Cantón Sur (广州南站) es una de las estaciones más grandes de China</b> — 28 andenes y salas de "+
+        "espera lejísimos una de otra. Por eso el transbordo tiene 70 min y no 30.<br>"+
+        "<b>Ya pasaron migración en West Kowloon</b>, así que esto es un transbordo doméstico normal: "+
+        "salir del andén, buscar el número de tren en las pantallas, ir a la sala que indique y volver a "+
+        "pasar el filtro con el pasaporte.<br>"+
+        "<i>Hay zona de comida en el nivel de arriba. Es el mejor momento del día para comer algo, "+
+        "porque después vienen 2 h de tren y 1 h de carretera.</i><br>"+
+        "<i>Si el primer tren se retrasa, aquí está el colchón: con ~29 trenes diarios a Yangshuo, "+
+        "perder uno significa esperar media hora, no perder el día.</i>"},
+  {cid:"ys-tren2",name:"Tren Cantón Sur → Yangshuo (Xingping)",type:"transfer",
+   dur:125,fixed:"11:20",
+   costos:[["Tren Cantón Sur → Yangshuo, 2a clase (2)",900]],
+   note:"<b>~2 h de viaje</b> (entre 1 h 55 y 2 h 30), 400 km por la línea Gui-Guang. Para en Sanshui "+
+        "South, Zhaoqing East, Guangning, Huaiji, Hezhou, Zhongshan West y Gongcheng.<br>"+
+        "<b>Frecuencia:</b> ~29 trenes al día, el primero 6:37 y el último 18:52.<br>"+
+        "<u>Candidatos del horario vigente hoy:</u> <b>G3886 6:37→8:32 · D1808 9:21→11:38 · "+
+        "G3876 12:43→14:50 · G3706 15:55→17:53</b>. El plan asume uno alrededor de las <b>11:20</b>, que "+
+        "con esa frecuencia existe casi seguro.<br>"+
+        "2a clase ~¥160-180 por persona.<br>"+
+        "<b>⚠ El tren dice \"Yangshuo\" pero NO los deja en Yangshuo.</b> Ver la parada siguiente."},
+  {cid:"ys-aYangshuo",name:"Estación de Yangshuo → West Street",type:"transfer",dur:60,
+   costos:[["Taxi estación → West Street (2)",230]],
+   note:"<b>⚠ Esto es lo que sorprende a todo el mundo: la estación de Yangshuo (阳朔站) está en "+
+        "XINGPING, a 22 km del centro de Yangshuo.</b> No se puede caminar ni es un salto de taxi corto.<br>"+
+        "<u>Las tres formas de llegar:</u>"+
+        "<ul><li><b>Taxi · ¥80-100 · ~45 min.</b> Con maletas grandes es lo que yo haría, y es lo que "+
+        "trae cargado el plan.</li>"+
+        "<li><b>Autobús oficial · ¥20 por persona · ~1 h.</b> Sale de la explanada de la estación al "+
+        "Centro de Transporte Turístico Fengming, en Yangshuo. Corre de 7:00 a 19:30. De Fengming a West "+
+        "Street está el camión urbano 801 (¥2, 15 min, 2.5 km).</li>"+
+        "<li><b>Traslado del hotel.</b> Casi todos los hoteles de Yangshuo lo organizan. "+
+        "<u>Pedirlo al reservar</u>: es lo más cómodo con equipaje y suele costar lo mismo que el taxi.</li></ul>"+
+        "<i>Dato bonito: Xingping es justo el paisaje del billete de ¥20, y mañana regresan aquí para la "+
+        "balsa de bambú Yangdi–Xingping. Hoy pasan de largo, mañana es el destino.</i>"},
+  {cid:"ys-alberca",dur:210},
+  {cid:"ys-beerfish",fixed:"18:15"},
+  {cid:"ys-impression",fixed:"20:00"}
+];
+function migrarYangshuoLlegada(s){
+  if(s.ysLlegadaV1)return;
+  const ys=s.bases&&s.bases.yangshuo;
+  if(ys&&Array.isArray(ys.catalog)){
+    sembrarDia(ys,0,YS_LLEGADA_2027,"07:10");
+    // ys-arrive ya existía, y sembrarDia no toca los costos de lo que ya existe
+    const a=ys.catalog.find(x=>x.cid==="ys-arrive");
+    if(a)a.costs=[{id:uid(),label:"Taxi Wan Chai → West Kowloon (2)",est:250,real:0}];
+  }
+  if(Array.isArray(s.esenciales)&&!s.esenciales.some(e=>e.id===ESSENTIAL_TRENES.id))
+    s.esenciales.push({...ESSENTIAL_TRENES});
+  s.ysLlegadaV1=true;
 }
 /* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
 function freshBlankTrip(titulo){
