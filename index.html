@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v29 · 5 oct 2026 · Chengdu: hotel en Kuanzhai, pandas, Dujiangyan y las torres de luz";
+const APP_VERSION="v29.1 · 6 oct 2026 · Chengdu: tres opciones para comer al llegar";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -3896,7 +3896,8 @@ const YS_DIA2_2027=[
        que no estaban en su lista. Quedan en el catálogo.
 
    De su lista, cómo quedó y por qué:
-     · Martes 11 (llegada): té en People's Park, paseo por Kuanzhai con
+     · Martes 11 (llegada): comida ligera cerca del hotel (tres opciones abiertas
+       a las 15:00), té en People's Park, paseo por Kuanzhai con
        antojitos, cena en el Fuqin Night Market y las DOS torres de luz la
        misma noche: las Twin Towers y la Tower of Life de SKP están a ~3 km
        una de otra y las dos corren de 19:30 a 22:00. Primero las Twin Towers,
@@ -3939,10 +3940,33 @@ const CD_LLEGADA_2027=[
    note:"<b>~30 min en taxi</b> (~¥30-40) y ~20 de check-in. Con maletas, taxi; en metro sería la línea 1 a "+
         "Tianfu Square y la 2 a Tonghuimen, a 300 m del hotel.<br>"+
         "<b>Para el taxista:</b> 川行隐里酒店, 十二桥路19号 — enséñenle la dirección en chino."},
-  {cid:"g-rest"},                                // 45 min: quitarse el tren de encima
-  {cid:"cd-te",name:"Té en People's Park · casa de té Heming",type:"sight",dur:75,
+  {cid:"cd-comida",name:"Comida cerca del hotel · 3 opciones",type:"food",dur:60,
+   costos:[["Comida ligera (2) · Chen Mapo serían ~$540",150]],
+   note:"<b>15:00 · comida tardía, y que sea ligera:</b> la cena callejera en Fuqin es a las 18:15.<br>"+
+        "<b>⚠ Las tres están abiertas a esta hora</b>, y en Chengdu eso no es poca cosa: muchos restaurantes "+
+        "cierran de ~14:00 a 17:00. El famoso Mao Jiao Huo La de la calle Kuixinglou, por ejemplo, abre "+
+        "12:00-14:00 y 17:00-22:00.<br>"+
+        "<ol>"+
+        "<li><b>Zhong Shui Jiao (钟水饺) · dentro de People's Park — la que yo escogería.</b> Los dumplings "+
+        "clásicos de Chengdu, desde 1893: los de <b>aceite rojo (红油水饺)</b>, de picor suave, con salsa de "+
+        "soya dulce y ajo (~¥15 la orden de 10). También hay de caldo claro y potstickers. Abre 8:30-20:00 "+
+        "en el pabellón Ziweige, <u>junto a la casa de té Heming</u>: comen y pasan directo al té. Entren "+
+        "por la puerta norte 2 del parque. ~¥40 los dos.</li>"+
+        "<li><b>Liang Ji Fei Chang Fen (梁记肥肠粉) · 长顺上街116号, a la entrada de Kuanzhai.</b> El "+
+        "favorito de los locales de la zona: fideos de camote en caldo picante con <b>tripa de cerdo</b>, y "+
+        "pan de cebollín para acompañar. ~¥18 por persona, abre 7:30-20:00. <i>Si les gustan los tacos de "+
+        "tripa, éste es su primo de Sichuan; si no, vayan a cualquiera de los otros dos.</i></li>"+
+        "<li><b>Chen Mapo Tofu (陈麻婆豆腐) · el de Qinghua Road (青华路10号).</b> Donde se inventó el mapo "+
+        "tofu, en 1862; Bib Gourmand en la Guía Michelin 2025. Es la única de las tres para sentarse con "+
+        "calma, y abre corrido de 9:30 a 21:30. ~10 min en taxi al oeste del hotel, ~¥80-120 por persona. "+
+        "<i>Si escogen ésta, coman fuerte aquí y en Fuqin vayan solo de antojitos.</i></li>"+
+        "</ol>"+
+        "<i>A los taxistas, enséñenles el nombre en chino.</i>"},
+  {cid:"cd-te",name:"Té en People's Park · casa de té Heming",type:"sight",dur:60,
    costos:[["Té y limpieza de orejas (2)",270]],
-   note:"<b>15:45 · a ~15 min caminando del hotel.</b> People's Park (人民公园) y su casa de té <b>Heming "+
+   note:"<b>16:00 · si comieron en Zhong Shui Jiao, ya están ahí:</b> la casa de té está junto. Desde el hotel "+
+        "son ~15 min caminando.<br>"+
+        "People's Park (人民公园) y su casa de té <b>Heming "+
         "(鹤鸣茶社)</b>, la más famosa de Chengdu: mesas bajo los árboles, té de jazmín en <i>gaiwan</i> "+
         "(~¥15-30, con agua caliente sin límite) y los <b>limpiadores de orejas</b> que pasan entre las "+
         "mesas con sus pinzas (¥30-50, 5-10 min).<br>"+
@@ -3966,7 +3990,8 @@ const CD_LLEGADA_2027=[
         "23:30; los puestos se arman desde las 17:30.<br>"+
         "<u>Qué pedir:</u> brochetas en caldo picante (串串), <i>dandan</i> noodles, tortitas de huevo y, si se "+
         "animan, sesos a la parrilla. ~¥20-60 por persona.<br>"+
-        "<i>Por eso Kuanzhai fue solo antojito: la cena de verdad es aquí.</i>"},
+        "<i>Por eso Kuanzhai fue solo antojito: la cena de verdad es aquí. Si a las 15:00 comieron fuerte "+
+        "en Chen Mapo, aquí vayan de antojitos.</i>"},
   {cid:"cd-ir-torres",name:"Taxi a la Ciudad Financiera",type:"transfer",dur:40,
    costos:[["Taxi (2)",150]],
    note:"<b>~40 min al sur.</b> Pidan bajar en el puente <b>Jiaozi Ring (交子之环)</b>, en Jiaozi Avenue y "+
@@ -4120,7 +4145,7 @@ function migrarYangshuo(s){
 /* Dueño de Chengdu: sus dos días, su hotel, y la salida a Chongqing del 13
    (que vive en el primer día de Chongqing, cq-arrive). */
 function migrarChengdu(s){
-  if(s.cdPlanV2)return;
+  if(s.cdPlanV3)return;
   const cd=s.bases&&s.bases.chengdu;
   if(cd&&Array.isArray(cd.catalog)){
     sembrarDia(cd,0,CD_LLEGADA_2027,"07:00");
@@ -4179,7 +4204,7 @@ function migrarChengdu(s){
       else s.esenciales.push({...E});
     });
   }
-  s.cdPlanV2=true;
+  s.cdPlanV3=true;
 }
 /* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
 function freshBlankTrip(titulo){
