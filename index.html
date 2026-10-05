@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v26 · 5 oct 2026 · llegada a Yangshuo paso a paso: trenes, frontera y los 22 km de Xingping";
+const APP_VERSION="v27 · 5 oct 2026 · Yangshuo: tren de las 8:17 vía Shenzhen Norte y llegada al Sugar House";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -924,7 +924,7 @@ const TRIP_START=new Date(2027,4,6);   // 6 de mayo de 2027 (en JS el mes 4 es m
 const AVAILABLE_NIGHTS=23;             // noches del 6 al 29 de mayo
 const ROUTE=[
   {id:"hk",        nights:3},                //  6 →  9 may
-  {id:"yangshuo",  nights:2, sale:"07:10"},  //  9 → 11 may · llega 14:25
+  {id:"yangshuo",  nights:2, sale:"06:20"},  //  9 → 11 may · llega 13:20
   {id:"chengdu",   nights:2, sale:"08:00"},  // 11 → 13 may · llega 15:00
   {id:"chongqing", nights:1, sale:"09:00"},  // 13 → 14 may · llega 10:30
   {id:"zjj",       nights:3, sale:"14:00"},  // 14 → 17 may · llega 16:00
@@ -1018,10 +1018,10 @@ const STOP_FURONG={name:"Furong (parada ½ día)",x:414,y:346};
    volver a cuadrarla a mano cada vez que se reordena la ruta. */
 const XFER={
   /* --- Tramos de la ruta actual, en orden --- */
-  // No hay directo: se transborda en Cantón Sur. Y la estación "Yangshuo" está
-  // en Xingping, a 22 km del centro. El desglose paso a paso está en el día 1
+  // No hay directo: se cambia de tren en Shenzhen Norte. Y la estación "Yangshuo"
+  // está en Xingping, a 28 km del hotel. El desglose paso a paso está en el día 1
   // de la parada (YS_LLEGADA_2027).
-  "hk|yangshuo":{mode:"Tren bala",detail:"West Kowloon → Cantón Sur → Yangshuo (Xingping) + 22 km a West Street · frontera dentro de la estación, nivel B3, llegar 90 min antes",time:"~7 h puerta a puerta",dur:375,type:"rail"},
+  "hk|yangshuo":{mode:"Tren bala",detail:"G5626 8:17 West Kowloon → Shenzhen Norte · G2244 9:25 → Yangshuo (Xingping) + 28 km al Sugar House · frontera dentro de la estación, nivel B3, llegar 90 min antes",time:"~7 h puerta a puerta",dur:420,type:"rail"},
   "yangshuo|chengdu":{mode:"Tren bala",detail:"Yangshuo → Guilin North → Chengdu East (directo, ~21 salidas/día)",time:"~7 h puerta a puerta",dur:420,type:"rail"},
   "chengdu|chongqing":{mode:"Tren bala",detail:"Chengdu East → Chongqing",time:"1–1.5 h",dur:90,type:"rail"},
   "chongqing|zjj":{mode:"Tren bala",detail:"Chongqing → Zhangjiajie West (línea nueva 350 km/h)",time:"2 h",dur:120,type:"rail"},
@@ -1580,8 +1580,9 @@ const ESSENTIAL_GDL_MTY={id:"ess-gdl-mty",t:"Vuelo Guadalajara → Monterrey (co
    estaba anotada en ninguna parte. Va en ESSENTIALS para los viajes nuevos y
    la empuja migrarYangshuoLlegada en los ya guardados. */
 const ESSENTIAL_TRENES={id:"ess-tren15",t:"Boletos de tren Hong Kong → Yangshuo",
-  s:"la venta abre 15 días antes (12306 / highspeed.mtr.com.hk) · 28 días en ventanilla · "+
-    "boleto electrónico: se aborda con pasaporte"};
+  s:"G5626 8:17 a Shenzhen Norte + G2244 9:25 a Yangshuo · la venta abre ~15 días antes "+
+    "(24-25 abr) en 12306 / highspeed.mtr.com.hk · los dos tramos en la misma reservación · "+
+    "se aborda con pasaporte"};
 const ESSENTIALS=[
   ESSENTIAL_GDL_MTY,
   ESSENTIAL_TRENES,
@@ -3598,55 +3599,59 @@ function normalizeTripState(s){
   return s;
 }
 /* ---- Llegada a Yangshuo: domingo 9 de mayo de 2027, paso a paso ----
-   El plan decía "West Kowloon → Yangshuo 3.5-4 h, llega 13:00". Al buscar los
-   trenes de verdad resultó que eso no existe, y por tres razones:
+   Versión 2. La primera versión transbordaba en Cantón Sur (9:08 → 13:25) y
+   llegaba al centro a las 14:25. Esta usa el tren de las 8:17 con cambio en
+   SHENZHEN NORTE, que escogieron después de comparar opciones reales:
 
-     1. NO HAY TREN DIRECTO Hong Kong → Yangshuo. Hay que transbordar, y el
-        transbordo bueno es en Cantón Sur (Guangzhou South). Los únicos
-        directos de West Kowloon hacia Guangxi van a GUILIN WEST, que queda a
-        80 km de Yangshuo por carretera.
-     2. LA ESTACIÓN DE YANGSHUO NO ESTÁ EN YANGSHUO. Está en Xingping, a
-        22 km del centro: una hora más de camino que nadie cuenta.
-     3. EL CRUCE DE FRONTERA ES EN LA ESTACIÓN, antes de subir. Son dos
-        filtros seguidos —salida de Hong Kong y entrada a China— y el corte
-        de acceso al andén es 30 min antes de la salida, sin excepción.
+     · G5626  8:17 West Kowloon → 8:35 Shenzhen Norte   (18 min)
+     · G2244  9:25 Shenzhen Norte → 12:21 Yangshuo       (2 h 56)
 
-   Puerta a puerta son ~7 h, no 4. Salen del hotel 7:10 y están en West
-   Street a las 14:25, con la tarde libre y el show de las 20:00 intacto.
+   POR QUÉ ESTE Y NO EL DE CANTÓN DE LAS 8:07, que llegaba media hora antes:
+   el riesgo de perder el segundo tren. En Cantón Sur la recomendación oficial
+   es dejar 40 min para el cambio y aquel quedaba con ~30-50, después de casi
+   una hora de tren. Aquí el primer tren dura 18 min (el tramo de Hong Kong
+   fue puntual en >99.9% de los viajes en 2025) y el cambio tiene 50 min
+   contra los 20-30 que recomienda Shenzhen Norte. Y además sale más barato.
 
-   ⚠ ESTA MIGRACIÓN VA DESPUÉS DE migrarRuta A PROPÓSITO: el paso 6 de
-   migrarRuta vuelve a sembrar los días de Yangshuo desde YANGSHUO_V2, así
-   que si corriera antes, este plan se borraría. ys-arrive se deja como
-   PRIMERA actividad del día para que el paso 7 de migrarRuta —que le pone a
-   ys-arrive la hora de salida de ROUTE— siga apuntando al renglón correcto
-   si algún día se sube ROUTE_VERSION.
+   QUÉ NO CAMBIA de la versión anterior:
+     · No hay tren directo a Yangshuo; los únicos directos van a Guilin West.
+     · La estación "Yangshuo" está en XINGPING. Al Sugar House son 28 km.
+     · La frontera se cruza en West Kowloon, nivel B3, antes de subir.
 
-   ⚠ LOS NÚMEROS DE TREN SON DEL ITINERARIO VIGENTE HOY, como plantilla. El
-   horario de mayo de 2027 no existe todavía y China reajusta la tabla varias
-   veces al año (la última revisión de estos trenes es del 10 feb 2026). Lo
-   que sí es estable es la FRECUENCIA, y de ahí sale el plan: ~50 trenes
-   diarios a Cantón desde las 7:20 y ~29 de Cantón a Yangshuo entre 6:37 y
-   18:52. La pareja exacta se escoge 15 días antes, que es cuando se abre la
-   venta. */
+   EL HOTEL: Yangshuo Sugar House (antes Alila Yangshuo), 102 Dongling Road,
+   a 2.5 km de West Street y 2.2 km del show de Impression. Puerta a puerta
+   son ~7 h: salen del Renaissance 6:20 y están en el Sugar House 13:20.
+
+   ⚠ VA DESPUÉS DE migrarRuta A PROPÓSITO: el paso 6 de migrarRuta vuelve a
+   sembrar los días de Yangshuo desde YANGSHUO_V2, así que si corriera antes
+   este plan se borraría. ys-arrive se deja como PRIMERA actividad del día
+   para que el paso 7 de migrarRuta —que le pone a ys-arrive la hora de
+   salida de ROUTE— siga apuntando al renglón correcto si algún día se sube
+   ROUTE_VERSION.
+
+   ⚠ LOS DOS NÚMEROS DE TREN SON DEL HORARIO VIGENTE HOY. El de mayo de 2027
+   no existe todavía y China reajusta la tabla varias veces al año. Si al
+   abrir la venta cambiaron, lo que hay que conservar es la FORMA: primer
+   tramo corto a Shenzhen Norte y un cambio de 40 min o más. */
 const YS_LLEGADA_2027=[
   {cid:"ys-arrive",name:"Check-out, taxi a West Kowloon y cruce de frontera",type:"transfer",
-   dur:110,fixed:"07:10",
-   costos:[["Taxi Wan Chai → West Kowloon (2)",250]],
+   dur:110,fixed:"06:20",
    note:"<b>Estación: Hong Kong West Kowloon (香港西九龍站) · Austin Road West, West Kowloon.</b> "+
-        "Está debajo del complejo del ICC y Elements, junto a las estaciones de MTR Austin y Kowloon — "+
-        "la misma zona donde estaba el hotel viejo.<br>"+
-        "<b>Del Renaissance:</b> taxi por el túnel occidental, 15-20 min, ~HK$110 más casetas. Con "+
-        "maletas grandes no hay discusión: taxi.<br>"+
-        "<b>⚠ Llegar 90 min antes.</b> La recomendación oficial es 45 min entre semana y 60-90 en fin de "+
-        "semana — <u>el 9 de mayo de 2027 es domingo</u>. Y el dato duro: <b>el acceso al andén se cierra "+
-        "30 minutos antes de la salida</b>, sin excepción.<br>"+
+        "Debajo del complejo del ICC y Elements, junto a las estaciones de MTR Austin y Kowloon.<br>"+
+        "<b>Del Renaissance:</b> taxi por el túnel occidental, ~25 min a esta hora, ~HK$110 más casetas. "+
+        "Con maletas grandes no hay discusión: taxi. <u>Pídanlo en recepción la noche anterior.</u><br>"+
+        "<b>⚠ Llegar a las 6:45, 90 min antes del tren.</b> La recomendación oficial es 45 min entre "+
+        "semana y 60-90 en fin de semana — <u>el 9 de mayo de 2027 es domingo</u>. Y la hora que no se "+
+        "puede pasar: <b>el acceso cierra 30 minutos antes de la salida, a las 7:47</b>.<br>"+
         "<b>El cruce de frontera, en el nivel B3.</b> Dos filtros seguidos sin salir del edificio:"+
         "<ol><li><b>Salida de Hong Kong</b> + rayos X</li>"+
         "<li><b>Entrada a China continental</b> + rayos X otra vez. Esta parte de la estación es el "+
         "<i>Mainland Port Area</i>: legalmente ya es territorio chino, aunque estén en Kowloon. Aquí "+
         "toman huellas y foto.</li></ol>"+
         "El cruce completo son <b>~40 min</b> en día normal. De aquí en adelante todo es doméstico: en "+
-        "Cantón Sur ya no hay ningún trámite.<br>"+
+        "Shenzhen Norte ya no hay ningún trámite.<br>"+
+        "<b>Desayuno:</b> a las 6:20 el del hotel todavía no está. Hay tiendas en la sala de salida "+
+        "después de migración, y en Shenzhen Norte tienen 50 min con cafés y comida.<br>"+
         "<b>⚠ LO QUE HAY QUE TRAER — esto es lo que puede tronar el viaje:</b>"+
         "<ul><li><b>Visa de turista china (tipo L).</b> Los mexicanos <u>sí la necesitan</u>: no hay "+
         "exención ni visa en la frontera. Trámite en consulado o centro autorizado, 4-7 días hábiles. "+
@@ -3654,79 +3659,119 @@ const YS_LLEGADA_2027=[
         "<li><b>No les sirve la exención de tránsito de 240 horas.</b> Entrar a China en tren desde Hong "+
         "Kong sí califica para ese programa, pero son 240 h = 10 días y ustedes se quedan <b>15 noches</b> "+
         "(360 h). Visa completa, sin atajos.</li>"+
-        "<li>Pasaporte con <b>6+ meses de vigencia</b> y dos páginas en blanco.</li>"+
+        "<li>Pasaporte con <b>6+ meses de vigencia</b> y dos páginas en blanco. <b>El mismo pasaporte con "+
+        "el que compraron los boletos</b>: es el boleto.</li>"+
         "<li><b>Alipay y WeChat Pay con tarjeta internacional</b>, configurados <u>antes</u> de volar. En "+
         "China el pago por QR no es una comodidad, es muchas veces la única forma.</li>"+
         "<li><b>eSIM + VPN.</b> Con SIM del continente están bloqueados Google, WhatsApp, Instagram y "+
         "YouTube. El VPN se instala antes de entrar, no después.</li>"+
         "<li><b>~¥500 en efectivo</b> para Yangshuo y Xingping, que son pueblo.</li></ul>"},
-  {cid:"ys-tren1",name:"Tren West Kowloon → Cantón Sur (Guangzhou South)",type:"transfer",
-   dur:60,fixed:"09:08",
-   costos:[["Tren West Kowloon → Cantón Sur, 2a clase (2)",1000]],
-   note:"<b>~1 h de viaje</b> (entre 47 min y 1 h 30 según el tren). Pasa por Futian, Shenzhen North, "+
-        "Guangmingcheng, Humen y Qingsheng.<br>"+
-        "<b>Frecuencia:</b> ~50 trenes al día entre las 7:20 y las 23:43, prácticamente cada hora.<br>"+
-        "<u>Candidatos del horario vigente hoy</u> (confirmar, ver abajo): <b>G388 7:20 · G6080 8:07 · "+
-        "G6582 8:22 · G6510 9:08 · G904 9:18</b>. El plan usa el de las <b>9:08</b>.<br>"+
-        "2a clase ~HK$217 por persona.<br>"+
-        "<b>⚠ Los boletos se abren 15 DÍAS ANTES</b> en 12306 y en la web del MTR "+
-        "(highspeed.mtr.com.hk); en ventanilla de estación, 28 días. <b>Hay boleto electrónico</b> desde "+
-        "2023: se pasa el filtro con el <u>pasaporte</u>, no hace falta recoger nada en papel. "+
-        "<i>El mismo pasaporte con el que compren es el que tienen que presentar.</i><br>"+
-        "<i>El horario de mayo de 2027 no existe todavía y China reajusta la tabla varias veces al año. "+
-        "Estos números son plantilla: la pareja real se escoge el día que abre la venta.</i>"},
-  {cid:"ys-transbordo",name:"Transbordo en Cantón Sur",type:"transfer",dur:70,
-   costos:[["Algo de comer en la estación (2)",200]],
-   note:"<b>Cantón Sur (广州南站) es una de las estaciones más grandes de China</b> — 28 andenes y salas de "+
-        "espera lejísimos una de otra. Por eso el transbordo tiene 70 min y no 30.<br>"+
-        "<b>Ya pasaron migración en West Kowloon</b>, así que esto es un transbordo doméstico normal: "+
-        "salir del andén, buscar el número de tren en las pantallas, ir a la sala que indique y volver a "+
-        "pasar el filtro con el pasaporte.<br>"+
-        "<i>Hay zona de comida en el nivel de arriba. Es el mejor momento del día para comer algo, "+
-        "porque después vienen 2 h de tren y 1 h de carretera.</i><br>"+
-        "<i>Si el primer tren se retrasa, aquí está el colchón: con ~29 trenes diarios a Yangshuo, "+
-        "perder uno significa esperar media hora, no perder el día.</i>"},
-  {cid:"ys-tren2",name:"Tren Cantón Sur → Yangshuo (Xingping)",type:"transfer",
-   dur:125,fixed:"11:20",
-   costos:[["Tren Cantón Sur → Yangshuo, 2a clase (2)",900]],
-   note:"<b>~2 h de viaje</b> (entre 1 h 55 y 2 h 30), 400 km por la línea Gui-Guang. Para en Sanshui "+
-        "South, Zhaoqing East, Guangning, Huaiji, Hezhou, Zhongshan West y Gongcheng.<br>"+
-        "<b>Frecuencia:</b> ~29 trenes al día, el primero 6:37 y el último 18:52.<br>"+
-        "<u>Candidatos del horario vigente hoy:</u> <b>G3886 6:37→8:32 · D1808 9:21→11:38 · "+
-        "G3876 12:43→14:50 · G3706 15:55→17:53</b>. El plan asume uno alrededor de las <b>11:20</b>, que "+
-        "con esa frecuencia existe casi seguro.<br>"+
-        "2a clase ~¥160-180 por persona.<br>"+
-        "<b>⚠ El tren dice \"Yangshuo\" pero NO los deja en Yangshuo.</b> Ver la parada siguiente."},
-  {cid:"ys-aYangshuo",name:"Estación de Yangshuo → West Street",type:"transfer",dur:60,
-   costos:[["Taxi estación → West Street (2)",230]],
-   note:"<b>⚠ Esto es lo que sorprende a todo el mundo: la estación de Yangshuo (阳朔站) está en "+
-        "XINGPING, a 22 km del centro de Yangshuo.</b> No se puede caminar ni es un salto de taxi corto.<br>"+
-        "<u>Las tres formas de llegar:</u>"+
-        "<ul><li><b>Taxi · ¥80-100 · ~45 min.</b> Con maletas grandes es lo que yo haría, y es lo que "+
-        "trae cargado el plan.</li>"+
-        "<li><b>Autobús oficial · ¥20 por persona · ~1 h.</b> Sale de la explanada de la estación al "+
-        "Centro de Transporte Turístico Fengming, en Yangshuo. Corre de 7:00 a 19:30. De Fengming a West "+
-        "Street está el camión urbano 801 (¥2, 15 min, 2.5 km).</li>"+
-        "<li><b>Traslado del hotel.</b> Casi todos los hoteles de Yangshuo lo organizan. "+
-        "<u>Pedirlo al reservar</u>: es lo más cómodo con equipaje y suele costar lo mismo que el taxi.</li></ul>"+
+  {cid:"ys-tren1",name:"Tren G5626 · West Kowloon → Shenzhen Norte",type:"transfer",
+   dur:18,fixed:"08:17",
+   note:"<b>8:17 → 8:35 · 18 min.</b> 2a clase 9,95 € por persona (1a clase 15,91 €).<br>"+
+        "Es el tramo corto a propósito: el de Hong Kong fue puntual en <b>más del 99.9%</b> de los viajes "+
+        "en 2025, así que llegar tarde al cambio es casi imposible.<br>"+
+        "<b>⚠ Los boletos se abren ~15 DÍAS ANTES</b> (alrededor del 24-25 de abril de 2027) en 12306 y "+
+        "en highspeed.mtr.com.hk. <b>Boleto electrónico</b>: se pasa con el <u>pasaporte</u>, no hay que "+
+        "recoger nada en papel.<br>"+
+        "<i>Compren los dos tramos juntos, en la misma reservación.</i><br>"+
+        "<i>El horario de mayo de 2027 no existe todavía. Si al abrir la venta cambió el número o la hora, "+
+        "busquen la misma forma: un primer tramo corto a Shenzhen Norte y 40 min o más para el cambio.</i>"},
+  {cid:"ys-transbordo",name:"Cambio de tren en Shenzhen Norte",type:"transfer",dur:50,
+   costos:[["Desayuno en la estación (2)",200]],
+   note:"<b>50 min, y la recomendación oficial de Shenzhen Norte son 20-30.</b> Es el doble del margen.<br>"+
+        "<b>Sin salir de la estación:</b>"+
+        "<ol><li>Al bajar del tren sigan los letreros de <b>便捷换乘</b> (cambio rápido)</li>"+
+        "<li>Suban por escalera eléctrica o <b>elevador</b> — con las maletas, el elevador</li>"+
+        "<li>Pasen el filtro con el pasaporte y entran directo a la sala de espera. <b>Si la máquina no "+
+        "lee el pasaporte mexicano, usen la fila con personal (人工通道)</b></li>"+
+        "<li>Busquen <b>G2244</b> en las pantallas: ahí dice la puerta de abordar</li></ol>"+
+        "<b>El abordaje cierra 4 minutos antes</b> de que salga el tren.<br>"+
+        "<b>Si aun así lo pierden:</b> las reglas de 12306 permiten cambiar el boleto sin costo a otro "+
+        "tren del mismo día, en la ventanilla de la estación. Sería perder una hora, no el día.<br>"+
+        "<i>Es el momento de desayunar: hay cafés y comida en la sala de espera, y después vienen casi "+
+        "3 horas de tren.</i>"},
+  {cid:"ys-tren2",name:"Tren G2244 · Shenzhen Norte → Yangshuo (Xingping)",type:"transfer",
+   dur:176,fixed:"09:25",
+   note:"<b>9:25 → 12:21 · 2 h 56.</b> ~32,50 € por persona en 2a clase (el viaje completo, los dos "+
+        "tramos, son 42,49 € por persona).<br>"+
+        "Pasa por Cantón y luego sigue por la línea Gui-Guang hacia Guangxi.<br>"+
+        "<b>⚠ El tren dice \"Yangshuo\" pero NO los deja en Yangshuo.</b> La estación está en Xingping: "+
+        "ver la parada siguiente.<br>"+
+        "<i>Un retraso de este tren ya no rompe nada: solo llegan más tarde al hotel.</i>"},
+  {cid:"ys-aYangshuo",name:"Estación de Yangshuo → Yangshuo Sugar House",type:"transfer",dur:60,
+   note:"<b>28 km por carretera.</b> ~45 min de camino más el rato de salir de la estación y subir las "+
+        "maletas: una hora, llegando al hotel ~13:20.<br>"+
+        "<u>Las tres formas:</u>"+
+        "<ul><li><b>Traslado del hotel · desde ¥400.</b> Los esperan a la salida con un letrero. Es lo más "+
+        "cómodo con maletas grandes. <u>Pedirlo al reservar</u>: (0773) 888-3999.</li>"+
+        "<li><b>Taxi o DiDi · ¥100-150 · ~45 min.</b> Lo que trae cargado el plan. DiDi funciona en inglés "+
+        "y se paga con Alipay.</li>"+
+        "<li><b>Autobús oficial · ¥20 por persona · ~1 h</b> al Centro de Transporte Turístico Fengming, "+
+        "y de ahí 4 km más al hotel. Con maletas no vale la pena.</li></ul>"+
         "<i>Dato bonito: Xingping es justo el paisaje del billete de ¥20, y mañana regresan aquí para la "+
-        "balsa de bambú Yangdi–Xingping. Hoy pasan de largo, mañana es el destino.</i>"},
-  {cid:"ys-alberca",dur:210},
+        "balsa de bambú. Hoy pasan de largo, mañana es el destino.</i>"},
+  {cid:"ys-alberca",name:"Check-in y tarde en el Sugar House",type:"rest",dur:270,
+   note:"<b>Yangshuo Sugar House · 102 Dongling Road.</b> Antes se llamaba Alila Yangshuo: es una "+
+        "antigua fábrica de azúcar a la orilla del Río Li, con la alberca entre los picos de piedra caliza. "+
+        "Para esta tarde es exactamente lo que hace falta después de 7 horas de trayecto.<br>"+
+        "<i>Llegan ~13:20. Si la habitación todavía no está lista, dejen las maletas en recepción y "+
+        "váyanse directo a la alberca o al restaurante.</i><br>"+
+        "<i>Salen a las 17:50 a cenar: West Street queda a 2.5 km.</i>"},
+  {cid:"ys-ir-cena",name:"Taxi del hotel a West Street",type:"transfer",dur:15,
+   costos:[["Taxi (2)",60]],
+   note:"<b>2.5 km, ~9 min en taxi.</b> Pídanlo en recepción; desde el hotel salen rápido."},
   {cid:"ys-beerfish",fixed:"18:15"},
-  {cid:"ys-impression",fixed:"20:00"}
+  {cid:"ys-impression",fixed:"20:00"},
+  {cid:"ys-regreso",name:"Regreso al Sugar House",type:"transfer",dur:25,
+   costos:[["Taxi (2)",60]],
+   note:"<b>2.2 km, ~8 min en taxi.</b> El teatro de Impression queda todavía más cerca del hotel que "+
+        "West Street.<br>"+
+        "<i>A la salida del show salen miles de personas al mismo tiempo, por eso el traslado tiene 25 min "+
+        "y no 8. Lo más fácil: pedirle al hotel que los recoja a la salida, o pedir el DiDi desde antes "+
+        "de que termine.</i>"}
 ];
+/* La ventana de compra de los boletos, ahora con los trenes que escogieron.
+   ESSENTIAL_TRENES (arriba) es lo que reciben los viajes nuevos; aquí se
+   refresca el texto en los ya guardados. */
 function migrarYangshuoLlegada(s){
-  if(s.ysLlegadaV1)return;
+  if(s.ysLlegadaV2)return;
   const ys=s.bases&&s.bases.yangshuo;
   if(ys&&Array.isArray(ys.catalog)){
-    sembrarDia(ys,0,YS_LLEGADA_2027,"07:10");
-    // ys-arrive ya existía, y sembrarDia no toca los costos de lo que ya existe
-    const a=ys.catalog.find(x=>x.cid==="ys-arrive");
-    if(a)a.costs=[{id:uid(),label:"Taxi Wan Chai → West Kowloon (2)",est:250,real:0}];
+    sembrarDia(ys,0,YS_LLEGADA_2027,"06:20");
+    // sembrarDia no toca los costos de lo que ya existía: estos van explícitos
+    const costo=(cid,label,est)=>{
+      const a=ys.catalog.find(x=>x.cid===cid);
+      if(a)a.costs=[{id:uid(),label,est,real:0}];
+    };
+    costo("ys-arrive","Taxi Wan Chai → West Kowloon (2)",250);
+    costo("ys-tren1","Tren G5626, 2a clase, 9,95 € c/u (2)",420);
+    costo("ys-transbordo","Desayuno en la estación (2)",200);
+    costo("ys-tren2","Tren G2244, 2a clase, ~32,50 € c/u (2)",1370);
+    costo("ys-aYangshuo","Taxi estación → Sugar House (2)",400);
+    // el hotel: era la opción "Alila Yangshuo", que es el mismo con nombre nuevo
+    if(Array.isArray(ys.hotels)){
+      let h=ys.hotels.find(x=>/alila|sugar|糖舍/i.test(x.name||""));
+      ys.hotels.forEach(x=>{x.chosen=false;});
+      if(h)ys.hotels.splice(ys.hotels.indexOf(h),1);
+      else h={id:uid(),noches:0};
+      Object.assign(h,{name:"Yangshuo Sugar House (antes Alila Yangshuo)",
+        area:"102 Dongling Road · a la orilla del Li, 2.5 km de West Street",
+        note:"<b>Antigua fábrica de azúcar</b> convertida en hotel, con la alberca entre los picos "+
+             "kársticos. Tel. (0773) 888-3999.<br>"+
+             "De la estación de Yangshuo (Xingping) son <b>28 km, ~45 min</b>: traslado del hotel desde "+
+             "¥400 o taxi ¥100-150.<br>"+
+             "<b>⚠ Falta el precio por noche</b> para que cuente en el presupuesto.",
+        chosen:true});
+      ys.hotels.unshift(h);
+    }
   }
-  if(Array.isArray(s.esenciales)&&!s.esenciales.some(e=>e.id===ESSENTIAL_TRENES.id))
-    s.esenciales.push({...ESSENTIAL_TRENES});
-  s.ysLlegadaV1=true;
+  if(Array.isArray(s.esenciales)){
+    const e=s.esenciales.find(x=>x.id===ESSENTIAL_TRENES.id);
+    if(e)Object.assign(e,{t:ESSENTIAL_TRENES.t,s:ESSENTIAL_TRENES.s});
+    else s.esenciales.push({...ESSENTIAL_TRENES});
+  }
+  s.ysLlegadaV2=true;
 }
 /* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
 function freshBlankTrip(titulo){
