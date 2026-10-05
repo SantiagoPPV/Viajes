@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v27 · 5 oct 2026 · Yangshuo: tren de las 8:17 vía Shenzhen Norte y llegada al Sugar House";
+const APP_VERSION="v28 · 5 oct 2026 · Yangshuo: el plan de dos noches y el tren directo a Chengdu";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -925,7 +925,7 @@ const AVAILABLE_NIGHTS=23;             // noches del 6 al 29 de mayo
 const ROUTE=[
   {id:"hk",        nights:3},                //  6 →  9 may
   {id:"yangshuo",  nights:2, sale:"06:20"},  //  9 → 11 may · llega 13:20
-  {id:"chengdu",   nights:2, sale:"08:00"},  // 11 → 13 may · llega 15:00
+  {id:"chengdu",   nights:2, sale:"07:00"},  // 11 → 13 may · llega 15:00
   {id:"chongqing", nights:1, sale:"09:00"},  // 13 → 14 may · llega 10:30
   {id:"zjj",       nights:3, sale:"14:00"},  // 14 → 17 may · llega 16:00
   {id:"xian",      nights:2, sale:"08:00"},  // 17 → 19 may · llega 12:30
@@ -1022,7 +1022,10 @@ const XFER={
   // está en Xingping, a 28 km del hotel. El desglose paso a paso está en el día 1
   // de la parada (YS_LLEGADA_2027).
   "hk|yangshuo":{mode:"Tren bala",detail:"G5626 8:17 West Kowloon → Shenzhen Norte · G2244 9:25 → Yangshuo (Xingping) + 28 km al Sugar House · frontera dentro de la estación, nivel B3, llegar 90 min antes",time:"~7 h puerta a puerta",dur:420,type:"rail"},
-  "yangshuo|chengdu":{mode:"Tren bala",detail:"Yangshuo → Guilin North → Chengdu East (directo, ~21 salidas/día)",time:"~7 h puerta a puerta",dur:420,type:"rail"},
+  // Directo desde la estación de Yangshuo (Xingping): ~11 trenes al día a Chengdu
+  // East. La ruta original pasaba por Guilin North, a ~80 km; queda de respaldo.
+  // El desglose está en el día 1 de Chengdu (CD_LLEGADA_2027).
+  "yangshuo|chengdu":{mode:"Tren bala",detail:"Sugar House → estación de Yangshuo (28 km) · G3886 directo 8:34 → Chengdu East 14:20 · ~11 directos al día; respaldo por Guilin North",time:"~8 h puerta a puerta",dur:480,type:"rail"},
   "chengdu|chongqing":{mode:"Tren bala",detail:"Chengdu East → Chongqing",time:"1–1.5 h",dur:90,type:"rail"},
   "chongqing|zjj":{mode:"Tren bala",detail:"Chongqing → Zhangjiajie West (línea nueva 350 km/h)",time:"2 h",dur:120,type:"rail"},
   /* Verificado ago 2026: el tren directo Zhangjiajie Oeste → Xi'an Norte es UNO
@@ -1272,7 +1275,7 @@ chongqing:{catalog:[
 ]},
 
 chengdu:{catalog:[
-  A("cd-arrive","Tren bala Yangshuo → Chengdu","transfer",420,"Vía Guilin North a Chengdu East, ~7 h puerta a puerta; traslado al hotel"),
+  A("cd-arrive","Tren bala Yangshuo → Chengdu","transfer",85,"G3886 directo desde la estación de Yangshuo a Chengdu East; desglose en el día 1"),
   A("cd-kuanzhai","Kuanzhai Alley + casa de té en People's Park","sight",150,"Té y mahjong, muy local"),
   A("cd-opera","Ópera de Sichuan (cambio de máscaras)","tour",90,"Shu Feng Ya Yun, bianlian","GetYourGuide"),
   A("cd-pandas","Base de pandas gigantes","tour",210,"Llegar temprano: pandas activos al desayuno","GetYourGuide"),
@@ -1578,14 +1581,22 @@ const ESSENTIAL_GDL_MTY={id:"ess-gdl-mty",t:"Vuelo Guadalajara → Monterrey (co
     +" del "+fmt(vueloIdaSale())+" · confirmar hora y si las maletas se documentan hasta Hong Kong"};
 /* La ventana de 15 días para comprar los trenes es una fecha límite dura y no
    estaba anotada en ninguna parte. Va en ESSENTIALS para los viajes nuevos y
-   la empuja migrarYangshuoLlegada en los ya guardados. */
+   la empuja migrarYangshuo en los ya guardados. */
 const ESSENTIAL_TRENES={id:"ess-tren15",t:"Boletos de tren Hong Kong → Yangshuo",
   s:"G5626 8:17 a Shenzhen Norte + G2244 9:25 a Yangshuo · la venta abre ~15 días antes "+
     "(24-25 abr) en 12306 / highspeed.mtr.com.hk · los dos tramos en la misma reservación · "+
     "se aborda con pasaporte"};
+const ESSENTIAL_TREN_CD={id:"ess-tren-cd",t:"Boleto de tren Yangshuo → Chengdu",
+  s:"G3886 directo, martes 11 a las 8:34 desde la estación de Yangshuo · la venta abre ~15 días "+
+    "antes (26-27 abr) · si se agota: D4284 7:24, misma estación"};
+const ESSENTIAL_YS_HOTEL={id:"ess-ys-hotel",t:"Pedirle al Sugar House (Yangshuo)",
+  s:"traslado desde la estación el domingo 9 · auto con chofer el lunes 10 a las 4:45 a Xianggong · "+
+    "reserva de la balsa del Yulong para el lunes 14:30 · desayuno para llevar el martes 11 a las 7:00"};
 const ESSENTIALS=[
   ESSENTIAL_GDL_MTY,
   ESSENTIAL_TRENES,
+  ESSENTIAL_TREN_CD,
+  ESSENTIAL_YS_HOTEL,
   {id:"ess-jp",t:"Japón: Visit Japan Web + boleto de salida",s:"mexicanos sin visa (exención de turista)"},
   {id:"ess-visa",t:"Visa de turista China (L)",s:"tramitar 1–2 meses antes"},
   {id:"ess-pass",t:"Pasaporte 6+ meses de vigencia",s:"revisar ambos"},
@@ -2027,9 +2038,11 @@ const ARRIVE_FIJO={
   /* hk-arrive no va aquí: Hong Kong es la primera parada y no la trae ningún
      tramo de XFER, sino el vuelo internacional. Su texto sale de VUELOS_INTL,
      en HK_LLEGADA_2027. */
-  "ys-arrive":{name:"Check-out, taxi a West Kowloon y cruce de frontera",
+  "ys-arrive":{name:"Check-out, taxi a West Kowloon y cruce de frontera",dur:110,
                note:"Hong Kong West Kowloon, nivel B3: salida de Hong Kong y entrada a China seguidas. "+
                     "Llegar 90 min antes; el acceso al andén cierra 30 min antes de la salida."},
+  "cd-arrive":{name:"Check-out y traslado a la estación de Yangshuo",dur:85,
+               note:"28 km a la estación de Xingping; el G3886 directo a Chengdu East sale 8:34."},
   "ky-arrive":{name:"Vuelo Shanghái → Osaka KIX + JR Haruka a Kyoto",
                note:"PVG → KIX ≈2 h + Haruka 75 min; check-in"},
   "tk-arrive":{name:"Tren bala Kyoto → Tokio",
@@ -3475,9 +3488,11 @@ function migrarRuta(s){
   const tk=s.bases.tokyo&&(s.bases.tokyo.catalog||[]).find(a=>a.cid==="tk-arrive");
   if(tk)tk.costs=[{id:uid(),label:"Tren bala Kyoto → Tokio (2)",est:3300,real:0}];
 
-  // 6. Yangshuo: plan nuevo de 2 noches
+  // 6. Yangshuo: plan nuevo de 2 noches. Si ya está el plan de migrarYangshuo
+  //    (sus dos días armados a detalle), no se toca: subir ROUTE_VERSION no
+  //    debe devolver Yangshuo al plan genérico.
   const ys=s.bases.yangshuo;
-  if(ys&&Array.isArray(ys.catalog)){
+  if(ys&&Array.isArray(ys.catalog)&&!s.ysPlanV3){
     YANGSHUO_V2.catalog.forEach(a=>{
       if(ys.catalog.some(x=>x.cid===a.cid))return;
       ys.catalog.push({...a,costs:costsFor(a.cid)});
@@ -3504,8 +3519,11 @@ function migrarRuta(s){
     const x=i>0?getXfer(enRuta[i-1],id):null;
     const act=st.catalog.find(a=>a.cid===cid);
     if(act){
-      if(x&&x.dur)act.dur=x.dur;                    // duración puerta a puerta
       const fijo=ARRIVE_FIJO[cid];
+      // si la llegada está desglosada en varios renglones, este primero no dura
+      // todo el tramo: su duración la trae ARRIVE_FIJO
+      if(fijo&&fijo.dur)act.dur=fijo.dur;
+      else if(x&&x.dur)act.dur=x.dur;               // duración puerta a puerta
       if(fijo){act.name=fijo.name;act.note=fijo.note;}
       else if(x){
         const prev=s.bases[enRuta[i-1]];
@@ -3595,7 +3613,8 @@ function normalizeTripState(s){
   migrarEscalaTokio(s);
   migrarVuelosIntl(s);
   migrarRuta(s);          // deja el viaje con el orden y las noches de ROUTE
-  migrarYangshuoLlegada(s);  // DESPUÉS de migrarRuta: su paso 6 resiembra Yangshuo
+  migrarYangshuo(s);         // DESPUÉS de migrarRuta: su paso 6 siembra Yangshuo
+  migrarChengduLlegada(s);   // y su paso 7 reescribe la llegada a Chengdu
   return s;
 }
 /* ---- Llegada a Yangshuo: domingo 9 de mayo de 2027, paso a paso ----
@@ -3622,12 +3641,14 @@ function normalizeTripState(s){
    a 2.5 km de West Street y 2.2 km del show de Impression. Puerta a puerta
    son ~7 h: salen del Renaissance 6:20 y están en el Sugar House 13:20.
 
-   ⚠ VA DESPUÉS DE migrarRuta A PROPÓSITO: el paso 6 de migrarRuta vuelve a
-   sembrar los días de Yangshuo desde YANGSHUO_V2, así que si corriera antes
-   este plan se borraría. ys-arrive se deja como PRIMERA actividad del día
-   para que el paso 7 de migrarRuta —que le pone a ys-arrive la hora de
-   salida de ROUTE— siga apuntando al renglón correcto si algún día se sube
-   ROUTE_VERSION.
+   ⚠ VA DESPUÉS DE migrarRuta A PROPÓSITO: el paso 6 de migrarRuta siembra
+   los días de Yangshuo desde YANGSHUO_V2 (en un viaje nuevo), así que si
+   corriera antes este plan se borraría. Y para que subir ROUTE_VERSION más
+   adelante no lo pise: el paso 6 ya no corre si este plan está puesto
+   (s.ysPlanV3), y el paso 7 toma la duración de ys-arrive de ARRIVE_FIJO y
+   no del tramo completo. ys-arrive se deja como PRIMERA actividad del día
+   porque el paso 7 le pone la hora de salida de ROUTE. Lo mismo vale para
+   cd-arrive en Chengdu.
 
    ⚠ LOS DOS NÚMEROS DE TREN SON DEL HORARIO VIGENTE HOY. El de mayo de 2027
    no existe todavía y China reajusta la tabla varias veces al año. Si al
@@ -3699,7 +3720,7 @@ const YS_LLEGADA_2027=[
         "<b>⚠ El tren dice \"Yangshuo\" pero NO los deja en Yangshuo.</b> La estación está en Xingping: "+
         "ver la parada siguiente.<br>"+
         "<i>Un retraso de este tren ya no rompe nada: solo llegan más tarde al hotel.</i>"},
-  {cid:"ys-aYangshuo",name:"Estación de Yangshuo → Yangshuo Sugar House",type:"transfer",dur:60,
+  {cid:"ys-aYangshuo",name:"Estación de Yangshuo → Sugar House y check-in",type:"transfer",dur:60,
    note:"<b>28 km por carretera.</b> ~45 min de camino más el rato de salir de la estación y subir las "+
         "maletas: una hora, llegando al hotel ~13:20.<br>"+
         "<u>Las tres formas:</u>"+
@@ -3709,36 +3730,204 @@ const YS_LLEGADA_2027=[
         "y se paga con Alipay.</li>"+
         "<li><b>Autobús oficial · ¥20 por persona · ~1 h</b> al Centro de Transporte Turístico Fengming, "+
         "y de ahí 4 km más al hotel. Con maletas no vale la pena.</li></ul>"+
-        "<i>Dato bonito: Xingping es justo el paisaje del billete de ¥20, y mañana regresan aquí para la "+
-        "balsa de bambú. Hoy pasan de largo, mañana es el destino.</i>"},
-  {cid:"ys-alberca",name:"Check-in y tarde en el Sugar House",type:"rest",dur:270,
-   note:"<b>Yangshuo Sugar House · 102 Dongling Road.</b> Antes se llamaba Alila Yangshuo: es una "+
-        "antigua fábrica de azúcar a la orilla del Río Li, con la alberca entre los picos de piedra caliza. "+
-        "Para esta tarde es exactamente lo que hace falta después de 7 horas de trayecto.<br>"+
-        "<i>Llegan ~13:20. Si la habitación todavía no está lista, dejen las maletas en recepción y "+
-        "váyanse directo a la alberca o al restaurante.</i><br>"+
-        "<i>Salen a las 17:50 a cenar: West Street queda a 2.5 km.</i>"},
-  {cid:"ys-ir-cena",name:"Taxi del hotel a West Street",type:"transfer",dur:15,
+        "<b>Check-in:</b> si la habitación todavía no está lista, dejen las maletas en recepción y pasen "+
+        "directo a comer; para cuando terminen ya estará.<br>"+
+        "<i>Xingping es el paisaje del billete de ¥20. Mañana a las 4:45 salen otra vez rumbo a esta zona, "+
+        "al amanecer en Xianggong, sobre el mismo Río Li.</i>"},
+  {cid:"ys-comida-sh",name:"Comida en el Sugar House Restaurant",type:"food",dur:90,fixed:"13:30",
+   costos:[["Comida en el hotel (2)",1300]],
+   note:"<b>13:30 · sin salir del hotel.</b> El restaurante está en la antigua <b>sala de prensado</b> de "+
+        "la fábrica: cocina de la granja a la mesa, con producto de la zona.<br>"+
+        "<i>Su plan lo tenía de 13:00 a 15:00; como llegan 13:20, quedó de 13:30 a 15:00 y lo demás de la "+
+        "tarde no se movió.</i>"},
+  {cid:"ys-alberca",name:"Alberca, la fábrica de 1969 y descanso",type:"rest",dur:150,
+   note:"<b>15:00-17:30, sin salir del hotel.</b>"+
+        "<ul><li><b>La alberca</b> entre los picos de piedra caliza, que es la foto del hotel</li>"+
+        "<li><b>Recorrer la fábrica:</b> fue uno de los cuatro grandes ingenios estatales de Guilin, de "+
+        "<b>1969</b>, y conservaron las armaduras del techo, la sala de prensado, la de refinado, las "+
+        "calderas, la planta de energía, el tanque de melaza y las consignas pintadas en los muros</li>"+
+        "<li>Fotos, y descanso en la habitación</li></ul>"+
+        "<i>El edificio es de Vector Architects: vale la pena recorrerlo con calma, no solo de paso a la "+
+        "alberca.</i>"},
+  {cid:"ys-1969",name:"Coctel en el 1969 Bar o en la terraza",type:"bar",dur:60,
+   costos:[["Cocteles (2)",700]],
+   note:"<b>17:30-18:30 · el bar del hotel</b>, que se llama así por el año de la fábrica. O en la "+
+        "terraza, si el clima ayuda.<br>"+
+        "<i>El sol se mete a las 19:11: a esta hora la luz ya empieza a bajar sobre los picos.</i>"},
+  {cid:"ys-ir-cena",name:"Salida hacia el teatro",type:"transfer",dur:20,
    costos:[["Taxi (2)",60]],
-   note:"<b>2.5 km, ~9 min en taxi.</b> Pídanlo en recepción; desde el hotel salen rápido."},
-  {cid:"ys-beerfish",fixed:"18:15"},
-  {cid:"ys-impression",fixed:"20:00"},
+   note:"<b>18:30 · 2.2 km, ~8 min en taxi</b> al teatro de Impression (No. 39 Tianyuan Lu). Se dejan "+
+        "20 min por si tarda el taxi.<br>"+
+        "<b>Al llegar, lo primero: canjear o recoger los boletos.</b> Piden hacerlo al menos 30 min antes "+
+        "de la función, y así ya no hay que volver a la taquilla después de cenar."},
+  {cid:"ys-cena-ligera",name:"Cena ligera junto al teatro o en West Street",type:"food",dur:45,
+   fixed:"19:00",
+   costos:[["Cena ligera (2)",500]],
+   note:"<b>19:00-19:45.</b> Algo rápido cerca del teatro o en West Street, para estar en la entrada a "+
+        "las 19:45.<br>"+
+        "<i>El <b>pescado a la cerveza</b>, que es el plato de Yangshuo, salió de esta noche porque pide "+
+        "sentarse con calma. El lunes en la noche queda libre: ahí cabe.</i>"},
+  {cid:"ys-impression",name:"Espectáculo Impression Liu Sanjie",dur:70,fixed:"20:00",
+   note:"<b>20:00-21:10 · Impression Liu Sanjie</b>, dirigido por Zhang Yimou: cientos de actores sobre "+
+        "el Río Li, con los picos iluminados de fondo. Dura 70 min.<br>"+
+        "<b>⚠ Confirmar la hora al comprar:</b> según la temporada empieza a las 19:30 o a las 20:00.<br>"+
+        "Boletos desde ~US$45; los VIP valen la pena para verlo de frente. <i>Está en el checklist de "+
+        "reservas: se agotan.</i>"},
   {cid:"ys-regreso",name:"Regreso al Sugar House",type:"transfer",dur:25,
-   costos:[["Taxi (2)",60]],
-   note:"<b>2.2 km, ~8 min en taxi.</b> El teatro de Impression queda todavía más cerca del hotel que "+
-        "West Street.<br>"+
+   note:"<b>2.2 km, ~8 min en taxi.</b> El teatro queda todavía más cerca del hotel que West Street.<br>"+
         "<i>A la salida del show salen miles de personas al mismo tiempo, por eso el traslado tiene 25 min "+
         "y no 8. Lo más fácil: pedirle al hotel que los recoja a la salida, o pedir el DiDi desde antes "+
-        "de que termine.</i>"}
+        "de que termine.</i><br>"+
+        "<b>⚠ Mañana salen a las 4:45 a Xianggong:</b> a dormir temprano, con el auto ya apartado en "+
+        "recepción."}
 ];
-/* La ventana de compra de los boletos, ahora con los trenes que escogieron.
-   ESSENTIAL_TRENES (arriba) es lo que reciben los viajes nuevos; aquí se
-   refresca el texto en los ya guardados. */
-function migrarYangshuoLlegada(s){
-  if(s.ysLlegadaV2)return;
+
+/* ---- Yangshuo, lunes 10 de mayo: naturaleza ----
+   Es el plan que ellos mandaron (amanecer en Xianggong, desayuno en el hotel,
+   balsa en el Yulong, comida con vista al río, bici eléctrica por los
+   arrozales y regreso a las 17:00), con dos ajustes que no son de gusto sino
+   de hechos:
+
+   1. SALIDA 4:45, NO 5:15. El sol sale a las 5:57 (calculado para Yangshuo,
+      24.78°N 110.49°E, 10 may 2027). Del hotel al pie del cerro son ~45 min y
+      luego 15-20 de escalera: saliendo 5:15 llegarían arriba hacia las 6:20,
+      con el sol ya fuera. El parque abre a las 5:00 de mayo a octubre.
+
+   2. LA BICI Y LA BALSA SE INVIERTEN. El 10 de mayo de 2027 es LUNES, y las
+      balsas del Yulong no operan los lunes de 9:00 a 12:00 (mantenimiento);
+      en la tarde sí. Con la balsa a las 10:00 se habrían encontrado el río
+      cerrado. Ahora la bici va de 10:00 a 12:30 y la balsa a las 14:30.
+
+   La comida sigue a las 12:30 y el regreso queda ~16:30, antes de las 17:00
+   de su plan. La noche queda libre, como la dejaron. */
+const YS_DIA2_2027=[
+  {cid:"ys-xg-ida",name:"Salida hacia Xianggong",type:"transfer",dur:45,fixed:"04:45",
+   costos:[["Auto con chofer, ida y vuelta con espera (2)",800]],
+   note:"<b>⚠ 4:45 y no 5:15: es el único cambio de hora que le hice a su plan.</b> El sol sale a las "+
+        "<b>5:57</b>. Saliendo a las 5:15 se suman ~45 min de camino y 15-20 de escalera: llegarían "+
+        "arriba hacia las 6:20, con el sol ya fuera. Las guías recomiendan estar en el mirador antes de "+
+        "las 5:30 en estas fechas, porque se llena de fotógrafos.<br>"+
+        "<b>~26 km, ~45 min.</b> A esa hora no hay taxis en la calle: <u>pídanle al hotel un auto con "+
+        "chofer que los espere y los regrese</u>. Calculé ~¥300 ida y vuelta, a confirmar.<br>"+
+        "<i>El parque abre a las 5:00 de mayo a octubre.</i>"},
+  {cid:"ys-xianggong",name:"Amanecer en Xianggong",type:"sight",dur:75,
+   note:"<b>5:30 al pie del cerro y 15-20 min de escalera hasta el mirador.</b> Entrada ~¥60-80 por "+
+        "persona.<br>"+
+        "Es el mirador clásico sobre la curva del Río Li: con suerte, niebla entre los picos y la primera "+
+        "luz encima. <b>El sol sale a las 5:57</b>; quédense un rato después, porque la niebla se levanta "+
+        "poco a poco y es lo mejor.<br>"+
+        "<i>Lleven algo de abrigo y la linterna del celular para los escalones a oscuras.</i>"},
+  {cid:"ys-xg-vuelta",name:"Regreso al Sugar House",type:"transfer",dur:45,
+   note:"<b>El mismo auto, ~45 min.</b> Llegan como a las 7:30, con tiempo de bañarse antes del desayuno."},
+  {cid:"ys-desayuno",name:"Desayuno en el Sugar House",type:"food",dur:90,fixed:"08:00",
+   note:"<b>8:00, con calma.</b><br>"+
+        "<i>Si el desayuno no viene incluido en la tarifa del hotel, aquí falta ese costo.</i>"},
+  {cid:"ys-ir-retreat",name:"Taxi a Yangshuo Mountain Retreat",type:"transfer",dur:20,
+   costos:[["Taxi (2)",100]],
+   note:"<b>~15-20 min hasta el Río Yulong.</b> Ahí empieza y termina la vuelta en bici, y ahí es la comida."},
+  {cid:"ys-bike",name:"Bici eléctrica por los arrozales",type:"sight",dur:150,fixed:"10:00",
+   note:"<b>⚠ 10:00-12:30. En su plan la bici iba en la tarde y la balsa en la mañana; los invertí porque "+
+        "el 10 de mayo de 2027 es LUNES y las balsas del Yulong no operan los lunes de 9:00 a 12:00</b> "+
+        "(mantenimiento). La balsa de las 10:00 se habría encontrado el río cerrado.<br>"+
+        "<b>Dónde rentar:</b> Yangshuo Mountain Retreat renta bicis eléctricas por día y está sobre el "+
+        "camino de bici del Yulong. <i>Confirmen al reservar la comida si se las rentan a quien no está "+
+        "hospedado; si no, cualquier renta de West Street (~¥60-80 por bici, a confirmar) y se van "+
+        "rodando.</i><br>"+
+        "<b>La ruta:</b> los caminos entre arrozales a lo largo del Yulong, con los picos alrededor, y de "+
+        "regreso al Retreat para comer."},
+  {cid:"ys-comida-rio",name:"Comida con vista al río · Yangshuo Mountain Retreat",type:"food",dur:90,
+   fixed:"12:30",
+   costos:[["Comida (2)",800]],
+   note:"<b>12:30 · a la orilla del Yulong</b>, en el jardín frente a los picos. El restaurante recibe "+
+        "a quien no está hospedado, para comer y para cenar.<br>"+
+        "<b>Reservar:</b> +86-773-8777091 · reservations@yangshuomountainretreat.com. "+
+        "<i>Aprovechen la misma llamada para lo de las bicis.</i>"},
+  {cid:"ys-ir-balsa",name:"Taxi al embarcadero de Jinlong Bridge",type:"transfer",dur:20,
+   costos:[["Taxi (2)",100]],
+   note:"<b>~15-20 min río arriba.</b> Devuelvan las bicis en el Retreat antes de salir: la balsa termina "+
+        "en otro lugar."},
+  {cid:"ys-yulong",name:"Balsa de bambú por el Yulong · Jinlong Bridge → Jiuxian",type:"tour",dur:90,
+   fixed:"14:30",
+   note:"<b>14:30-16:00 · 6 km, ~90 min y nueve pequeñas presas que la balsa baja deslizándose.</b> Es "+
+        "el tramo más completo del río: pasa por Jinlong Bridge, Yulong Bridge y Xiangui Bridge. "+
+        "¥320 por balsa de dos.<br>"+
+        "<b>⚠ Lunes:</b> no operan de 9:00 a 12:00; en la tarde, normal (horario 8:00-17:30).<br>"+
+        "<b>⚠ Cómo se compra:</b> por el mini-programa oficial de WeChat del Yulong, y la venta de cada día "+
+        "abre a las <b>20:00 de la noche anterior</b>. Eso es el domingo, justo a la hora del show. <u>Lo "+
+        "práctico: pedirle al Sugar House que la reserve.</u> En temporada alta se agotan. Se entra con "+
+        "identificación: para ustedes, el pasaporte.<br>"+
+        "<i>Termina en Jiuxian, no donde empieza: de ahí, taxi al hotel.</i>"},
+  {cid:"ys-regreso-jiuxian",name:"De Jiuxian al Sugar House",type:"transfer",dur:30,
+   costos:[["Taxi (2)",120]],
+   note:"<b>~30 min.</b> Llegan como a las 16:30, antes de las 17:00 de su plan.<br>"+
+        "<b>La noche queda libre</b>, como la dejaron. Ideas: el <b>pescado a la cerveza</b> en West Street "+
+        "(que salió del domingo), o cenar tranquilos en el hotel.<br>"+
+        "<b>⚠ Mañana salen a las 7:00 a la estación</b> para el tren a Chengdu: empaquen hoy y pidan el "+
+        "desayuno para llevar."}
+];
+
+/* ---- Yangshuo → Chengdu, martes 11 de mayo ----
+   La ruta original (de la especificación del 24 de agosto) era "Yangshuo →
+   Guilin North → Chengdu East, ~21 salidas al día", con salida 8:00 y llegada
+   15:00. Al revisarla con horarios reales salieron dos cosas:
+
+     · Guilin North queda a ~80 km de Yangshuo, al otro lado de Guilin: más
+       de una hora de carretera antes de subir al tren. Con los trenes que
+       salen de ahí a media mañana (G3740, 11:04 → 17:12), la llegada real al
+       hotel en Chengdu habría sido ~18:00, no las 15:00 que decía el plan.
+     · DESDE LA PROPIA ESTACIÓN DE YANGSHUO salen ~11 trenes directos al día
+       a Chengdu East. El G3886 sale 8:34 y llega 14:20: 5 h 46 sin cambio.
+
+   Queda el G3886. Salen del Sugar House 7:00 y están en el hotel de Chengdu
+   ~15:00, así que la tarde de Chengdu (Kuanzhai, descanso, cena y la ópera de
+   las 20:00) sigue como estaba.
+
+   El tren no tenía costo cargado en ninguna parte: ahora sí (¥511 c/u). */
+const CD_LLEGADA_2027=[
+  {cid:"cd-arrive",name:"Check-out y traslado a la estación de Yangshuo",type:"transfer",dur:85,
+   fixed:"07:00",
+   note:"<b>28 km, ~45 min</b>: la misma estación de Xingping a la que llegaron. Taxi o DiDi ¥100-150, o "+
+        "el traslado del hotel.<br>"+
+        "<b>7:00 en punto.</b> El tren sale 8:34; en una estación chica bastan 30-40 min para el filtro con "+
+        "el pasaporte y el andén. Si la máquina no lo lee, la fila con personal (人工通道).<br>"+
+        "<i>Desayuno: a las 7:00 seguramente todavía no abre. Pídanlo para llevar la noche anterior.</i>"},
+  {cid:"cd-tren",name:"Tren G3886 · Yangshuo → Chengdu East",type:"transfer",dur:346,fixed:"08:34",
+   costos:[["Tren G3886, 2a clase, ¥511 c/u (2)",2760]],
+   note:"<b>8:34 → 14:20 · 5 h 46 · DIRECTO, sin cambio de tren.</b> 2a clase ¥511 por persona.<br>"+
+        "<b>Por qué este y no la ruta original:</b> el plan decía \"Yangshuo → Guilin North → Chengdu "+
+        "East\". Eso obliga a manejar <b>~80 km</b> al otro lado de Guilin, más de una hora, para subir "+
+        "al tren ahí. Pero <b>desde la propia estación de Yangshuo salen ~11 trenes directos al día a "+
+        "Chengdu East</b>, y este es el más rápido de la mañana.<br>"+
+        "<b>Si se agota:</b>"+
+        "<ul><li><b>D4284</b> 7:24 → 16:23, desde la misma estación (salir del hotel a las 6:00)</li>"+
+        "<li>Por Guilin North: <b>D1838</b> 8:20 → 14:34 o <b>G3740</b> 11:04 → 17:12, sumando más de una "+
+        "hora de carretera para llegar a esa estación</li></ul>"+
+        "Para en <b>Chengdu South</b> a las 14:09. Bájense ahí si el hotel queda al sur; si no, Chengdu "+
+        "East es la terminal y no hay prisa por bajarse con las maletas.<br>"+
+        "<b>⚠ La venta abre ~15 días antes</b> (alrededor del 26-27 de abril), con pasaporte. Son casi 6 "+
+        "horas: suban con algo de comer.<br>"+
+        "<i>Horario vigente hoy; el de mayo de 2027 se confirma cuando abra la venta.</i>"},
+  {cid:"cd-llegada",name:"Chengdu East → hotel",type:"transfer",dur:40,
+   costos:[["Taxi (2)",100]],
+   note:"<b>Al centro (Chunxi Road / Taikoo Li):</b> metro <b>línea 2</b>, ~10 min de viaje, o taxi "+
+        "~¥20-35. Con maletas, taxi. Se dejan 40 min contando salir de la estación.<br>"+
+        "<i>Llegan al hotel ~15:00 y la tarde sigue como estaba: Kuanzhai, descanso, cena y la ópera a "+
+        "las 20:00.</i>"},
+  {cid:"cd-kuanzhai"},
+  {cid:"g-rest"},
+  {cid:"g-dinner"},
+  {cid:"cd-opera",fixed:"20:00"}
+];
+/* Dueño de los dos días de Yangshuo (el domingo de la llegada y el lunes de
+   naturaleza), del hotel y de los pendientes del checklist de esa parada.
+   ESSENTIAL_* (arriba) es lo que reciben los viajes nuevos; aquí se refresca
+   o se agrega en los ya guardados. */
+function migrarYangshuo(s){
+  if(s.ysPlanV3)return;
   const ys=s.bases&&s.bases.yangshuo;
   if(ys&&Array.isArray(ys.catalog)){
     sembrarDia(ys,0,YS_LLEGADA_2027,"06:20");
+    sembrarDia(ys,1,YS_DIA2_2027,"04:45");
     // sembrarDia no toca los costos de lo que ya existía: estos van explícitos
     const costo=(cid,label,est)=>{
       const a=ys.catalog.find(x=>x.cid===cid);
@@ -3749,6 +3938,9 @@ function migrarYangshuoLlegada(s){
     costo("ys-transbordo","Desayuno en la estación (2)",200);
     costo("ys-tren2","Tren G2244, 2a clase, ~32,50 € c/u (2)",1370);
     costo("ys-aYangshuo","Taxi estación → Sugar House (2)",400);
+    costo("ys-xianggong","Entrada Xianggong, ~¥60-80 c/u (2)",350);
+    costo("ys-bike","Renta de bicis eléctricas (2)",350);
+    costo("ys-yulong","Balsa Jinlong Bridge → Jiuxian, ¥320 por balsa (2)",860);
     // el hotel: era la opción "Alila Yangshuo", que es el mismo con nombre nuevo
     if(Array.isArray(ys.hotels)){
       let h=ys.hotels.find(x=>/alila|sugar|糖舍/i.test(x.name||""));
@@ -3757,21 +3949,35 @@ function migrarYangshuoLlegada(s){
       else h={id:uid(),noches:0};
       Object.assign(h,{name:"Yangshuo Sugar House (antes Alila Yangshuo)",
         area:"102 Dongling Road · a la orilla del Li, 2.5 km de West Street",
-        note:"<b>Antigua fábrica de azúcar</b> convertida en hotel, con la alberca entre los picos "+
-             "kársticos. Tel. (0773) 888-3999.<br>"+
+        note:"<b>Antigua fábrica de azúcar de 1969</b> convertida en hotel por Vector Architects, con la "+
+             "alberca entre los picos kársticos. Restaurante en la vieja sala de prensado y el 1969 Bar. "+
+             "Tel. (0773) 888-3999.<br>"+
              "De la estación de Yangshuo (Xingping) son <b>28 km, ~45 min</b>: traslado del hotel desde "+
-             "¥400 o taxi ¥100-150.<br>"+
-             "<b>⚠ Falta el precio por noche</b> para que cuente en el presupuesto.",
+             "¥400 o taxi ¥100-150."+
+             (+h.precio>0?"":"<br><b>⚠ Falta el precio por noche</b> para que cuente en el presupuesto."),
         chosen:true});
       ys.hotels.unshift(h);
     }
   }
   if(Array.isArray(s.esenciales)){
-    const e=s.esenciales.find(x=>x.id===ESSENTIAL_TRENES.id);
-    if(e)Object.assign(e,{t:ESSENTIAL_TRENES.t,s:ESSENTIAL_TRENES.s});
-    else s.esenciales.push({...ESSENTIAL_TRENES});
+    [ESSENTIAL_TRENES,ESSENTIAL_TREN_CD,ESSENTIAL_YS_HOTEL].forEach(E=>{
+      const e=s.esenciales.find(x=>x.id===E.id);
+      if(e)Object.assign(e,{t:E.t,s:E.s});
+      else s.esenciales.push({...E});
+    });
   }
-  s.ysLlegadaV2=true;
+  s.ysPlanV3=true;
+}
+/* Dueño del primer día de Chengdu: la salida de Yangshuo y la llegada. */
+function migrarChengduLlegada(s){
+  if(s.cdLlegadaV1)return;
+  const cd=s.bases&&s.bases.chengdu;
+  if(cd&&Array.isArray(cd.catalog)){
+    sembrarDia(cd,0,CD_LLEGADA_2027,"07:00");
+    const a=cd.catalog.find(x=>x.cid==="cd-arrive");
+    if(a)a.costs=[{id:uid(),label:"Taxi Sugar House → estación de Yangshuo (2)",est:400,real:0}];
+  }
+  s.cdLlegadaV1=true;
 }
 /* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
 function freshBlankTrip(titulo){
