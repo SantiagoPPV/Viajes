@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v28 · 5 oct 2026 · Yangshuo: el plan de dos noches y el tren directo a Chengdu";
+const APP_VERSION="v29 · 5 oct 2026 · Chengdu: hotel en Kuanzhai, pandas, Dujiangyan y las torres de luz";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -926,7 +926,7 @@ const ROUTE=[
   {id:"hk",        nights:3},                //  6 →  9 may
   {id:"yangshuo",  nights:2, sale:"06:20"},  //  9 → 11 may · llega 13:20
   {id:"chengdu",   nights:2, sale:"07:00"},  // 11 → 13 may · llega 15:00
-  {id:"chongqing", nights:1, sale:"09:00"},  // 13 → 14 may · llega 10:30
+  {id:"chongqing", nights:1, sale:"07:50"},  // 13 → 14 may · llega 10:22
   {id:"zjj",       nights:3, sale:"14:00"},  // 14 → 17 may · llega 16:00
   {id:"xian",      nights:2, sale:"08:00"},  // 17 → 19 may · llega 12:30
   {id:"beijing",   nights:3, sale:"12:30"},  // 19 → 22 may · llega 16:45
@@ -1025,8 +1025,10 @@ const XFER={
   // Directo desde la estación de Yangshuo (Xingping): ~11 trenes al día a Chengdu
   // East. La ruta original pasaba por Guilin North, a ~80 km; queda de respaldo.
   // El desglose está en el día 1 de Chengdu (CD_LLEGADA_2027).
-  "yangshuo|chengdu":{mode:"Tren bala",detail:"Sugar House → estación de Yangshuo (28 km) · G3886 directo 8:34 → Chengdu East 14:20 · ~11 directos al día; respaldo por Guilin North",time:"~8 h puerta a puerta",dur:480,type:"rail"},
-  "chengdu|chongqing":{mode:"Tren bala",detail:"Chengdu East → Chongqing",time:"1–1.5 h",dur:90,type:"rail"},
+  "yangshuo|chengdu":{mode:"Tren bala",detail:"Sugar House → estación de Yangshuo (28 km) · G3886 directo 8:34 → Chengdu South 14:09 · ~11 directos al día; respaldo por Guilin North",time:"~8 h puerta a puerta",dur:480,type:"rail"},
+  // Del hotel en Kuanzhai a Chengdu East son ~40 min: la duración es hasta bajar
+  // del tren en Chongqing. El check-in de las 10:30 sale del plan de Chongqing.
+  "chengdu|chongqing":{mode:"Tren bala",detail:"Hotel (Kuanzhai) → Chengdu East (taxi ~40 min) · D967 8:52 → Chongqing West 10:22",time:"~2 h 30 del hotel al andén en Chongqing",dur:152,type:"rail"},
   "chongqing|zjj":{mode:"Tren bala",detail:"Chongqing → Zhangjiajie West (línea nueva 350 km/h)",time:"2 h",dur:120,type:"rail"},
   /* Verificado ago 2026: el tren directo Zhangjiajie Oeste → Xi'an Norte es UNO
      al día y tarda 9 h 48. Solo funciona volando: DYG → XIY directo son 1 h 30,
@@ -1249,7 +1251,7 @@ fenghuang:{catalog:[
 ]},
 
 chongqing:{catalog:[
-  A("cq-arrive","Tren bala Chengdu → Chongqing","transfer",90,"Chengdu East → Chongqing 1–1.5 h; base en Jiefangbei / Yuzhong"),
+  A("cq-arrive","Tren bala Chengdu → Chongqing","transfer",152,"Hotel → Chengdu East → Chongqing West, ~2 h 30; base en Jiefangbei / Yuzhong"),
   A("cqd1-checkin","Llegada a Chongqing + check-in / dejar maletas","transfer",60,"Taxi de la estación al hotel en Jiefangbei / Yuzhong, 20–30 min"),
   A("cq-xiaomian","Comida: xiaomian (fideos picantes locales)","food",60,"El plato de diario: fideos con chile y pimienta de Sichuan"),
   A("cq-ciqikou","Ciqikou: pueblo antiguo, callejones y té","sight",150,"Metro Línea 1; de día luce mejor que de noche"),
@@ -1587,8 +1589,14 @@ const ESSENTIAL_TRENES={id:"ess-tren15",t:"Boletos de tren Hong Kong → Yangshu
     "(24-25 abr) en 12306 / highspeed.mtr.com.hk · los dos tramos en la misma reservación · "+
     "se aborda con pasaporte"};
 const ESSENTIAL_TREN_CD={id:"ess-tren-cd",t:"Boleto de tren Yangshuo → Chengdu",
-  s:"G3886 directo, martes 11 a las 8:34 desde la estación de Yangshuo · la venta abre ~15 días "+
-    "antes (26-27 abr) · si se agota: D4284 7:24, misma estación"};
+  s:"G3886 directo HASTA CHENGDU SOUTH, martes 11 a las 8:34 desde la estación de Yangshuo · la venta "+
+    "abre ~15 días antes (26-27 abr) · si se agota: D4284 7:24, misma estación"};
+const ESSENTIAL_PANDAS={id:"ess-pandas",t:"Boletos de la base de pandas (Chengdu)",
+  s:"miércoles 12, boleto de la mañana (desde las 7:30) · solo en línea y con nombre: WeChat o Trip.com, "+
+    "con pasaporte · ¥55 c/u"};
+const ESSENTIAL_TREN_CQ={id:"ess-tren-cq",t:"Boleto de tren Chengdu → Chongqing",
+  s:"jueves 13, D967 8:52 de Chengdu East (o un G a Shapingba hacia las 8:30) · la venta abre ~15 días "+
+    "antes (28 abr)"};
 const ESSENTIAL_YS_HOTEL={id:"ess-ys-hotel",t:"Pedirle al Sugar House (Yangshuo)",
   s:"traslado desde la estación el domingo 9 · auto con chofer el lunes 10 a las 4:45 a Xianggong · "+
     "reserva de la balsa del Yulong para el lunes 14:30 · desayuno para llevar el martes 11 a las 7:00"};
@@ -1597,6 +1605,8 @@ const ESSENTIALS=[
   ESSENTIAL_TRENES,
   ESSENTIAL_TREN_CD,
   ESSENTIAL_YS_HOTEL,
+  ESSENTIAL_PANDAS,
+  ESSENTIAL_TREN_CQ,
   {id:"ess-jp",t:"Japón: Visit Japan Web + boleto de salida",s:"mexicanos sin visa (exención de turista)"},
   {id:"ess-visa",t:"Visa de turista China (L)",s:"tramitar 1–2 meses antes"},
   {id:"ess-pass",t:"Pasaporte 6+ meses de vigencia",s:"revisar ambos"},
@@ -1961,7 +1971,8 @@ const CQ_DIA1_2027=[
   {cid:"cq-arrive"},                             // texto, duración y hora: de ROUTE/XFER
   {cid:"cqd1-checkin",name:"Llegada a Chongqing + check-in / dejar maletas",type:"transfer",dur:60,fixed:"10:30",
    costos:[["Taxi estación → hotel (2)",150]],
-   note:"<b>Estación Chongqing Norte (o Shapingba).</b> Taxi al hotel en Jiefangbei / Yuzhong, 20–30 min.<br>"+
+   note:"<b>Estación Chongqing West</b> (o Shapingba, si tomaron un G). Taxi al hotel en Jiefangbei / "+
+        "Yuzhong, ~30-40 min desde Chongqing West.<br>"+
         "<i>Si no hay early check-in, se dejan las maletas y el día sigue igual.</i>"},
   {cid:"cq-xiaomian",name:"Comida: xiaomian (fideos picantes locales)",type:"food",dur:60,fixed:"12:00",
    costos:[["Xiaomian (2)",150]],
@@ -2038,11 +2049,12 @@ const ARRIVE_FIJO={
   /* hk-arrive no va aquí: Hong Kong es la primera parada y no la trae ningún
      tramo de XFER, sino el vuelo internacional. Su texto sale de VUELOS_INTL,
      en HK_LLEGADA_2027. */
-  "ys-arrive":{name:"Check-out, taxi a West Kowloon y cruce de frontera",dur:110,
-               note:"Hong Kong West Kowloon, nivel B3: salida de Hong Kong y entrada a China seguidas. "+
-                    "Llegar 90 min antes; el acceso al andén cierra 30 min antes de la salida."},
-  "cd-arrive":{name:"Check-out y traslado a la estación de Yangshuo",dur:85,
-               note:"28 km a la estación de Xingping; el G3886 directo a Chengdu East sale 8:34."},
+  /* Llegadas desglosadas a detalle por su propia migración, que corre después
+     de migrarRuta: el paso 7 solo les pone la hora de salida de ROUTE y no les
+     toca ni nombre, ni nota, ni duración. */
+  "ys-arrive":{propio:true},   // migrarYangshuo
+  "cd-arrive":{propio:true},   // migrarChengdu
+  "cq-arrive":{propio:true},   // migrarChengdu: la salida de Chengdu del 13
   "ky-arrive":{name:"Vuelo Shanghái → Osaka KIX + JR Haruka a Kyoto",
                note:"PVG → KIX ≈2 h + Haruka 75 min; check-in"},
   "tk-arrive":{name:"Tren bala Kyoto → Tokio",
@@ -3520,15 +3532,17 @@ function migrarRuta(s){
     const act=st.catalog.find(a=>a.cid===cid);
     if(act){
       const fijo=ARRIVE_FIJO[cid];
-      // si la llegada está desglosada en varios renglones, este primero no dura
-      // todo el tramo: su duración la trae ARRIVE_FIJO
-      if(fijo&&fijo.dur)act.dur=fijo.dur;
-      else if(x&&x.dur)act.dur=x.dur;               // duración puerta a puerta
-      if(fijo){act.name=fijo.name;act.note=fijo.note;}
-      else if(x){
-        const prev=s.bases[enRuta[i-1]];
-        if(prev){act.name=x.mode+" "+prev.name+" → "+st.name;
-                 act.note=x.detail+" · "+x.time;}
+      if(fijo&&fijo.propio){
+        // llegada desglosada a detalle por su propia migración (Yangshuo,
+        // Chengdu, Chongqing): aquí solo se le pone la hora de salida, abajo
+      }else{
+        if(x&&x.dur)act.dur=x.dur;                  // duración puerta a puerta
+        if(fijo){act.name=fijo.name;act.note=fijo.note;}
+        else if(x){
+          const prev=s.bases[enRuta[i-1]];
+          if(prev){act.name=x.mode+" "+prev.name+" → "+st.name;
+                   act.note=x.detail+" · "+x.time;}
+        }
       }
     }
     const sale=routeSale(id);                        // hora de salida, de ROUTE
@@ -3614,7 +3628,7 @@ function normalizeTripState(s){
   migrarVuelosIntl(s);
   migrarRuta(s);          // deja el viaje con el orden y las noches de ROUTE
   migrarYangshuo(s);         // DESPUÉS de migrarRuta: su paso 6 siembra Yangshuo
-  migrarChengduLlegada(s);   // y su paso 7 reescribe la llegada a Chengdu
+  migrarChengdu(s);          // y su paso 7 reescribe las llegadas a Chengdu y Chongqing
   return s;
 }
 /* ---- Llegada a Yangshuo: domingo 9 de mayo de 2027, paso a paso ----
@@ -3645,10 +3659,10 @@ function normalizeTripState(s){
    los días de Yangshuo desde YANGSHUO_V2 (en un viaje nuevo), así que si
    corriera antes este plan se borraría. Y para que subir ROUTE_VERSION más
    adelante no lo pise: el paso 6 ya no corre si este plan está puesto
-   (s.ysPlanV3), y el paso 7 toma la duración de ys-arrive de ARRIVE_FIJO y
-   no del tramo completo. ys-arrive se deja como PRIMERA actividad del día
-   porque el paso 7 le pone la hora de salida de ROUTE. Lo mismo vale para
-   cd-arrive en Chengdu.
+   (s.ysPlanV3), y el paso 7 ya no le toca a ys-arrive nombre, nota ni
+   duración (ARRIVE_FIJO.propio). ys-arrive se deja como PRIMERA actividad del
+   día porque el paso 7 sí le pone la hora de salida de ROUTE. Lo mismo vale
+   para cd-arrive y cq-arrive.
 
    ⚠ LOS DOS NÚMEROS DE TREN SON DEL HORARIO VIGENTE HOY. El de mayo de 2027
    no existe todavía y China reajusta la tabla varias veces al año. Si al
@@ -3866,23 +3880,38 @@ const YS_DIA2_2027=[
         "desayuno para llevar."}
 ];
 
-/* ---- Yangshuo → Chengdu, martes 11 de mayo ----
-   La ruta original (de la especificación del 24 de agosto) era "Yangshuo →
-   Guilin North → Chengdu East, ~21 salidas al día", con salida 8:00 y llegada
-   15:00. Al revisarla con horarios reales salieron dos cosas:
+/* ---- Chengdu: 11 y 12 de mayo, y la salida a Chongqing el 13 ----
+   Hotel: Chuanxing Yinli (川行隐里酒店), 十二桥路19号, junto a Kuanzhai Alley.
+   Está a 300 m del metro Tonghuimen, en la LÍNEA 2, que va directo a Xipu
+   (trenes a Dujiangyan) y a Chengdu East (trenes a Chongqing).
 
-     · Guilin North queda a ~80 km de Yangshuo, al otro lado de Guilin: más
-       de una hora de carretera antes de subir al tren. Con los trenes que
-       salen de ahí a media mañana (G3740, 11:04 → 17:12), la llegada real al
-       hotel en Chengdu habría sido ~18:00, no las 15:00 que decía el plan.
-     · DESDE LA PROPIA ESTACIÓN DE YANGSHUO salen ~11 trenes directos al día
-       a Chengdu East. El G3886 sale 8:34 y llega 14:20: 5 h 46 sin cambio.
+   Con ese hotel, tres ajustes a lo que ya estaba:
+     · El G3886 se toma hasta CHENGDU SOUTH (14:09), no hasta Chengdu East
+       (14:20): para ahí antes y queda más cerca de Kuanzhai.
+     · La salida a Chongqing del 13 pasa de 9:00 a 7:50. El plan decía salir
+       9:00 y llegar 10:30, y puerta a puerta no daba: ~40 min a Chengdu East
+       y 1-1.5 h de tren. Con 7:50 llegan al check-in de las 10:30 de su plan
+       de Chongqing, que no se movió.
+     · Salen del itinerario la ópera de Sichuan, Leshan, Jinli y Taikoo Li,
+       que no estaban en su lista. Quedan en el catálogo.
 
-   Queda el G3886. Salen del Sugar House 7:00 y están en el hotel de Chengdu
-   ~15:00, así que la tarde de Chengdu (Kuanzhai, descanso, cena y la ópera de
-   las 20:00) sigue como estaba.
-
-   El tren no tenía costo cargado en ninguna parte: ahora sí (¥511 c/u). */
+   De su lista, cómo quedó y por qué:
+     · Martes 11 (llegada): té en People's Park, paseo por Kuanzhai con
+       antojitos, cena en el Fuqin Night Market y las DOS torres de luz la
+       misma noche: las Twin Towers y la Tower of Life de SKP están a ~3 km
+       una de otra y las dos corren de 19:30 a 22:00. Primero las Twin Towers,
+       porque su mejor hora para fotos es de 20:00 a 21:00.
+     · Kuanzhai queda como paseo y antojito, y la cena de verdad en Fuqin: la
+       comida de Kuanzhai es turística, Fuqin es a donde van los de Chengdu.
+     · Miércoles 12: pandas a las 7:30 en la base de la ciudad y Dujiangyan
+       completo (la obra de día y Nanqiao iluminado de noche).
+     · Pandas: el Dujiangyan Panda Base está CERRADO por remodelación desde
+       abril de 2026, sin fecha de reapertura. Panda Valley tiene solo ~12
+       pandas en entrenamiento para liberación. La base de la ciudad tiene
+       más de 230, con crías, y a las 7:30 de un miércoles se ve bien.
+     · "Hoteles cerca de Wenshu": quedó resuelto con el hotel de Kuanzhai.
+     · Jiuzhaigou NO cabe: son 1 h 39 de tren y 2 h de camión por sentido, y
+       el parque pide un día entero. Necesita al menos dos noches más. */
 const CD_LLEGADA_2027=[
   {cid:"cd-arrive",name:"Check-out y traslado a la estación de Yangshuo",type:"transfer",dur:85,
    fixed:"07:00",
@@ -3891,33 +3920,153 @@ const CD_LLEGADA_2027=[
         "<b>7:00 en punto.</b> El tren sale 8:34; en una estación chica bastan 30-40 min para el filtro con "+
         "el pasaporte y el andén. Si la máquina no lo lee, la fila con personal (人工通道).<br>"+
         "<i>Desayuno: a las 7:00 seguramente todavía no abre. Pídanlo para llevar la noche anterior.</i>"},
-  {cid:"cd-tren",name:"Tren G3886 · Yangshuo → Chengdu East",type:"transfer",dur:346,fixed:"08:34",
-   costos:[["Tren G3886, 2a clase, ¥511 c/u (2)",2760]],
-   note:"<b>8:34 → 14:20 · 5 h 46 · DIRECTO, sin cambio de tren.</b> 2a clase ¥511 por persona.<br>"+
+  {cid:"cd-tren",name:"Tren G3886 · Yangshuo → Chengdu South",type:"transfer",dur:335,fixed:"08:34",
+   note:"<b>8:34 → 14:09 · 5 h 35 · DIRECTO, sin cambio de tren.</b> 2a clase ¥508 por persona.<br>"+
+        "<b>Compren el boleto hasta Chengdu South (成都南), no hasta Chengdu East.</b> El tren para ahí 11 "+
+        "min antes de la terminal, y desde Chengdu South su hotel queda más cerca.<br>"+
         "<b>Por qué este y no la ruta original:</b> el plan decía \"Yangshuo → Guilin North → Chengdu "+
         "East\". Eso obliga a manejar <b>~80 km</b> al otro lado de Guilin, más de una hora, para subir "+
         "al tren ahí. Pero <b>desde la propia estación de Yangshuo salen ~11 trenes directos al día a "+
-        "Chengdu East</b>, y este es el más rápido de la mañana.<br>"+
+        "Chengdu</b>, y este es el más rápido de la mañana.<br>"+
         "<b>Si se agota:</b>"+
-        "<ul><li><b>D4284</b> 7:24 → 16:23, desde la misma estación (salir del hotel a las 6:00)</li>"+
+        "<ul><li><b>D4284</b> 7:24 → 16:23 a Chengdu East, desde la misma estación (salir del hotel a las 6:00)</li>"+
         "<li>Por Guilin North: <b>D1838</b> 8:20 → 14:34 o <b>G3740</b> 11:04 → 17:12, sumando más de una "+
         "hora de carretera para llegar a esa estación</li></ul>"+
-        "Para en <b>Chengdu South</b> a las 14:09. Bájense ahí si el hotel queda al sur; si no, Chengdu "+
-        "East es la terminal y no hay prisa por bajarse con las maletas.<br>"+
         "<b>⚠ La venta abre ~15 días antes</b> (alrededor del 26-27 de abril), con pasaporte. Son casi 6 "+
         "horas: suban con algo de comer.<br>"+
         "<i>Horario vigente hoy; el de mayo de 2027 se confirma cuando abra la venta.</i>"},
-  {cid:"cd-llegada",name:"Chengdu East → hotel",type:"transfer",dur:40,
-   costos:[["Taxi (2)",100]],
-   note:"<b>Al centro (Chunxi Road / Taikoo Li):</b> metro <b>línea 2</b>, ~10 min de viaje, o taxi "+
-        "~¥20-35. Con maletas, taxi. Se dejan 40 min contando salir de la estación.<br>"+
-        "<i>Llegan al hotel ~15:00 y la tarde sigue como estaba: Kuanzhai, descanso, cena y la ópera a "+
-        "las 20:00.</i>"},
-  {cid:"cd-kuanzhai"},
-  {cid:"g-rest"},
-  {cid:"g-dinner"},
-  {cid:"cd-opera",fixed:"20:00"}
+  {cid:"cd-llegada",name:"Chengdu South → hotel y check-in",type:"transfer",dur:51,
+   note:"<b>~30 min en taxi</b> (~¥30-40) y ~20 de check-in. Con maletas, taxi; en metro sería la línea 1 a "+
+        "Tianfu Square y la 2 a Tonghuimen, a 300 m del hotel.<br>"+
+        "<b>Para el taxista:</b> 川行隐里酒店, 十二桥路19号 — enséñenle la dirección en chino."},
+  {cid:"g-rest"},                                // 45 min: quitarse el tren de encima
+  {cid:"cd-te",name:"Té en People's Park · casa de té Heming",type:"sight",dur:75,
+   costos:[["Té y limpieza de orejas (2)",270]],
+   note:"<b>15:45 · a ~15 min caminando del hotel.</b> People's Park (人民公园) y su casa de té <b>Heming "+
+        "(鹤鸣茶社)</b>, la más famosa de Chengdu: mesas bajo los árboles, té de jazmín en <i>gaiwan</i> "+
+        "(~¥15-30, con agua caliente sin límite) y los <b>limpiadores de orejas</b> que pasan entre las "+
+        "mesas con sus pinzas (¥30-50, 5-10 min).<br>"+
+        "El parque abre 6:00-22:00 y la casa de té, hasta las 22:00.<br>"+
+        "<i>A esta hora están los jubilados jugando mahjong y cartas: esa es la escena.</i>"},
+  {cid:"cd-kuanzhai",name:"Kuanzhai Alley: paseo y antojitos",type:"sight",dur:60,
+   note:"<b>17:00 · a ~15 min a pie de People's Park y a 850 m del hotel.</b> Kuanzhai Alley (宽窄巷子): "+
+        "tres callejones paralelos de casas de patio restauradas — el ancho (Kuan), el angosto (Zhai) y el "+
+        "del pozo (Jing).<br>"+
+        "<b>Antojitos, no cena:</b> la comida de aquí es turística y cara. Prueben uno o dos —<i>tang you "+
+        "guo zi</i> (bolitas de arroz fritas con azúcar), <i>san da pao</i>— y guarden el hambre para "+
+        "Fuqin.<br>"+
+        "<i>Al atardecer se prenden los faroles: es la mejor hora para las fotos.</i>"},
+  {cid:"cd-ir-fuqin",name:"Taxi a Fuqin",type:"transfer",dur:15,
+   costos:[["Taxi (2)",60]],
+   note:"<b>~10-15 min.</b> También llega el metro línea 5, estación Fuqin (salidas B1 o D)."},
+  {cid:"cd-fuqin",name:"Cena callejera en el Fuqin Night Market",type:"food",dur:60,
+   costos:[["Cena callejera (2)",320]],
+   note:"<b>18:15 · Fuqin Night Market (抚琴夜市)</b>, Fuqin West Road, en Jinniu. Uno de los mercados "+
+        "nocturnos más viejos de Chengdu: es a donde van los de Chengdu, no los turistas. Abre de 17:00 a "+
+        "23:30; los puestos se arman desde las 17:30.<br>"+
+        "<u>Qué pedir:</u> brochetas en caldo picante (串串), <i>dandan</i> noodles, tortitas de huevo y, si se "+
+        "animan, sesos a la parrilla. ~¥20-60 por persona.<br>"+
+        "<i>Por eso Kuanzhai fue solo antojito: la cena de verdad es aquí.</i>"},
+  {cid:"cd-ir-torres",name:"Taxi a la Ciudad Financiera",type:"transfer",dur:40,
+   costos:[["Taxi (2)",150]],
+   note:"<b>~40 min al sur.</b> Pidan bajar en el puente <b>Jiaozi Ring (交子之环)</b>, en Jiaozi Avenue y "+
+        "Yizhou Avenue."},
+  {cid:"cd-torres",name:"Show de luces de las Twin Towers",type:"sight",dur:40,
+   note:"<b>19:55 · las Twin Towers de la Ciudad Financiera, desde el puente Jiaozi Ring.</b> Las dos torres "+
+        "se vuelven pantallas de LED: el show corre todas las noches de ~19:30 a 22:00 y cambia de tema cada "+
+        "~15 min (pandas, Sanxingdui, \"Cyber Chengdu\", paisajes). <b>Gratis.</b><br>"+
+        "La vista de frente es desde el puente, un paso a desnivel naranja y futurista; las torres también "+
+        "se reflejan en el lago de Jiaozi Park, al lado.<br>"+
+        "<i>La mejor hora para fotos es de 20:00 a 21:00: por eso van primero aquí y después a SKP.</i>"},
+  {cid:"cd-ir-skp",name:"Taxi a SKP Chengdu",type:"transfer",dur:10,
+   costos:[["Taxi (2)",40]],
+   note:"<b>~3 km, ~10 min.</b>"},
+  {cid:"cd-skp",name:"SKP · Tower of Life, las fuentes de bambú",type:"sight",dur:30,
+   note:"<b>20:45 · SKP Chengdu, la Tower of Life (生机之塔).</b> Seis columnas en forma de bambú, de hasta "+
+        "39 m, envueltas en LED: el agua cae por ellas y cambian de color cada 4-5 min, con música. Están "+
+        "inspiradas en los colectores de agua de bambú de Sichuan. <b>Gratis, sin boletos</b>, de 19:30 a "+
+        "22:00.<br>"+
+        "Al pie hay una zona con sensores: al moverse, las luces y las fuentes reaccionan.<br>"+
+        "<i>En metro: líneas 1 y 18, estación Jincheng Plaza (锦城广场), salida B, ~200 m por el parque de "+
+        "SKP.</i>"},
+  {cid:"cd-regreso",name:"Regreso al hotel",type:"transfer",dur:35,
+   costos:[["Taxi (2)",150]],
+   note:"<b>~35 min</b>, en taxi o en metro (línea 1 a Tianfu Square y la 2 a Tonghuimen).<br>"+
+        "<b>⚠ Mañana salen a las 6:55 a los pandas</b>: la base abre 7:30 y a esa hora es cuando más se "+
+        "mueven."}
 ];
+const CD_DIA2_2027=[
+  {cid:"cd-ir-pandas",name:"Taxi a la base de pandas",type:"transfer",dur:35,fixed:"06:55",
+   costos:[["Taxi (2)",140]],
+   note:"<b>6:55 · ~35 min al noreste de la ciudad.</b> Pidan el taxi en recepción la noche anterior."},
+  {cid:"cd-pandas",name:"Pandas · Base de Investigación del Panda Gigante",type:"tour",dur:180,
+   fixed:"07:30",
+   note:"<b>7:30, a la apertura · 成都大熊猫繁育研究基地.</b> De las tres opciones que pusieron, esta es la "+
+        "que recomiendo:"+
+        "<ul><li><b>Esta:</b> más de 230 pandas, con crías y pandas rojos. ¥55.</li>"+
+        "<li><b>Panda Valley (Dujiangyan):</b> tranquilo y sin reservar, pero solo ~12 pandas, en "+
+        "entrenamiento para volver a la vida silvestre: se ven pocos.</li>"+
+        "<li><b>Dujiangyan Panda Base:</b> <u>cerrada por remodelación desde abril de 2026</u>, sin fecha de "+
+        "reapertura. Si reabre antes del viaje vale la pena revisarla, porque queda junto a la presa.</li></ul>"+
+        "<b>Por qué a las 7:30:</b> los pandas están activos a la hora de su desayuno, y de 9:00 a 11:30 es "+
+        "cuando más gente hay. Además el 12 de mayo es miércoles.<br>"+
+        "<b>⚠ Reserva obligatoria en línea, con nombre:</b> ya no venden en taquilla. Por WeChat o por "+
+        "Trip.com (en inglés, con tarjeta internacional). Elijan <i>pasaporte</i> como documento, con nombre "+
+        "y número exactos, y el boleto de la mañana (7:30-12:00). En la entrada, la fila de <i>Passport &amp; "+
+        "Other Documents</i>."},
+  {cid:"cd-ir-dj",name:"Taxi de la base de pandas a Dujiangyan",type:"transfer",dur:90,
+   costos:[["Taxi o DiDi (2)",680]],
+   note:"<b>~65-75 km, ~1 h 30</b> hasta el área de la obra de Dujiangyan. Calculé ~¥250, a confirmar en "+
+        "DiDi.<br>"+
+        "<i>Salen a las 10:30: justo cuando la base empieza a llenarse.</i>"},
+  {cid:"cd-comida-dj",name:"Comida en Dujiangyan",type:"food",dur:75,
+   costos:[["Comida (2)",540]],
+   note:"<b>12:00 · en el centro antiguo, junto a la entrada.</b> La especialidad de la zona es el pollo "+
+        "guisado con ginkgo (白果炖鸡) de la montaña Qingcheng."},
+  {cid:"cd-dujiangyan",name:"Dujiangyan: la obra hidráulica de 2,200 años",type:"sight",dur:195,
+   costos:[["Entrada, ¥80 c/u (2)",430]],
+   note:"<b>13:15-16:30 · el Sistema de Irrigación de Dujiangyan (都江堰)</b>, Patrimonio de la Humanidad: "+
+        "una obra de hace más de 2,200 años que <u>sigue funcionando</u> y riega la llanura de Chengdu.<br>"+
+        "<i>Curiosamente no es una presa:</i> lo famoso es que reparte el río sin cerrarlo.<br>"+
+        "<u>En orden:</u> <b>Yuzui</b> (la \"boca de pez\" que parte el río en dos), <b>Feishayan</b> (el "+
+        "vertedor que saca la arena), <b>Baopingkou</b> (el corte en la roca) y el puente colgante "+
+        "<b>Anlan</b>.<br>"+
+        "Abre 8:00-18:00, última entrada 17:30. ¥80 por persona."},
+  {cid:"cd-te-dj",name:"Descanso junto al río",type:"rest",dur:90,
+   costos:[["Té o café (2)",220]],
+   note:"<b>16:30 · una casa de té junto al río o por la calle antigua.</b> Llevan desde las 6:55: aquí "+
+        "se recupera la noche."},
+  {cid:"cd-cena-dj",name:"Cena en Dujiangyan",type:"food",dur:75,
+   costos:[["Cena (2)",680]],
+   note:"<b>18:00 · junto al río</b>, cerca del puente Nanqiao, para estar ahí cuando se prenda."},
+  {cid:"cd-nanqiao",name:"Nanqiao iluminado · \"Blue Tears\"",type:"sight",dur:75,
+   note:"<b>19:15 · éste es el edificio que buscaban.</b> El puente techado de <b>Nanqiao (南桥)</b>, estilo "+
+        "palacio, se ilumina de amarillo cálido y el río de abajo se pinta de azul verdoso: el \"Blue Tears\" "+
+        "de Dujiangyan.<br>"+
+        "Las luces se prenden a las 18:30 y lo mejor es de 19:30 a 21:30. <b>Gratis.</b> Entre semana hay "+
+        "menos gente, y el 12 es miércoles."},
+  {cid:"cd-regreso-dj",name:"Regreso al hotel",type:"transfer",dur:60,
+   costos:[["Taxi o DiDi (2)",540]],
+   note:"<b>~1 h en taxi o DiDi</b>, directo al hotel (~¥200).<br>"+
+        "<i>Alternativa barata: taxi a la estación de Dujiangyan, tren a Xipu (30 min, ~¥10; el último sale "+
+        "a las 22:29) y la línea 2 del metro, que va directo de Xipu a Tonghuimen, a 300 m del hotel. "+
+        "~1 h 20 en total.</i><br>"+
+        "<b>⚠ Mañana salen a las 7:50 a Chongqing</b>: empaquen hoy."}
+];
+/* La salida a Chongqing el 13 vive en el primer día de Chongqing (cq-arrive). */
+const CQ_SALIDA_2027={
+  name:"Check-out, taxi a Chengdu East y tren a Chongqing",dur:152,fixed:"07:50",
+  note:"<b>7:50 · del hotel a Chengdu East (成都东), ~40 min en taxi</b> (~¥60). La línea 2 del metro también "+
+       "va directo de Tonghuimen a Chengdu East, pero con maletas, taxi.<br>"+
+       "<b>Tren: D967 8:52 → Chongqing West 10:22</b> (1 h 30). Si al comprar hay un G más rápido a "+
+       "<b>Shapingba</b>, que es más céntrica, entre 8:30 y 9:00, mejor.<br>"+
+       "<b>⚠ Por qué cambió la hora:</b> el plan decía salir 9:00 y llegar 10:30, y puerta a puerta no da: "+
+       "son ~40 min a la estación y 1-1.5 h de tren. Saliendo a las 7:50 llegan al check-in de las 10:30 de "+
+       "su plan de Chongqing, que no se movió.<br>"+
+       "<i>Horario vigente hoy; la venta abre ~15 días antes (alrededor del 28 de abril).</i>",
+  checkin:"<b>Estación Chongqing West</b> (o Shapingba, si tomaron un G). Taxi al hotel en Jiefangbei / "+
+          "Yuzhong, ~30-40 min desde Chongqing West.<br>"
+};
 /* Dueño de los dos días de Yangshuo (el domingo de la llegada y el lunes de
    naturaleza), del hotel y de los pendientes del checklist de esa parada.
    ESSENTIAL_* (arriba) es lo que reciben los viajes nuevos; aquí se refresca
@@ -3968,16 +4117,69 @@ function migrarYangshuo(s){
   }
   s.ysPlanV3=true;
 }
-/* Dueño del primer día de Chengdu: la salida de Yangshuo y la llegada. */
-function migrarChengduLlegada(s){
-  if(s.cdLlegadaV1)return;
+/* Dueño de Chengdu: sus dos días, su hotel, y la salida a Chongqing del 13
+   (que vive en el primer día de Chongqing, cq-arrive). */
+function migrarChengdu(s){
+  if(s.cdPlanV2)return;
   const cd=s.bases&&s.bases.chengdu;
   if(cd&&Array.isArray(cd.catalog)){
     sembrarDia(cd,0,CD_LLEGADA_2027,"07:00");
-    const a=cd.catalog.find(x=>x.cid==="cd-arrive");
-    if(a)a.costs=[{id:uid(),label:"Taxi Sugar House → estación de Yangshuo (2)",est:400,real:0}];
+    sembrarDia(cd,1,CD_DIA2_2027,"06:55");
+    // sembrarDia no toca los costos de lo que ya existía: estos van explícitos
+    const costo=(cid,label,est)=>{
+      const a=cd.catalog.find(x=>x.cid===cid);
+      if(a)a.costs=[{id:uid(),label,est,real:0}];
+    };
+    costo("cd-arrive","Taxi Sugar House → estación de Yangshuo (2)",400);
+    costo("cd-tren","Tren G3886 hasta Chengdu South, 2a clase, ¥508 c/u (2)",2740);
+    costo("cd-llegada","Taxi Chengdu South → hotel (2)",100);
+    costo("cd-kuanzhai","Antojitos en Kuanzhai (2)",270);
+    costo("cd-pandas","Entradas, ¥55 c/u (2)",300);
+    // el hotel donde llegan, arriba de la lista y marcado
+    if(Array.isArray(cd.hotels)){
+      let h=cd.hotels.find(x=>/chuanxing|yinli|隐里/i.test(x.name||""));
+      cd.hotels.forEach(x=>{x.chosen=false;});
+      if(h)cd.hotels.splice(cd.hotels.indexOf(h),1);
+      else h={id:uid(),noches:0};
+      Object.assign(h,{name:"Chuanxing Yinli Hotel · Kuanzhai Alley (川行隐里酒店)",
+        area:"十二桥路19号 · a 850 m de Kuanzhai, metro Tonghuimen a 300 m",
+        note:"<b>Building 1, No. 19, Shierqiao Road</b> (十二桥路19号1栋), Jinniu. Metro <b>Tonghuimen</b> "+
+             "(línea 2) a 300 m y <b>Zhongyi Da Shengyiyuan</b> (líneas 2 y 4) a 370 m.<br>"+
+             "<b>La línea 2 es la clave:</b> va directo a <b>Xipu</b> (trenes a Dujiangyan) y a <b>Chengdu "+
+             "East</b> (trenes a Chongqing).<br>"+
+             "Kuanzhai 850 m · People's Park ~15 min a pie · Tianfu Square 2.9 km."+
+             (+h.precio>0?"":"<br><b>⚠ Falta el precio por noche</b> para que cuente en el presupuesto."),
+        chosen:true});
+      cd.hotels.unshift(h);
+    }
   }
-  s.cdLlegadaV1=true;
+  // la salida del 13: primer renglón del día de llegada a Chongqing
+  const cq=s.bases&&s.bases.chongqing;
+  if(cq&&Array.isArray(cq.catalog)){
+    const a=cq.catalog.find(x=>x.cid==="cq-arrive");
+    if(a){
+      Object.assign(a,{name:CQ_SALIDA_2027.name,dur:CQ_SALIDA_2027.dur,note:CQ_SALIDA_2027.note});
+      a.costs=[{id:uid(),label:"Taxi a Chengdu East + tren D967, 2a clase (2, estimado)",est:700,real:0}];
+    }
+    const d0=cq.schedule&&cq.schedule[0];
+    const it=Array.isArray(d0)&&d0.find(y=>y.ref==="cq-arrive");
+    if(it)it.fixed=CQ_SALIDA_2027.fixed;
+    cq.dayStart=cq.dayStart||{};
+    cq.dayStart[0]=CQ_SALIDA_2027.fixed;
+    // el check-in de las 10:30 ya no llega por Chongqing North
+    const ck=cq.catalog.find(x=>x.cid==="cqd1-checkin");
+    if(ck&&ck.note)ck.note=ck.note.replace(
+      /<b>Estación Chongqing Norte \(o Shapingba\)\.<\/b> Taxi al hotel en Jiefangbei \/ Yuzhong, 20–30 min\.<br>/,
+      CQ_SALIDA_2027.checkin);
+  }
+  if(Array.isArray(s.esenciales)){
+    [ESSENTIAL_TREN_CD,ESSENTIAL_PANDAS,ESSENTIAL_TREN_CQ].forEach(E=>{
+      const e=s.esenciales.find(x=>x.id===E.id);
+      if(e)Object.assign(e,{t:E.t,s:E.s});
+      else s.esenciales.push({...E});
+    });
+  }
+  s.cdPlanV2=true;
 }
 /* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
 function freshBlankTrip(titulo){
