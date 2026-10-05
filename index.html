@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v29.1 · 6 oct 2026 · Chengdu: tres opciones para comer al llegar";
+const APP_VERSION="v29.2 · 6 oct 2026 · Chengdu: martes más ligero, de las torres directo al hotel";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -3898,10 +3898,10 @@ const YS_DIA2_2027=[
    De su lista, cómo quedó y por qué:
      · Martes 11 (llegada): comida ligera cerca del hotel (tres opciones abiertas
        a las 15:00), té en People's Park, paseo por Kuanzhai con
-       antojitos, cena en el Fuqin Night Market y las DOS torres de luz la
-       misma noche: las Twin Towers y la Tower of Life de SKP están a ~3 km
-       una de otra y las dos corren de 19:30 a 22:00. Primero las Twin Towers,
-       porque su mejor hora para fotos es de 20:00 a 21:00.
+       antojitos, cena en el Fuqin Night Market y el show de luces de las Twin
+       Towers (19:55, cuando ya oscureció: el sol se mete 19:47), y de ahí
+       directo al hotel, ~21:05. Se aligeró a petición suya: la Tower of Life
+       de SKP salió del día (queda en el catálogo) y el té volvió a 75 min.
      · Kuanzhai queda como paseo y antojito, y la cena de verdad en Fuqin: la
        comida de Kuanzhai es turística, Fuqin es a donde van los de Chengdu.
      · Miércoles 12: pandas a las 7:30 en la base de la ciudad y Dujiangyan
@@ -3962,7 +3962,7 @@ const CD_LLEGADA_2027=[
         "<i>Si escogen ésta, coman fuerte aquí y en Fuqin vayan solo de antojitos.</i></li>"+
         "</ol>"+
         "<i>A los taxistas, enséñenles el nombre en chino.</i>"},
-  {cid:"cd-te",name:"Té en People's Park · casa de té Heming",type:"sight",dur:60,
+  {cid:"cd-te",name:"Té en People's Park · casa de té Heming",type:"sight",dur:75,
    costos:[["Té y limpieza de orejas (2)",270]],
    note:"<b>16:00 · si comieron en Zhong Shui Jiao, ya están ahí:</b> la casa de té está junto. Desde el hotel "+
         "son ~15 min caminando.<br>"+
@@ -3972,8 +3972,8 @@ const CD_LLEGADA_2027=[
         "mesas con sus pinzas (¥30-50, 5-10 min).<br>"+
         "El parque abre 6:00-22:00 y la casa de té, hasta las 22:00.<br>"+
         "<i>A esta hora están los jubilados jugando mahjong y cartas: esa es la escena.</i>"},
-  {cid:"cd-kuanzhai",name:"Kuanzhai Alley: paseo y antojitos",type:"sight",dur:60,
-   note:"<b>17:00 · a ~15 min a pie de People's Park y a 850 m del hotel.</b> Kuanzhai Alley (宽窄巷子): "+
+  {cid:"cd-kuanzhai",name:"Kuanzhai Alley: paseo y antojitos",type:"sight",dur:45,
+   note:"<b>17:15 · a ~15 min a pie de People's Park y a 850 m del hotel.</b> Kuanzhai Alley (宽窄巷子): "+
         "tres callejones paralelos de casas de patio restauradas — el ancho (Kuan), el angosto (Zhai) y el "+
         "del pozo (Jing).<br>"+
         "<b>Antojitos, no cena:</b> la comida de aquí es turística y cara. Prueben uno o dos —<i>tang you "+
@@ -3996,29 +3996,34 @@ const CD_LLEGADA_2027=[
    costos:[["Taxi (2)",150]],
    note:"<b>~40 min al sur.</b> Pidan bajar en el puente <b>Jiaozi Ring (交子之环)</b>, en Jiaozi Avenue y "+
         "Yizhou Avenue."},
-  {cid:"cd-torres",name:"Show de luces de las Twin Towers",type:"sight",dur:40,
+  {cid:"cd-torres",name:"Show de luces de las Twin Towers",type:"sight",dur:35,
    note:"<b>19:55 · las Twin Towers de la Ciudad Financiera, desde el puente Jiaozi Ring.</b> Las dos torres "+
         "se vuelven pantallas de LED: el show corre todas las noches de ~19:30 a 22:00 y cambia de tema cada "+
         "~15 min (pandas, Sanxingdui, \"Cyber Chengdu\", paisajes). <b>Gratis.</b><br>"+
         "La vista de frente es desde el puente, un paso a desnivel naranja y futurista; las torres también "+
         "se reflejan en el lago de Jiaozi Park, al lado.<br>"+
-        "<i>La mejor hora para fotos es de 20:00 a 21:00: por eso van primero aquí y después a SKP.</i>"},
-  {cid:"cd-ir-skp",name:"Taxi a SKP Chengdu",type:"transfer",dur:10,
-   costos:[["Taxi (2)",40]],
-   note:"<b>~3 km, ~10 min.</b>"},
-  {cid:"cd-skp",name:"SKP · Tower of Life, las fuentes de bambú",type:"sight",dur:30,
-   note:"<b>20:45 · SKP Chengdu, la Tower of Life (生机之塔).</b> Seis columnas en forma de bambú, de hasta "+
-        "39 m, envueltas en LED: el agua cae por ellas y cambian de color cada 4-5 min, con música. Están "+
-        "inspiradas en los colectores de agua de bambú de Sichuan. <b>Gratis, sin boletos</b>, de 19:30 a "+
-        "22:00.<br>"+
-        "Al pie hay una zona con sensores: al moverse, las luces y las fuentes reaccionan.<br>"+
-        "<i>En metro: líneas 1 y 18, estación Jincheng Plaza (锦城广场), salida B, ~200 m por el parque de "+
-        "SKP.</i>"},
+        "<b>A qué hora:</b> en Chengdu el sol se mete a las <b>19:47</b> y a las <b>20:13</b> ya es de noche "+
+        "(calculado para el 11 de mayo de 2027). Llegando a las 19:55 les toca la última luz azul y después "+
+        "las torres encendidas sobre el cielo negro. A las 20:30 ya vieron dos o tres temas del show: de "+
+        "ahí, directo al hotel."},
   {cid:"cd-regreso",name:"Regreso al hotel",type:"transfer",dur:35,
    costos:[["Taxi (2)",150]],
-   note:"<b>~35 min</b>, en taxi o en metro (línea 1 a Tianfu Square y la 2 a Tonghuimen).<br>"+
+   note:"<b>~35 min en taxi</b> desde el puente Jiaozi Ring. Llegan ~21:05.<br>"+
         "<b>⚠ Mañana salen a las 6:55 a los pandas</b>: la base abre 7:30 y a esa hora es cuando más se "+
         "mueven."}
+];
+/* Fuera del itinerario pero a la mano en el catálogo de la parada. */
+const CD_FUERA_DEL_DIA=[
+  {cid:"cd-skp",name:"SKP · Tower of Life, las fuentes de bambú",type:"sight",dur:30,
+   note:"<b>Fuera del itinerario:</b> salió del martes para aligerar el día, y en Chengdu no queda otra "+
+        "noche libre (el miércoles en la noche es Dujiangyan; el jueves salen 7:50). Si la quieren de vuelta, "+
+        "su lugar es justo después de las Twin Towers: está a ~3 km, ~10 min en taxi, y son ~30 min más "+
+        "antes de volver al hotel.<br>"+
+        "<b>SKP Chengdu, la Tower of Life (生机之塔):</b> seis columnas en forma de bambú, de hasta 39 m, "+
+        "envueltas en LED; el agua cae por ellas y cambian de color cada 4-5 min, con música. "+
+        "<b>Gratis, sin boletos</b>, de 19:30 a 22:00.<br>"+
+        "<i>En metro: líneas 1 y 18, estación Jincheng Plaza (锦城广场), salida B, ~200 m por el parque de "+
+        "SKP.</i>"}
 ];
 const CD_DIA2_2027=[
   {cid:"cd-ir-pandas",name:"Taxi a la base de pandas",type:"transfer",dur:35,fixed:"06:55",
@@ -4145,11 +4150,16 @@ function migrarYangshuo(s){
 /* Dueño de Chengdu: sus dos días, su hotel, y la salida a Chongqing del 13
    (que vive en el primer día de Chongqing, cq-arrive). */
 function migrarChengdu(s){
-  if(s.cdPlanV3)return;
+  if(s.cdPlanV4)return;
   const cd=s.bases&&s.bases.chengdu;
   if(cd&&Array.isArray(cd.catalog)){
     sembrarDia(cd,0,CD_LLEGADA_2027,"07:00");
     sembrarDia(cd,1,CD_DIA2_2027,"06:55");
+    CD_FUERA_DEL_DIA.forEach(a=>{
+      const x=cd.catalog.find(y=>y.cid===a.cid);
+      if(x)Object.assign(x,{name:a.name,type:a.type,dur:a.dur,note:a.note});
+      else cd.catalog.push({cid:a.cid,name:a.name,type:a.type,dur:a.dur,note:a.note,src:"",costs:[]});
+    });
     // sembrarDia no toca los costos de lo que ya existía: estos van explícitos
     const costo=(cid,label,est)=>{
       const a=cd.catalog.find(x=>x.cid===cid);
@@ -4204,7 +4214,7 @@ function migrarChengdu(s){
       else s.esenciales.push({...E});
     });
   }
-  s.cdPlanV3=true;
+  s.cdPlanV4=true;
 }
 /* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
 function freshBlankTrip(titulo){
