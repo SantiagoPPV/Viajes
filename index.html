@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v30.1 · 6 oct 2026 · Chengdu: el monte Qingcheng el miércoles, y el martes sin mercados ni shows";
+const APP_VERSION="v30.2 · 6 oct 2026 · Chengdu: martes de IFS, Taikoo Li, Mi Xun y ópera; miércoles con Qingcheng corto";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -3907,18 +3907,20 @@ const YS_DIA2_2027=[
        que no estaban en su lista. Quedan en el catálogo.
 
    De su lista, cómo quedó y por qué:
-     · Martes 11 (llegada), tranquilo y a pie: comida ligera cerca del hotel
-       (tres opciones abiertas a las 15:00), té en Heming (People's Park),
-       paseo por los callejones de Shaocheng, cena junto a Kuanzhai y
-       Kuanzhai iluminado de regreso; en el hotel ~20:10. A petición suya
-       salieron lo de mercado (antojitos de Kuanzhai, Fuqin Night Market) y
-       los shows de luces (Twin Towers, SKP): quedan en el catálogo.
-     · Miércoles 12, el día largo: pandas a las 7:30, el monte Qingcheng (que
-       pidieron) y la versión corta de la obra de Dujiangyan, que están a 20
-       min uno de otro; cena junto al río y en el hotel ~20:10, porque el
-       jueves salen 7:10. Qingcheng va antes que la obra: su teleférico cierra
-       a las 17:00 de lunes a jueves, y la obra deja entrar hasta las 17:30.
-       Nanqiao iluminado de noche salió del día (queda en el catálogo).
+     · Martes 11 (llegada): comida ligera cerca del hotel (tres opciones
+       abiertas a las 15:00), té en Heming (People's Park), y la tarde que
+       pidieron: IFS y Taikoo Li, cena en Mi Xun Teahouse (estrella Michelin,
+       vegetariana) y la ópera de Sichuan del Teatro Provincial a las 20:00;
+       en el hotel ~21:30. Salieron lo de mercado (antojitos de Kuanzhai,
+       Fuqin Night Market) y los shows de luces (Twin Towers, SKP): quedan en
+       el catálogo.
+     · Miércoles 12: pandas a las 7:30, el monte Qingcheng en versión corta
+       (teleférico de subida y de bajada) y la versión corta de la obra de
+       Dujiangyan, que están a 20 min uno de otro. De ahí al hotel a
+       descansar (~17:55), cena junto a Kuanzhai y en el hotel a las 20:30,
+       porque el jueves salen 7:10. Qingcheng va antes que la obra: su
+       teleférico cierra a las 17:00 de lunes a jueves, y la obra deja entrar
+       hasta las 17:30. Nanqiao iluminado salió del día (queda en el catálogo).
      · Pandas: el Dujiangyan Panda Base está CERRADO por remodelación desde
        abril de 2026, sin fecha de reapertura. Panda Valley tiene solo ~12
        pandas en entrenamiento para liberación. La base de la ciudad tiene
@@ -3955,10 +3957,10 @@ const CD_LLEGADA_2027=[
         "<b>Para el taxista:</b> 川行隐里酒店, 十二桥路19号 — enséñenle la dirección en chino."},
   {cid:"cd-comida",name:"Comida cerca del hotel · 3 opciones",type:"food",dur:60,
    costos:[["Comida ligera (2) · Chen Mapo serían ~$540",150]],
-   note:"<b>15:00 · comida tardía, y que sea ligera:</b> la cena es a las 18:20, junto a Kuanzhai.<br>"+
+   note:"<b>15:00 · comida tardía, y que sea ligera:</b> la cena es a las 18:30, en Mi Xun.<br>"+
         "<b>⚠ Las tres están abiertas a esta hora</b>, y en Chengdu eso no es poca cosa: muchos restaurantes "+
         "cierran de ~14:00 a 17:00. El famoso Mao Jiao Huo La de la calle Kuixinglou, por ejemplo, abre "+
-        "12:00-14:00 y 17:00-22:00: por eso queda para la cena.<br>"+
+        "12:00-14:00 y 17:00-22:00: por eso queda para la cena del miércoles.<br>"+
         "<ol>"+
         "<li><b>Zhong Shui Jiao (钟水饺) · dentro de People's Park — la que yo escogería.</b> Los dumplings "+
         "clásicos de Chengdu, desde 1893: los de <b>aceite rojo (红油水饺)</b>, de picor suave, con salsa de "+
@@ -3985,31 +3987,46 @@ const CD_LLEGADA_2027=[
         "mesas con sus pinzas (¥30-50, 5-10 min).<br>"+
         "El parque abre 6:00-22:00 y la casa de té, hasta las 22:00.<br>"+
         "<i>A esta hora están los jubilados jugando mahjong y cartas: esa es la escena.</i>"},
-  {cid:"cd-paseo",name:"Paseo por Shaocheng, de People's Park a Kuanzhai",type:"sight",dur:65,
-   note:"<b>17:15 · saliendo de Heming, a pie.</b> Entre People's Park y Kuanzhai está Shaocheng (少城), el "+
-        "barrio viejo de la ciudad; el parque mismo se llamaba Parque de Shaocheng. Sus callejones, "+
-        "<b>Xiaotong Xiang (小通巷)</b> y <b>Paotongshu Jie (泡桐树街)</b>, son calles con árboles y casas "+
-        "viejas convertidas en cafés, librerías y florerías.<br>"+
-        "Sin prisa: un café en el camino, y terminan en la calle Kuixinglou o en la entrada de Kuanzhai, "+
-        "donde están las dos opciones de cena."},
-  {cid:"cd-cena",name:"Cena cerca del hotel · 2 opciones",type:"food",dur:75,
-   costos:[["Cena (2)",540]],
-   note:"<b>18:20 · las dos quedan donde termina el paseo:</b>"+
-        "<ul><li><b>Tingxiang (听香·老公馆川菜)</b>, Kuan Xiangzi n.º 6: cocina de Sichuan en una casona "+
-        "vieja con patio, abierta desde 2008. La más tranquila. ~¥80-120 por persona. <b>Reserven por "+
-        "teléfono</b>, sobre todo para la cena.</li>"+
-        "<li><b>Maojiao Huola (冒椒火辣)</b>, la tienda original en la calle Kuixinglou: <i>chuan chuan</i> "+
-        "de olla fría, brochetas ya cocidas en aceite de chile. Lo más de Chengdu, y distinto al hotpot del "+
-        "jueves en Chongqing. ~¥60-80 por persona. Suele haber fila: lleguen temprano o saquen turno "+
-        "desde las 16:00 en Dianping (大众点评).</li></ul>"+
-        "<i>Para cenar, eviten los locales de moda de la calle principal de Kuanzhai: muchos cobran un "+
-        "cargo de té obligatorio.</i>"},
-  {cid:"cd-kuanzhai",name:"Kuanzhai iluminado, de regreso al hotel",type:"sight",dur:35,
-   note:"<b>19:35 · a pie.</b> Kuanzhai Alley (宽窄巷子) son tres callejones paralelos de casas de patio "+
-        "restauradas: el ancho (Kuan), el angosto (Zhai) y el del pozo (Jing). Se cruza de este a oeste, "+
-        "y de ahí al hotel son ~850 m.<br>"+
-        "El sol se pone a las 19:47 y ya están prendidos los faroles: es la mejor hora para las fotos.<br>"+
-        "<b>⚠ Mañana salen a las 6:55 a los pandas</b> y es el día largo: al hotel a dormir temprano."}
+  {cid:"cd-ir-ifs",name:"Metro a Chunxi Road",type:"transfer",dur:15,
+   costos:[["Metro (2)",25]],
+   note:"<b>17:15 · línea 2 del metro</b>, de People's Park (人民公园) a Chunxi Road (春熙路): dos estaciones, "+
+        "~10 min con todo y caminata, y la salida da a IFS. En taxi son ~15 min."},
+  {cid:"cd-taikoo",name:"IFS y Taikoo Li",type:"sight",dur:60,
+   costos:[],
+   note:"<b>17:30 · los dos centros comerciales están pegados.</b><br>"+
+        "<b>IFS (成都国际金融中心):</b> en el jardín de la azotea del piso 7 está el panda gigante que trepa el "+
+        "edificio (<i>I Am Here</i>, de 15 m), la foto más famosa de Chengdu.<br>"+
+        "<b>Taikoo Li (远洋太古里)</b>, enfrente: tiendas al aire libre en casas bajas de estilo Sichuan, "+
+        "alrededor del templo Daci, que tiene más de mil años. Al atardecer se prenden las luces.<br>"+
+        "<i>La cena es aquí mismo: a las 18:30 caminan a Mi Xun, dentro de Taikoo Li.</i>"},
+  {cid:"cd-mixun",name:"Cena en Mi Xun Teahouse (estrella Michelin)",type:"food",dur:70,fixed:"18:30",
+   costos:[["Cena en Mi Xun, ~¥300 c/u (2)",1650]],
+   note:"<b>18:30 · Mi Xun Teahouse (谧寻茶室)</b>, la casa de té del hotel Upper House Chengdu (antes The "+
+        "Temple House), dentro de Taikoo Li: 笔帖式街81号.<br>"+
+        "Cocina vegetariana de Sichuan inspirada en la del templo Daci de al lado, con tés chinos finos. "+
+        "Tiene <b>una estrella Michelin</b> y la Estrella Verde por su cocina sostenible, la primera de "+
+        "Chengdu.<br>"+
+        "<b>⚠ Reserven</b> (+86 28 6297 4193). Pidan mesa a las 18:30 y avisen que a las 19:40 se van al "+
+        "teatro.<br>"+
+        "<i>~¥250-400 por persona. La cena se sirve de 17:30 a 22:00.</i>"},
+  {cid:"cd-ir-opera",name:"Taxi al Teatro Provincial de Ópera de Sichuan",type:"transfer",dur:15,
+   costos:[["Taxi (2)",60]],
+   note:"<b>~15 min en taxi</b> (~¥20). Para el taxista: <b>四川省川剧院, 指挥街108号</b>.<br>"+
+        "<i>En metro: línea 1 a Jinjiang Hotel (锦江宾馆), salida C2, y ~7 min a pie.</i>"},
+  {cid:"cd-opera",name:"Ópera de Sichuan en el Teatro Provincial",type:"tour",dur:70,fixed:"20:00",
+   costos:[["Boletos de la ópera, ~¥80-280 c/u (2)",900]],
+   note:"<b>20:00 · Furong Guocui (芙蓉国粹)</b>, el show del <b>Teatro Provincial de Ópera de Sichuan</b> "+
+        "(四川省川剧院). ~70 min de lo más vistoso de la ópera de Sichuan: el <b>cambio de máscaras</b> (变脸), "+
+        "escupir fuego, la lámpara que hacen rodar sobre la cabeza, títeres, sombras chinescas con las manos y "+
+        "escenas cómicas.<br>"+
+        "<b>¿Vale la pena?</b> Sí, una vez: es un show para turistas, pero el cambio de máscaras en vivo "+
+        "impresiona, y es lo más típico de una noche en Chengdu.<br>"+
+        "Boletos desde ¥80 (los de adelante cuestan más), en Klook o Trip.com. En temporada alta a veces hay "+
+        "dos funciones, 19:00 y 20:30: confirmen la hora al comprar."},
+  {cid:"cd-regreso",name:"Regreso al hotel",type:"transfer",dur:20,
+   costos:[["Taxi (2)",80]],
+   note:"<b>~20 min en taxi</b> (~¥25). Llegan ~21:30.<br>"+
+        "<b>⚠ Mañana salen a las 6:55 a los pandas</b> y es el día largo: a dormir."}
 ];
 /* Fuera del itinerario pero a la mano en el catálogo de la parada. */
 const CD_FUERA_DEL_DIA=[
@@ -4031,17 +4048,17 @@ const CD_FUERA_DEL_DIA=[
         "<i>En metro: líneas 1 y 18, estación Jincheng Plaza (锦城广场), salida B, ~200 m por el parque de "+
         "SKP.</i>"},
   {cid:"cd-nanqiao",name:"Nanqiao iluminado · \"Blue Tears\"",type:"sight",dur:75,
-   note:"<b>Fuera del itinerario:</b> el miércoles cenan junto a Nanqiao a las 18:00 y lo ven prenderse a las "+
-        "18:30, pero todavía de día. Para verlo de noche tendrían que quedarse hasta ~20:15 y llegarían al "+
-        "hotel ~21:30.<br>"+
+   note:"<b>Fuera del itinerario:</b> el miércoles regresan al hotel a las 16:45. Para verlo de noche "+
+        "tendrían que quedarse a cenar en Dujiangyan hasta ~20:15 y llegarían al hotel ~21:30.<br>"+
         "El puente techado de <b>Nanqiao (南桥)</b>, estilo palacio, se ilumina de amarillo cálido y el río "+
         "de abajo se pinta de azul verdoso: el \"Blue Tears\" de Dujiangyan. <b>Gratis.</b>"}
 ];
-/* Miércoles 12: el día largo. Pandas a la apertura, el monte Qingcheng y la
-   versión corta de la obra de Dujiangyan, que están a 20 min uno de otro, y
-   cena junto al río antes de volver. Qingcheng va antes que la obra porque su
-   teleférico cierra a las 17:00 de lunes a jueves, y la obra deja entrar hasta
-   las 17:30. En el hotel ~20:10: el jueves salen 7:10 a Chongqing. */
+/* Miércoles 12: pandas a la apertura, el monte Qingcheng en su versión corta
+   (teleférico de subida y de bajada) y la versión corta de la obra de
+   Dujiangyan, que están a 20 min uno de otro. De ahí al hotel a descansar
+   (~17:55), cena cerca y en el hotel a las 20:30: el jueves salen 7:10 a
+   Chongqing. Qingcheng va antes que la obra porque su teleférico cierra a las
+   17:00 de lunes a jueves, y la obra deja entrar hasta las 17:30. */
 const CD_DIA2_2027=[
   {cid:"cd-ir-pandas",name:"Taxi a la base de pandas",type:"transfer",dur:35,fixed:"06:55",
    costos:[["Taxi (2)",140]],
@@ -4078,21 +4095,19 @@ const CD_DIA2_2027=[
    note:"<b>11:45 · en las fondas de la entrada del monte.</b> El plato de aquí es el pollo guisado con "+
         "ginkgo (白果炖鸡), la especialidad de Qingcheng: caldo claro, suave, nada picante.<br>"+
         "<i>Coman bien: lo que sigue son escalones.</i>"},
-  {cid:"cd-qingcheng",name:"Monte Qingcheng: templos taoístas en el bosque",type:"sight",dur:195,
-   costos:[["Entrada ¥80 + teleférico ¥35 + lancha ¥5, c/u (2)",650]],
-   note:"<b>12:45-16:00 · Qingcheng Front Mountain (青城山前山).</b> Patrimonio de la Humanidad junto con la "+
+  {cid:"cd-qingcheng",name:"Monte Qingcheng: templos taoístas en el bosque",type:"sight",dur:120,
+   costos:[["Entrada ¥80 + teleférico redondo ¥60 + lancha, c/u (2)",810]],
+   note:"<b>12:45-14:45 · Qingcheng Front Mountain (青城山前山).</b> Patrimonio de la Humanidad junto con la "+
         "obra de Dujiangyan, y una de las cunas del taoísmo: templos de madera entre un bosque muy verde, "+
         "fresco y húmedo en mayo. Le dicen <i>el más apacible bajo el cielo</i> (青城天下幽), y de aquí sacaron "+
         "la aldea de los pandas de <i>Kung Fu Panda 3</i>.<br>"+
-        "<b>La ruta (~3 h): suben en teleférico y bajan a pie.</b>"+
+        "<b>La ruta corta (~2 h): suben y bajan en teleférico.</b>"+
         "<ol><li>De la entrada caminan ~25 min al lago Yuecheng (月城湖) y lo cruzan en lancha (¥5).</li>"+
-        "<li>Teleférico hacia arriba (¥35, ~6 min) hasta Ciyun Ge (慈云阁).</li>"+
-        "<li>Escaleras hasta el templo <b>Shangqing Gong (上清宫)</b>, ~20 min.</li>"+
-        "<li>Bajan a pie por <b>Tianshi Dong (天师洞)</b>, el templo principal, hasta la salida. Son "+
-        "escalones de bajada, ~1 h 30.</li></ol>"+
-        "<b>Si prefieren la vista a los templos:</b> 30-40 min arriba de Shangqing está <b>Laojun Ge "+
-        "(老君阁)</b>, la cima, con la vista de todo el monte. En ese caso bajen también en teleférico (¥60 "+
-        "el redondo) y se saltan Tianshi Dong.<br>"+
+        "<li>Teleférico (¥60 el redondo, ~6 min por tramo) hasta Ciyun Ge (慈云阁).</li>"+
+        "<li>Escaleras hasta el templo <b>Shangqing Gong (上清宫)</b>, ~20 min: el templo de la parte alta, "+
+        "entre los árboles.</li>"+
+        "<li>Regresan por el mismo camino: teleférico, lancha y a la salida.</li></ol>"+
+        "<i>Quedan fuera la cima (Laojun Ge) y la bajada a pie por Tianshi Dong: serían ~2 horas más.</i><br>"+
         "<b>Horario:</b> 8:30-17:30, taquilla hasta las 17:00. El teleférico, de lunes a jueves, de 9:00 a "+
         "17:00. Entrada ¥80, con pasaporte."},
   {cid:"cd-ir-dj",name:"Taxi de Qingcheng a la obra de Dujiangyan",type:"transfer",dur:30,
@@ -4101,7 +4116,7 @@ const CD_DIA2_2027=[
         "(都江堰景区 秦堰楼入口): de ahí la ruta es toda de bajada."},
   {cid:"cd-dujiangyan",name:"Dujiangyan: la obra hidráulica de 2,200 años",type:"sight",dur:90,
    costos:[["Entrada, ¥80 c/u (2)",430]],
-   note:"<b>16:30-18:00 · el Sistema de Irrigación de Dujiangyan (都江堰)</b>, Patrimonio de la Humanidad: "+
+   note:"<b>15:15-16:45 · el Sistema de Irrigación de Dujiangyan (都江堰)</b>, Patrimonio de la Humanidad: "+
         "una obra de hace más de 2,200 años que <u>sigue funcionando</u> y riega la llanura de Chengdu.<br>"+
         "<i>Curiosamente no es una presa:</i> lo famoso es que reparte el río sin cerrarlo.<br>"+
         "<b>La versión corta, de bajada (~1 h 30):</b>"+
@@ -4113,20 +4128,37 @@ const CD_DIA2_2027=[
         "<li><b>Baopingkou</b>, el corte en la roca, y salen por el parque Lidui (离堆公园), junto al "+
         "puente Nanqiao.</li></ol>"+
         "Última entrada 17:30 y cierra a las 18:00. ¥80 por persona, con pasaporte."},
-  {cid:"cd-cena-dj",name:"Cena en Dujiangyan, junto al río",type:"food",dur:60,
-   costos:[["Cena (2)",540]],
-   note:"<b>18:00 · en el centro antiguo, junto al río y el puente Nanqiao</b>, a unos pasos de la salida.<br>"+
-        "A las 18:30 se prenden las luces del puente: todavía es de día, pero lo ven encendido mientras "+
-        "cenan."},
   {cid:"cd-regreso-dj",name:"Regreso al hotel",type:"transfer",dur:70,
    costos:[["Taxi o DiDi (2)",540]],
-   note:"<b>19:00 · ~1 h 10 en taxi o DiDi</b>, directo al hotel (~¥200). Llegan ~20:10. El centro antiguo "+
-        "es peatonal: caminen a una calle con coches para pedirlo.<br>"+
+   note:"<b>16:45 · ~1 h 10 en taxi o DiDi</b>, directo al hotel (~¥200). Llegan ~17:55. El parque Lidui "+
+        "sale al centro antiguo, que es peatonal: caminen a una calle con coches para pedirlo.<br>"+
         "<b>Para el taxista:</b> 川行隐里酒店, 十二桥路19号.<br>"+
         "<i>Alternativa barata: taxi a la estación de Dujiangyan, tren a Xipu (30 min, ~¥10) y la línea 2 del "+
-        "metro, que va directo de Xipu a Tonghuimen, a 300 m del hotel. ~1 h 20 en total.</i><br>"+
-        "<b>⚠ Mañana salen a las 7:10 a Chongqing:</b> dejen las maletas hechas desde la mañana y el check-out "+
-        "pagado."}
+        "metro, que va directo de Xipu a Tonghuimen, a 300 m del hotel. ~1 h 20 en total.</i>"},
+  {cid:"cd-descanso",name:"Descanso en el hotel",type:"rest",dur:45,
+   costos:[],
+   note:"<b>~17:55 · llevan en pie desde las 6:55:</b> regaderazo y un rato tranquilos.<br>"+
+        "<b>⚠ Mañana salen a las 7:10 a Chongqing:</b> dejen las maletas casi hechas desde ahora, y el "+
+        "check-out pagado en recepción para salir directo."},
+  {cid:"cd-cena",name:"Cena cerca del hotel · 2 opciones",type:"food",dur:75,
+   costos:[["Cena (2)",540]],
+   note:"<b>18:40 · las dos junto a Kuanzhai</b>, a ~20 min caminando del hotel (o 5-10 en taxi):"+
+        "<ul><li><b>Tingxiang (听香·老公馆川菜)</b>, Kuan Xiangzi n.º 6: cocina de Sichuan en una casona "+
+        "vieja con patio, abierta desde 2008. La más tranquila. ~¥80-120 por persona. <b>Reserven por "+
+        "teléfono</b>, sobre todo para la cena.</li>"+
+        "<li><b>Maojiao Huola (冒椒火辣)</b>, la tienda original en la calle Kuixinglou: <i>chuan chuan</i> "+
+        "de olla fría, brochetas ya cocidas en aceite de chile. Lo más de Chengdu, y distinto al hotpot de "+
+        "mañana en Chongqing. ~¥60-80 por persona. Suele haber fila: lleguen temprano o saquen turno "+
+        "desde las 16:00 en Dianping (大众点评).</li></ul>"+
+        "<i>Para cenar, eviten los locales de moda de la calle principal de Kuanzhai: muchos cobran un "+
+        "cargo de té obligatorio.</i>"},
+  {cid:"cd-kuanzhai",name:"Kuanzhai iluminado, de regreso al hotel",type:"sight",dur:35,
+   costos:[],
+   note:"<b>19:55 · a pie.</b> Kuanzhai Alley (宽窄巷子) son tres callejones paralelos de casas de patio "+
+        "restauradas: el ancho (Kuan), el angosto (Zhai) y el del pozo (Jing). Se cruza de este a oeste, "+
+        "y de ahí al hotel son ~850 m.<br>"+
+        "El sol se pone a las 19:48 y ya están prendidos los faroles: es la mejor hora para las fotos.<br>"+
+        "<b>A las 20:30 en el hotel.</b> Mañana salen a las 7:10 a Chongqing."}
 ];
 /* ---- Chongqing, versión 2: jueves 13 y la mañana del viernes 14 ----
    Reemplaza a CQ_DIA1_2027 / ZJJ_DIA1_2027 (que siguen arriba como la siembra
@@ -4325,7 +4357,7 @@ function migrarYangshuo(s){
 /* Dueño de Chengdu: sus dos días, su hotel y sus pendientes. La salida a
    Chongqing del 13 es de migrarChongqingV2 (vive en el día de Chongqing). */
 function migrarChengdu(s){
-  if(s.cdPlanV6)return;
+  if(s.cdPlanV7)return;
   const cd=s.bases&&s.bases.chengdu;
   if(cd&&Array.isArray(cd.catalog)){
     sembrarDia(cd,0,CD_LLEGADA_2027,"07:00");
@@ -4343,12 +4375,12 @@ function migrarChengdu(s){
     costo("cd-arrive","Taxi Sugar House → estación de Yangshuo (2)",400);
     costo("cd-tren","Tren G3886 hasta Chengdu South, 2a clase, ¥508 c/u (2)",2740);
     costo("cd-llegada","Taxi Chengdu South → hotel (2)",100);
-    // y los que trae la lista de cada día (algunos ya existían con otro costo)
+    // y los que trae la lista de cada día (algunos ya existían con otro costo;
+    // costos:[] deja en cero los que ya no cuestan, como Kuanzhai sin antojitos)
     CD_LLEGADA_2027.concat(CD_DIA2_2027).forEach(a=>{
-      if(a.costos)costo(a.cid,a.costos[0][0],a.costos[0][1]);
+      const x=a.costos&&cd.catalog.find(y=>y.cid===a.cid);
+      if(x)x.costs=a.costos.map(([label,est])=>({id:uid(),label,est,real:0}));
     });
-    const kz=cd.catalog.find(x=>x.cid==="cd-kuanzhai");   // ya no es de antojitos
-    if(kz)kz.costs=[];
     // el hotel donde llegan, arriba de la lista y marcado
     if(Array.isArray(cd.hotels)){
       let h=cd.hotels.find(x=>/chuanxing|yinli|隐里/i.test(x.name||""));
@@ -4374,7 +4406,7 @@ function migrarChengdu(s){
       else s.esenciales.push({...E});
     });
   }
-  s.cdPlanV6=true;
+  s.cdPlanV7=true;
 }
 /* Dueño de Chongqing desde v30: el jueves 13 completo (con la salida de
    Chengdu ya desglosada) y la mañana del viernes 14 con el tren a Zhangjiajie,
