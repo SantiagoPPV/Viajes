@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v30.4 · 6 oct 2026 · Chengdu: los drinks del martes, en Mi Xun";
+const APP_VERSION="v30.5 · 6 oct 2026 · Chengdu: el miércoles con chofer todo el día";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -1598,6 +1598,10 @@ const ESSENTIAL_TREN_CD={id:"ess-tren-cd",t:"Boleto de tren Yangshuo → Chengdu
 const ESSENTIAL_PANDAS={id:"ess-pandas",t:"Boletos de la base de pandas (Chengdu)",
   s:"miércoles 12, boleto de la mañana (desde las 7:30) · solo en línea y con nombre: WeChat o Trip.com, "+
     "con pasaporte · ¥55 c/u"};
+const ESSENTIAL_CHOFER_CD={id:"ess-chofer-cd",t:"Chofer para el miércoles 12 (Chengdu)",
+  s:"de 6:55 a ~19:35, ~13 h y ~200 km: hotel → pandas → Qingcheng → la obra de Dujiangyan → cena en "+
+    "Tongzilin → hotel · Trip.com o Klook (\"Chengdu private car charter\") o con el hotel · que hable "+
+    "inglés · ~¥1,300-1,800 (los paquetes normales son de 10 h y 100 km)"};
 const ESSENTIAL_TREN_CQ={id:"ess-tren-cq",t:"Boleto de tren Chengdu → Chongqing",
   s:"jueves 13, G8605 8:17 de Chengdu East HASTA SHAPINGBA (llega 9:37) · la venta abre ~15 días antes "+
     "(28 abr) · si se agota: G8607 9:19, misma ruta"};
@@ -1613,6 +1617,7 @@ const ESSENTIALS=[
   ESSENTIAL_TREN_CD,
   ESSENTIAL_YS_HOTEL,
   ESSENTIAL_PANDAS,
+  ESSENTIAL_CHOFER_CD,
   ESSENTIAL_TREN_CQ,
   ESSENTIAL_TREN_ZJJ,
   {id:"ess-jp",t:"Japón: Visit Japan Web + boleto de salida",s:"mexicanos sin visa (exención de turista)"},
@@ -3915,13 +3920,14 @@ const YS_DIA2_2027=[
        ~20:50, a dormir temprano.
        Salieron lo de mercado (antojitos de Kuanzhai, Fuqin), los shows de
        luces (Twin Towers, SKP) y la ópera: quedan en el catálogo.
-     · Miércoles 12: pandas a las 7:30, comida buena al pie de Qingcheng
-       (Qingcheng Jia), el monte en versión corta (teleférico de subida y de
-       bajada) y la versión corta de la obra de Dujiangyan, que están a 20 min
-       uno de otro. Cena casual occidental en Tongzilin y en el hotel ~19:35,
-       porque el jueves salen 7:10. Qingcheng va antes que la obra: su
-       teleférico cierra a las 17:00 de lunes a jueves, y la obra deja entrar
-       hasta las 17:30. Nanqiao iluminado salió del día (queda en el catálogo).
+     · Miércoles 12, con chofer todo el día (son 5 traslados, uno de 1 h 30):
+       pandas a las 7:30, comida buena al pie de Qingcheng (Qingcheng Jia), el
+       monte en versión corta (teleférico de subida y de bajada) y la versión
+       corta de la obra de Dujiangyan, que están a 20 min uno de otro. Cena
+       casual occidental en Tongzilin y en el hotel ~19:35, porque el jueves
+       salen 7:10. Qingcheng va antes que la obra: su teleférico cierra a las
+       17:00 de lunes a jueves, y la obra deja entrar hasta las 17:30. Nanqiao
+       iluminado salió del día (queda en el catálogo).
      · Pandas: el Dujiangyan Panda Base está CERRADO por remodelación desde
        abril de 2026, sin fecha de reapertura. Panda Valley tiene solo ~12
        pandas en entrenamiento para liberación. La base de la ciudad tiene
@@ -4049,17 +4055,21 @@ const CD_FUERA_DEL_DIA=[
         "El puente techado de <b>Nanqiao (南桥)</b>, estilo palacio, se ilumina de amarillo cálido y el río "+
         "de abajo se pinta de azul verdoso: el \"Blue Tears\" de Dujiangyan. <b>Gratis.</b>"}
 ];
-/* Miércoles 12: pandas a la apertura, comida buena al pie de Qingcheng, el
-   monte en su versión corta (teleférico de subida y de bajada) y la versión
-   corta de la obra de Dujiangyan, que están a 20 min uno de otro. Cena casual
-   occidental en Tongzilin y al hotel ~19:35: el jueves salen 7:10 a Chongqing.
+/* Miércoles 12, con chofer todo el día: pandas a la apertura, comida buena al
+   pie de Qingcheng, el monte en su versión corta (teleférico de subida y de
+   bajada) y la versión corta de la obra de Dujiangyan, que están a 20 min uno
+   de otro. Cena casual occidental en Tongzilin y al hotel ~19:35: el jueves
+   salen 7:10 a Chongqing. El costo del chofer va completo en cd-ir-pandas.
    Qingcheng va antes que la obra porque su teleférico cierra a las 17:00 de
    lunes a jueves, y la obra deja entrar hasta las 17:30. */
 const CD_DIA2_2027=[
-  {cid:"cd-ir-pandas",name:"Taxi a la base de pandas",type:"transfer",dur:35,fixed:"06:55",
-   costos:[["Taxi (2)",140]],
-   note:"<b>6:55 · ~35 min al noreste de la ciudad.</b> Pidan el taxi en recepción la noche anterior, a la "+
-        "<b>Puerta Sur: 成都大熊猫繁育研究基地 南大门</b>, la más cercana a los recintos principales.<br>"+
+  {cid:"cd-ir-pandas",name:"Con el chofer a la base de pandas",type:"transfer",dur:35,fixed:"06:55",
+   costos:[["Chofer con coche todo el día, ~¥1,300-1,800 (~13 h, ~200 km)",4300]],
+   note:"<b>6:55 · el chofer los recoge en el hotel.</b> ~35 min al noreste, a la <b>Puerta Sur: "+
+        "成都大熊猫繁育研究基地 南大门</b>, la más cercana a los recintos principales.<br>"+
+        "<b>Es el mismo coche todo el día</b>, hasta dejarlos en el hotel en la noche: ahí pueden dejar sus "+
+        "cosas, y no tienen que buscar taxi a la salida de la base ni en el centro de Dujiangyan, que es "+
+        "peatonal.<br>"+
         "<i>Desayuno: a esta hora el del hotel seguramente no ha abierto. Pídanlo para llevar o compren algo "+
         "la noche anterior.</i>"},
   {cid:"cd-pandas",name:"Pandas · Base de Investigación del Panda Gigante",type:"tour",dur:165,
@@ -4080,12 +4090,13 @@ const CD_DIA2_2027=[
         "Other Documents</i>.<br>"+
         "<b>Adentro:</b> tomen el carrito eléctrico (¥30 c/u, viajes ilimitados), porque la base es enorme. Si "+
         "quieren ver a <b>Huahua (花花)</b>, la panda más famosa, vayan primero a su recinto: es la fila más larga.<br>"+
-        "<b>A las 10:15 salen:</b> el día sigue en Qingcheng."},
-  {cid:"cd-ir-qc",name:"Taxi de la base de pandas al monte Qingcheng",type:"transfer",dur:90,
-   costos:[["Taxi o DiDi (2)",680]],
-   note:"<b>~80 km, ~1 h 30</b>, cruzando la ciudad de noreste a noroeste. ~¥250, a confirmar en DiDi.<br>"+
-        "<b>Destino: 青城山前山</b> (la entrada principal del monte, la Front Mountain).<br>"+
-        "<i>Salen justo cuando la base empieza a llenarse.</i>"},
+        "<b>A las 10:15 los espera el chofer:</b> el día sigue en Qingcheng."},
+  {cid:"cd-ir-qc",name:"Con el chofer al monte Qingcheng",type:"transfer",dur:90,
+   costos:[],
+   note:"<b>~80 km, ~1 h 30</b>, cruzando la ciudad de noreste a noroeste. Que los deje en la entrada "+
+        "principal: <b>青城山前山 (山门)</b>.<br>"+
+        "<i>Es el traslado donde más ayuda el chofer: sin coche serían más de 2 horas, con metro a Xipu, tren "+
+        "a Qingchengshan y taxi a la entrada.</i>"},
   {cid:"cd-comida-qc",name:"Comida buena al pie de Qingcheng: Qingcheng Jia",type:"food",dur:75,
    costos:[["Comida (2)",540]],
    note:"<b>11:45 · Qingcheng Jia (青城甲), al pie del monte</b> (环山公路52号): casa de campo con patio y "+
@@ -4109,10 +4120,12 @@ const CD_DIA2_2027=[
         "<i>Quedan fuera la cima (Laojun Ge) y la bajada a pie por Tianshi Dong: serían ~2 horas más.</i><br>"+
         "<b>Horario:</b> 8:30-17:30, taquilla hasta las 17:00. El teleférico, de lunes a jueves, de 9:00 a "+
         "17:00. Entrada ¥80, con pasaporte."},
-  {cid:"cd-ir-dj",name:"Taxi de Qingcheng a la obra de Dujiangyan",type:"transfer",dur:30,
-   costos:[["Taxi (2)",130]],
-   note:"<b>~20-30 min</b> (~¥40-50). Pídanle al taxista la <b>entrada de arriba, la de Qinyan Lou</b> "+
-        "(都江堰景区 秦堰楼入口): de ahí la ruta es toda de bajada."},
+  {cid:"cd-ir-dj",name:"Con el chofer a la obra de Dujiangyan",type:"transfer",dur:30,
+   costos:[],
+   note:"<b>~20-30 min.</b> Que los deje en la <b>entrada de arriba, la de Qinyan Lou</b> (都江堰景区 "+
+        "秦堰楼入口): de ahí la ruta es toda de bajada.<br>"+
+        "Mientras la recorren, el chofer se va a esperarlos a la salida: el <b>parque Lidui (离堆公园)</b>, "+
+        "junto al puente Nanqiao."},
   {cid:"cd-dujiangyan",name:"Dujiangyan: la obra hidráulica de 2,200 años",type:"sight",dur:90,
    costos:[["Entrada, ¥80 c/u (2)",430]],
    note:"<b>15:30-17:00 · el Sistema de Irrigación de Dujiangyan (都江堰)</b>, Patrimonio de la Humanidad: "+
@@ -4126,23 +4139,22 @@ const CD_DIA2_2027=[
         "<li><b>Feishayan</b>, el vertedor que saca la arena.</li>"+
         "<li><b>Baopingkou</b>, el corte en la roca, y salen por el parque Lidui (离堆公园), junto al "+
         "puente Nanqiao.</li></ol>"+
-        "Última entrada 17:30 y cierra a las 18:00. ¥80 por persona, con pasaporte."},
-  {cid:"cd-regreso-dj",name:"Taxi de Dujiangyan a la cena, en Tongzilin",type:"transfer",dur:75,
-   costos:[["Taxi o DiDi (2)",540]],
-   note:"<b>17:00 · ~1 h 15 en taxi o DiDi</b> (~¥200) a <b>Tongzilin (桐梓林)</b>, el barrio de los "+
-        "extranjeros, al sur del centro: ahí están los restaurantes occidentales de siempre. El parque Lidui "+
-        "sale al centro antiguo, que es peatonal: caminen a una calle con coches para pedirlo."},
+        "Última entrada 17:30 y cierra a las 18:00. ¥80 por persona, con pasaporte.<br>"+
+        "<i>A la salida, en el parque Lidui, los espera el chofer.</i>"},
+  {cid:"cd-regreso-dj",name:"Con el chofer a la cena, en Tongzilin",type:"transfer",dur:75,
+   costos:[],
+   note:"<b>17:00 · ~1 h 15</b> a <b>Tongzilin (桐梓林)</b>, el barrio de los extranjeros, al sur del centro: "+
+        "ahí están los restaurantes occidentales de siempre."},
   {cid:"cd-cena",name:"Cena casual occidental en Tongzilin",type:"food",dur:60,
    costos:[["Cena (2)",680]],
    note:"<b>18:15 · para descansar de la comida china:</b>"+
         "<ul><li><b>Peter's Tex-Mex</b>, la de Tongzilin: la favorita de los extranjeros en Chengdu desde hace "+
         "años. Hamburguesas, quesadillas, <i>cheesesteak</i> y helado casero.</li>"+
         "<li><b>Mike's Pizza Kitchen</b> (桐梓林路4号附7号): pizza estilo americano.</li></ul>"+
-        "<i>Antes de pedir el DiDi, confirmen en el mapa que sigan abiertas.</i>"},
-  {cid:"cd-fin-mie",name:"Al hotel a descansar",type:"transfer",dur:20,
-   costos:[["Taxi (2)",80]],
-   note:"<b>~20 min en taxi</b> (~¥30). Llegan ~19:35.<br>"+
-        "<b>Para el taxista:</b> 川行隐里酒店, 十二桥路19号.<br>"+
+        "<i>Confirmen en el mapa que sigan abiertas antes de llegar.</i>"},
+  {cid:"cd-fin-mie",name:"Con el chofer al hotel, a descansar",type:"transfer",dur:20,
+   costos:[],
+   note:"<b>~20 min.</b> Llegan ~19:35, y ahí termina el servicio del chofer (~12 h 40).<br>"+
         "<b>⚠ Mañana salen a las 7:10 a Chongqing:</b> dejen las maletas casi hechas y el check-out pagado."}
 ];
 /* ---- Chongqing, versión 2: jueves 13 y la mañana del viernes 14 ----
@@ -4342,7 +4354,7 @@ function migrarYangshuo(s){
 /* Dueño de Chengdu: sus dos días, su hotel y sus pendientes. La salida a
    Chongqing del 13 es de migrarChongqingV2 (vive en el día de Chongqing). */
 function migrarChengdu(s){
-  if(s.cdPlanV9)return;
+  if(s.cdPlanV10)return;
   const cd=s.bases&&s.bases.chengdu;
   if(cd&&Array.isArray(cd.catalog)){
     sembrarDia(cd,0,CD_LLEGADA_2027,"07:00");
@@ -4385,13 +4397,13 @@ function migrarChengdu(s){
     }
   }
   if(Array.isArray(s.esenciales)){
-    [ESSENTIAL_TREN_CD,ESSENTIAL_PANDAS].forEach(E=>{
+    [ESSENTIAL_TREN_CD,ESSENTIAL_PANDAS,ESSENTIAL_CHOFER_CD].forEach(E=>{
       const e=s.esenciales.find(x=>x.id===E.id);
       if(e)Object.assign(e,{t:E.t,s:E.s});
       else s.esenciales.push({...E});
     });
   }
-  s.cdPlanV9=true;
+  s.cdPlanV10=true;
 }
 /* Dueño de Chongqing desde v30: el jueves 13 completo (con la salida de
    Chengdu ya desglosada) y la mañana del viernes 14 con el tren a Zhangjiajie,
