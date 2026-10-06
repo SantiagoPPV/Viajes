@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v30.3 · 6 oct 2026 · Chengdu: comidas buenas y cenas casuales, drinks en Jing, sin ópera";
+const APP_VERSION="v30.4 · 6 oct 2026 · Chengdu: los drinks del martes, en Mi Xun";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -3909,8 +3909,10 @@ const YS_DIA2_2027=[
    De su lista, cómo quedó y por qué:
      · Martes 11 (llegada): comida buena a las 15:00 (Tingxiang o Chen Mapo,
        que abren corrido), té en Heming (People's Park), IFS y Taikoo Li, cena
-       casual ahí mismo y drinks en Jing, el bar del hotel de Mi Xun (Mi Xun
-       en la noche solo sirve cena); en el hotel ~20:50, a dormir temprano.
+       casual ahí mismo y drinks en Mi Xun (cocteles, vino o té; a esa hora es
+       servicio de cena, así que hay que reservar avisando que es solo para
+       tomar algo, con Jing, el bar del mismo hotel, de respaldo); en el hotel
+       ~20:50, a dormir temprano.
        Salieron lo de mercado (antojitos de Kuanzhai, Fuqin), los shows de
        luces (Twin Towers, SKP) y la ópera: quedan en el catálogo.
      · Miércoles 12: pandas a las 7:30, comida buena al pie de Qingcheng
@@ -3993,15 +3995,18 @@ const CD_LLEGADA_2027=[
    note:"<b>19:00 · algo ligero</b>, que comieron fuerte a las 15:00. IFS y Taikoo Li tienen de todo.<br>"+
         "Si se les antoja algo de Sichuan: <b>Ma Wang Zi (马旺子·川小馆)</b>, en la zona de Taikoo Li, platos "+
         "clásicos por ~¥117 por persona.<br>"+
-        "<i>De ahí caminan a Jing, también dentro de Taikoo Li.</i>"},
-  {cid:"cd-mixun",name:"Drinks en Jing, el bar del hotel de Mi Xun",type:"bar",dur:45,fixed:"19:45",
+        "<i>De ahí caminan a Mi Xun, también dentro de Taikoo Li.</i>"},
+  {cid:"cd-mixun",name:"Drinks en Mi Xun Teahouse",type:"bar",dur:45,fixed:"19:45",
    costos:[["Drinks (2)",810]],
-   note:"<b>19:45 · Jing (井), el bar del hotel Upper House Chengdu</b>, el mismo de Mi Xun, dentro de Taikoo "+
-        "Li: 笔帖式街81号. Bar estilo años 20, en un patio antiguo, con cocteles con toques de Sichuan; el "+
-        "de la casa es el <i>Sichuan Negroni</i>. Abre de 17:00 a 1:00, con DJ en vivo.<br>"+
-        "<b>¿Por qué no en Mi Xun?</b> En la noche Mi Xun es restaurante: sirve cena de 17:30 a 22:00, y el "+
-        "té solo hasta las 17:30, a la hora de Heming. Para tomar algo, el lugar es Jing.<br>"+
-        "<i>Precios de hotel de lujo: ~¥100-150 por coctel.</i>"},
+   note:"<b>19:45 · Mi Xun Teahouse (谧寻茶室)</b>, la casa de té del hotel Upper House Chengdu (antes The "+
+        "Temple House), dentro de Taikoo Li: 笔帖式街81号. Un patio de la dinastía Qing, con una estrella "+
+        "Michelin.<br>"+
+        "<b>Qué tomar:</b> además de sus tés de Sichuan, tiene cocteles de la casa (<i>Sichuan Mule</i> con "+
+        "pimienta, <i>Jasmine and Pear</i>, <i>Baijiu Negroni</i>), vino por copa y champaña.<br>"+
+        "<b>⚠ Reserven y avisen que van solo por drinks</b> (+86 28 6297 4193): a esa hora es servicio de "+
+        "cena (17:30-22:00). Si no les dan lugar, el plan B está en el mismo hotel: <b>Jing (井)</b>, su bar "+
+        "de cocteles en otro patio, de 17:00 a 1:00.<br>"+
+        "<i>~¥80-300 por persona, según lo que pidan.</i>"},
   {cid:"cd-regreso",name:"Regreso al hotel",type:"transfer",dur:20,
    costos:[["Taxi (2)",80]],
    note:"<b>~20 min en taxi</b> (~¥25). Llegan ~20:50, a dormir temprano.<br>"+
@@ -4337,7 +4342,7 @@ function migrarYangshuo(s){
 /* Dueño de Chengdu: sus dos días, su hotel y sus pendientes. La salida a
    Chongqing del 13 es de migrarChongqingV2 (vive en el día de Chongqing). */
 function migrarChengdu(s){
-  if(s.cdPlanV8)return;
+  if(s.cdPlanV9)return;
   const cd=s.bases&&s.bases.chengdu;
   if(cd&&Array.isArray(cd.catalog)){
     sembrarDia(cd,0,CD_LLEGADA_2027,"07:00");
@@ -4386,7 +4391,7 @@ function migrarChengdu(s){
       else s.esenciales.push({...E});
     });
   }
-  s.cdPlanV8=true;
+  s.cdPlanV9=true;
 }
 /* Dueño de Chongqing desde v30: el jueves 13 completo (con la salida de
    Chengdu ya desglosada) y la mañana del viernes 14 con el tren a Zhangjiajie,
