@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v30.6 · 6 oct 2026 · Chengdu: el chofer los deja a cenar en Tongzilin (~11 h)";
+const APP_VERSION="v30.7 · 6 oct 2026 · Chongqing: el jueves de Raffles City, Chaotianmen y el barco de noche";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -926,7 +926,7 @@ const ROUTE=[
   {id:"hk",        nights:3},                //  6 →  9 may
   {id:"yangshuo",  nights:2, sale:"06:20"},  //  9 → 11 may · llega 13:20
   {id:"chengdu",   nights:2, sale:"07:00"},  // 11 → 13 may · llega 15:00
-  {id:"chongqing", nights:1, sale:"07:10"},  // 13 → 14 may · llega 09:37 a Shapingba
+  {id:"chongqing", nights:1, sale:"08:15"},  // 13 → 14 may · llega 10:22 a Shapingba
   {id:"zjj",       nights:3, sale:"12:40"},  // 14 → 17 may · llega 16:27 a Zhangjiajie West
   {id:"xian",      nights:2, sale:"08:00"},  // 17 → 19 may · llega 12:30
   {id:"beijing",   nights:3, sale:"12:30"},  // 19 → 22 may · llega 16:45
@@ -1029,7 +1029,7 @@ const XFER={
   // Del hotel en Kuanzhai a Chengdu East son ~40 min, y se llega a Shapingba, la
   // estación más cerca del centro. La duración es hasta bajar del tren; el
   // desglose está en el día de Chongqing (CQ_DIA1_V2).
-  "chengdu|chongqing":{mode:"Tren bala",detail:"Hotel (Kuanzhai) → Chengdu East (taxi ~40 min) · G8605 8:17 → Shapingba 9:37",time:"~2 h 30 del hotel al andén en Chongqing",dur:147,type:"rail"},
+  "chengdu|chongqing":{mode:"Tren bala",detail:"Hotel (Kuanzhai) → Chengdu East (taxi ~40 min) · G8607 9:19 → Shapingba 10:22",time:"~2 h del hotel al andén en Chongqing",dur:127,type:"rail"},
   // Sale de Chongqing EAST (重庆东, la estación nueva en Nan'an), no de North
   // ni West, por la vía rápida nueva hasta Qianjiang. El desglose está en el
   // primer día de Zhangjiajie (ZJJ_DIA1_V2).
@@ -1599,12 +1599,15 @@ const ESSENTIAL_PANDAS={id:"ess-pandas",t:"Boletos de la base de pandas (Chengdu
   s:"miércoles 12, boleto de la mañana (desde las 7:30) · solo en línea y con nombre: WeChat o Trip.com, "+
     "con pasaporte · ¥55 c/u"};
 const ESSENTIAL_CHOFER_CD={id:"ess-chofer-cd",t:"Chofer para el miércoles 12 (Chengdu)",
-  s:"de 6:55 a ~18:15, ~11 h y ~200 km: hotel → pandas → Qingcheng → la obra de Dujiangyan → los deja "+
-    "a cenar en Tongzilin · Trip.com o Klook (\"Chengdu private car charter\") o con el hotel · que hable "+
-    "inglés · ~¥1,200-1,600 (los paquetes normales son de 10 h y 100 km: paguen el extra de km)"};
+  s:"de 6:55 a ~19:35, ~13 h y ~200 km: hotel → pandas → Qingcheng → la obra de Dujiangyan → cena en "+
+    "Tongzilin → hotel · Trip.com o Klook (\"Chengdu private car charter\") o con el hotel · que hable "+
+    "inglés · ~¥1,300-1,800 (los paquetes normales son de 10 h y 100 km)"};
 const ESSENTIAL_TREN_CQ={id:"ess-tren-cq",t:"Boleto de tren Chengdu → Chongqing",
-  s:"jueves 13, G8605 8:17 de Chengdu East HASTA SHAPINGBA (llega 9:37) · la venta abre ~15 días antes "+
-    "(28 abr) · si se agota: G8607 9:19, misma ruta"};
+  s:"jueves 13, G8607 9:19 de Chengdu East HASTA SHAPINGBA (llega 10:22) · la venta abre ~15 días antes "+
+    "(28 abr) · si se agota: G8609 9:25, misma ruta"};
+const ESSENTIAL_PICKUP_CQ={id:"ess-pickup-cq",t:"Pick-up en Shapingba (Chongqing)",
+  s:"jueves 13 a las 10:22, del tren G8607 al hotel · Trip.com o Klook (\"Chongqing railway station "+
+    "transfer\") o con el hotel · ~¥150-250"};
 const ESSENTIAL_TREN_ZJJ={id:"ess-tren-zjj",t:"Boleto de tren Chongqing → Zhangjiajie",
   s:"viernes 14, G2433 13:55 de Chongqing EAST (重庆东) → Zhangjiajie West 16:27 · la venta abre ~15 días "+
     "antes (29 abr) · respaldo: G3375 12:14 o G2435 15:07"};
@@ -1619,6 +1622,7 @@ const ESSENTIALS=[
   ESSENTIAL_PANDAS,
   ESSENTIAL_CHOFER_CD,
   ESSENTIAL_TREN_CQ,
+  ESSENTIAL_PICKUP_CQ,
   ESSENTIAL_TREN_ZJJ,
   {id:"ess-jp",t:"Japón: Visit Japan Web + boleto de salida",s:"mexicanos sin visa (exención de turista)"},
   {id:"ess-visa",t:"Visa de turista China (L)",s:"tramitar 1–2 meses antes"},
@@ -3906,7 +3910,7 @@ const YS_DIA2_2027=[
    Con ese hotel, tres ajustes a lo que ya estaba:
      · El G3886 se toma hasta CHENGDU SOUTH (14:09), no hasta Chengdu East
        (14:20): para ahí antes y queda más cerca de Kuanzhai.
-     · La salida a Chongqing del 13 es a las 7:10, con el G8605 de las 8:17 a
+     · La salida a Chongqing del 13 es a las 8:15, con el G8607 de las 9:19 a
        Shapingba. Vive en el día de Chongqing (CQ_DIA1_V2, migrarChongqingV2).
      · Salen del itinerario la ópera de Sichuan, Leshan, Jinli y Taikoo Li,
        que no estaban en su lista. Quedan en el catálogo.
@@ -3920,12 +3924,12 @@ const YS_DIA2_2027=[
        ~20:50, a dormir temprano.
        Salieron lo de mercado (antojitos de Kuanzhai, Fuqin), los shows de
        luces (Twin Towers, SKP) y la ópera: quedan en el catálogo.
-     · Miércoles 12, con chofer hasta la cena (~11 h; 4 traslados, uno de 1 h 30):
+     · Miércoles 12, con chofer todo el día (5 traslados, uno de 1 h 30):
        pandas a las 7:30, comida buena al pie de Qingcheng (Qingcheng Jia), el
        monte en versión corta (teleférico de subida y de bajada) y la versión
        corta de la obra de Dujiangyan, que están a 20 min uno de otro. Cena
        casual occidental en Tongzilin y en el hotel ~19:35, porque el jueves
-       salen 7:10. Qingcheng va antes que la obra: su teleférico cierra a las
+       salen 8:15. Qingcheng va antes que la obra: su teleférico cierra a las
        17:00 de lunes a jueves, y la obra deja entrar hasta las 17:30. Nanqiao
        iluminado salió del día (queda en el catálogo).
      · Pandas: el Dujiangyan Panda Base está CERRADO por remodelación desde
@@ -4022,7 +4026,7 @@ const CD_LLEGADA_2027=[
 const CD_FUERA_DEL_DIA=[
   {cid:"cd-opera",name:"Ópera de Sichuan en el Teatro Provincial",type:"tour",dur:70,
    note:"<b>Fuera del itinerario:</b> salió del martes para dormir temprano, y el miércoles no conviene: "+
-        "llegan cansados de los pandas, Qingcheng y la obra, y el jueves salen 7:10.<br>"+
+        "llegan cansados de los pandas, Qingcheng y la obra, y el jueves salen temprano a Chongqing.<br>"+
         "<b>Furong Guocui (芙蓉国粹)</b>, del Teatro Provincial de Ópera de Sichuan (四川省川剧院, 指挥街108号): "+
         "~70 min a las 20:00, con el cambio de máscaras, fuego, títeres y sombras chinescas. Boletos desde "+
         "¥80 en Klook o Trip.com."},
@@ -4058,19 +4062,18 @@ const CD_FUERA_DEL_DIA=[
 /* Miércoles 12, con chofer todo el día: pandas a la apertura, comida buena al
    pie de Qingcheng, el monte en su versión corta (teleférico de subida y de
    bajada) y la versión corta de la obra de Dujiangyan, que están a 20 min uno
-   de otro. El chofer los deja a cenar en Tongzilin (~18:15, ahí termina) y
-   regresan en DiDi, ~19:35 en el hotel: el jueves salen 7:10 a Chongqing. No
-   hay nada occidental confirmado a 5 min del hotel; el restaurante del hotel
-   queda como opción a preguntar. El costo del chofer va completo en
+   de otro. Cena casual occidental en Tongzilin (a 5 min a pie del hotel no
+   hay nada occidental confirmado) y el chofer los deja en el hotel ~19:35: el
+   jueves salen 8:15 a Chongqing. El costo del chofer va completo en
    cd-ir-pandas.
    Qingcheng va antes que la obra porque su teleférico cierra a las 17:00 de
    lunes a jueves, y la obra deja entrar hasta las 17:30. */
 const CD_DIA2_2027=[
   {cid:"cd-ir-pandas",name:"Con el chofer a la base de pandas",type:"transfer",dur:35,fixed:"06:55",
-   costos:[["Chofer con coche, ~11 h y ~200 km, ~¥1,200-1,600",3800]],
+   costos:[["Chofer con coche todo el día, ~¥1,300-1,800 (~13 h, ~200 km)",4300]],
    note:"<b>6:55 · el chofer los recoge en el hotel.</b> ~35 min al noreste, a la <b>Puerta Sur: "+
         "成都大熊猫繁育研究基地 南大门</b>, la más cercana a los recintos principales.<br>"+
-        "<b>Es el mismo coche todo el día</b>, hasta dejarlos a cenar en Tongzilin: ahí pueden dejar sus "+
+        "<b>Es el mismo coche todo el día</b>, hasta dejarlos en el hotel después de cenar: ahí pueden dejar sus "+
         "cosas, y no tienen que buscar taxi a la salida de la base ni en el centro de Dujiangyan, que es "+
         "peatonal.<br>"+
         "<i>Desayuno: a esta hora el del hotel seguramente no ha abierto. Pídanlo para llevar o compren algo "+
@@ -4147,8 +4150,7 @@ const CD_DIA2_2027=[
   {cid:"cd-regreso-dj",name:"Con el chofer a la cena, en Tongzilin",type:"transfer",dur:75,
    costos:[],
    note:"<b>17:00 · ~1 h 15</b> a <b>Tongzilin (桐梓林)</b>, el barrio de los extranjeros, al sur del centro: "+
-        "ahí están los restaurantes occidentales de siempre.<br>"+
-        "<b>Ahí termina el servicio del chofer</b>, hacia las 18:15: ~11 h 20 desde las 6:55."},
+        "ahí están los restaurantes occidentales de siempre. El chofer los espera mientras cenan."},
   {cid:"cd-cena",name:"Cena casual occidental en Tongzilin",type:"food",dur:60,
    costos:[["Cena (2)",680]],
    note:"<b>18:15 · para descansar de la comida china:</b>"+
@@ -4156,112 +4158,121 @@ const CD_DIA2_2027=[
         "años. Hamburguesas, quesadillas, <i>cheesesteak</i> y helado casero.</li>"+
         "<li><b>Mike's Pizza Kitchen</b> (桐梓林路4号附7号): pizza estilo americano.</li></ul>"+
         "<i>Confirmen en el mapa que sigan abiertas antes de llegar.</i><br>"+
-        "<b>¿Y a 5 min del hotel?</b> No encontré nada occidental confirmado tan cerca: alrededor hay "+
-        "comida de Sichuan. Lo más cercano es el restaurante del propio hotel (花园餐厅, a la carta); "+
-        "pregunten al llegar el martes si tiene platos occidentales. Si sí, el chofer los deja en el hotel "+
-        "~18:10 y cenan ahí."},
-  {cid:"cd-fin-mie",name:"DiDi al hotel, a descansar",type:"transfer",dur:20,
-   costos:[["Taxi o DiDi (2)",80]],
-   note:"<b>~20 min en DiDi o taxi</b> (~¥30). Llegan ~19:35.<br>"+
-        "<b>Para el taxista:</b> 川行隐里酒店, 十二桥路19号.<br>"+
-        "<b>⚠ Mañana salen a las 7:10 a Chongqing:</b> dejen las maletas casi hechas y el check-out pagado."}
+        "<i>¿Por qué tan lejos? A 5 min a pie del hotel no hay nada occidental confirmado: alrededor es "+
+        "comida de Sichuan.</i>"},
+  {cid:"cd-fin-mie",name:"Con el chofer al hotel, a descansar",type:"transfer",dur:20,
+   costos:[],
+   note:"<b>~20 min.</b> Llegan ~19:35, y ahí termina el servicio del chofer (~12 h 40).<br>"+
+        "<b>⚠ Mañana salen a las 8:15 a Chongqing:</b> dejen las maletas casi hechas y el check-out pagado."}
 ];
 /* ---- Chongqing, versión 2: jueves 13 y la mañana del viernes 14 ----
    Reemplaza a CQ_DIA1_2027 / ZJJ_DIA1_2027 (que siguen arriba como la siembra
    original). La dueña es migrarChongqingV2, que corre DESPUÉS de migrarRuta:
    cq-arrive y zjj-arrive son llegadas "propio", y el paso 7 solo les pone la
-   hora de salida de ROUTE (07:10 y 12:40).
+   hora de salida de ROUTE (08:15 y 12:40).
+
+   El jueves es el plan que ellos armaron: que los recojan en la estación,
+   comer en Raffles City, la plaza Chaotianmen y el barco de la noche desde el
+   muelle 9 de Chaotianmen; cenar en el hotel y dormir. Se le agregó el
+   mirador del Crystal (están ahí mismo) y el descanso en el hotel.
 
    Horarios verificados en la web (oct 2026):
-     · G8605 Chengdu East 8:17 → Shapingba 9:37, con solo dos paradas. Shapingba
-       es la estación más cerca de Jiefangbei: Chongqing Station (Caiyuanba) está
-       en obra hasta 2028. Respaldo: G8607 9:19 → 10:22.
+     · El mejor tren sale de CHENGDU EAST: los G del 成渝高铁 a Shapingba hacen
+       ~1 h. De Chengdu Station o Chengdu West solo hay D a Chongqing West o
+       North de ~2 h 15. G8607 9:19 → Shapingba 10:22 (respaldos: G8609 9:25,
+       G8605 8:17). Shapingba tiene la línea 1 directa a Chaotianmen.
+       Chongqing Station (Caiyuanba), la del centro, está en obra hasta 2028.
+     · Como la primera actividad es la comida, ya no hace falta el tren de las
+       8:17: con el de las 9:19 salen del hotel 8:15, después del miércoles largo.
+     · Barco del muelle 9 de Chaotianmen (精品游): ¥138, ~45 min, salidas de
+       19:10 a 21:00. El de las 20:00 es el bueno: la ciudad se prende toda a
+       las 20:00 (el sol se mete a las 19:37 el 13 de mayo).
      · G2433 Chongqing EAST 13:55 → Zhangjiajie West 16:27, por la vía rápida
        nueva hasta Qianjiang. Chongqing East es la estación nueva de Nan'an, a
-       ~40 min en taxi de Jiefangbei. Respaldos: G3375 12:14 y G2435 15:07.
-     · Teleférico del Yangtsé 8:00-22:00, ¥30 sencillo / ¥50 redondo. Hongyadong
-       se prende al anochecer (~19:30) hasta las 23:00. Los barcos de la noche
-       salen de 19:30 a 22:00. El sol se mete a las 19:37 el 13 de mayo.
+       ~40 min en taxi del centro. Respaldos: G3375 12:14 y G2435 15:07.
+     · Teleférico del Yangtsé 8:00-22:00, ¥30 sencillo / ¥50 redondo: va el
+       viernes a las 9:00, porque al atardecer la fila pasa de una hora.
 
-   Por qué así:
-     · El teleférico pasó a la mañana del viernes: al atardecer la fila es de
-       más de una hora, y un viernes a las 9:00 casi no hay.
-     · Ciqikou salió del día (queda en el catálogo): Eling Erchang está pegado a
-       Liziba, y eso deja lugar para descansar en el hotel antes de la noche.
-     · A Zhangjiajie en la tarde: allá el 14 es solo llegar, porque el parque es
-       el 15 a las 7:30. Salir temprano no gana nada allá y aquí quita la mañana. */
+   A Zhangjiajie en la tarde: allá el 14 es solo llegar, porque el parque es
+   el 15 a las 7:30. Salir temprano no gana nada allá y aquí quita la mañana. */
 const CQ_DIA1_V2=[
-  {cid:"cq-arrive",name:"Check-out y taxi a Chengdu East",type:"transfer",dur:67,fixed:"07:10",
+  {cid:"cq-arrive",name:"Check-out y taxi a Chengdu East",type:"transfer",dur:64,fixed:"08:15",
    costos:[["Taxi hotel → Chengdu East (2)",160]],
-   note:"<b>7:10 · ~40 min en taxi</b> (~¥60) a <b>Chengdu East (成都东站)</b>. Con el check-out pagado desde "+
-        "la noche anterior, salen directo.<br>"+
+   note:"<b>8:15 · ~40 min en taxi</b> (~¥60) a <b>Chengdu East (成都东站)</b>. Con el check-out pagado desde "+
+        "la noche anterior, salen directo. Ya da tiempo de desayunar en el hotel.<br>"+
+        "<b>Por qué Chengdu East:</b> ahí salen los trenes rápidos a Chongqing, de ~1 h. De Chengdu Station o "+
+        "Chengdu West solo hay trenes D de más de 2 h.<br>"+
         "<b>En la estación:</b> filtro con pasaporte (si la máquina no lo lee, la fila con personal, "+
         "人工通道), revisión de maletas, y en las pantallas buscan el número del tren para ver la sala y la "+
         "puerta (检票口). Se aborda con el pasaporte, sin boleto de papel, y la puerta cierra 5 min antes.<br>"+
         "<i>La línea 2 del metro va directo de Tonghuimen a Chengdu East, pero a esa hora va llena: con "+
-        "maletas, taxi.</i><br>"+
-        "<i>Desayuno: el del hotel quizá no ha abierto; en la estación hay dónde comprar algo.</i>"},
-  {cid:"cq-tren",name:"Tren G8605 · Chengdu East → Shapingba",type:"transfer",dur:80,fixed:"08:17",
-   costos:[["Tren G8605, 2a clase, ~¥100-160 c/u (2)",760]],
-   note:"<b>8:17 → 9:37 · 1 h 20, con solo dos paradas</b> (Neijiang North y Dazu South).<br>"+
-        "<b>Compren hasta Shapingba (沙坪坝):</b> de las estaciones de Chongqing es la más cerca del centro. La "+
-        "que está en el centro mismo, Chongqing Station, está en obra hasta 2028.<br>"+
-        "<b>Si se agota:</b> el <b>G8607</b> 9:19 → 10:22 a la misma estación, todavía más rápido (1 h 03), "+
-        "saliendo del hotel a las 8:15. Pierden una hora en Chongqing, nada más.<br>"+
+        "maletas, taxi.</i>"},
+  {cid:"cq-tren",name:"Tren G8607 · Chengdu East → Shapingba",type:"transfer",dur:63,fixed:"09:19",
+   costos:[["Tren G8607, 2a clase, ~¥100-160 c/u (2)",760]],
+   note:"<b>9:19 → 10:22 · 1 h 03.</b><br>"+
+        "<b>Compren hasta Shapingba (沙坪坝):</b> es la estación más cerca del centro, con la línea 1 del metro "+
+        "directa a Chaotianmen. La que está en el centro mismo, Chongqing Station, está en obra hasta 2028.<br>"+
+        "<b>Si se agota:</b> el <b>G8609</b> 9:25 → 10:27, a la misma estación, o el <b>G8605</b> 8:17 → 9:37 "+
+        "(salir del hotel 7:15).<br>"+
         "<b>⚠ La venta abre ~15 días antes</b> (alrededor del 28 de abril), con pasaporte.<br>"+
         "<i>Horario vigente hoy. Está por abrir una vía nueva Chengdu–Chongqing de ~50 min (成渝中线, de "+
-        "Chengdu Station a Chongqing North); si ya opera en mayo, puerta a puerta sale parecido.</i>"},
-  {cid:"cqd1-checkin",name:"Shapingba → hotel y dejar maletas",type:"transfer",dur:50,
-   costos:[["Taxi Shapingba → hotel (2)",120]],
-   note:"<b>~30 min en taxi</b> (~¥40) de Shapingba al hotel en Jiefangbei / Yuzhong. Sigan las señales de "+
-        "taxi (出租车).<br>"+
-        "<i>En metro es la línea 1 directo a Xiaoshizi o Jiaochangkou, ~25 min, pero con maletas, taxi.</i><br>"+
-        "Si el cuarto no está listo, dejen las maletas en recepción y arranquen."},
-  {cid:"cq-shibati",name:"Jiefangbei y Shibati, el barrio de las escaleras",type:"sight",dur:90,fixed:"10:30",
-   note:"<b>A pie desde el hotel.</b> Jiefangbei (解放碑) es el corazón de la ciudad, y a ~10 min bajan las "+
-        "escalinatas de <b>Shibati (十八梯)</b>: el barrio viejo colgado de la ladera, restaurado, con casas "+
-        "de té, artesanías y puestos de comida. <b>Gratis y siempre abierto.</b><br>"+
-        "<i>Aquí se entiende lo de la ciudad \"8D\": calles a distintos niveles, unas encima de otras.</i>"},
-  {cid:"cq-xiaomian",name:"Comida: xiaomian (fideos picantes locales)",type:"food",dur:60,fixed:"12:00",
-   costos:[["Xiaomian (2)",150]],
-   note:"<b>El plato de diario de la ciudad:</b> fideos en caldo con chile y pimienta de Sichuan. Se pide por "+
-        "<i>liang</i>: con 2 liang cada uno alcanza de sobra.<br>"+
-        "En Shibati mismo y alrededor de Jiaochangkou hay varios. <i>Puestos de barrio, sin menú en inglés y "+
-        "baratísimos: eso es buena señal.</i>"},
-  {cid:"cq-liziba",name:"Liziba: el metro que atraviesa el edificio",type:"sight",dur:60,fixed:"13:00",
-   note:"<b>Línea 2 desde Jiaochangkou</b>, donde empieza: ~15 min. Llegan en el mismo monorriel que entra "+
-        "por el piso 6 de un edificio de departamentos, porque la estación está adentro.<br>"+
-        "<i>La foto es desde el mirador de abajo, cruzando la calle: desde el andén no se ve nada. Pasa un "+
-        "tren cada pocos minutos.</i>"},
-  {cid:"cq-eling",name:"Eling Erchang: la imprenta vieja sobre el río",type:"sight",dur:90,fixed:"14:00",
-   note:"<b>De Liziba, 5 min en taxi cuesta arriba</b> (~¥10). La antigua imprenta de billetes del banco "+
-        "central, de la época de la República, convertida en barrio de cafés, galerías y tiendas, colgado "+
-        "sobre el río Jialing. <b>Gratis.</b><br>"+
-        "Busquen una terraza con vista para un café: desde ahí se ven los puentes y los edificios trepando "+
-        "las laderas.<br>"+
-        "<i>Si prefieren pueblo antiguo y casas de té, el cambio es Ciqikou (línea 1, ~25 min), que sigue en "+
-        "el catálogo.</i>"},
-  {cid:"cq-descanso",name:"Descanso en el hotel",type:"rest",dur:120,fixed:"15:45",
-   note:"<b>15:45 · en el hotel</b>, después de ~15 min de taxi desde Eling. Llevan en pie desde las 7:10, "+
-        "y la noche es lo mejor de Chongqing."},
-  {cid:"cq-hotpot",name:"Hotpot de Chongqing — la cuna del hotpot",type:"food",dur:90,fixed:"18:00",
-   costos:[["Hotpot Chongqing (2)",700]],
-   note:"<b>Aquí nació.</b> Sartén de nueve cuadros, caldo de sebo de res y chile. Si no aguantan el "+
-        "<i>mala</i>, pidan <b>yuanyang</b>: mitad picante, mitad caldo suave.<br>"+
-        "<b>18:00, temprano a propósito:</b> hay menos fila, y quedan libres para Hongyadong cuando se prende.<br>"+
-        "<i>Escojan uno lleno de gente de aquí, cerca de Jiefangbei. Los de la entrada de Hongyadong son para "+
-        "turistas.</i>"},
-  {cid:"cq-hongya",name:"Hongyadong iluminado (las casas colgantes)",type:"sight",dur:60,fixed:"19:45",
-   note:"<b>A pie desde Jiefangbei, ~10-15 min.</b> Las casas colgantes <i>diaojiaolou</i> se prenden al "+
-        "anochecer (~19:30) y siguen así hasta las 23:00. El sol se mete a las 19:37, y a las 20:00 ya está "+
-        "prendida toda la ciudad.<br>"+
-        "<i>La foto buena es desde el puente Qiansimen (千厮门大桥), de frente, no desde adentro.</i>"},
-  {cid:"cq-cruise",name:"Crucero nocturno por los dos ríos (opcional)",type:"tour",dur:60,fixed:"21:00",
-   costos:[["Crucero dos ríos, ~¥100-130 c/u en línea (2)",650]],
-   note:"<b>Muelle de Hongyadong o de Chaotianmen</b> (~15 min a pie). Una hora por el Yangtsé y el Jialing "+
-        "con el skyline encendido. Hay barcos de 19:30 a 22:00, y los buenos son los de después de las "+
-        "20:00, cuando ya está todo prendido. Compren en Trip.com o en el muelle.<br>"+
-        "<i>Es el opcional del día: si se hizo largo, Hongyadong ya dejó la foto. Mañana no hay que madrugar.</i>"}
+        "Chengdu Station a Chongqing North); si ya opera en mayo, revísenla: Chengdu Station queda a ~15 min "+
+        "del hotel.</i>"},
+  {cid:"cqd1-checkin",name:"Los recogen en Shapingba · hotel y maletas",type:"transfer",dur:45,
+   costos:[["Pick-up reservado Shapingba → hotel (2)",540]],
+   note:"<b>10:22 · los recoge un coche reservado</b> a la salida del tren, ~35 min al centro. Si su hotel es el "+
+        "InterContinental de Raffles City, los deja ahí mismo; si no, pasa primero al hotel a dejar las "+
+        "maletas.<br>"+
+        "<i>Se reserva en Trip.com o Klook (\"Chongqing railway station transfer\") o con el hotel. Si algo "+
+        "falla: la línea 1 del metro va directo de Shapingba a Chaotianmen (~35 min), o la fila de taxis "+
+        "(出租车).</i>"},
+  {cid:"cq-crystal",name:"Raffles City: el mirador del Crystal",type:"sight",dur:45,fixed:"11:15",
+   costos:[["Mirador, ¥120 c/u (2)",650]],
+   note:"<b>11:15 · Raffles City (重庆来福士)</b>, en la punta de la península, donde nació la ciudad: ocho "+
+        "torres y, arriba, <b>el Crystal</b>, un rascacielos acostado a ~250 m de altura que une cuatro de "+
+        "ellas.<br>"+
+        "Su mirador (探索舱) da a donde se juntan los dos ríos. ¥120 por persona, de 10:00 a 22:00.<br>"+
+        "<i>Sugerencia mía: están ahí mismo para comer, y es la vista más alta de la ciudad.</i>"},
+  {cid:"cq-hotpot",name:"Comida en Raffles City: hotpot de Chongqing",type:"food",dur:75,fixed:"12:00",
+   costos:[["Hotpot (2)",810]],
+   note:"<b>12:00 · aquí nació el hotpot</b>, y la cena es en el hotel: la comida es el momento.<br>"+
+        "En Raffles City hay hotpot de las casas de aquí, como <b>Dezhuang (德庄火锅)</b>. Sartén de nueve "+
+        "cuadros, caldo de sebo de res y chile. Si no aguantan el <i>mala</i>, pidan <b>yuanyang</b>: mitad "+
+        "picante, mitad caldo suave.<br>"+
+        "<i>Si prefieren algo sin picante: Botanica, el restaurante del InterContinental de Raffles City, "+
+        "en el piso 42, bajo el Crystal.</i>"},
+  {cid:"cq-chaotianmen",name:"Plaza Chaotianmen: donde se juntan los dos ríos",type:"sight",dur:45,
+   fixed:"13:15",
+   note:"<b>13:15 · a pie desde Raffles City.</b> La plaza está en la punta de la península, con riscos de "+
+        "tres lados: abajo se junta el Yangtsé, café, con el Jialing, más verde, y se ve la raya donde se "+
+        "encuentran.<br>"+
+        "Río abajo se ve el <b>puente Chaotianmen sobre el Yangtsé</b> (朝天门长江大桥): cuando lo terminaron, "+
+        "en 2009, era el puente de arco más largo del mundo.<br>"+
+        "<i>Gratis y abierta todo el día. Esta noche salen de aquí mismo, del muelle 9.</i>"},
+  {cid:"cq-descanso",name:"Descanso en el hotel",type:"rest",dur:225,fixed:"14:15",
+   costos:[],
+   note:"<b>14:15 · al hotel.</b> Después del miércoles largo, la tarde es para descansar.<br>"+
+        "<i>Si les sobra energía, dos cosas cerca: <b>Hongyadong</b> de día, las casas colgantes, a ~15 min "+
+        "a pie por la orilla del Jialing; o <b>Liziba</b>, el metro que atraviesa un edificio, en metro "+
+        "(~25 min). Hongyadong de noche lo ven desde el barco.</i>"},
+  {cid:"cq-cena-hotel",name:"Cena en el hotel",type:"food",dur:75,fixed:"18:00",
+   costos:[["Cena en el hotel (2)",900]],
+   note:"<b>18:00 · en el hotel</b>, antes del barco, para no cenar a las 21:00.<br>"+
+        "<i>Si es el InterContinental de Raffles City: Botanica, en el piso 42, con vista a los ríos.</i>"},
+  {cid:"cq-cruise",name:"Barco de noche desde el muelle 9 de Chaotianmen",type:"tour",dur:45,fixed:"20:00",
+   costos:[["Barco, ¥138 c/u (2)",750]],
+   note:"<b>20:00 · muelle 9 de Chaotianmen (朝天门9码头)</b>, ~10 min a pie de Raffles City. Lleguen a las "+
+        "19:30.<br>"+
+        "Una vuelta de ~45 min por los dos ríos con la ciudad encendida: el <b>puente Huanghuayuan</b>, "+
+        "<b>Hongyadong</b> iluminado, el <b>Gran Teatro de Chongqing</b> en la otra orilla, el parque "+
+        "Binjiang y la confluencia.<br>"+
+        "<b>Por qué el de las 20:00:</b> el sol se mete a las 19:37 y la ciudad se termina de prender a las "+
+        "20:00. Hay barcos de 19:10 a 21:00.<br>"+
+        "<i>¥138 por persona, en Trip.com o Klook. Lo hacen los barcos Jinbi (金碧女王 / 金碧皇宫).</i>"},
+  {cid:"cq-fin",name:"Al hotel, a dormir",type:"transfer",dur:15,
+   costos:[],
+   note:"<b>~20:45 · a pie</b> (o 5 min en taxi si el hotel está en Jiefangbei).<br>"+
+        "Mañana: teleférico a las 9:00 y tren a Zhangjiajie a las 13:55."}
 ];
 /* Viernes 14 · mañana en Chongqing y tren de la tarde a Zhangjiajie. Va en el
    primer día de Zhangjiajie porque esa noche ya se duerme en Wulingyuan. */
@@ -4363,7 +4374,7 @@ function migrarYangshuo(s){
 /* Dueño de Chengdu: sus dos días, su hotel y sus pendientes. La salida a
    Chongqing del 13 es de migrarChongqingV2 (vive en el día de Chongqing). */
 function migrarChengdu(s){
-  if(s.cdPlanV11)return;
+  if(s.cdPlanV12)return;
   const cd=s.bases&&s.bases.chengdu;
   if(cd&&Array.isArray(cd.catalog)){
     sembrarDia(cd,0,CD_LLEGADA_2027,"07:00");
@@ -4412,13 +4423,13 @@ function migrarChengdu(s){
       else s.esenciales.push({...E});
     });
   }
-  s.cdPlanV11=true;
+  s.cdPlanV12=true;
 }
 /* Dueño de Chongqing desde v30: el jueves 13 completo (con la salida de
    Chengdu ya desglosada) y la mañana del viernes 14 con el tren a Zhangjiajie,
    que vive en el primer día de Zhangjiajie. Ver CQ_DIA1_V2. */
 function migrarChongqingV2(s){
-  if(s.cqPlanV2)return;
+  if(s.cqPlanV3)return;
   // sembrarDia no toca los costos de lo que ya existía: estos van explícitos
   const costos=(base,lista)=>lista.forEach(a=>{
     const x=a.costos&&base.catalog.find(y=>y.cid===a.cid);
@@ -4426,7 +4437,7 @@ function migrarChongqingV2(s){
   });
   const cq=s.bases&&s.bases.chongqing;
   if(cq&&Array.isArray(cq.catalog)){
-    sembrarDia(cq,0,CQ_DIA1_V2,"07:10");
+    sembrarDia(cq,0,CQ_DIA1_V2,"08:15");
     costos(cq,CQ_DIA1_V2);
   }
   const zj=s.bases&&s.bases.zjj;
@@ -4435,13 +4446,13 @@ function migrarChongqingV2(s){
     costos(zj,ZJJ_DIA1_V2);
   }
   if(Array.isArray(s.esenciales)){
-    [ESSENTIAL_TREN_CQ,ESSENTIAL_TREN_ZJJ].forEach(E=>{
+    [ESSENTIAL_TREN_CQ,ESSENTIAL_PICKUP_CQ,ESSENTIAL_TREN_ZJJ].forEach(E=>{
       const e=s.esenciales.find(x=>x.id===E.id);
       if(e)Object.assign(e,{t:E.t,s:E.s});
       else s.esenciales.push({...E});
     });
   }
-  s.cqPlanV2=true;
+  s.cqPlanV3=true;
 }
 /* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
 function freshBlankTrip(titulo){
