@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v30.7 · 6 oct 2026 · Chongqing: el jueves de Raffles City, Chaotianmen y el barco de noche";
+const APP_VERSION="v30.8 · 16 oct 2026 · Chongqing: con su hotel, el InterContinental Raffles City";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -1606,8 +1606,8 @@ const ESSENTIAL_TREN_CQ={id:"ess-tren-cq",t:"Boleto de tren Chengdu → Chongqin
   s:"jueves 13, G8607 9:19 de Chengdu East HASTA SHAPINGBA (llega 10:22) · la venta abre ~15 días antes "+
     "(28 abr) · si se agota: G8609 9:25, misma ruta"};
 const ESSENTIAL_PICKUP_CQ={id:"ess-pickup-cq",t:"Pick-up en Shapingba (Chongqing)",
-  s:"jueves 13 a las 10:22, del tren G8607 al hotel · Trip.com o Klook (\"Chongqing railway station "+
-    "transfer\") o con el hotel · ~¥150-250"};
+  s:"jueves 13 a las 10:22, del tren G8607 al InterContinental Raffles City (长江滨江路2号) · Trip.com o "+
+    "Klook (\"Chongqing railway station transfer\") o con el hotel, +86 23 8988 8888 · ~¥150-250"};
 const ESSENTIAL_TREN_ZJJ={id:"ess-tren-zjj",t:"Boleto de tren Chongqing → Zhangjiajie",
   s:"viernes 14, G2433 13:55 de Chongqing EAST (重庆东) → Zhangjiajie West 16:27 · la venta abre ~15 días "+
     "antes (29 abr) · respaldo: G3375 12:14 o G2435 15:07"};
@@ -4171,10 +4171,13 @@ const CD_DIA2_2027=[
    cq-arrive y zjj-arrive son llegadas "propio", y el paso 7 solo les pone la
    hora de salida de ROUTE (08:15 y 12:40).
 
-   El jueves es el plan que ellos armaron: que los recojan en la estación,
-   comer en Raffles City, la plaza Chaotianmen y el barco de la noche desde el
-   muelle 9 de Chaotianmen; cenar en el hotel y dormir. Se le agregó el
-   mirador del Crystal (están ahí mismo) y el descanso en el hotel.
+   El jueves es el plan que ellos armaron, con su hotel: el InterContinental
+   Chongqing Raffles City (check-in 15:00, lobby en el piso 42, dentro del
+   Crystal). Los recogen en la estación, dejan maletas, plaza Chaotianmen,
+   hotpot junto a Hongyadong y Hongyadong de día, check-in y descanso, cena
+   en el hotel y el barco de la noche desde el muelle 9 de Chaotianmen. La
+   comida salió de Raffles City (es su hotel) y el mirador del Crystal
+   también: como huéspedes, el Crystal es su lobby.
 
    Horarios verificados en la web (oct 2026):
      · El mejor tren sale de CHENGDU EAST: los G del 成渝高铁 a Shapingba hacen
@@ -4218,50 +4221,61 @@ const CQ_DIA1_V2=[
         "<i>Horario vigente hoy. Está por abrir una vía nueva Chengdu–Chongqing de ~50 min (成渝中线, de "+
         "Chengdu Station a Chongqing North); si ya opera en mayo, revísenla: Chengdu Station queda a ~15 min "+
         "del hotel.</i>"},
-  {cid:"cqd1-checkin",name:"Los recogen en Shapingba · hotel y maletas",type:"transfer",dur:45,
+  {cid:"cqd1-checkin",name:"Los recogen en Shapingba · maletas en el hotel",type:"transfer",dur:45,
    costos:[["Pick-up reservado Shapingba → hotel (2)",540]],
-   note:"<b>10:22 · los recoge un coche reservado</b> a la salida del tren, ~35 min al centro. Si su hotel es el "+
-        "InterContinental de Raffles City, los deja ahí mismo; si no, pasa primero al hotel a dejar las "+
-        "maletas.<br>"+
+   note:"<b>10:22 · los recoge un coche reservado</b> a la salida del tren y los lleva al <b>InterContinental "+
+        "Chongqing Raffles City</b> (长江滨江路2号), ~35 min.<br>"+
+        "<b>El check-in es a las 15:00:</b> dejen las maletas en el hotel y salgan ligeros. Para cuando "+
+        "regresen ya tienen el cuarto.<br>"+
         "<i>Se reserva en Trip.com o Klook (\"Chongqing railway station transfer\") o con el hotel. Si algo "+
-        "falla: la línea 1 del metro va directo de Shapingba a Chaotianmen (~35 min), o la fila de taxis "+
-        "(出租车).</i>"},
-  {cid:"cq-crystal",name:"Raffles City: el mirador del Crystal",type:"sight",dur:45,fixed:"11:15",
-   costos:[["Mirador, ¥120 c/u (2)",650]],
-   note:"<b>11:15 · Raffles City (重庆来福士)</b>, en la punta de la península, donde nació la ciudad: ocho "+
-        "torres y, arriba, <b>el Crystal</b>, un rascacielos acostado a ~250 m de altura que une cuatro de "+
-        "ellas.<br>"+
-        "Su mirador (探索舱) da a donde se juntan los dos ríos. ¥120 por persona, de 10:00 a 22:00.<br>"+
-        "<i>Sugerencia mía: están ahí mismo para comer, y es la vista más alta de la ciudad.</i>"},
-  {cid:"cq-hotpot",name:"Comida en Raffles City: hotpot de Chongqing",type:"food",dur:75,fixed:"12:00",
-   costos:[["Hotpot (2)",810]],
-   note:"<b>12:00 · aquí nació el hotpot</b>, y la cena es en el hotel: la comida es el momento.<br>"+
-        "En Raffles City hay hotpot de las casas de aquí, como <b>Dezhuang (德庄火锅)</b>. Sartén de nueve "+
-        "cuadros, caldo de sebo de res y chile. Si no aguantan el <i>mala</i>, pidan <b>yuanyang</b>: mitad "+
-        "picante, mitad caldo suave.<br>"+
-        "<i>Si prefieren algo sin picante: Botanica, el restaurante del InterContinental de Raffles City, "+
-        "en el piso 42, bajo el Crystal.</i>"},
+        "falla: la línea 1 del metro va directo de Shapingba a Chaotianmen (~35 min), a 2 min del hotel, o la "+
+        "fila de taxis (出租车).</i>"},
   {cid:"cq-chaotianmen",name:"Plaza Chaotianmen: donde se juntan los dos ríos",type:"sight",dur:45,
-   fixed:"13:15",
-   note:"<b>13:15 · a pie desde Raffles City.</b> La plaza está en la punta de la península, con riscos de "+
+   fixed:"11:15",
+   costos:[],
+   note:"<b>11:15 · a 2 min a pie del hotel.</b> La plaza está en la punta de la península, con riscos de "+
         "tres lados: abajo se junta el Yangtsé, café, con el Jialing, más verde, y se ve la raya donde se "+
         "encuentran.<br>"+
         "Río abajo se ve el <b>puente Chaotianmen sobre el Yangtsé</b> (朝天门长江大桥): cuando lo terminaron, "+
         "en 2009, era el puente de arco más largo del mundo.<br>"+
         "<i>Gratis y abierta todo el día. Esta noche salen de aquí mismo, del muelle 9.</i>"},
-  {cid:"cq-descanso",name:"Descanso en el hotel",type:"rest",dur:225,fixed:"14:15",
+  {cid:"cq-hotpot",name:"Comida: hotpot junto a Hongyadong",type:"food",dur:75,fixed:"12:15",
+   costos:[["Hotpot (2)",450]],
+   note:"<b>12:15 · ~15 min a pie</b> por la orilla del Jialing (o una estación de la línea 1, de "+
+        "Chaotianmen a Xiaoshizi). Aquí nació el hotpot, y la cena es en el hotel: la comida es el momento.<br>"+
+        "<b>Dos casas de barrio, fuera de Raffles City:</b>"+
+        "<ul><li><b>Dong Yanjing (董眼镜火锅, el local original de Hongyadong)</b>, 沧白路75号, frente al "+
+        "mirador de Hongyadong: casi 30 años, la recomiendan los de aquí.</li>"+
+        "<li><b>Xiaoyadong Jiefang (小崖洞街坊老火锅)</b>, en el callejón junto al banco China Merchants de "+
+        "Xiaoshizi: muy bien calificada, ~¥60 por persona.</li></ul>"+
+        "Sartén de nueve cuadros, caldo de sebo de res y chile. Si no aguantan el <i>mala</i>, pidan "+
+        "<b>yuanyang</b>: mitad picante, mitad caldo suave.<br>"+
+        "<i>Las filas largas son en la noche; a mediodía de un jueves se pasa. Confirmen en el mapa que sigan "+
+        "abiertos.</i>"},
+  {cid:"cq-hongya",name:"Hongyadong de día",type:"sight",dur:60,fixed:"13:30",
    costos:[],
-   note:"<b>14:15 · al hotel.</b> Después del miércoles largo, la tarde es para descansar.<br>"+
-        "<i>Si les sobra energía, dos cosas cerca: <b>Hongyadong</b> de día, las casas colgantes, a ~15 min "+
-        "a pie por la orilla del Jialing; o <b>Liziba</b>, el metro que atraviesa un edificio, en metro "+
-        "(~25 min). Hongyadong de noche lo ven desde el barco.</i>"},
+   note:"<b>13:30 · al salir de comer.</b> Las casas colgantes <i>diaojiaolou</i>, once pisos pegados al "+
+        "risco: se entra por arriba, desde la calle Cangbai (沧白路), que es el piso 11, y se baja piso por "+
+        "piso hasta el río.<br>"+
+        "<i>La foto clásica es desde el puente Qiansimen (千厮门大桥), de frente. En la noche lo ven "+
+        "iluminado desde el barco.</i><br>"+
+        "De regreso al hotel, ~15 min a pie por la orilla."},
+  {cid:"cq-descanso",name:"Check-in y descanso en el hotel",type:"rest",dur:180,fixed:"15:00",
+   costos:[],
+   note:"<b>15:00 · justo la hora del check-in.</b> El lobby está en el piso 42, dentro del Crystal, y "+
+        "los cuartos del 44 al 65: la vista de los dos ríos ya es desde el hotel. En el piso 43 hay una "+
+        "alberca infinita de 25 m.<br>"+
+        "<i>Por eso ya no va el mirador del Crystal: como huéspedes, el Crystal es su lobby.</i><br>"+
+        "<i>Si les sobra energía: Liziba, el metro que atraviesa un edificio, a ~25 min en metro.</i>"},
   {cid:"cq-cena-hotel",name:"Cena en el hotel",type:"food",dur:75,fixed:"18:00",
-   costos:[["Cena en el hotel (2)",900]],
-   note:"<b>18:00 · en el hotel</b>, antes del barco, para no cenar a las 21:00.<br>"+
-        "<i>Si es el InterContinental de Raffles City: Botanica, en el piso 42, con vista a los ríos.</i>"},
+   costos:[["Cena en el hotel (2)",1100]],
+   note:"<b>18:00 · antes del barco</b>, para no cenar a las 21:00.<br>"+
+        "En el piso 42, dentro del Crystal: <b>Botanica</b>, el restaurante de todo el día, con carta "+
+        "internacional, o <b>Jing</b>, el restaurante principal del hotel.<br>"+
+        "<i>Reserven mesa junto a la ventana al hacer el check-in.</i>"},
   {cid:"cq-cruise",name:"Barco de noche desde el muelle 9 de Chaotianmen",type:"tour",dur:45,fixed:"20:00",
    costos:[["Barco, ¥138 c/u (2)",750]],
-   note:"<b>20:00 · muelle 9 de Chaotianmen (朝天门9码头)</b>, ~10 min a pie de Raffles City. Lleguen a las "+
+   note:"<b>20:00 · muelle 9 de Chaotianmen (朝天门9码头)</b>, a unos minutos a pie del hotel. Lleguen a las "+
         "19:30.<br>"+
         "Una vuelta de ~45 min por los dos ríos con la ciudad encendida: el <b>puente Huanghuayuan</b>, "+
         "<b>Hongyadong</b> iluminado, el <b>Gran Teatro de Chongqing</b> en la otra orilla, el parque "+
@@ -4271,8 +4285,7 @@ const CQ_DIA1_V2=[
         "<i>¥138 por persona, en Trip.com o Klook. Lo hacen los barcos Jinbi (金碧女王 / 金碧皇宫).</i>"},
   {cid:"cq-fin",name:"Al hotel, a dormir",type:"transfer",dur:15,
    costos:[],
-   note:"<b>~20:45 · a pie</b> (o 5 min en taxi si el hotel está en Jiefangbei).<br>"+
-        "Mañana: teleférico a las 9:00 y tren a Zhangjiajie a las 13:55."}
+   note:"<b>~20:45 · a pie.</b> Mañana: teleférico a las 9:00 y tren a Zhangjiajie a las 13:55."}
 ];
 /* Viernes 14 · mañana en Chongqing y tren de la tarde a Zhangjiajie. Va en el
    primer día de Zhangjiajie porque esa noche ya se duerme en Wulingyuan. */
@@ -4281,23 +4294,25 @@ const ZJJ_DIA1_V2=[
   {cid:"zjjd0-teleferico",name:"Teleférico del Yangtsé y Longmenhao, la orilla sur",type:"sight",dur:150,
    fixed:"09:00",
    costos:[["Teleférico ¥30 c/u y metro de regreso (2)",180]],
-   note:"<b>Antes de salir: check-out y maletas en recepción.</b><br>"+
-        "<b>9:00 · estación Xinhua Lu (新华路151号)</b>, ~10 min a pie de Jiefangbei. El teleférico cruza el "+
+   note:"<b>Antes de salir: check-out (es a las 12:00) y maletas en recepción.</b><br>"+
+        "<b>9:00 · estación Xinhua Lu (新华路151号)</b>, ~5 min en taxi o ~20 min a pie del hotel. El "+
+        "teleférico cruza el "+
         "Yangtsé colgado sobre el agua. 8:00-22:00, ¥30 sencillo o ¥50 redondo, en taquilla o en la cuenta "+
         "oficial de WeChat.<br>"+
         "<b>Por qué en la mañana y no al atardecer:</b> al atardecer y de noche la fila pasa de una hora, y un "+
         "viernes a las 9:00 casi no hay.<br>"+
         "Del otro lado bajan a <b>Longmenhao (龙门浩老街)</b>, la calle vieja de la orilla sur, con casas de "+
         "principios del siglo XX y un mirador con la península enfrente. De regreso, la línea 6 del metro de "+
-        "Shangxinjie (上新街) a Xiaoshizi es <u>una sola estación</u>.<br>"+
+        "Shangxinjie (上新街) a Xiaoshizi es <u>una sola estación</u>, y de ahí son ~10 min a pie al hotel.<br>"+
         "<i>Si llueve: el Museo de las Tres Gargantas, gratis con pasaporte (9:00-17:00).</i>"},
-  {cid:"zjjd0-comida",name:"Comida cerca del hotel",type:"food",dur:60,fixed:"11:30",
+  {cid:"zjjd0-comida",name:"Comida en Raffles City, abajo del hotel",type:"food",dur:60,fixed:"11:30",
    costos:[["Comida (2)",350]],
-   note:"Sin prisa y cerca del hotel: a las 12:40 pasan por las maletas.<br>"+
+   note:"<b>11:30 · en el centro comercial de Raffles City</b>, abajo del hotel: hay de todo y a las 12:40 "+
+        "pasan por las maletas sin moverse de ahí.<br>"+
         "<i>Algo ligero, que vienen 2 h 30 de tren.</i>"},
   {cid:"zjj-arrive",name:"Maletas y taxi a Chongqing East",type:"transfer",dur:75,fixed:"12:40",
    costos:[["Taxi hotel → Chongqing East (2)",130]],
-   note:"<b>12:40 · ~40 min en taxi</b> (~¥40-50) a <b>Chongqing East (重庆东站)</b>, la estación nueva del "+
+   note:"<b>12:40 · ~40 min en taxi</b> (~¥40-50; el hotel se los pide) a <b>Chongqing East (重庆东站)</b>, la estación nueva del "+
         "lado de Nan'an. <u>No es Chongqing North ni West</u>: de esas no sale este tren.<br>"+
         "<i>En metro es la línea 6, con cambio en el mismo andén en Liujiaping, ~40 min; con maletas, taxi.</i><br>"+
         "En la estación, lo mismo que en Chengdu: pasaporte, revisión y la pantalla con el número del tren."},
@@ -4429,7 +4444,7 @@ function migrarChengdu(s){
    Chengdu ya desglosada) y la mañana del viernes 14 con el tren a Zhangjiajie,
    que vive en el primer día de Zhangjiajie. Ver CQ_DIA1_V2. */
 function migrarChongqingV2(s){
-  if(s.cqPlanV3)return;
+  if(s.cqPlanV4)return;
   // sembrarDia no toca los costos de lo que ya existía: estos van explícitos
   const costos=(base,lista)=>lista.forEach(a=>{
     const x=a.costos&&base.catalog.find(y=>y.cid===a.cid);
@@ -4439,6 +4454,24 @@ function migrarChongqingV2(s){
   if(cq&&Array.isArray(cq.catalog)){
     sembrarDia(cq,0,CQ_DIA1_V2,"08:15");
     costos(cq,CQ_DIA1_V2);
+    // el hotel donde llegan, arriba de la lista y marcado
+    if(Array.isArray(cq.hotels)){
+      let h=cq.hotels.find(x=>/raffles|来福士/i.test(x.name||""));
+      cq.hotels.forEach(x=>{x.chosen=false;});
+      if(h)cq.hotels.splice(cq.hotels.indexOf(h),1);
+      else h={id:uid(),noches:0};
+      Object.assign(h,{name:"InterContinental Chongqing Raffles City (重庆来福士洲际酒店)",
+        area:"长江滨江路2号 · Raffles City, Chaotianmen · metro Chaotianmen a 2 min",
+        note:"<b>No. 2 Changjiang Binjiang Road</b> (长江滨江路2号), Yuzhong, en la punta de la península. "+
+             "Tel. +86 23 8988 8888.<br>"+
+             "<b>Check-in 15:00, check-out 12:00.</b> El lobby está en el piso 42, dentro del Crystal; los "+
+             "cuartos, del 44 al 65, y en el 43 la alberca infinita y el gimnasio.<br>"+
+             "Restaurantes en el piso 42: Botanica (todo el día) y Jing. El muelle 9 de Chaotianmen y la "+
+             "plaza están a pie."+
+             (+h.precio>0?"":"<br><b>⚠ Falta el precio por noche</b> para que cuente en el presupuesto."),
+        chosen:true});
+      cq.hotels.unshift(h);
+    }
   }
   const zj=s.bases&&s.bases.zjj;
   if(zj&&Array.isArray(zj.catalog)){
@@ -4452,7 +4485,7 @@ function migrarChongqingV2(s){
       else s.esenciales.push({...E});
     });
   }
-  s.cqPlanV3=true;
+  s.cqPlanV4=true;
 }
 /* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
 function freshBlankTrip(titulo){
