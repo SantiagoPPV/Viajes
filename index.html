@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v31.1 · 16 oct 2026 · Zhangjiajie: con su hotel en la ciudad (Guanliping)";
+const APP_VERSION="v31.2 · 16 oct 2026 · El día de salida es de la ciudad donde lo pasan";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -3553,30 +3553,36 @@ function migrarRuta(s){
   //    su texto y su duración, y de ROUTE la hora a la que arrancan. Así la
   //    hora a la que aterrizan se calcula sola y no hay que volver a cuadrarla
   //    a mano cada vez que se reordena la ruta.
+  //    Si la parada anterior se quedó con el día de salida (diaSalida), la
+  //    llegada vive en el último día de esa parada, con su propia ficha.
   enRuta.forEach((id,i)=>{
     const st=s.bases[id],cid=ARRIVE_CID[id];
     if(!st||!cid||!Array.isArray(st.catalog))return;
     const x=i>0?getXfer(enRuta[i-1],id):null;
-    const act=st.catalog.find(a=>a.cid===cid);
-    if(act){
-      const fijo=ARRIVE_FIJO[cid];
-      if(fijo&&fijo.propio){
-        // llegada desglosada a detalle por su propia migración (Yangshuo,
-        // Chengdu, Chongqing, Zhangjiajie): aquí solo se le pone la hora de
-        // salida, abajo
-      }else{
-        if(x&&x.dur)act.dur=x.dur;                  // duración puerta a puerta
-        if(fijo){act.name=fijo.name;act.note=fijo.note;}
-        else if(x){
-          const prev=s.bases[enRuta[i-1]];
-          if(prev){act.name=x.mode+" "+prev.name+" → "+st.name;
-                   act.note=x.detail+" · "+x.time;}
+    const dueño=rangoDias(st,s).ini>0?s.bases[enRuta[i-1]]:st;
+    const dia=dueño===st?0:rangoDias(dueño,s).fin-1;
+    [st,dueño].filter((b,j,arr)=>arr.indexOf(b)===j&&Array.isArray(b.catalog)).forEach(b=>{
+      const act=b.catalog.find(a=>a.cid===cid);
+      if(act){
+        const fijo=ARRIVE_FIJO[cid];
+        if(fijo&&fijo.propio){
+          // llegada desglosada a detalle por su propia migración (Yangshuo,
+          // Chengdu, Chongqing, Zhangjiajie): aquí solo se le pone la hora de
+          // salida, abajo
+        }else{
+          if(x&&x.dur)act.dur=x.dur;                  // duración puerta a puerta
+          if(fijo){act.name=fijo.name;act.note=fijo.note;}
+          else if(x){
+            const prev=s.bases[enRuta[i-1]];
+            if(prev){act.name=x.mode+" "+prev.name+" → "+st.name;
+                     act.note=x.detail+" · "+x.time;}
+          }
         }
       }
-    }
+    });
     const sale=routeSale(id);                        // hora de salida, de ROUTE
-    if(sale&&st.schedule&&Array.isArray(st.schedule[0])){
-      const it=st.schedule[0].find(y=>y.ref===cid);
+    if(sale&&dueño.schedule&&Array.isArray(dueño.schedule[dia])){
+      const it=dueño.schedule[dia].find(y=>y.ref===cid);
       if(it)it.fixed=sale;
     }
   });
@@ -3660,6 +3666,7 @@ function normalizeTripState(s){
   migrarChengdu(s);          // y su paso 7 reescribe las llegadas a Chengdu,
   migrarChongqingV2(s);      // Chongqing y Zhangjiajie
   migrarZjjXian(s);          // Zhangjiajie 2 noches y Xi'an 3 (después de migrarRuta)
+  migrarDiaSalida(s);        // al final: mueve días ya sembrados de una parada a otra
   return s;
 }
 /* ---- Llegada a Yangshuo: domingo 9 de mayo de 2027, paso a paso ----
@@ -4731,6 +4738,21 @@ function migrarZjjXian(s){
   }
   s.zxPlanV1=true;s.zxPlanV2=true;
 }
+/* Desde v31.2 el día de salida es de la ciudad donde lo pasan:
+     · viernes 14 → Chongqing (1 noche, 2 días): el tren sale a las 17:32 y
+       llegan a Zhangjiajie a las 20:15, solo a dormir.
+     · domingo 16 → Zhangjiajie (2 noches, sábado y domingo): Tianmen en la
+       mañana y el vuelo a Xi'an en la tarde.
+   pasarDiaSalida mueve cada día tal cual, con sus fichas y costos. Va al
+   final de normalizeTripState, con todos los días ya sembrados. */
+function migrarDiaSalida(s){
+  if(s.dsPlanV1)return;
+  if(s.bases&&s.bases.hk)
+    ["chongqing","zjj"].forEach(id=>{
+      if(s.bases[id]&&s.bases[id].included)pasarDiaSalida(s,id,true);
+    });
+  s.dsPlanV1=true;
+}
 /* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
 function freshBlankTrip(titulo){
   const b=seedCustomBase("Primera parada",0);
@@ -5129,6 +5151,75 @@ const totalNights=()=>activeBases().reduce((s,o)=>s+o.st.nights,0);
 function withDates(){let c=new Date(tripStart());return activeBases().map(o=>{
   const ci=new Date(c),co=addDays(c,o.st.nights);c=co;return{...o,checkin:ci,checkout:co};});}
 
+/* ---- Días de cada parada ----
+   Una parada tiene un día por noche, del día en que llegan (0) al último antes
+   del check-out: el día de la salida es de la parada siguiente, porque ese día
+   se viaja. Con «diaSalida» la parada se queda también con el día del check-out
+   —se van en la tarde y el día se pasa aquí— y la siguiente pierde su día 0
+   (llegan de noche), siempre que le quede otro día. Devuelve los días que se
+   ven: del «ini» al «fin», sin incluirlo; la fecha de cada uno sigue siendo
+   check-in + índice. */
+function rangoDias(st,s){
+  s=s||state;
+  const fin=Math.max(1,+st.nights||1)+(st.diaSalida?1:0);
+  let ini=0;
+  if(st.included&&fin>1){
+    const act=(s.order||[]).filter(id=>s.bases[id]&&s.bases[id].included);
+    const i=act.findIndex(id=>s.bases[id]===st);
+    if(i>0&&s.bases[act[i-1]].diaSalida)ini=1;
+  }
+  return{ini,fin};
+}
+/* «Día 1» es el primer día que se ve de la parada, aunque su índice sea 1. */
+const etiquetaDia=(st,d)=>"Día "+(d-rangoDias(st).ini+1);
+/* « · 2 días» junto a las noches, solo cuando no coinciden. */
+const diasTxt=st=>{const r=rangoDias(st),n=r.fin-r.ini;
+  return n===Math.max(1,+st.nights||1)?"":" · "+n+" día"+(n===1?"":"s");};
+const fijaDia=(st,d)=>{const r=rangoDias(st);return Math.min(Math.max(+d||0,r.ini),r.fin-1);};
+/* Prende o apaga «el día de salida es de aquí» y MUEVE ese día: al prender, lo
+   que había en el día 0 de la parada siguiente (la mañana aquí, el viaje y la
+   llegada) pasa al día nuevo de esta; al apagar, regresa. Cada actividad se
+   lleva su ficha del catálogo, con sus costos, y la ficha sale del catálogo de
+   origen si allá ya no la usa ningún día. */
+function pasarDiaSalida(s,bid,on){
+  const st=s.bases[bid];if(!st||!!st.diaSalida===!!on)return;
+  const act=(s.order||[]).filter(id=>s.bases[id]&&s.bases[id].included);
+  const i=act.indexOf(bid),nxId=st.included&&i>=0?act[i+1]:null,nx=nxId&&s.bases[nxId];
+  // la siguiente solo cede su día 0 si le queda otro; si no, ese día lo comparten
+  const cede=nx&&Math.max(1,+nx.nights||1)+(nx.diaSalida?1:0)>1;
+  const N=Math.max(1,+st.nights||1);            // índice del día del check-out
+  if(cede){if(on)moverDia(nx,0,st,N,nxId,bid);else moverDia(st,N,nx,0,bid,nxId);}
+  st.diaSalida=!!on;
+}
+function moverDia(de,dDe,a,dA,deId,aId){
+  de.schedule=de.schedule||{};a.schedule=a.schedule||{};
+  de.dayStart=de.dayStart||{};a.dayStart=a.dayStart||{};
+  de.catalog=de.catalog||[];a.catalog=a.catalog||[];
+  const items=de.schedule[dDe]||[];if(!items.length)return;
+  const firma=f=>JSON.stringify([f.name,f.type,+f.dur||0,f.note||"",f.src||"",
+    (f.costs||[]).map(c=>[c.label,+c.est||0,+c.real||0])]);
+  const refs=new Set();
+  const movidos=items.map(it=>{
+    const f=de.catalog.find(x=>x.cid===it.ref);if(!f)return it;
+    refs.add(it.ref);
+    // si el destino ya tiene una ficha con ese cid pero distinta (p. ej. un
+    // desayuno de otra duración), va con un cid propio para no cambiar horarios
+    let cid=it.ref;const suf="~"+aId;
+    if(cid.endsWith(suf)){const base=cid.slice(0,-suf.length),y=a.catalog.find(x=>x.cid===base);
+      if(!y||firma(y)===firma(f))cid=base;}
+    let y=a.catalog.find(x=>x.cid===cid);
+    if(y&&firma(y)!==firma(f)){cid=it.ref+"~"+deId;y=a.catalog.find(x=>x.cid===cid);
+      if(y&&firma(y)!==firma(f)){cid=it.ref+"~"+uid();y=null;}}
+    if(!y)a.catalog.push({...JSON.parse(JSON.stringify(f)),cid});
+    return{...it,ref:cid};
+  });
+  if(de.dayStart[dDe])a.dayStart[dA]=de.dayStart[dDe];
+  a.schedule[dA]=movidos.concat(a.schedule[dA]||[]);
+  de.schedule[dDe]=[];
+  const usados=new Set(Object.values(de.schedule).flat().map(x=>x.ref));
+  de.catalog=de.catalog.filter(x=>!refs.has(x.cid)||usados.has(x.cid));
+}
+
 /* ---- Costos ---- */
 const openCost=new Set();
 const legAbierto=new Set();   // tramos con el detalle desplegado
@@ -5138,8 +5229,8 @@ function curSym(){return (CURR[state.currency]||CURR.MXN).s;}
 function fmtMoney(n){n=Math.round(+n||0);return curSym()+n.toLocaleString("es-MX");}
 const actEst=a=>(a.costs||[]).reduce((s,c)=>s+(+c.est||0),0);
 const actReal=a=>(a.costs||[]).reduce((s,c)=>s+(+c.real||0),0);
-function baseActCosts(st){let est=0,real=0;const nd=Math.max(1,st.nights),counts={};
-  for(let d=0;d<nd;d++)(st.schedule[d]||[]).forEach(it=>{counts[it.ref]=(counts[it.ref]||0)+1;});
+function baseActCosts(st){let est=0,real=0;const r=rangoDias(st),counts={};
+  for(let d=r.ini;d<r.fin;d++)(st.schedule[d]||[]).forEach(it=>{counts[it.ref]=(counts[it.ref]||0)+1;});
   (st.catalog||[]).forEach(a=>{const u=counts[a.cid]||0;if(u){est+=actEst(a)*u;real+=actReal(a)*u;}});
   return{est,real};}
 /* ---- Hospedaje: precio por noche × noches del plan ----
@@ -5327,7 +5418,7 @@ function renderCards(){
               [coinc.actividades.length?coinc.actividades.length+" actividad"+(coinc.actividades.length===1?"":"es"):"",
                coinc.lugares.length?coinc.lugares.length+" lugar"+(coinc.lugares.length===1?"":"es"):""]
               .filter(Boolean).join(" · ")||"coincide el nombre"}</div>`:""}</div>
-          <div class="datecol">${on&&dd?`<div class="dr">${fmt(dd.checkin)} → ${fmt(dd.checkout)}</div><div>${st.nights} noche${st.nights===1?'':'s'}</div>`:`<div class="dr">— fuera del plan —</div>`}<div class="basecost">≈ ${fmtMoney(baseTotals(st).est)}</div></div>
+          <div class="datecol">${on&&dd?`<div class="dr">${fmt(dd.checkin)} → ${fmt(dd.checkout)}</div><div>${st.nights} noche${st.nights===1?'':'s'}${diasTxt(st)}</div>`:`<div class="dr">— fuera del plan —</div>`}<div class="basecost">≈ ${fmtMoney(baseTotals(st).est)}</div></div>
           <div class="chev">${st.expanded?'▲':'▼'}</div>
         </div>
         <div class="card-ctl">
@@ -5337,6 +5428,8 @@ function renderCards(){
             <button data-act="inc" data-bid="${b.id}">+</button>
           </div>
           <div class="toggle ${on?'on':''}" data-act="toggle" data-bid="${b.id}"><span class="switch"></span><span>${on?'en el viaje':'excluida'}</span></div>
+          <div class="toggle ${st.diaSalida?'on':''}" data-act="diasalida" data-bid="${b.id}" ${on?'':'style="opacity:.4;pointer-events:none"'}
+            title="Préndelo si se van en la tarde y el día de la salida lo pasan aquí: ese día se vuelve el último de esta parada y la siguiente empieza al día siguiente"><span class="switch"></span><span>el día de salida es de aquí</span></div>
           <div class="basetools">
             <button class="btool" data-act="baseup" data-bid="${b.id}" title="Subir">▲</button>
             <button class="btool" data-act="basedown" data-bid="${b.id}" title="Bajar">▼</button>
@@ -5730,7 +5823,7 @@ function moverSeleccionADia(bid,dia,destino){
     // se queda en el día actual a propósito: mover no debe sacarte de donde estás
   });
   limpiarSeleccion();renderCards();
-  toast(`${n} actividad${n===1?"":"es"} movida${n===1?"":"s"} al día ${destino+1}`,
+  toast(`${n} actividad${n===1?"":"es"} movida${n===1?"":"s"} al ${etiquetaDia(st,destino).toLowerCase()}`,
     {tipo:"ok",accion:{texto:"Deshacer",fn:undo}});
 }
 /* Mueve las marcadas a otra parada (copiando su ficha de catálogo si falta). */
@@ -5741,7 +5834,7 @@ function moverSeleccionABase(bid,dia,destinoBid){
   editar(n===1?"mover actividad a otra parada":`mover ${n} actividades a otra parada`,()=>{
     const ids=new Set(items.map(x=>x.id));
     st.schedule[dia]=(st.schedule[dia]||[]).filter(x=>!ids.has(x.id));
-    const d=Math.min(dst.day||0,Math.max(1,dst.nights)-1);
+    const d=fijaDia(dst,dst.day);
     dst.schedule[d]=dst.schedule[d]||[];
     items.forEach(it=>{
       const act=st.catalog.find(a=>a.cid===it.ref);
@@ -5785,14 +5878,14 @@ function quitarSeleccion(bid,dia){
 function selbarHTML(b,st,dia){
   if(!selActiva(b.id,dia))return"";
   const n=seleccion.size;if(!n)return"";
-  const nDays=Math.max(1,st.nights);
+  const rg=rangoDias(st);
   const dated=withDates().find(o=>o.def.id===b.id);
   const destinos=[];
   const dias=[];
-  for(let d=0;d<nDays;d++){
+  for(let d=rg.ini;d<rg.fin;d++){
     if(d===dia)continue;
     const dt=dated?" · "+fmt(addDays(dated.checkin,d)):"";
-    dias.push({key:"sd:"+d,texto:"Día "+(d+1)+dt,fn:()=>moverSeleccionADia(b.id,dia,d)});
+    dias.push({key:"sd:"+d,texto:etiquetaDia(st,d)+dt,fn:()=>moverSeleccionADia(b.id,dia,d)});
   }
   if(dias.length){destinos.push({label:"A otro día"});destinos.push(...dias);}
   const otras=orderedBases().filter(o=>o.def.id!==b.id);
@@ -5815,15 +5908,15 @@ function selbarHTML(b,st,dia){
 
 /* ---- Menú de acciones de una actividad del día (funciona con el dedo) ---- */
 function itemMenuItems(b,st,dia,r){
-  const nDays=Math.max(1,st.nights);
+  const rg=rangoDias(st);
   const dated=withDates().find(o=>o.def.id===b.id);
   const items=[];
   // mover a otro día de esta misma parada
   const otrosDias=[];
-  for(let d=0;d<nDays;d++){
+  for(let d=rg.ini;d<rg.fin;d++){
     if(d===dia)continue;
     const dt=dated?" · "+fmt(addDays(dated.checkin,d)):"";
-    otrosDias.push({key:"d:"+d,texto:"Día "+(d+1)+dt,fn:()=>moverItemADia(b.id,dia,r.it.id,d)});
+    otrosDias.push({key:"d:"+d,texto:etiquetaDia(st,d)+dt,fn:()=>moverItemADia(b.id,dia,r.it.id,d)});
   }
   if(otrosDias.length){items.push({label:"Mover a otro día"});items.push(...otrosDias);}
   // mover a otra parada
@@ -5847,7 +5940,7 @@ function moverItemADia(bid,dia,itemId,destino){
     st.schedule[destino]=st.schedule[destino]||[];st.schedule[destino].push(m);
     // no se cambia st.day: mover no debe sacarte del día que estás viendo
   });
-  toast("Movida al día "+(destino+1),{tipo:"ok",accion:{texto:"Deshacer",fn:undo}});
+  toast("Movida al "+etiquetaDia(st,destino).toLowerCase(),{tipo:"ok",accion:{texto:"Deshacer",fn:undo}});
 }
 function moverItemABase(bid,dia,itemId,destinoBid){
   const st=state.bases[bid],dst=state.bases[destinoBid];if(!dst)return;
@@ -5858,7 +5951,7 @@ function moverItemABase(bid,dia,itemId,destinoBid){
     // la actividad vive en el catálogo de su parada: cópiala al destino si no existe
     if(act&&!dst.catalog.some(a=>a.cid===act.cid))
       dst.catalog.push(JSON.parse(JSON.stringify(act)));
-    const d=Math.min(dst.day||0,Math.max(1,dst.nights)-1);
+    const d=fijaDia(dst,dst.day);
     dst.schedule[d]=dst.schedule[d]||[];dst.schedule[d].push(m);
   });
   toast("Movida a "+(dst.name||"la otra parada"),{tipo:"ok",accion:{texto:"Deshacer",fn:undo}});
@@ -5880,31 +5973,35 @@ function quitarItem(bid,dia,itemId,nombre){
   toast("Quitada: "+(nombre||"actividad"),{accion:{texto:"Deshacer",fn:undo}});
 }
 
-/* Cuenta actividades que quedaron en días más allá de las noches actuales. */
+/* Cuenta actividades que quedaron en días que no se ven: más allá de las
+   noches actuales o en el día 0 que ahora es de la parada anterior. */
 function actividadesOcultas(st){
-  const nDays=Math.max(1,st.nights);let n=0,dias=[];
+  const r=rangoDias(st);let n=0,dias=[];
   Object.keys(st.schedule||{}).forEach(k=>{
-    const d=+k;if(d>=nDays&&(st.schedule[k]||[]).length){n+=st.schedule[k].length;dias.push(d);}
+    const d=+k;if((d<r.ini||d>=r.fin)&&(st.schedule[k]||[]).length){n+=st.schedule[k].length;dias.push(d);}
   });
   return{n,dias};
 }
 function renderPlan(b,st){
-  const nDays=Math.max(1,st.nights);
-  let cur=st.day||0;if(cur>=nDays)cur=nDays-1;
+  const rg=rangoDias(st);
+  const cur=fijaDia(st,st.day);
   const dated=withDates().find(o=>o.def.id===b.id);
   let bar='<div class="daybar">';
-  for(let d=0;d<nDays;d++){
+  for(let d=rg.ini;d<rg.fin;d++){
     const dt=dated?fmt(addDays(dated.checkin,d)):"";
     const nAct=(st.schedule[d]||[]).length;
-    bar+=`<span class="daychip ${d===cur?'active':''}" data-act="day" data-bid="${b.id}" data-day="${d}">Día ${d+1}<span class="dt">${dt?"· "+dt:""}${nAct?" · "+nAct+" act":""}</span></span>`;
+    bar+=`<span class="daychip ${d===cur?'active':''}" data-act="day" data-bid="${b.id}" data-day="${d}">${etiquetaDia(st,d)}<span class="dt">${dt?"· "+dt:""}${nAct?" · "+nAct+" act":""}</span></span>`;
   }
   bar+=`<span class="startwrap">inicio <input type="time" class="f startinp" data-bid="${b.id}" data-day="${cur}" value="${esc((st.dayStart&&st.dayStart[cur])||'09:00')}"></span></div>`;
 
   /* Aviso: hay actividades guardadas en días que ya no existen (bajaste noches) */
   const oc=actividadesOcultas(st);
+  const ocAntes=oc.dias.length&&oc.dias.every(d=>d<rg.ini);
   if(oc.n)bar+=`<div class="inlinewarn">
-    <span>⚠ ${oc.n} actividad${oc.n===1?"":"es"} quedaron en días ocultos porque esta parada tiene ${st.nights} noche${st.nights===1?"":"s"}.</span>
-    <button data-act="recuperar" data-bid="${b.id}">Traerlas al último día</button>
+    <span>⚠ ${oc.n} actividad${oc.n===1?"":"es"} quedaron en días ocultos porque ${ocAntes
+      ?"el día en que llegan ahora es de la parada anterior"
+      :`esta parada tiene ${st.nights} noche${st.nights===1?"":"s"}`}.</span>
+    <button data-act="recuperar" data-bid="${b.id}">Traerlas al ${ocAntes?"primer":"último"} día</button>
     <button data-act="descartarocultas" data-bid="${b.id}">Descartarlas</button>
   </div>`;
 
@@ -6071,7 +6168,7 @@ function renderFood(b,st){
 
 /* ===================== Actualización en vivo de horas ===================== */
 function refreshVisibleTimes(bid){
-  const st=state.bases[bid];const d=Math.min(st.day||0,Math.max(1,st.nights)-1);
+  const st=state.bases[bid];const d=fijaDia(st,st.day);
   computeDay(st,d).forEach(r=>{
     const el=document.querySelector(`[data-tr="${r.it.id}"]`);
     if(el)el.textContent=toHM(r.s)+"–"+toHM(r.e)+(r.warn?" ⚠":"");
@@ -6204,10 +6301,20 @@ function wireCardEvents(){
       if(a==="dec"){
         const nuevas=Math.max(1,st.nights-1);
         if(nuevas===st.nights)return;
-        const perdidas=(st.schedule[nuevas]||[]).length;
+        const ultimo=rangoDias(st).fin-1,etq=etiquetaDia(st,ultimo).toLowerCase();
+        const perdidas=(st.schedule[ultimo]||[]).length;
         editar("quitar noche",()=>{st.nights=nuevas;},{full:true});
-        if(perdidas)toast(`El día ${nuevas+1} quedó oculto con ${perdidas} actividad${perdidas===1?"":"es"} (no se borraron)`,
+        if(perdidas)toast(`El ${etq} quedó oculto con ${perdidas} actividad${perdidas===1?"":"es"} (no se borraron)`,
           {accion:{texto:"Deshacer",fn:undo}});
+        return;}
+      if(a==="diasalida"){
+        const on=!st.diaSalida,dd=withDates().find(o=>o.def.id===bid);
+        const act=activeBases(),i=act.findIndex(o=>o.def.id===bid),nx=act[i+1];
+        const dia=dd?"El "+fmtDia(dd.checkout):"El día de salida";
+        if(!editar(on?"el día de salida es de aquí":"el día de salida regresa a la siguiente parada",
+          ()=>{pasarDiaSalida(state,bid,on);},{full:true}))return;
+        toast(on?`${dia} ahora es de ${st.name}`+(nx?`; ${nx.def.name} empieza al día siguiente`:"")
+                :`${dia} regresa a ${nx?nx.def.name:"la siguiente parada"}`,{tipo:"ok",accion:{texto:"Deshacer",fn:undo}});
         return;}
       if(a==="toggle"){
         const dentro=!st.included;
@@ -6249,13 +6356,18 @@ function wireCardEvents(){
       if(a==="recuperar"){
         const oc=actividadesOcultas(st);if(!oc.n)return;
         editar("recuperar actividades ocultas",()=>{
-          const destino=Math.max(1,st.nights)-1;
-          st.schedule[destino]=st.schedule[destino]||[];
+          // las de antes del primer día van al inicio del primero; las de
+          // después del último, al final del último
+          const rg=rangoDias(st),primero=rg.ini,ultimo=rg.fin-1;
+          st.schedule[primero]=st.schedule[primero]||[];st.schedule[ultimo]=st.schedule[ultimo]||[];
+          const antes=[];
           oc.dias.sort((x,y)=>x-y).forEach(d=>{
-            (st.schedule[d]||[]).forEach(it=>st.schedule[destino].push(it));
+            if(d<rg.ini)antes.push(...(st.schedule[d]||[]));
+            else (st.schedule[d]||[]).forEach(it=>st.schedule[ultimo].push(it));
             delete st.schedule[d];
           });
-          st.day=destino;
+          st.schedule[primero]=antes.concat(st.schedule[primero]);
+          st.day=antes.length?primero:ultimo;
         });
         toast(`${oc.n} actividad${oc.n===1?"":"es"} recuperada${oc.n===1?"":"s"}`,{tipo:"ok",accion:{texto:"Deshacer",fn:undo}});
         return;}
@@ -6331,14 +6443,14 @@ function wireCardEvents(){
         const j=a==="moveup"?i-1:i+1;
         if(j>=0&&j<arr.length){[arr[i],arr[j]]=[arr[j],arr[i]];save();renderCards();return;}
         // en el borde: pasar al día anterior/siguiente
-        const nd=Math.max(1,st.nights),td=a==="moveup"?d-1:d+1;
-        if(td>=0&&td<nd){
+        const rg=rangoDias(st),td=a==="moveup"?d-1:d+1;
+        if(td>=rg.ini&&td<rg.fin){
           const [moved]=arr.splice(i,1);
           st.schedule[td]=st.schedule[td]||[];
           if(a==="moveup")st.schedule[td].push(moved);      // al final del día anterior
           else st.schedule[td].unshift(moved);              // al inicio del día siguiente
           save();renderCards();                             // te quedas en el día actual
-          toast("Movida al día "+(td+1),{tipo:"ok",accion:{texto:"Deshacer",fn:undo}});
+          toast("Movida al "+etiquetaDia(st,td).toLowerCase(),{tipo:"ok",accion:{texto:"Deshacer",fn:undo}});
         }
         return;}
       if(a==="addcat"){editar("crear actividad",()=>{
@@ -6588,7 +6700,7 @@ function wireCardEvents(){
       const [moved]=from.splice(i,1);
       st.schedule[td]=st.schedule[td]||[];st.schedule[td].push(moved);
       save();renderCards();            // te quedas en el día actual
-      toast("Movida al día "+(td+1),{tipo:"ok",accion:{texto:"Deshacer",fn:undo}});
+      toast("Movida al "+etiquetaDia(st,td).toLowerCase(),{tipo:"ok",accion:{texto:"Deshacer",fn:undo}});
     });
   });
 }
@@ -6606,7 +6718,7 @@ const fmtDia=d=>DIAS_SEM[d.getDay()]+" "+d.getDate()+" "+MESES[d.getMonth()];
 function pvDia(st,d,fecha){
   const filas=computeDay(st,d);
   if(!filas.length)return "";
-  let h=`<div class="pv-day"><h3>Día ${d+1} · ${esc(fmtDia(fecha))}</h3><table>`;
+  let h=`<div class="pv-day"><h3>${etiquetaDia(st,d)} · ${esc(fmtDia(fecha))}</h3><table>`;
   filas.forEach(r=>{
     if(r.gap>0)h+=`<tr><td class="pv-t"></td><td class="pv-gap">— ${esc(fmtDur(r.gap))} libres —</td><td></td></tr>`;
     const costo=actEst(r.act);
@@ -6647,13 +6759,14 @@ function armarImpresion(){
     const b=o.def,st=o.st;
     h+=`<div class="pv-base">
       <h2><span class="pv-num">${i+1}</span> ${esc(b.name)} <small>${esc(b.region||"")}</small></h2>
-      <div class="pv-dates">${esc(fmtDia(o.checkin))} → ${esc(fmtDia(o.checkout))} · ${st.nights} noche${st.nights===1?"":"s"}</div>`;
+      <div class="pv-dates">${esc(fmtDia(o.checkin))} → ${esc(fmtDia(o.checkout))} · ${st.nights} noche${st.nights===1?"":"s"}${esc(diasTxt(st))}</div>`;
     const hoteles=(st.hotels||[]).filter(x=>x.chosen),comida=(st.food||[]).filter(x=>x.chosen);
     hoteles.forEach(ht=>{h+=`<div class="pv-pick">🛏 <b>${esc(ht.name)}</b>${ht.area?" · "+esc(ht.area):""}${
       +ht.precio>0?" · "+esc(fmtMoney(ht.precio))+"/noche":""}${
       +ht.noches>0&&+ht.noches<st.nights?" · "+(+ht.noches)+" noche"+(+ht.noches===1?"":"s"):""}</div>`;});
     if(comida.length)h+=`<div class="pv-pick">🍜 ${comida.map(f=>esc(f.name)).join(" · ")}</div>`;
-    for(let d=0;d<Math.max(1,st.nights);d++)h+=pvDia(st,d,addDays(o.checkin,d));
+    const rg=rangoDias(st);
+    for(let d=rg.ini;d<rg.fin;d++)h+=pvDia(st,d,addDays(o.checkin,d));
     h+=`</div>`;
     const nx=dated[i+1];
     if(nx){const x=getXfer(b.id,nx.def.id);
