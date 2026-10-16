@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v31 · 16 oct 2026 · Zhangjiajie 2 noches con sus dos tours, y Xi'an 3";
+const APP_VERSION="v31.1 · 16 oct 2026 · Zhangjiajie: con su hotel en la ciudad (Guanliping)";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -928,7 +928,7 @@ const ROUTE=[
   {id:"chengdu",   nights:2, sale:"07:00"},  // 11 → 13 may · llega 15:00
   {id:"chongqing", nights:1, sale:"08:15"},  // 13 → 14 may · llega 10:22 a Shapingba
   {id:"zjj",       nights:2, sale:"15:50"},  // 14 → 16 may · llega 20:15 a Zhangjiajie West
-  {id:"xian",      nights:3, sale:"14:30"},  // 16 → 19 may · Tianmen y vuelo de la tarde, a confirmar
+  {id:"xian",      nights:3, sale:"14:40"},  // 16 → 19 may · Tianmen y vuelo de la tarde, a confirmar
   {id:"beijing",   nights:3, sale:"12:30"},  // 19 → 22 may · llega 16:45
   {id:"shanghai",  nights:2, sale:"09:00"},  // 22 → 24 may · llega 14:00
   {id:"kyoto",     nights:2, sale:"07:30"},  // 24 → 26 may · llega 12:30
@@ -1614,9 +1614,9 @@ const ESSENTIAL_TREN_ZJJ={id:"ess-tren-zjj",t:"Boleto de tren Chongqing → Zhan
     "Wulingyuan que los recoja a las 20:15"};
 const ESSENTIAL_ZJJ_TOURS={id:"ess-zjj-tours",t:"Zhangjiajie: vuelo a Xi'an y tours",
   s:"PRIMERO el vuelo DYG → XIY del domingo 16 en la tarde (hay pocos) · tour del sábado 15: parque "+
-    "(Bailong + Yuanjiajie + Tianzi) y puente de cristal, recogida 7:00 · tour del domingo 16: Tianmen, "+
-    "recogida 7:30 con las maletas y que los deje en el aeropuerto · boletos con pasaporte: parque ¥239, "+
-    "puente de cristal en línea · hotel en Wulingyuan 2 noches (14 y 15)"};
+    "(Bailong + Yuanjiajie + Tianzi) y puente de cristal, recogida 6:30 en su hotel de Guanliping (el "+
+    "parque está a ~1 h) · tour del domingo 16: Tianmen, recogida 7:55, y después al hotel por las maletas "+
+    "y al aeropuerto · boletos con pasaporte: parque ¥239, puente de cristal en línea"};
 const ESSENTIAL_YS_HOTEL={id:"ess-ys-hotel",t:"Pedirle al Sugar House (Yangshuo)",
   s:"traslado desde la estación el domingo 9 · auto con chofer el lunes 10 a las 4:45 a Xianggong · "+
     "reserva de la balsa del Yulong para el lunes 14:30 · desayuno para llevar el martes 11 a las 7:00"};
@@ -4374,12 +4374,13 @@ const ZJJ_DIA1_V2=[
         "confirmen la hora de salida en Chongqing East al comprar.<br>"+
         "<b>Si no les sale:</b> el <b>G2435</b> 15:07 → 17:55, y la tarde termina después de comer.<br>"+
         "<b>⚠ La venta abre ~15 días antes</b> (alrededor del 29 de abril), con pasaporte."},
-  {cid:"zjjd0-wulingyuan",name:"Traslado a Wulingyuan y check-in",type:"transfer",dur:65,
-   costos:[["Traslado a Wulingyuan (2)",550]],
-   note:"<b>Zhangjiajie West → Wulingyuan</b>, unos 40-50 min en coche. Llegan al hotel hacia las 21:20.<br>"+
-        "<b>Déjenlo arreglado con el hotel desde antes</b>, para que los esperen a la salida de la estación: "+
-        "a esa hora no conviene buscar taxi.<br>"+
-        "<i>Mañana el tour los recoge a las 7:00: directo a dormir. La cena Tujia pasó a la noche del día "+
+  {cid:"zjjd0-wulingyuan",name:"Zhangjiajie West → hotel y check-in",type:"transfer",dur:35,
+   costos:[["Taxi estación → hotel (2)",150]],
+   note:"<b>~20-30 min en taxi</b> (~¥40-50) a su hotel en <b>Guanliping, Yongding</b>, la ciudad de "+
+        "Zhangjiajie: Village Group 3, Ganzi Village. Llegan ~20:50.<br>"+
+        "<b>Su hotel está en la ciudad, no en Wulingyuan:</b> les queda a pie de Tianmen y del aeropuerto, y "+
+        "el parque de los pilares a ~1 h.<br>"+
+        "<i>Mañana el tour los recoge a las 6:30: directo a dormir. La cena Tujia pasó a la noche del día "+
         "del parque.</i>"}
 ];
 /* Dueño de los dos días de Yangshuo (el domingo de la llegada y el lunes de
@@ -4542,6 +4543,10 @@ function migrarChongqingV2(s){
    pierde la noche del 16 y Xi'an la gana: llegan el domingo en la noche y el
    lunes y el martes quedan igual que antes (muralla; Terracota y noche Tang).
 
+   Su hotel está en la CIUDAD (Guanliping, Yongding), no en Wulingyuan: cerca de
+   Tianmen, del aeropuerto y de Zhangjiajie West, y a ~1 h del parque. Por eso
+   el tour del sábado sale 6:30, y el domingo pasan al hotel por las maletas.
+
    Como en las otras paradas, la mañana de la salida (Tianmen) vive en el
    primer día de la parada siguiente, Xi'an, y el viejo día 3 de Zhangjiajie
    se borra: su Tianmen es este.
@@ -4558,9 +4563,10 @@ function migrarChongqingV2(s){
      · DYG → XIY: pocos directos y sin horario confiable para el domingo; el
        vuelo de la tarde queda a confirmar. */
 const ZJJ_DIA2_V3=[
-  {cid:"zjj-t1-pickup",name:"El tour los recoge en el hotel",type:"transfer",dur:30,fixed:"07:00",
+  {cid:"zjj-t1-pickup",name:"El tour los recoge en el hotel",type:"transfer",dur:60,fixed:"06:30",
    costos:[["Tour privado con chofer, día completo (2, estimado)",2400]],
-   note:"<b>7:00 · recogida en el hotel</b>, a la puerta del parque para la apertura de las 7:30.<br>"+
+   note:"<b>6:30 · recogida en el hotel</b>: de la ciudad a la puerta del parque en Wulingyuan es ~1 h, "+
+        "para la apertura de las 7:30.<br>"+
         "<b>Es sábado:</b> en fin de semana la fila del elevador Bailong llega a 1-3 horas. Los primeros en "+
         "entrar casi no la hacen, por eso tan temprano.<br>"+
         "<i>Boletos con pasaporte y reservados en línea: el parque, ¥239, vale 4 días.</i>"},
@@ -4587,23 +4593,21 @@ const ZJJ_DIA2_V3=[
         "<b>¿Vale la pena?</b> Si les gustan las alturas, sí. Si quieren aflojar el sábado, es lo que se "+
         "quita: mañana en Tianmen también hay pasarelas de vidrio sobre el risco.<br>"+
         "<i>Boleto de solo el puente ¥128, con reserva en línea; abre ~8:00-17:00.</i>"},
-  {cid:"zjj-t1-regreso",name:"Regreso al hotel",type:"transfer",dur:50,
+  {cid:"zjj-t1-regreso",name:"Regreso al hotel",type:"transfer",dur:60,
    costos:[],
-   note:"<b>~50 min</b> de vuelta a Wulingyuan con el tour. Llegan ~17:35."},
+   note:"<b>~1 h</b> del Gran Cañón a su hotel en la ciudad, con el tour. Llegan ~17:45."},
   {cid:"g-rest"},
   {cid:"zjj-tujia",fixed:"19:15"}
 ];
 /* Domingo 16: Tianmen en la mañana y vuelo a Xi'an en la tarde. Va en el
    primer día de Xi'an porque esa noche ya se duerme allá. */
 const XA_DIA0_V3=[
-  {cid:"g-breakfast",fixed:"06:45"},
-  {cid:"xa0-tianmen-ir",name:"Check-out y el tour a Tianmen, con las maletas",type:"transfer",dur:45,fixed:"07:30",
-   costos:[["Tour privado con chofer, medio día y al aeropuerto (2, estimado)",1900]],
-   note:"<b>7:30 · los recoge el tour</b> y suben las maletas al coche: ~45 min de Wulingyuan a la ciudad de "+
-        "Zhangjiajie, donde empieza Tianmen.<br>"+
-        "<b>Mejor así que regresar al hotel:</b> Tianmen y el aeropuerto están los dos en la ciudad, a ~15 "+
-        "min uno del otro, y Wulingyuan queda a ~45 min. Volver por las maletas son 1 h 30 de ida y vuelta: "+
-        "que el coche se las lleve y los deje en el aeropuerto."},
+  {cid:"g-breakfast",fixed:"07:00"},
+  {cid:"xa0-tianmen-ir",name:"Check-out y el tour a Tianmen",type:"transfer",dur:20,fixed:"07:55",
+   costos:[["Tour privado con chofer, medio día y al aeropuerto (2, estimado)",1500]],
+   note:"<b>7:55 · los recoge el tour</b>: el teleférico de Tianmen sale de la misma ciudad, a ~10-15 min "+
+        "de su hotel.<br>"+
+        "<b>Antes de salir: check-out y maletas en recepción.</b> Pasan por ellas después de comer."},
   {cid:"xa0-tianmen",name:"Montaña Tianmen: la Puerta del Cielo",type:"tour",dur:300,fixed:"08:15",
    costos:[["Tianmen, combo ~¥278 c/u (2)",1500]],
    note:"<b>8:15-13:15 · Tianmen (天门山)</b>, la montaña con un hueco de lado a lado:"+
@@ -4619,11 +4623,14 @@ const XA_DIA0_V3=[
         "<i>8:00-19:00, entrada hasta las 16:00. Es domingo: entren con el primer grupo.</i>"},
   {cid:"xa0-comida",name:"Comida en la ciudad de Zhangjiajie",type:"food",dur:60,fixed:"13:15",
    costos:[["Comida (2)",400]],
-   note:"<b>13:15 · al pie del teleférico, en la ciudad.</b> El coche los espera con las maletas."},
-  {cid:"xa-arrive",name:"Al aeropuerto y vuelo Zhangjiajie → Xi'an (a confirmar)",type:"transfer",dur:225,
-   fixed:"14:30",
+   note:"<b>13:15 · al pie del teleférico, en la ciudad.</b> A las 14:15 pasan al hotel por las maletas."},
+  {cid:"xa0-maletas",name:"Al hotel por las maletas",type:"transfer",dur:25,fixed:"14:15",
+   costos:[],
+   note:"<b>~10-15 min</b> del teleférico al hotel, y de ahí al aeropuerto."},
+  {cid:"xa-arrive",name:"Al aeropuerto y vuelo Zhangjiajie → Xi'an (a confirmar)",type:"transfer",dur:215,
+   fixed:"14:40",
    costos:[["Vuelo DYG → XIY (2, estimado)",4000]],
-   note:"<b>14:30 · ~15 min al aeropuerto de Zhangjiajie (DYG)</b>, y vuelo de la tarde a Xi'an (XIY), "+
+   note:"<b>14:40 · ~15-20 min del hotel al aeropuerto de Zhangjiajie (DYG)</b>, y vuelo de la tarde a Xi'an (XIY), "+
         "~1 h 45. Llegarían ~18:15.<br>"+
         "<b>⚠ Este vuelo es lo primero que hay que resolver:</b> de Zhangjiajie a Xi'an hay pocos directos "+
         "(Sichuan, Eastern, Tianjin) y no encontré un horario confiable para el domingo en la tarde. "+
@@ -4659,18 +4666,38 @@ const XA_DIA1_V3=[
 /* Dueña de los dos días de Zhangjiajie y de los tres de Xi'an desde v31.
    Corre DESPUÉS de migrarRuta, que ya dejó las noches en 2 y 3. */
 function migrarZjjXian(s){
-  if(s.zxPlanV1)return;
+  if(s.zxPlanV2)return;
   const costos=(base,lista)=>lista.forEach(a=>{
     const x=a.costos&&base.catalog.find(y=>y.cid===a.cid);
     if(x)x.costs=a.costos.map(([label,est])=>({id:uid(),label,est,real:0}));
   });
   const zj=s.bases&&s.bases.zjj;
   if(zj&&Array.isArray(zj.catalog)){
-    sembrarDia(zj,1,ZJJ_DIA2_V3,"07:00");
+    sembrarDia(zj,1,ZJJ_DIA2_V3,"06:30");
     costos(zj,ZJJ_DIA2_V3);
-    // la llegada del viernes ya avisa de la recogida de las 7:00
+    // la llegada del viernes: a su hotel en la ciudad y la recogida de las 6:30
     const wl=ZJJ_DIA1_V2.find(a=>a.cid==="zjjd0-wulingyuan"),xw=zj.catalog.find(a=>a.cid==="zjjd0-wulingyuan");
-    if(wl&&xw)xw.note=wl.note;
+    if(wl&&xw){
+      Object.assign(xw,{name:wl.name,dur:wl.dur,note:wl.note});
+      xw.costs=wl.costos.map(([label,est])=>({id:uid(),label,est,real:0}));
+    }
+    // su hotel: en la ciudad (Guanliping, Yongding), no en Wulingyuan
+    if(Array.isArray(zj.hotels)){
+      let h=zj.hotels.find(x=>/guanliping|ganzi|官黎坪/i.test((x.name||"")+(x.area||"")));
+      zj.hotels.forEach(x=>{x.chosen=false;});
+      if(h)zj.hotels.splice(zj.hotels.indexOf(h),1);
+      else h={id:uid(),noches:2,precio:0};
+      Object.assign(h,{name:"Su hotel en Guanliping · Yongding (falta el nombre)",
+        area:"Village Group 3, Ganzi Village, Guanliping · la ciudad de Zhangjiajie",
+        note:"<b>Viernes 14 y sábado 15</b> (check-out el domingo 16). En la <b>ciudad de Zhangjiajie</b>, del "+
+             "lado de Tianmen, no en Wulingyuan.<br>"+
+             "Cerca: el teleférico de Tianmen (~10-15 min), el aeropuerto (~15-20 min) y la estación "+
+             "Zhangjiajie West (~20-30 min). El parque de los pilares queda a ~1 h, por eso el tour del sábado "+
+             "los recoge a las 6:30."+
+             (+h.precio>0?"":"<br><b>⚠ Faltan el nombre y el precio por noche</b> para que cuente en el presupuesto."),
+        noches:2,chosen:true});
+      zj.hotels.unshift(h);
+    }
     // el viejo día 3 (Tianmen y Gran Cañón): Tianmen es ahora el domingo de Xi'an
     if(zj.schedule)delete zj.schedule[2];
     if(zj.dayStart)delete zj.dayStart[2];
@@ -4679,10 +4706,11 @@ function migrarZjjXian(s){
   const xa=s.bases&&s.bases.xian;
   if(xa&&Array.isArray(xa.catalog)){
     xa.schedule=xa.schedule||{};xa.dayStart=xa.dayStart||{};
-    // el martes (Terracota) pasa del día 2 al 3, tal cual
-    if(xa.schedule[1]){xa.schedule[2]=xa.schedule[1];xa.dayStart[2]=xa.dayStart[1];}
+    // el martes (Terracota) pasa del día 2 al 3, tal cual. Solo una vez: en un
+    // viaje que ya pasó por zxPlanV1, el día 2 ya es el lunes nuevo.
+    if(!s.zxPlanV1&&xa.schedule[1]){xa.schedule[2]=xa.schedule[1];xa.dayStart[2]=xa.dayStart[1];}
     sembrarDia(xa,1,XA_DIA1_V3,"09:00");
-    sembrarDia(xa,0,XA_DIA0_V3,"06:45");
+    sembrarDia(xa,0,XA_DIA0_V3,"07:00");
     costos(xa,XA_DIA0_V3);costos(xa,XA_DIA1_V3);
     if(xa.day>2)xa.day=0;
     (xa.hotels||[]).forEach(h=>{
@@ -4701,7 +4729,7 @@ function migrarZjjXian(s){
       else s.esenciales.push({...E});
     });
   }
-  s.zxPlanV1=true;
+  s.zxPlanV1=true;s.zxPlanV2=true;
 }
 /* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
 function freshBlankTrip(titulo){
