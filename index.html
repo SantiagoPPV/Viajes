@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v31.3 · 17 oct 2026 · Xi'an: 2 noches y 2 días con guía; Pekín 4 noches";
+const APP_VERSION="v31.4 · 17 oct 2026 · Xi'an: su hotel en Qujiang (HUALUXE Tanghua)";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -1618,10 +1618,11 @@ const ESSENTIAL_ZJJ_TOURS={id:"ess-zjj-tours",t:"Zhangjiajie: vuelo a Xi'an y to
     "parque está a ~1 h) · tour del domingo 16: Tianmen, recogida 7:55, y después al hotel por las maletas "+
     "y al aeropuerto · boletos con pasaporte: parque ¥239, puente de cristal en línea"};
 const ESSENTIAL_XIAN={id:"ess-xian",t:"Xi'an: guía, coche y tren a Pekín",
-  s:"guía privado con coche: lunes 17 de 8:35 a ~16:30 (muralla, torres, Barrio Musulmán, Gran Pagoda) y "+
-    "martes 18 desde las 7:30 (Terracota y Lishan Yuan; los deja en Xi'an Norte con las maletas en la "+
-    "cajuela) · Terracota: reserva con pasaporte 7 días antes (mar 11 may), franja 8:30-9:30 · tren G Xi'an "+
-    "Norte → Pekín Oeste ~15:30: la venta abre ~15 días antes (lun 3 may) · el hotel de Xi'an está de mientras"};
+  s:"guía privado con coche: lunes 17 de 8:25 a ~15:30, empieza a pie desde el hotel (Gran Pagoda, muralla, "+
+    "torres, Barrio Musulmán) y martes 18 desde las 7:30 (Terracota y Lishan Yuan; los deja en Xi'an Norte con "+
+    "las maletas en la cajuela) · Terracota: reserva con pasaporte 7 días antes (mar 11 may), franja 8:30-9:30 · "+
+    "tren G Xi'an Norte → Pekín Oeste ~15:30: la venta abre ~15 días antes (lun 3 may) · hotel: HUALUXE "+
+    "Tanghua, 40 Yanyin Rd, Qujiang"};
 const ESSENTIAL_YS_HOTEL={id:"ess-ys-hotel",t:"Pedirle al Sugar House (Yangshuo)",
   s:"traslado desde la estación el domingo 9 · auto con chofer el lunes 10 a las 4:45 a Xianggong · "+
     "reserva de la balsa del Yulong para el lunes 14:30 · desayuno para llevar el martes 11 a las 7:00"};
@@ -3675,6 +3676,7 @@ function normalizeTripState(s){
   migrarZjjXian(s);          // Zhangjiajie 2 noches y Xi'an 3 (después de migrarRuta)
   migrarDiaSalida(s);        // al final: mueve días ya sembrados de una parada a otra
   migrarXianV4(s);           // y después: Xi'an se queda con su martes de salida
+  migrarXianV5(s);           // su hotel en Qujiang, junto a la Gran Pagoda
   return s;
 }
 /* ---- Llegada a Yangshuo: domingo 9 de mayo de 2027, paso a paso ----
@@ -4944,6 +4946,133 @@ function migrarXianV4(s){
     }
   }
   s.xaPlanV4=true;
+}
+/* ---- Xi'an con su hotel (v31.4): HUALUXE Xi'an Tanghua ----
+   No. 40 Yanyin Road, Qujiang: a ~6 min a pie de la Gran Pagoda y ~7 de
+   Datang Everbright City. El lunes empieza y termina ahí: la pagoda a pie
+   con el guía, luego el coche al centro (muralla, torres, Barrio Musulmán) y
+   de regreso; en la noche, todo Dayan sin taxi de vuelta. */
+const XA_DIA1_V5=[
+  {cid:"g-breakfast",fixed:"07:45"},
+  {cid:"xa1-guia",name:"Su guía los recoge en el lobby · a pie a la Gran Pagoda",type:"transfer",dur:10,fixed:"08:25",
+   costos:[["Guía privado + coche, ~7 h (2)",3600]],
+   note:"<b>Guía privado con coche y chofer</b>, de 8:25 a ~15:30. Pidan guía en español (hay pocos: "+
+        "resérvenlo con tiempo) o en inglés.<br>"+
+        "Ruta para pasarle a la agencia: <b>a pie</b> del HUALUXE a la Gran Pagoda → el coche los espera ahí → "+
+        "Puerta Sur de la muralla → Torres → Barrio Musulmán y comida → Gran Mezquita → de regreso al hotel. "+
+        "Y que sean el mismo guía y coche el martes para Terracota.<br>"+
+        "<i>~¥1,400 los dos con coche; entradas y comida aparte.</i>"},
+  {cid:"xa-pagoda",name:"Gran Pagoda del Ganso Salvaje + templo Da Ci'en, con su guía",type:"sight",dur:75,
+   note:"<b>A la apertura</b> (8:00-8:30, según la temporada), antes de los grupos. Del año 652, para guardar "+
+        "los sutras que el monje Xuanzang trajo de la India (el de <i>Viaje al Oeste</i>). Con guía es otra "+
+        "cosa: los murales de su viaje y la historia del templo.<br>"+
+        "Templo ~¥50 c/u y la subida a la pagoda ~¥30 aparte. <b>La subida puede estar cerrada los lunes</b>: "+
+        "confírmenlo; el templo y los murales se ven igual."},
+  {cid:"xa1-a-muralla",name:"El coche: Gran Pagoda → Puerta Sur de la muralla",type:"transfer",dur:20,
+   note:"~5 km por la avenida Yanta, derecho al norte."},
+  {cid:"xa1-muralla",name:"Muralla Ming en tándem",type:"sight",dur:90,
+   costos:[["Muralla + tándem (2)",500]],
+   note:"Suben por la Puerta Sur (永宁门). El guía saca los boletos y la renta; ustedes dan ~1 h de vuelta por "+
+        "arriba: Puerta Sur → Puerta Oeste y regreso (la vuelta completa son 13.7 km, no cabe).<br>"+
+        "A media mañana de mayo todavía no pega el sol de lleno.<br>"+
+        "Si les toca, a las 10:30 hay <b>formación de guerreros</b> en la plaza de la Puerta Sur.<br>"+
+        "⚠ El boleto es de <b>una sola entrada</b>: si bajan, se anula."},
+  {cid:"xa1-a-torres",name:"Coche a la Torre de la Campana",type:"transfer",dur:10},
+  {cid:"xa-belldrum",name:"Torres de la Campana y del Tambor",dur:60,
+   note:"La <b>Torre de la Campana</b> (钟楼), en el centro exacto de la ciudad amurallada, y a 200 m la "+
+        "del <b>Tambor</b> (鼓楼), que es la entrada del Barrio Musulmán.<br>"+
+        "Cuadren la del Tambor con un <b>toque de tambores</b>: hay varios al día (por ejemplo 11:45 y 14:00; "+
+        "el guía confirma la hora).<br><i>Boleto combinado ~¥50 c/u.</i>"},
+  {cid:"xa-muslim",name:"Comida de picoteo en el Barrio Musulmán",type:"food",dur:75},
+  {cid:"xa1-mezquita",name:"Gran Mezquita y callejones del Barrio Musulmán",type:"sight",dur:50},
+  {cid:"xa1-hotel",name:"El coche los regresa al hotel · fin del tour",type:"transfer",dur:35,
+   note:"Del Barrio Musulmán a Qujiang son ~7 km: 25-40 min según el tráfico."},
+  {cid:"xa1-descanso",name:"Descanso en el hotel",type:"rest",dur:135,
+   note:"Si les sobra energía: el jardín imperial <b>大唐芙蓉园</b> (Tang Paradise) está a ~10 min a pie y al "+
+        "atardecer se ve muy bien. Si no, descansen: la noche es larga."},
+  {cid:"xa1-a-cena",name:"A pie a la cena",type:"transfer",dur:15,fixed:"17:45",
+   note:"El bulevar empieza en la Plaza Sur de la pagoda, a ~10 min a pie del hotel."},
+  {cid:"xa-cena-tang",fixed:"18:00",
+   note:"Taberna estilo Tang con meseros de época y menú en inglés con fotos. Todo Shaanxi en una sentada: "+
+        "葫芦鸡 (pollo calabaza), biangbiang estirados frente a la mesa, paomo, liangpi, 甑糕.<br>"+
+        "<b>Cuál sucursal:</b> la más a mano es la de la zona de la Plaza Sur de la pagoda (en el Joy City, "+
+        "中粮大悦城, entre otras). Búsquenla en Amap o Dianping como 长安大牌档 y escojan la más cercana.<br>"+
+        "A las 18:00 todavía no hay fila; después hay espera de 30-60 min. ¥160-260 los dos.<br>"+
+        "<i>Michelin no cubre Xi'an: cualquier restaurante que se anuncie con estrella miente.</i>"},
+  {cid:"xa-datang-ir",name:"DiDi corto al extremo sur del bulevar",type:"transfer",dur:15,fixed:"19:30",
+   costos:[["DiDi corto (2)",40]],
+   note:"A 大唐不夜城南 / 大唐芙蓉园. Así caminan el bulevar de SUR a NORTE, con las luces ya prendidas, y "+
+        "terminan en la pagoda justo para las fuentes."},
+  {cid:"xa-datang",dur:60},
+  {cid:"xa-fuentes",fixed:"21:00",
+   note:"Gratis, ~10 min. Del final del bulevar (Plaza Sur) se rodea la pagoda hasta la <b>Plaza Norte</b>: "+
+        "~10 min a pie.<br>"+
+        "⚠ <b>Confirmen la hora del lunes</b>: según la fuente, la función de la noche es a las 20:00 o a las "+
+        "21:00. Si es a las 20:00, después de cenar vayan directo a las fuentes y caminen el bulevar al revés.<br>"+
+        "Párense mirando al SUR, con la pagoda de fondo detrás del agua. Lleguen 15 min antes."},
+  {cid:"xa1-vuelta",name:"A pie al hotel",type:"transfer",dur:10,costos:[],
+   note:"De la Plaza Norte al HUALUXE son ~6-8 min."}
+];
+function migrarXianV5(s){
+  if(s.xaPlanV5)return;
+  const xa=s.bases&&s.bases.xian;
+  if(s.bases&&s.bases.hk&&xa&&Array.isArray(xa.catalog)){
+    const costos=(base,lista)=>lista.forEach(a=>{
+      const x=a.costos&&base.catalog.find(y=>y.cid===a.cid);
+      if(x)x.costs=a.costos.map(([label,est])=>({id:uid(),label,est,real:0}));
+    });
+    // notas que hablaban del Sofitel, donde estén (el domingo vive en Zhangjiajie)
+    const nota=(cid,txt,quien)=>[s.bases.zjj,xa].forEach(b=>{
+      if(quien&&b!==quien)return;
+      const a=b&&(b.catalog||[]).find(x=>x.cid===cid);if(a)a.note=txt;});
+    nota("xa-checkin","<b>Taxi oficial</b>, placas 陕A o 陕U, ~¥150-200, <b>~1 h 10 al HUALUXE</b>, en Qujiang "+
+      "(sur de la ciudad).<br>El aeropuerto está en Xianyang, a ~55 km: no lo subestimen.");
+    nota("xa0-cena","<b>20:00 · en el hotel</b>, sin salir.<br><i>Si llegan con ganas: la Plaza Norte de la Gran "+
+      "Pagoda está a ~6 min a pie y en fin de semana suele haber función de fuentes a las 21:00.</i>");
+    nota("g-breakfast","En su hotel de Guanliping, antes de que los recojan para Tianmen a las 7:55.",s.bases.zjj);
+    nota("g-breakfast","En el HUALUXE: buffet chino y occidental, con antojitos de Shaanxi. Confirmen si su "+
+      "tarifa lo incluye.<br><i>El martes salen a las 7:30: pidan la noche anterior que los dejen pasar a las "+
+      "6:30 o una caja para llevar.</i>",xa);
+    nota("g-rest","Descanso en el hotel.",xa);
+    sembrarDia(xa,1,XA_DIA1_V5,"07:45");
+    costos(xa,XA_DIA1_V5);
+    const usados=new Set(Object.values(xa.schedule||{}).flat().map(x=>x.ref));
+    xa.catalog=xa.catalog.filter(a=>a.cid!=="xa1-a-pagoda"||usados.has(a.cid));
+    const sal=xa.catalog.find(a=>a.cid==="xa2-salida");
+    if(sal)sal.note="Los recogen el guía y el coche en el HUALUXE. <b>Las maletas van en la cajuela todo el día</b> "+
+      "y el coche los deja al final en la estación: no tienen que regresar al hotel. Pásenle a la agencia que "+
+      "el coche es exclusivo y se queda con ustedes; pasaportes y lo de valor, siempre con ustedes.<br>"+
+      "De Qujiang a Terracota son ~55 min de carretera + 20-25 min a pie del estacionamiento al Foso 1.";
+    // el hotel elegido
+    if(Array.isArray(xa.hotels)){
+      let h=xa.hotels.find(x=>/hualuxe|tanghua|唐华/i.test(x.name||""));
+      xa.hotels.forEach(x=>{x.chosen=false;});
+      if(h)xa.hotels.splice(xa.hotels.indexOf(h),1);
+      else h={id:uid(),precio:2500};
+      Object.assign(h,{name:"HUALUXE Xi'an Tanghua (西安唐华华邑酒店)",
+        area:"No. 40 Yanyin Road, Qujiang · a ~6 min a pie de la Gran Pagoda",noches:2,chosen:true,
+        note:"<b>★ Domingo 16 y lunes 17</b> (check-out el martes 18). Check-in 15:00, check-out 12:00.<br>"+
+             "El antiguo hotel Tang Hua: la marca de lujo china de IHG en un conjunto de estilo Tang con "+
+             "jardines, a un costado de la Gran Pagoda.<br>"+
+             "A pie: Gran Pagoda ~6 min, Datang Everbright City ~7, Plaza Norte (fuentes) ~6-8 y Tang "+
+             "Paradise ~10. El centro amurallado queda a ~7 km (25-40 min en coche).<br>"+
+             "Desayuno buffet chino y occidental; según la tarifa, incluido o aparte."+
+             "<br><b>⚠ El precio por noche es estimado:</b> pongan el real para que cuadre el presupuesto."});
+      xa.hotels.unshift(h);
+      xa.hotels.forEach(x=>{
+        if(/sofitel legend/i.test(x.name||"")){
+          delete x.noches;
+          x.note="<b>Ya no está en el plan:</b> se quedan en el HUALUXE, en Qujiang.<br>A ~700 m de la Torre "+
+            "de la Campana, dentro de la muralla. Art Déco de 1953, mayordomo 24 h. $188-297 USD + ~15%.";
+        }
+      });
+    }
+  }
+  if(Array.isArray(s.esenciales)){
+    const e=s.esenciales.find(x=>x.id===ESSENTIAL_XIAN.id);
+    if(e)Object.assign(e,{t:ESSENTIAL_XIAN.t,s:ESSENTIAL_XIAN.s});
+  }
+  s.xaPlanV5=true;
 }
 /* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
 function freshBlankTrip(titulo){
