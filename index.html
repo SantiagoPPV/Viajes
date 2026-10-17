@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v31.2 · 16 oct 2026 · El día de salida es de la ciudad donde lo pasan";
+const APP_VERSION="v31.3 · 17 oct 2026 · Xi'an: 2 noches y 2 días con guía; Pekín 4 noches";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -928,8 +928,8 @@ const ROUTE=[
   {id:"chengdu",   nights:2, sale:"07:00"},  // 11 → 13 may · llega 15:00
   {id:"chongqing", nights:1, sale:"08:15"},  // 13 → 14 may · llega 10:22 a Shapingba
   {id:"zjj",       nights:2, sale:"15:50"},  // 14 → 16 may · llega 20:15 a Zhangjiajie West
-  {id:"xian",      nights:3, sale:"14:40"},  // 16 → 19 may · Tianmen y vuelo de la tarde, a confirmar
-  {id:"beijing",   nights:3, sale:"12:30"},  // 19 → 22 may · llega 16:45
+  {id:"xian",      nights:2, sale:"14:40"},  // 16 → 18 may · Tianmen y vuelo de la tarde, a confirmar
+  {id:"beijing",   nights:4, sale:"15:30"},  // 18 → 22 may · tren de la tarde, llega ~19:50 (a confirmar)
   {id:"shanghai",  nights:2, sale:"09:00"},  // 22 → 24 may · llega 14:00
   {id:"kyoto",     nights:2, sale:"07:30"},  // 24 → 26 may · llega 12:30
   {id:"tokyo",     nights:3, sale:"13:00"}   // 26 → 29 may · llega 15:15
@@ -948,7 +948,7 @@ const VUELOS_INTL={
           sale:"09:35",llega:"07:10"}
 };
 const ROUTE_DROP=["osaka"];   // paradas que se eliminan por completo del viaje
-const ROUTE_VERSION=5;        // súbela al editar ROUTE para reaplicar la ruta
+const ROUTE_VERSION=6;        // súbela al editar ROUTE para reaplicar la ruta
 const ROUTE_IDS=ROUTE.map(r=>r.id);
 const routeNights=id=>{const r=ROUTE.find(x=>x.id===id);return r?r.nights:null;};
 const routeSale=id=>{const r=ROUTE.find(x=>x.id===id);return r&&r.sale||null;};
@@ -1038,7 +1038,7 @@ const XFER={
      al día y tarda 9 h 48. Solo funciona volando: DYG → XIY directo son 1 h 30,
      pero hay ~2 vuelos al día y el más temprano sale 11:05. */
   "zjj|xian":{mode:"Vuelo",detail:"Tianmen en la mañana · Zhangjiajie (DYG) → Xi'an (XIY) directo ~1 h 45, vuelo de la tarde A CONFIRMAR (hay pocos) · el tren directo son 9 h 48, no sirve",time:"~3 h 45 de la salida al aterrizaje",dur:225,type:"air"},
-  "xian|beijing":{mode:"Tren bala",detail:"Xi'an Norte → Pekín Oeste (el G más rápido hace 4 h 10)",time:"4.5–6 h",dur:255,type:"rail"},
+  "xian|beijing":{mode:"Tren bala",detail:"De Terracota a Xi'an Norte en el coche, con las maletas · G rápido ~15:30 → Pekín Oeste ~19:50, a confirmar (los rápidos solo paran en Zhengzhou Este y Shijiazhuang)",time:"~4 h 20 de tren",dur:260,type:"rail"},
   "beijing|shanghai":{mode:"Tren bala",detail:"Pekín S → Shanghái Hongqiao",time:"4.5–6 h",dur:300,type:"rail"},
   "shanghai|kyoto":{mode:"Vuelo",detail:"Shanghái (PVG) → Osaka (KIX) 2 h + JR Haruka a Kyoto 75 min",time:"≈5 h total",dur:300,type:"air"},
   "kyoto|tokyo":{mode:"Tren bala",detail:"Kyoto → Tokio (Shinkansen Nozomi, asientos D/E para ver el Fuji)",time:"2 h 15",dur:135,type:"rail"},
@@ -1617,6 +1617,11 @@ const ESSENTIAL_ZJJ_TOURS={id:"ess-zjj-tours",t:"Zhangjiajie: vuelo a Xi'an y to
     "(Bailong + Yuanjiajie + Tianzi) y puente de cristal, recogida 6:30 en su hotel de Guanliping (el "+
     "parque está a ~1 h) · tour del domingo 16: Tianmen, recogida 7:55, y después al hotel por las maletas "+
     "y al aeropuerto · boletos con pasaporte: parque ¥239, puente de cristal en línea"};
+const ESSENTIAL_XIAN={id:"ess-xian",t:"Xi'an: guía, coche y tren a Pekín",
+  s:"guía privado con coche: lunes 17 de 8:35 a ~16:30 (muralla, torres, Barrio Musulmán, Gran Pagoda) y "+
+    "martes 18 desde las 7:30 (Terracota y Lishan Yuan; los deja en Xi'an Norte con las maletas en la "+
+    "cajuela) · Terracota: reserva con pasaporte 7 días antes (mar 11 may), franja 8:30-9:30 · tren G Xi'an "+
+    "Norte → Pekín Oeste ~15:30: la venta abre ~15 días antes (lun 3 may) · el hotel de Xi'an está de mientras"};
 const ESSENTIAL_YS_HOTEL={id:"ess-ys-hotel",t:"Pedirle al Sugar House (Yangshuo)",
   s:"traslado desde la estación el domingo 9 · auto con chofer el lunes 10 a las 4:45 a Xianggong · "+
     "reserva de la balsa del Yulong para el lunes 14:30 · desayuno para llevar el martes 11 a las 7:00"};
@@ -1631,6 +1636,7 @@ const ESSENTIALS=[
   ESSENTIAL_PICKUP_CQ,
   ESSENTIAL_TREN_ZJJ,
   ESSENTIAL_ZJJ_TOURS,
+  ESSENTIAL_XIAN,
   {id:"ess-jp",t:"Japón: Visit Japan Web + boleto de salida",s:"mexicanos sin visa (exención de turista)"},
   {id:"ess-visa",t:"Visa de turista China (L)",s:"tramitar 1–2 meses antes"},
   {id:"ess-pass",t:"Pasaporte 6+ meses de vigencia",s:"revisar ambos"},
@@ -2083,6 +2089,7 @@ const ARRIVE_FIJO={
   "cq-arrive":{propio:true},   // migrarChongqingV2: la salida de Chengdu del 13
   "zjj-arrive":{propio:true},  // migrarChongqingV2: la salida de Chongqing del 14
   "xa-arrive":{propio:true},   // migrarZjjXian: Tianmen y el vuelo del domingo 16
+  "bj-arrive":{propio:true},   // migrarXianV4: el tren del martes 18, en el último día de Xi'an
   "ky-arrive":{name:"Vuelo Shanghái → Osaka KIX + JR Haruka a Kyoto",
                note:"PVG → KIX ≈2 h + Haruka 75 min; check-in"},
   "tk-arrive":{name:"Tren bala Kyoto → Tokio",
@@ -3667,6 +3674,7 @@ function normalizeTripState(s){
   migrarChongqingV2(s);      // Chongqing y Zhangjiajie
   migrarZjjXian(s);          // Zhangjiajie 2 noches y Xi'an 3 (después de migrarRuta)
   migrarDiaSalida(s);        // al final: mueve días ya sembrados de una parada a otra
+  migrarXianV4(s);           // y después: Xi'an se queda con su martes de salida
   return s;
 }
 /* ---- Llegada a Yangshuo: domingo 9 de mayo de 2027, paso a paso ----
@@ -4752,6 +4760,190 @@ function migrarDiaSalida(s){
       if(s.bases[id]&&s.bases[id].included)pasarDiaSalida(s,id,true);
     });
   s.dsPlanV1=true;
+}
+/* ---- Xi'an: 2 noches y 2 días (v31.3) ----
+   Domingo 16 llegan de noche (es de Zhangjiajie). Lunes 17 la ciudad con guía
+   privado; martes 18 Terracota y el tren a Pekín: Xi'an se queda con su día de
+   salida. La noche que sobra pasa a Pekín (4 noches), que gana un día entero.
+   Hotel: de mientras, el Sofitel Legend, dentro de la muralla.
+   El tren de la tarde está A CONFIRMAR: los horarios publicados no cuadran
+   entre sí. Los rápidos (~4 h 10-4 h 30) solo paran en Zhengzhou Este y
+   Shijiazhuang; hay ~40 al día. */
+const XA_DIA1_V4=[
+  {cid:"g-breakfast",fixed:"07:50"},
+  {cid:"xa1-guia",name:"Los recoge su guía con el coche → Puerta Sur",type:"transfer",dur:20,fixed:"08:35",
+   costos:[["Guía privado + coche, ~8 h (2)",3600]],
+   note:"<b>Guía privado con coche y chofer</b>, de 8:35 a ~16:30. Pidan guía en español (hay pocos: "+
+        "resérvenlo con tiempo) o en inglés.<br>Cierren con la agencia la ruta de este día: Puerta Sur → "+
+        "muralla → Torres → Barrio Musulmán y comida → Gran Pagoda → los deja en el hotel. Y que sea el "+
+        "mismo guía y coche el martes para Terracota.<br><i>~¥1,400 los dos con coche; entradas y comida "+
+        "aparte.</i>"},
+  {cid:"xa-ceremonia",fixed:"09:00",
+   note:"La <b>ceremonia de bienvenida</b> de la Puerta Sur (永宁门): guerreros con armadura dorada en la plaza "+
+        "del puente levadizo, como recibían a los enviados en la dinastía Tang. Gratis y sin subir a la "+
+        "muralla; dura ~15 min.<br>Hay otra a las 17:00 y formación de guerreros a las 10:30 y 16:30."},
+  {cid:"xa1-muralla",name:"Muralla Ming en tándem",type:"sight",dur:95,
+   costos:[["Muralla + tándem (2)",500]],
+   note:"Suben por la misma Puerta Sur. El guía saca los boletos y la renta; ustedes dan ~1 h de vuelta "+
+        "por arriba: Puerta Sur → Puerta Oeste y regreso (la vuelta completa son 13.7 km, no cabe).<br>"+
+        "En la mañana de mayo todavía no pega el sol de lleno.<br>"+
+        "⚠ El boleto es de <b>una sola entrada</b>: si bajan, se anula."},
+  {cid:"xa1-a-torres",name:"Coche a la Torre de la Campana",type:"transfer",dur:15},
+  {cid:"xa-belldrum",name:"Torres de la Campana y del Tambor",dur:70,
+   note:"La <b>Torre de la Campana</b> (钟楼), en el centro exacto de la ciudad amurallada, y a 200 m la "+
+        "del <b>Tambor</b> (鼓楼), que es la entrada del Barrio Musulmán.<br>"+
+        "Cuadren la del Tambor con un <b>toque de tambores</b>: hay varios al día (por ejemplo 11:00 y 11:45; "+
+        "el guía confirma la hora).<br><i>Boleto combinado ~¥50 c/u.</i>"},
+  {cid:"xa1-mezquita",name:"Gran Mezquita y callejones del Barrio Musulmán",type:"sight",dur:60,
+   costos:[["Gran Mezquita (2)",130]],
+   note:"La <b>Gran Mezquita de Huajue</b> (化觉巷清真大寺): del siglo VIII, construida como templo "+
+        "chino, con patios, pabellones y jardines. Es de lo más bonito de Xi'an y casi nadie entra. "+
+        "~¥25 c/u. Hombros y rodillas cubiertos; la sala de oración es solo para fieles.<br>"+
+        "Después, los callejones de atrás con su guía, no la calle principal (北院门), que es la "+
+        "más turística."},
+  {cid:"xa-muslim",name:"Comida de picoteo en el Barrio Musulmán",type:"food",dur:75,
+   note:"Entren por el OESTE, no por Beiyuanmen. Ruta: 洒金桥 Sajinqiao → 大皮院 Dapiyuan → 北广济街 → "+
+        "西羊市 Xiyangshi → 北院门 Beiyuanmen al final.<br>"+
+        "<b>Qué pedir:</b><ul>"+
+        "<li>定家小酥肉 (Dapiyuan) — res empanizada frita y al vapor, se deshace con los palillos</li>"+
+        "<li>贾三灌汤包, sede de 西羊市121 — dumplings de sopa. NO la sucursal de Beiyuanmen</li>"+
+        "<li>盛志望麻酱凉皮 — fideos fríos con ajonjolí</li>"+
+        "<li>柿子饼 de 伊古斋 — buñuelos de caqui, cómanselos calientes</li></ul>"+
+        "⚠ <b>TRAMPA:</b> el bloque de nuez de Xinjiang (切糕). Anuncian precio por pieza y cobran POR GRAMO "+
+        "después de cortarles un pedazo. Si les acercan un cuchillo a ese bloque, digan que no y sigan."},
+  {cid:"xa1-a-pagoda",name:"Coche a la Gran Pagoda del Ganso Salvaje",type:"transfer",dur:25},
+  {cid:"xa-pagoda",name:"Gran Pagoda del Ganso Salvaje + templo Da Ci'en, con su guía",type:"sight",dur:75,
+   note:"Del año 652, para guardar los sutras que el monje Xuanzang trajo de la India (el de <i>Viaje al "+
+        "Oeste</i>). Con guía es otra cosa: los murales de su viaje y la historia del templo.<br>"+
+        "El corte de entrada es a las 16:30. <b>El ascenso a la pagoda puede estar cerrado los "+
+        "lunes</b>: confírmenlo; el templo y los murales se ven igual."},
+  {cid:"xa1-hotel",name:"El coche los deja en el hotel · fin del tour",type:"transfer",dur:25},
+  {cid:"xa1-descanso",name:"Descanso en el hotel",type:"rest",dur:95},
+  {cid:"xa-datang-ir",name:"DiDi al sur de Datang Everbright City",fixed:"18:15",
+   note:"DiDi del hotel a la entrada SUR del bulevar (大唐芙蓉园 / 大唐不夜城南), ~30 min. Así lo caminan "+
+        "de SUR a NORTE y terminan en la pagoda para las fuentes.<br>"+
+        "<i>Sí: es la misma zona de la tarde, pero de noche es otra cosa. De día no vale nada.</i>"},
+  {cid:"xa-cena-tang",fixed:"18:50"},
+  {cid:"xa-datang",dur:40},
+  {cid:"xa-fuentes",fixed:"21:00",
+   note:"Gratis, ~10 min. ⚠ <b>Confirmen la hora del lunes</b>: según la fuente, la función de la noche es a "+
+        "las 20:00 o a las 21:00 (en mayo puede ser cualquiera). Si es a las 20:00, salgan de la cena a las "+
+        "19:40 y caminen el bulevar después.<br>"+
+        "Párense mirando al SUR, con la pagoda de fondo detrás del agua. Lleguen 15 min antes."},
+  {cid:"xa1-vuelta",name:"DiDi de regreso al hotel",type:"transfer",dur:30,
+   costos:[["DiDi Qujiang → hotel",75]]}
+];
+const XA_DIA2_V4=[
+  {cid:"g-breakfast",fixed:"06:50"},
+  {cid:"xa2-salida",name:"Check-out y coche a Terracota, con las maletas",type:"transfer",dur:75,fixed:"07:30",
+   note:"Los recogen el guía y el coche. <b>Las maletas van en la cajuela todo el día</b> y el coche los deja "+
+        "al final en la estación: no tienen que regresar al hotel (son ~1 h de retroceso). Pásenle a la "+
+        "agencia que el coche es exclusivo y se queda con ustedes; pasaportes y lo de valor, siempre con "+
+        "ustedes.<br>~55 min de carretera + 20-25 min a pie del estacionamiento al Foso 1.<br>"+
+        "<i>Si prefieren que las maletas se queden en el hotel: el recorrido de Lishan Yuan no cabe, o "+
+        "toman un tren más tarde.</i>"},
+  {cid:"xa-terracota",name:"Ejército de Terracota con su guía: Foso 1 → 3 → 2 + Sala de Exposición",dur:185,
+   costos:[["Entradas Terracota (2)",588],["Chofer privado día completo",2600],["Guía en Terracota",1800]],
+   note:"Abre 8:30 · deja de checar boletos a las 17:00. Abre los 7 días.<br>"+
+        "Foso 1 primero: los grupos llegan entre 9:30 y 10:00. Luego Foso 3, Foso 2 y la Sala de Exposición.<br>"+
+        "Con guía no hace falta audioguía: sin explicación, el Foso 1 son estatuas a 40 m detrás de una "+
+        "barandilla.<br>"+
+        "⚠ <b>Reserva nominativa con pasaporte, 7 días antes = martes 11 de mayo de 2027</b>, en bmy.com.cn "+
+        "(o que la saque la agencia). Pidan la franja de 8:30-9:30."},
+  {cid:"xa-shuttle",dur:30},
+  {cid:"xa-lishan",dur:60},
+  {cid:"xa-lintong-comida",
+   note:"Algo rápido en Lintong, a la salida. Pídanle al guía su lugar de 肉夹馍 (roujiamo, el 'sándwich' "+
+        "de Xi'an) o de fideos biangbiang."},
+  {cid:"xa2-estacion",name:"Coche de Lintong a la estación Xi'an Norte (西安北)",type:"transfer",dur:45,
+   note:"Lintong → Xi'an Norte ~40-50 min. El coche los deja con las maletas en la puerta de salidas."},
+  {cid:"xa2-anden",name:"Revisión de pasaportes y al andén",type:"transfer",dur:40,
+   note:"Xi'an Norte es enorme: revisión de pasaporte en la entrada, seguridad, y la sala de espera de su "+
+        "puerta. 40 min es lo justo; no lleguen más tarde."},
+  {cid:"bj-arrive",name:"Tren bala Xi'an Norte → Pekín Oeste (a confirmar)",type:"transfer",dur:260,fixed:"15:30",
+   costos:[["Tren G Xi'an → Pekín, 2a clase, ~¥515 c/u (2)",2750]],
+   note:"<b>Busquen el G más rápido que salga entre 15:00 y 16:00</b> en 12306 o Trip.com: los rápidos hacen "+
+        "~4 h 10-4 h 30 y solo paran en Zhengzhou Este y Shijiazhuang. Hay ~40 trenes al día.<br>"+
+        "⚠ Los horarios publicados no cuadran entre sí: confírmenlo al comprar. La venta abre ~15 días "+
+        "antes (lunes 3 de mayo), con pasaporte. Revisen que llegue a <b>Pekín Oeste</b> (北京西): unos pocos "+
+        "van a Fengtai o a Qinghe."},
+  {cid:"xa2-pekin-hotel",name:"Pekín Oeste → hotel y check-in",type:"transfer",dur:50,
+   costos:[["Taxi Pekín Oeste → hotel (2)",200]],
+   note:"Fila de taxis oficial al salir (o DiDi). ~30-40 min al centro."},
+  {cid:"xa2-cena",name:"Cena ligera en el hotel o a la vuelta",type:"food",dur:45,fixed:"20:45",
+   costos:[["Cena ligera (2)",600]],
+   note:"Llegan cansados: el pato laqueado es mañana, sin prisa."}
+];
+/* Pekín: su miércoles 19 ya es día completo. De mientras, lo que ya estaba en el
+   catálogo; se arma a detalle cuando toque Pekín. */
+const BJ_DIA1_V4=[
+  {cid:"g-breakfast",fixed:"08:30"},
+  {cid:"bj-temple"},
+  {cid:"g-lunch"},
+  {cid:"g-rest"},
+  {cid:"bj-duck",fixed:"19:00"},
+  {cid:"bj-qianmen"}
+];
+function migrarXianV4(s){
+  if(s.xaPlanV4)return;
+  const xa=s.bases&&s.bases.xian,bj=s.bases&&s.bases.beijing;
+  if(s.bases&&s.bases.hk&&xa&&Array.isArray(xa.catalog)&&bj&&Array.isArray(bj.catalog)){
+    const costos=(base,lista)=>lista.forEach(a=>{
+      const x=a.costos&&base.catalog.find(y=>y.cid===a.cid);
+      if(x)x.costs=a.costos.map(([label,est])=>({id:uid(),label,est,real:0}));
+    });
+    const quitar=(base,cids)=>{
+      const usados=new Set(Object.values(base.schedule||{}).flat().map(x=>x.ref));
+      base.catalog=base.catalog.filter(a=>!cids.includes(a.cid)||usados.has(a.cid));
+    };
+    // Xi'an: 2 noches; su día 0 (domingo) ya es de Zhangjiajie y se queda con el martes
+    xa.nights=2;xa.diaSalida=true;
+    xa.schedule=xa.schedule||{};xa.dayStart=xa.dayStart||{};
+    xa.schedule[0]=[];
+    sembrarDia(xa,1,XA_DIA1_V4,"07:50");
+    sembrarDia(xa,2,XA_DIA2_V4,"06:50");
+    costos(xa,XA_DIA1_V4);costos(xa,XA_DIA2_V4);
+    Object.keys(xa.schedule).forEach(k=>{if(+k>2)delete xa.schedule[k];});
+    quitar(xa,["xa-maletas","xa-checkin2","xa-terra-ir","xa-terra-vuelta","xa-datang-vuelta",
+               "xa-mur-ir","xa-mur-boleto","xa-mur-fin","xa-mur-vuelta"]);
+    if(xa.day!==1&&xa.day!==2)xa.day=1;
+    (xa.hotels||[]).forEach(h=>{
+      if(/sofitel legend/i.test(h.name||"")){
+        Object.assign(h,{chosen:true,noches:2,
+          note:"<b>★ De mientras, mientras eligen · domingo 16 y lunes 17</b> (check-out el martes 18). "+
+               "Dentro de la muralla Ming, a ~700 m de la Torre de la Campana: el guía los recoge aquí el "+
+               "lunes y regresan a descansar a media tarde.<br>"+
+               "Edificio Art Déco de 1953 que fue casa de huéspedes del Estado. Jardines, alberca cubierta y "+
+               "spa. Mayordomo 24 h en todas las categorías, sábanas de 600 hilos y amenidades Hermès. Está "+
+               "en la guía Michelin de hoteles.<br>"+
+               "Tarifa 2025-26: $188-297 USD + ~15% de servicio.<br>"+
+               "<i>El martes desayunan a las 6:50 (el buffet abre 6:30) y salen con las maletas a las 7:30.</i>"});
+      }else if(/canopy/i.test(h.name||"")){
+        h.chosen=false;delete h.noches;
+        if(!/Ya no está en el plan/.test(h.note||""))
+          h.note="<b>Ya no está en el plan:</b> Xi'an quedó en 2 noches y las dos son en el centro.<br>"+(h.note||"");
+      }
+    });
+    // Pekín: 4 noches. Su día 0 (martes) es de Xi'an; el jueves y el viernes
+    // se recorren un lugar y el miércoles queda como día completo nuevo
+    bj.nights=4;
+    bj.schedule=bj.schedule||{};bj.dayStart=bj.dayStart||{};
+    bj.schedule[3]=bj.schedule[2]||[];bj.dayStart[3]=bj.dayStart[2]||"09:00";
+    bj.schedule[2]=bj.schedule[1]||[];bj.dayStart[2]=bj.dayStart[1]||"09:00";
+    bj.schedule[0]=[];
+    sembrarDia(bj,1,BJ_DIA1_V4,"08:30");
+    quitar(bj,["bjd0-desayuno","bjd0-pagoda","bjd0-torre","bjd0-maletas","bjd0-estacion","bjd0-taxi","bj-arrive"]);
+    if(!bj.day||bj.day>3)bj.day=1;
+  }
+  if(Array.isArray(s.esenciales)){
+    const e=s.esenciales.find(x=>x.id===ESSENTIAL_XIAN.id);
+    if(e)Object.assign(e,{t:ESSENTIAL_XIAN.t,s:ESSENTIAL_XIAN.s});
+    else{
+      const i=s.esenciales.findIndex(x=>x.id==="ess-zjj-tours");
+      s.esenciales.splice(i<0?s.esenciales.length:i+1,0,{...ESSENTIAL_XIAN});
+    }
+  }
+  s.xaPlanV4=true;
 }
 /* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
 function freshBlankTrip(titulo){
