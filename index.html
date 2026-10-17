@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v31.4 · 17 oct 2026 · Xi'an: su hotel en Qujiang (HUALUXE Tanghua)";
+const APP_VERSION="v31.5 · 17 oct 2026 · Pekín 3 noches y Shanghái 3, armados día por día";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -929,8 +929,8 @@ const ROUTE=[
   {id:"chongqing", nights:1, sale:"08:15"},  // 13 → 14 may · llega 10:22 a Shapingba
   {id:"zjj",       nights:2, sale:"15:50"},  // 14 → 16 may · llega 20:15 a Zhangjiajie West
   {id:"xian",      nights:2, sale:"14:40"},  // 16 → 18 may · Tianmen y vuelo de la tarde, a confirmar
-  {id:"beijing",   nights:4, sale:"15:30"},  // 18 → 22 may · tren de la tarde, llega ~19:50 (a confirmar)
-  {id:"shanghai",  nights:2, sale:"09:00"},  // 22 → 24 may · llega 14:00
+  {id:"beijing",   nights:3, sale:"15:30"},  // 18 → 21 may · tren de la tarde, llega ~19:50 (a confirmar)
+  {id:"shanghai",  nights:3, sale:"09:00"},  // 21 → 24 may · G de las 9:00, llega ~13:20 a Hongqiao
   {id:"kyoto",     nights:2, sale:"07:30"},  // 24 → 26 may · llega 12:30
   {id:"tokyo",     nights:3, sale:"13:00"}   // 26 → 29 may · llega 15:15
 ];
@@ -948,7 +948,7 @@ const VUELOS_INTL={
           sale:"09:35",llega:"07:10"}
 };
 const ROUTE_DROP=["osaka"];   // paradas que se eliminan por completo del viaje
-const ROUTE_VERSION=6;        // súbela al editar ROUTE para reaplicar la ruta
+const ROUTE_VERSION=7;        // súbela al editar ROUTE para reaplicar la ruta
 const ROUTE_IDS=ROUTE.map(r=>r.id);
 const routeNights=id=>{const r=ROUTE.find(x=>x.id===id);return r?r.nights:null;};
 const routeSale=id=>{const r=ROUTE.find(x=>x.id===id);return r&&r.sale||null;};
@@ -1039,7 +1039,7 @@ const XFER={
      pero hay ~2 vuelos al día y el más temprano sale 11:05. */
   "zjj|xian":{mode:"Vuelo",detail:"Tianmen en la mañana · Zhangjiajie (DYG) → Xi'an (XIY) directo ~1 h 45, vuelo de la tarde A CONFIRMAR (hay pocos) · el tren directo son 9 h 48, no sirve",time:"~3 h 45 de la salida al aterrizaje",dur:225,type:"air"},
   "xian|beijing":{mode:"Tren bala",detail:"De Terracota a Xi'an Norte en el coche, con las maletas · G rápido ~15:30 → Pekín Oeste ~19:50, a confirmar (los rápidos solo paran en Zhengzhou Este y Shijiazhuang)",time:"~4 h 20 de tren",dur:260,type:"rail"},
-  "beijing|shanghai":{mode:"Tren bala",detail:"Pekín S → Shanghái Hongqiao",time:"4.5–6 h",dur:300,type:"rail"},
+  "beijing|shanghai":{mode:"Tren bala",detail:"Hotel → Pekín Sur (taxi ~30 min) · G ~9:00 → Shanghái Hongqiao ~13:20, a confirmar · Hongqiao → el Bund ~45 min",time:"~4 h 20 de tren",dur:260,type:"rail"},
   "shanghai|kyoto":{mode:"Vuelo",detail:"Shanghái (PVG) → Osaka (KIX) 2 h + JR Haruka a Kyoto 75 min",time:"≈5 h total",dur:300,type:"air"},
   "kyoto|tokyo":{mode:"Tren bala",detail:"Kyoto → Tokio (Shinkansen Nozomi, asientos D/E para ver el Fuji)",time:"2 h 15",dur:135,type:"rail"},
   /* --- Alternativas, por si reacomodas la ruta --- */
@@ -1623,6 +1623,13 @@ const ESSENTIAL_XIAN={id:"ess-xian",t:"Xi'an: guía, coche y tren a Pekín",
     "las maletas en la cajuela) · Terracota: reserva con pasaporte 7 días antes (mar 11 may), franja 8:30-9:30 · "+
     "tren G Xi'an Norte → Pekín Oeste ~15:30: la venta abre ~15 días antes (lun 3 may) · hotel: HUALUXE "+
     "Tanghua, 40 Yanyin Rd, Qujiang"};
+const ESSENTIAL_BJ_SH={id:"ess-bj-sh",t:"Pekín y Shanghái: reservas",
+  s:"Ciudad Prohibida: boleto con pasaporte, la venta abre a las 20:00 (Pekín) siete días antes = jueves 13 de "+
+    "mayo, y se agota · guía para el jueves 20 (que saque también la reserva de la Plaza Tiananmen) · Templo del "+
+    "Cielo: con pasaporte, 1-7 días antes · chofer para la Muralla el miércoles 19 a las 7:30 · reservar el pato "+
+    "(Da Dong) y la cena del jueves · tren Pekín Sur → Shanghái Hongqiao del viernes 21 (~9:00): la venta abre ~15 "+
+    "días antes (jue 6 may) · Shanghái: Jardín Yu y Shanghai Tower en línea, crucero del viernes 20:00 · faltan "+
+    "los hoteles de Pekín y Shanghái (hay uno de mientras)"};
 const ESSENTIAL_YS_HOTEL={id:"ess-ys-hotel",t:"Pedirle al Sugar House (Yangshuo)",
   s:"traslado desde la estación el domingo 9 · auto con chofer el lunes 10 a las 4:45 a Xianggong · "+
     "reserva de la balsa del Yulong para el lunes 14:30 · desayuno para llevar el martes 11 a las 7:00"};
@@ -1638,6 +1645,7 @@ const ESSENTIALS=[
   ESSENTIAL_TREN_ZJJ,
   ESSENTIAL_ZJJ_TOURS,
   ESSENTIAL_XIAN,
+  ESSENTIAL_BJ_SH,
   {id:"ess-jp",t:"Japón: Visit Japan Web + boleto de salida",s:"mexicanos sin visa (exención de turista)"},
   {id:"ess-visa",t:"Visa de turista China (L)",s:"tramitar 1–2 meses antes"},
   {id:"ess-pass",t:"Pasaporte 6+ meses de vigencia",s:"revisar ambos"},
@@ -2091,6 +2099,7 @@ const ARRIVE_FIJO={
   "zjj-arrive":{propio:true},  // migrarChongqingV2: la salida de Chongqing del 14
   "xa-arrive":{propio:true},   // migrarZjjXian: Tianmen y el vuelo del domingo 16
   "bj-arrive":{propio:true},   // migrarXianV4: el tren del martes 18, en el último día de Xi'an
+  "sh-arrive":{propio:true},   // migrarPekinShanghai: el tren del viernes 21
   "ky-arrive":{name:"Vuelo Shanghái → Osaka KIX + JR Haruka a Kyoto",
                note:"PVG → KIX ≈2 h + Haruka 75 min; check-in"},
   "tk-arrive":{name:"Tren bala Kyoto → Tokio",
@@ -3677,6 +3686,7 @@ function normalizeTripState(s){
   migrarDiaSalida(s);        // al final: mueve días ya sembrados de una parada a otra
   migrarXianV4(s);           // y después: Xi'an se queda con su martes de salida
   migrarXianV5(s);           // su hotel en Qujiang, junto a la Gran Pagoda
+  migrarPekinShanghai(s);    // Pekín 3 noches (2 días completos) y Shanghái 3
   return s;
 }
 /* ---- Llegada a Yangshuo: domingo 9 de mayo de 2027, paso a paso ----
@@ -5073,6 +5083,256 @@ function migrarXianV5(s){
     if(e)Object.assign(e,{t:ESSENTIAL_XIAN.t,s:ESSENTIAL_XIAN.s});
   }
   s.xaPlanV5=true;
+}
+/* ---- Pekín y Shanghái (v31.5) ----
+   Pekín: 3 noches. Llegan el martes 18 en la noche (ese día es de Xi'an), el
+   miércoles 19 y el jueves 20 son completos, y el viernes 21 salen en la mañana
+   a Shanghái: ese día ya es de Shanghái. Hotel de mientras en Wangfujing.
+   Shanghái: 3 noches (21, 22 y 23); el lunes 24 vuelan a Osaka. Hotel de
+   mientras en el Bund: todo lo de la primera noche queda a pie. */
+const BJ_DIA1_V5=[
+  {cid:"g-breakfast",fixed:"06:45",dur:45},
+  {cid:"bj1-chofer",name:"Chofer privado: hotel → Mutianyu",type:"transfer",dur:75,fixed:"07:30",
+   costos:[["Chofer privado todo el día (Muralla + Templo del Cielo)",2700]],
+   note:"~70 km al noreste, 1 h 10-1 h 20 temprano.<br>Cierren con el chofer el día completo: hotel 7:30 → "+
+        "Mutianyu (los espera en el estacionamiento) → comida → Templo del Cielo → hotel ~17:30."},
+  {cid:"bj-wall",name:"Gran Muralla de Mutianyu: teleférico arriba, a pie y tobogán abajo",type:"tour",dur:210,
+   costos:[["Entrada, bus interno, teleférico y tobogán (2)",1300]],
+   note:"Llegan ~8:45, antes que los grupos (~10:00). En temporada abre a las 7:30.<br>"+
+        "Del estacionamiento sale un bus interno al pie de la muralla. <b>Hay DOS sistemas que no se "+
+        "combinan:</b> el teleférico cerrado sube a la Torre 14; la silla y el tobogán están en la Torre 6. "+
+        "Compren <b>teleférico de subida</b> y <b>tobogán de bajada</b> por separado.<br>"+
+        "Ruta: suban a la 14, caminen al oeste hacia la 20 si tienen piernas (lo más empinado y bonito, casi "+
+        "sin gente), regresen y caminen al este hasta la 6 (~1.2 km) y bajen en tobogán.<br>"+
+        "⚠ El tobogán no lo dejan a mayores de 60. Lleven pasaporte, agua y zapatos con suela: hay escalones "+
+        "de 40 cm."},
+  {cid:"bj1-comida",name:"Comida en The Schoolhouse, al pie de Mutianyu",type:"food",dur:75,
+   costos:[["Comida (2)",800]],
+   note:"Restaurante en la vieja escuela del pueblo de Mutianyu, el favorito de los que vienen a la muralla: "+
+        "trucha de la zona y cocina china y occidental. Si está lleno, en el pueblo hay varios de trucha."},
+  {cid:"bj1-a-cielo",name:"Chofer: Mutianyu → Templo del Cielo",type:"transfer",dur:100,
+   note:"~85 km atravesando la ciudad de norte a sur. Duerman en el coche."},
+  {cid:"bj-temple",name:"Templo del Cielo",type:"sight",dur:105,
+   costos:[["Templo del Cielo, boleto combinado (2)",200]],
+   note:"Donde el emperador rezaba por las cosechas: la arquitectura imperial más perfecta de Pekín. El "+
+        "chofer los deja en la <b>Puerta Este o Norte</b>. Orden: Salón de Oración por las Buenas Cosechas → "+
+        "Bóveda Imperial del Cielo y el Muro del Eco → Altar Circular.<br>"+
+        "Pidan el <b>boleto combinado</b> (~¥34): el de solo parque no entra a los salones. Los salones cierran "+
+        "~17:30 y los <b>lunes</b>; el miércoles abren.<br>"+
+        "⚠ Boleto con nombre y pasaporte, 1-7 días antes (WeChat o Trip.com)."},
+  {cid:"bj1-a-hotel",name:"Chofer: Templo del Cielo → hotel",type:"transfer",dur:30,
+   note:"~7 km al norte, a Wangfujing. Fin del chofer."},
+  {cid:"g-rest",dur:90},
+  {cid:"bj-duck",name:"Pato laqueado de Pekín",type:"food",dur:105,fixed:"19:00",
+   costos:[["Pato laqueado en Da Dong (2)",2400]],
+   note:"<b>Da Dong</b> (大董): el pato más fino, piel crujiente sin grasa, y <b>acepta reservación</b>: "+
+        "resérvenlo con una semana. Busquen la sucursal más cerca del hotel.<br>"+
+        "Alternativa: <b>Siji Minfu</b> (四季民福), la de la Ciudad Prohibida o la de Dong'anmen. Más barato y "+
+        "muy bueno, pero no reserva y hay 1-2 h de fila: saquen número desde la tarde.<br>"+
+        "Pidan el pato entero: lo cortan en la mesa."},
+  {cid:"bj-qianmen",name:"Paseo de noche por Wangfujing",type:"sight",dur:40,
+   note:"La calle peatonal iluminada, de regreso al hotel."}
+];
+const BJ_DIA2_V5=[
+  {cid:"g-breakfast",fixed:"07:00"},
+  {cid:"bj2-ir",name:"A pie al control de la Plaza Tiananmen",type:"transfer",dur:25,fixed:"07:45",
+   note:"De Wangfujing son ~20 min a pie por la avenida Chang'an.<br>Lleven solo lo indispensable: revisión de "+
+        "seguridad con pasaporte para entrar a la plaza y otra para la Ciudad Prohibida. Nada de encendedores."},
+  {cid:"bj-forbidden",name:"Plaza Tiananmen + Ciudad Prohibida, con guía",type:"sight",dur:225,fixed:"08:10",
+   costos:[["Ciudad Prohibida + Tesoro + Relojes (2)",430],["Guía privado 3-4 h",1900]],
+   note:"8:10 la Plaza y la Puerta de Tiananmen; a las 8:30 abre la <b>Puerta Meridiana</b> (午门), la única "+
+        "entrada.<br>Recorrido: el eje central (los tres grandes salones) → Palacio de la Pureza Celestial → "+
+        "<b>Galería del Tesoro</b> y <b>Galería de los Relojes</b> (boletos aparte, ~¥10 c/u, valen la pena) → "+
+        "Jardín Imperial → salida por el norte (神武门).<br>"+
+        "⚠ <b>Boleto nominativo con pasaporte: la venta abre a las 20:00 (hora de Pekín) siete días antes = "+
+        "jueves 13 de mayo</b>, y se agota. Cierra los lunes. Para la Plaza Tiananmen también suele pedirse "+
+        "reserva: que la saque la agencia del guía.<br>"+
+        "Con guía vale mucho más: sin explicación son patios iguales."},
+  {cid:"bj-jingshan",name:"Colina Jingshan: la vista de toda la Ciudad Prohibida",type:"sight",dur:45,
+   note:"Enfrente de la salida norte, cruzando la calle. ~10 min de escalera al pabellón de arriba: la foto "+
+        "de todos los techos dorados."},
+  {cid:"bj2-a-comida",name:"Taxi a Nanluoguxiang",type:"transfer",dur:15},
+  {cid:"bj2-comida",name:"Comida: fideos zhajiangmian en un hutong",type:"food",dur:60,
+   costos:[["Comida (2)",400]],
+   note:"El plato de Pekín: fideos con salsa de soya fermentada y cerdo. Uno famoso: 方砖厂69号炸酱面, en un "+
+        "callejón junto a Nanluoguxiang."},
+  {cid:"bj-hutong",name:"Hutongs de Shichahai en rickshaw + un patio (siheyuan)",type:"tour",dur:120,
+   note:"Rickshaw por los callejones alrededor de los lagos Houhai y Qianhai, el Puente de Plata (银锭桥) y "+
+        "visita a un patio tradicional con una familia.<br>Contrátenlo con la agencia o en un punto oficial, con "+
+        "precio cerrado: los de la calle cobran de más."},
+  {cid:"bj2-a-hotel",name:"Taxi de regreso al hotel",type:"transfer",dur:20},
+  {cid:"bj2-descanso",name:"Descanso en el hotel",type:"rest",dur:130},
+  {cid:"bj2-cena",name:"Cena especial: TRB Hutong",type:"food",dur:120,fixed:"18:45",
+   costos:[["Cena especial (2)",4500]],
+   note:"Cocina europea de autor dentro de un templo de la dinastía Ming, junto a la Ciudad Prohibida. De los "+
+        "restaurantes más reconocidos de Pekín: <b>reserven</b> y pidan mesa en el patio. ~10 min en taxi del "+
+        "hotel."},
+  {cid:"bj2-vuelta",name:"Regreso al hotel y maletas: mañana salen a las 7:45",type:"transfer",dur:20}
+];
+const SH_DIA0_V2=[
+  {cid:"sh0-desayuno",name:"Desayuno en el hotel de Pekín",type:"food",dur:40,fixed:"07:00",
+   costos:[["Desayuno (2)",300]]},
+  {cid:"sh0-estacion",name:"Check-out, taxi a Pekín Sur (北京南) y al andén",type:"transfer",dur:70,fixed:"07:45",
+   costos:[["Taxi a Pekín Sur (2)",170]],
+   note:"~30 min desde Wangfujing. Pekín Sur es enorme: pasaporte en la entrada, seguridad y la sala de su "+
+        "puerta. Lleguen 40 min antes."},
+  {cid:"sh-arrive",name:"Tren G Pekín Sur → Shanghái Hongqiao (a confirmar)",type:"transfer",dur:260,fixed:"09:00",
+   costos:[["Tren G Pekín → Shanghái, 2a clase, ~¥660 c/u (2)",3560]],
+   note:"Los más rápidos hacen 4 h 18-4 h 40. Busquen el G que salga entre 9:00 y 10:00 (G1 o G7, según la "+
+        "fuente) y que llegue a <b>Hongqiao</b> (虹桥), no a la estación de Shanghái.<br>"+
+        "⚠ Los horarios publicados no cuadran entre sí: confírmenlo al comprar. La venta abre ~15 días antes "+
+        "(jueves 6 de mayo), con pasaporte.<br><i>Para 4 horas, primera clase o business (商务座, asientos que "+
+        "se reclinan) es un buen gusto.</i>"},
+  {cid:"sh0-hotel",name:"Hongqiao → hotel en el Bund y check-in",type:"transfer",dur:60,
+   costos:[["Taxi Hongqiao → el Bund (2)",270]],
+   note:"~45 min en taxi (fila oficial a la salida). El metro L2 llega directo a East Nanjing Road, pero con "+
+        "maletas mejor el taxi."},
+  {cid:"g-rest",dur:90},
+  {cid:"sh-nanjing",name:"Nanjing Road del Este a pie, hasta el Bund",type:"sight",dur:45,
+   note:"La calle peatonal de tiendas y neones que desemboca en el Bund, junto al Peace Hotel. Basta un tramo."},
+  {cid:"sh-bund",name:"El Bund de punta a punta",type:"sight",dur:75,
+   note:"El malecón de los edificios de los años 20 y 30, frente a los rascacielos de Pudong. Del Puente "+
+        "Waibaidu (norte) hacia el sur. Las luces se prenden al anochecer: la vista de noche la tienen en el "+
+        "crucero."},
+  {cid:"sh-xlb",name:"Cena: xiaolongbao",type:"food",dur:90,fixed:"18:00",
+   note:"Los dumplings de sopa de Shanghái. Din Tai Fung (fácil, constante) o Jia Jia Tang Bao, el clásico "+
+        "local, que cierra temprano: por eso a las 18:00. Muérdanlos de lado y sorban el caldo primero."},
+  {cid:"sh0-a-muelle",name:"Al muelle Shiliupu (十六铺)",type:"transfer",dur:20},
+  {cid:"sh-cruise",name:"Crucero nocturno por el Huangpu",type:"tour",dur:55,fixed:"20:00",
+   costos:[["Crucero nocturno (2)",800]],
+   note:"~50 min por el río entre el Bund y Pudong, todo iluminado. De noche salen cada hora del muelle "+
+        "Shiliupu (19:00, 20:00, 21:00). La cubierta VIP de arriba (~¥180) incluye bebida. Boletos con "+
+        "pasaporte; lleguen 20-30 min antes."},
+  {cid:"sh-rooftop",name:"Copa con vista: Bar Rouge o Vue Bar",type:"bar",dur:75,
+   note:"Bar Rouge (Bund 18) o Vue Bar (Hyatt on the Bund, con jacuzzi en la terraza): los dos frente a Pudong "+
+        "y a pie del muelle."},
+  {cid:"sh0-vuelta",name:"A pie al hotel",type:"transfer",dur:15}
+];
+const SH_DIA1_V2=[
+  {cid:"g-breakfast",fixed:"07:45"},
+  {cid:"sh1-a-yu",name:"Taxi al Jardín Yu",type:"transfer",dur:15,fixed:"08:45"},
+  {cid:"sh-yu",name:"Jardín Yu (Yuyuan) a la apertura",type:"sight",dur:90,
+   costos:[["Jardín Yu (2)",220]],
+   note:"Jardín de la dinastía Ming: rocallas, estanques, pabellones y el muro del dragón. A la apertura "+
+        "(8:30-9:00) está tranquilo; a las 10:30 ya no se camina. <b>Cierra los lunes</b>; el sábado abre. "+
+        "Boletos en Trip.com con pasaporte."},
+  {cid:"sh1-bazar",name:"Bazar de la Ciudad Vieja y la casa de té Huxinting",type:"sight",dur:45,
+   note:"La casa de té del lago (湖心亭), con su puente en zigzag, es de las más antiguas de Shanghái. Los "+
+        "dumplings de Nanxiang (南翔馒头店), junto al puente, tienen fila eterna: si está corta, pidan una "+
+        "canasta."},
+  {cid:"sh1-a-fcc",name:"Taxi a la Concesión Francesa (Wukang Road)",type:"transfer",dur:25},
+  {cid:"sh1-wukang",name:"Wukang Road y el Edificio Wukang",type:"sight",dur:60,
+   note:"La calle arbolada de la Concesión Francesa: villas de los años 20 y 30 y el Edificio Wukang "+
+        "(武康大楼), el 'Flatiron' de Shanghái. Caminen hacia Anfu Road."},
+  {cid:"sh1-comida",name:"Comida en Anfu Road",type:"food",dur:75,
+   costos:[["Comida (2)",900]],
+   note:"Anfu Road (安福路): cafés, bistrós y boutiques; la calle de moda de Shanghái."},
+  {cid:"sh1-a-xtd",name:"Taxi a Tianzifang",type:"transfer",dur:15},
+  {cid:"sh-fcc",name:"Tianzifang + Xintiandi",type:"sight",dur:140,
+   note:"Tianzifang (田子坊): laberinto de callejones de casas shikumen con tiendas y cafés. Después, ~15 min a "+
+        "pie a Xintiandi (新天地), las shikumen restauradas, para un café."},
+  {cid:"sh1-a-hotel",name:"Taxi al hotel",type:"transfer",dur:20},
+  {cid:"sh1-descanso",name:"Descanso en el hotel",type:"rest",dur:100},
+  {cid:"sh1-cena",name:"Cena shanghainesa",type:"food",dur:105,fixed:"18:45",
+   costos:[["Cena (2)",1600]],
+   note:"Cocina de Shanghái: hongshao rou (cerdo estofado en soya), pescado 'ardilla', cangrejo. Reserven un "+
+        "buen local en Dianping.<br><i>Si quieren algo de una vez en la vida: <b>Ultraviolet</b> de Paul "+
+        "Pairet, 3 estrellas Michelin: 10 lugares y ~20 tiempos con proyecciones y sonido. De lo más caro de "+
+        "Asia y se reserva con meses.</i>"},
+  {cid:"sh-speaklow",name:"Speak Low: la coctelería escondida",type:"bar",dur:75,
+   costos:[["Cócteles (2)",1200]],
+   note:"Se entra por una tienda de artículos de bar y hay que encontrar la puerta secreta. Lleva años en la "+
+        "lista de los 50 mejores bares de Asia. 579 Fuxing Middle Rd, en la Concesión Francesa."},
+  {cid:"sh1-vuelta",name:"Taxi al hotel",type:"transfer",dur:20}
+];
+const SH_DIA2_V2=[
+  {cid:"g-breakfast",fixed:"07:30"},
+  {cid:"sh2-a-zhu",name:"Coche a Zhujiajiao",type:"transfer",dur:60,fixed:"08:30",
+   costos:[["Coche con chofer medio día (2)",1900]],
+   note:"~50 km al oeste, 50-60 min. Coche con chofer de ida y vuelta. En domingo, llegar temprano es la "+
+        "diferencia."},
+  {cid:"sh-zhu",name:"Zhujiajiao: canales, puentes y barca",type:"tour",dur:150,
+   costos:[["Barca por los canales (2)",330]],
+   note:"La 'Venecia de Shanghái': pueblo de canales de la dinastía Ming con 36 puentes de piedra; el más "+
+        "famoso es el Fangsheng (放生桥). Den la vuelta en barca de remo (~30 min) y caminen la calle Bei Dajie."},
+  {cid:"sh2-comida",name:"Comida en Zhujiajiao",type:"food",dur:60,
+   costos:[["Comida (2)",600]],
+   note:"Prueben el zongzi y el cerdo estofado del pueblo (扎肉)."},
+  {cid:"sh2-regreso",name:"Coche de regreso al hotel",type:"transfer",dur:60},
+  {cid:"sh2-descanso",name:"Descanso y maletas",type:"rest",dur:150,
+   note:"El lunes salen temprano al aeropuerto: dejen las maletas casi listas."},
+  {cid:"sh2-ferry",name:"Ferry al otro lado del río, a Lujiazui",type:"transfer",dur:30,fixed:"16:45",
+   costos:[["Ferry (2)",10]],
+   note:"El ferry público del muelle de Jinling Road East (金陵东路) cruza en ~10 min por ¥2: la vista del "+
+        "Bund desde el agua. Del otro lado, ~15 min a pie a la Shanghai Tower."},
+  {cid:"sh-tower",name:"Shanghai Tower: mirador del piso 118 al atardecer",type:"sight",dur:90,fixed:"17:30",
+   costos:[["Shanghai Tower 118 (2)",970]],
+   note:"El mirador más alto de China. Lleguen a las 17:30: ven la ciudad de día, el atardecer (~18:50) y "+
+        "cómo se prende. ~¥180 c/u, con pasaporte físico. En fin de semana puede haber fila al elevador: "+
+        "compren en línea."},
+  {cid:"sh-farewell",name:"Cena de despedida con vista",type:"food",dur:120,fixed:"19:15",
+   costos:[["Cena de despedida (2)",2500]],
+   note:"La última noche en China. Reserven una mesa con vista al Bund en Lujiazui (los hoteles de la zona "+
+        "tienen restaurantes en los pisos altos) o crucen y cenen en el Bund."},
+  {cid:"sh2-vuelta",name:"Taxi al hotel: mañana vuelan",type:"transfer",dur:25}
+];
+function migrarPekinShanghai(s){
+  if(s.bjshPlanV1)return;
+  const bj=s.bases&&s.bases.beijing,sh=s.bases&&s.bases.shanghai;
+  if(s.bases&&s.bases.hk&&bj&&Array.isArray(bj.catalog)&&sh&&Array.isArray(sh.catalog)){
+    const costos=(base,lista)=>lista.forEach(a=>{
+      const x=a.costos&&base.catalog.find(y=>y.cid===a.cid);
+      if(x)x.costs=a.costos.map(([label,est])=>({id:uid(),label,est,real:0}));
+    });
+    const recorta=(base,ultimo)=>["schedule","dayStart"].forEach(k=>{
+      Object.keys(base[k]||{}).forEach(d=>{if(+d>ultimo)delete base[k][d];});});
+    // Pekín: el martes es de Xi'an; miércoles y jueves completos; el viernes es de Shanghái
+    bj.nights=3;bj.diaSalida=false;
+    bj.schedule=bj.schedule||{};bj.dayStart=bj.dayStart||{};
+    bj.schedule[0]=[];
+    sembrarDia(bj,1,BJ_DIA1_V5,"06:45");
+    sembrarDia(bj,2,BJ_DIA2_V5,"07:00");
+    costos(bj,BJ_DIA1_V5);costos(bj,BJ_DIA2_V5);
+    recorta(bj,2);
+    if(bj.day!==1&&bj.day!==2)bj.day=1;
+    // Shanghái: viernes, sábado y domingo
+    sh.nights=3;
+    sh.schedule=sh.schedule||{};sh.dayStart=sh.dayStart||{};
+    sembrarDia(sh,0,SH_DIA0_V2,"07:00");
+    sembrarDia(sh,1,SH_DIA1_V2,"07:45");
+    sembrarDia(sh,2,SH_DIA2_V2,"07:30");
+    costos(sh,SH_DIA0_V2);costos(sh,SH_DIA1_V2);costos(sh,SH_DIA2_V2);
+    recorta(sh,2);
+    if(sh.day>2)sh.day=0;
+    // hoteles de mientras, en el lugar que da la logística
+    const elige=(base,re,datos,noches)=>{
+      if(!Array.isArray(base.hotels))base.hotels=[];
+      if(base.hotels.some(h=>h.chosen&&!re.test(h.name||"")))return;   // ya escogieron uno
+      let h=base.hotels.find(x=>re.test(x.name||""));
+      if(h)base.hotels.splice(base.hotels.indexOf(h),1);else h={id:uid(),precio:0};
+      Object.assign(h,datos,{noches,chosen:true});
+      base.hotels.unshift(h);
+    };
+    elige(bj,/peninsula beijing/i,{name:"The Peninsula Beijing",area:"Wangfujing · 8 Goldfish Lane",
+      note:"<b>★ De mientras, mientras eligen · martes 18, miércoles 19 y jueves 20</b> (check-out el viernes 21).<br>"+
+           "Lo que importa es la zona: <b>Wangfujing</b>, a ~20 min a pie de la Plaza Tiananmen, cerca de la "+
+           "Ciudad Prohibida y de los restaurantes de pato. Cualquier hotel de Wangfujing o Dongcheng sirve "+
+           "igual.<br><b>⚠ Falta el precio por noche.</b>"},3);
+    elige(sh,/fairmont peace/i,{name:"Fairmont Peace Hotel",area:"El Bund · esquina con Nanjing Road",
+      note:"<b>★ De mientras, mientras eligen · viernes 21, sábado 22 y domingo 23</b> (el lunes 24 vuelan).<br>"+
+           "Lo que importa es la zona: <b>el Bund</b>. Todo lo del viernes queda a pie (Nanjing Road, el Bund, "+
+           "el muelle del crucero, Bar Rouge) y Pudong está cruzando el río. El Peace Hotel es el clásico "+
+           "Art Déco de 1929, con su banda de jazz.<br><b>⚠ Falta el precio por noche.</b>"},3);
+  }
+  if(Array.isArray(s.esenciales)){
+    const e=s.esenciales.find(x=>x.id===ESSENTIAL_BJ_SH.id);
+    if(e)Object.assign(e,{t:ESSENTIAL_BJ_SH.t,s:ESSENTIAL_BJ_SH.s});
+    else{
+      const i=s.esenciales.findIndex(x=>x.id==="ess-xian");
+      s.esenciales.splice(i<0?s.esenciales.length:i+1,0,{...ESSENTIAL_BJ_SH});
+    }
+  }
+  s.bjshPlanV1=true;
 }
 /* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
 function freshBlankTrip(titulo){
