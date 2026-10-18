@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v31.6 · 18 oct 2026 · Pekín con sus tres tours; a Shanghái el viernes en la tarde";
+const APP_VERSION="v31.7 · 18 oct 2026 · Shanghái moderno e histórico; el lunes temprano a Kioto";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -931,7 +931,7 @@ const ROUTE=[
   {id:"xian",      nights:2, sale:"14:40"},  // 16 → 18 may · Tianmen y vuelo de la tarde, a confirmar
   {id:"beijing",   nights:3, sale:"15:30"},  // 18 → 21 may · tren de la tarde, llega ~19:50 (a confirmar)
   {id:"shanghai",  nights:3, sale:"15:00"},  // 21 → 24 may · Muralla en la mañana y G17 15:00, llega ~19:35
-  {id:"kyoto",     nights:2, sale:"07:30"},  // 24 → 26 may · llega 12:30
+  {id:"kyoto",     nights:2, sale:"08:55"},  // 24 → 26 may · vuelo de la mañana PVG → KIX, en Kioto ~14:40
   {id:"tokyo",     nights:3, sale:"13:00"}   // 26 → 29 may · llega 15:15
 ];
 /* Vuelos internacionales de ida y de regreso. La ida trae una escala larga en
@@ -948,7 +948,7 @@ const VUELOS_INTL={
           sale:"09:35",llega:"07:10"}
 };
 const ROUTE_DROP=["osaka"];   // paradas que se eliminan por completo del viaje
-const ROUTE_VERSION=8;        // súbela al editar ROUTE para reaplicar la ruta
+const ROUTE_VERSION=9;        // súbela al editar ROUTE para reaplicar la ruta
 const ROUTE_IDS=ROUTE.map(r=>r.id);
 const routeNights=id=>{const r=ROUTE.find(x=>x.id===id);return r?r.nights:null;};
 const routeSale=id=>{const r=ROUTE.find(x=>x.id===id);return r&&r.sale||null;};
@@ -1040,7 +1040,7 @@ const XFER={
   "zjj|xian":{mode:"Vuelo",detail:"Tianmen en la mañana · Zhangjiajie (DYG) → Xi'an (XIY) directo ~1 h 45, vuelo de la tarde A CONFIRMAR (hay pocos) · el tren directo son 9 h 48, no sirve",time:"~3 h 45 de la salida al aterrizaje",dur:225,type:"air"},
   "xian|beijing":{mode:"Tren bala",detail:"De Terracota a Xi'an Norte en el coche, con las maletas · G rápido ~15:30 → Pekín Oeste ~19:50, a confirmar (los rápidos solo paran en Zhengzhou Este y Shijiazhuang)",time:"~4 h 20 de tren",dur:260,type:"rail"},
   "beijing|shanghai":{mode:"Tren bala",detail:"De Mutianyu a Pekín Sur en el coche, con las maletas · G17 15:00 → Shanghái Hongqiao 19:34, a confirmar · Hongqiao → el Bund ~45 min",time:"~4 h 35 de tren",dur:275,type:"rail"},
-  "shanghai|kyoto":{mode:"Vuelo",detail:"Shanghái (PVG) → Osaka (KIX) 2 h + JR Haruka a Kyoto 75 min",time:"≈5 h total",dur:300,type:"air"},
+  "shanghai|kyoto":{mode:"Vuelo",detail:"El Bund → aeropuerto de Pudong (taxi ~50 min) · PVG → Osaka Kansai (KIX) ~2 h 15, p. ej. MU225 8:55 → 12:10 hora de Japón (a confirmar) · JR Haruka a Kioto 75 min",time:"~8 h 40 de puerta a puerta (Japón va 1 h adelante)",dur:195,type:"air"},
   "kyoto|tokyo":{mode:"Tren bala",detail:"Kyoto → Tokio (Shinkansen Nozomi, asientos D/E para ver el Fuji)",time:"2 h 15",dur:135,type:"rail"},
   /* --- Alternativas, por si reacomodas la ruta --- */
   "yangshuo|zjj":{mode:"Tren bala",detail:"Transbordo Guilin o Huaihua",time:"3.5–4.5 h",dur:255,type:"rail"},
@@ -1628,8 +1628,14 @@ const ESSENTIAL_BJ_SH={id:"ess-bj-sh",t:"Pekín y Shanghái: tours y reservas",
     "privados en español · Ciudad Prohibida: boleto con pasaporte, la venta abre a las 20:00 (Pekín) siete días "+
     "antes = miércoles 12 de mayo; que lo saque el guía · coche privado a Mutianyu el viernes 21 a las 7:00, con "+
     "las maletas, que los deje en Pekín Sur · tren G17 15:00 Pekín Sur → Shanghái Hongqiao: la venta abre ~15 días "+
-    "antes (jue 6 may) · reservar el pato (Da Dong) y TRB Hutong · Shanghái: Jardín Yu y Shanghai Tower en "+
-    "línea, crucero del sábado 20:00 · faltan los hoteles de Pekín y Shanghái (hay uno de mientras)"};
+    "antes (jue 6 may) · reservar el pato (Da Dong) y TRB Hutong · faltan los hoteles de Pekín y Shanghái "+
+    "(hay uno de mientras)"};
+const ESSENTIAL_SH_KIX={id:"ess-sh-kix",t:"Shanghái y el vuelo a Japón",
+  s:"tour privado por el Shanghái histórico (Civitatis) el domingo 23, recogida 8:30; confirmen si incluye "+
+    "entradas · Shanghai Tower para el sábado 17:30, en línea con pasaporte · crucero del sábado 20:00 (muelle "+
+    "Shiliupu) · reservar la cena del sábado 21:15 en el Bund y la de despedida del domingo · vuelo del lunes 24 "+
+    "PVG → Osaka Kansai en la mañana (MU225 8:55 → 12:10 o Juneyao 7:45 → ~11:00) · Haruka a Kioto: el boleto "+
+    "en línea sale más barato · Visit Japan Web con su QR antes de aterrizar"};
 const ESSENTIAL_YS_HOTEL={id:"ess-ys-hotel",t:"Pedirle al Sugar House (Yangshuo)",
   s:"traslado desde la estación el domingo 9 · auto con chofer el lunes 10 a las 4:45 a Xianggong · "+
     "reserva de la balsa del Yulong para el lunes 14:30 · desayuno para llevar el martes 11 a las 7:00"};
@@ -1646,6 +1652,7 @@ const ESSENTIALS=[
   ESSENTIAL_ZJJ_TOURS,
   ESSENTIAL_XIAN,
   ESSENTIAL_BJ_SH,
+  ESSENTIAL_SH_KIX,
   {id:"ess-jp",t:"Japón: Visit Japan Web + boleto de salida",s:"mexicanos sin visa (exención de turista)"},
   {id:"ess-visa",t:"Visa de turista China (L)",s:"tramitar 1–2 meses antes"},
   {id:"ess-pass",t:"Pasaporte 6+ meses de vigencia",s:"revisar ambos"},
@@ -2100,8 +2107,7 @@ const ARRIVE_FIJO={
   "xa-arrive":{propio:true},   // migrarZjjXian: Tianmen y el vuelo del domingo 16
   "bj-arrive":{propio:true},   // migrarXianV4: el tren del martes 18, en el último día de Xi'an
   "sh-arrive":{propio:true},   // migrarPekinV2: el tren del viernes 21, en el último día de Pekín
-  "ky-arrive":{name:"Vuelo Shanghái → Osaka KIX + JR Haruka a Kyoto",
-               note:"PVG → KIX ≈2 h + Haruka 75 min; check-in"},
+  "ky-arrive":{propio:true},   // migrarShanghaiKioto: el vuelo del lunes 24 en la mañana
   "tk-arrive":{name:"Tren bala Kyoto → Tokio",
                note:"Shinkansen Nozomi 2 h 15, asientos D/E para ver el Fuji; check-in"}
 };
@@ -3540,8 +3546,9 @@ function migrarRuta(s){
   s.meta.eyebrow=tripEyebrow();
 
   // 5. costo de la llegada a Kyoto: ahora es el vuelo Shanghái → Osaka
+  //    (desde v31.7 lo pone migrarShanghaiKioto, desglosado: no se pisa)
   const ky=s.bases.kyoto&&(s.bases.kyoto.catalog||[]).find(a=>a.cid==="ky-arrive");
-  if(ky)ky.costs=[{id:uid(),label:"Vuelo Shanghái → Osaka KIX + JR Haruka a Kyoto (2)",est:8630,real:0}];
+  if(ky&&!s.shPlanV3)ky.costs=[{id:uid(),label:"Vuelo Shanghái → Osaka KIX + JR Haruka a Kyoto (2)",est:8630,real:0}];
   const tk=s.bases.tokyo&&(s.bases.tokyo.catalog||[]).find(a=>a.cid==="tk-arrive");
   if(tk)tk.costs=[{id:uid(),label:"Tren bala Kyoto → Tokio (2)",est:3300,real:0}];
 
@@ -3688,6 +3695,7 @@ function normalizeTripState(s){
   migrarXianV5(s);           // su hotel en Qujiang, junto a la Gran Pagoda
   migrarPekinShanghai(s);    // Pekín 3 noches (2 días completos) y Shanghái 3
   migrarPekinV2(s);          // Pekín con sus 3 tours: se queda con el viernes
+  migrarShanghaiKioto(s);    // Shanghái moderno y el histórico; el lunes temprano a Kioto
   return s;
 }
 /* ---- Llegada a Yangshuo: domingo 9 de mayo de 2027, paso a paso ----
@@ -5587,6 +5595,177 @@ function migrarPekinV2(s){
     if(e)Object.assign(e,{t:ESSENTIAL_BJ_SH.t,s:ESSENTIAL_BJ_SH.s});
   }
   s.bjPlanV2=true;
+}
+/* ---- Shanghái a detalle y la salida a Kioto (v31.7) ----
+   Llegan el viernes 21 en la noche (ese día es de Pekín) y tienen dos días
+   completos: el sábado el Shanghái moderno (Jing'an, Nanjing Road del Oeste,
+   Lujiazui, Shanghai Tower al atardecer y el crucero) y el domingo el
+   histórico con guía privado, que termina en el Bund, a pasos del hotel: es
+   el día que acaba temprano, antes del vuelo del lunes.
+   El lunes salen temprano a Kioto: el vuelo de la mañana les da la tarde en
+   Kioto; uno de la tarde llegaría de noche y la mañana en Shanghái ya no tiene
+   nada pendiente. Kioto primero y Tokio al final, porque el vuelo de regreso
+   sale de Tokio. */
+const SH_DIA1_MODERNO=[
+  {cid:"g-breakfast",fixed:"08:30",
+   note:"En el hotel. El sábado sin prisa (anoche llegaron tarde); el domingo a las 7:30."},
+  {cid:"sh1m-a-jingan",name:"Taxi al Templo Jing'an",type:"transfer",dur:20,fixed:"09:30"},
+  {cid:"sh1m-jingan",name:"Templo Jing'an (静安寺): el templo dorado entre rascacielos",type:"sight",dur:45,
+   costos:[["Templo Jing'an (2)",270]],
+   note:"La foto del Shanghái moderno: un templo budista con techos dorados en medio de las torres de cristal "+
+        "de Jing'an. Tiene más de 1,700 años de historia, aunque los edificios de hoy son reconstruidos. "+
+        "~¥50 c/u."},
+  {cid:"sh1m-nanjing",name:"Nanjing Road del Oeste y la Starbucks Reserve Roastery",type:"sight",dur:75,
+   costos:[["Café en la Roastery (2)",400]],
+   note:"La parte elegante de Nanjing Road: los centros comerciales de lujo (Plaza 66, Jing'an Kerry Centre, "+
+        "HKRI Taikoo Hui). En el Taikoo Hui está la <b>Starbucks Reserve Roastery</b>, de las más grandes del "+
+        "mundo, con un tostador de cobre de dos pisos: un café ahí."},
+  {cid:"sh1m-a-pudong",name:"Metro L2 a Lujiazui",type:"transfer",dur:25,
+   note:"La línea 2 cruza el río por abajo: de West Nanjing Road a Lujiazui son ~15 min. O taxi por el túnel."},
+  {cid:"sh1m-comida",name:"Comida con vista en Lujiazui",type:"food",dur:75,
+   costos:[["Comida (2)",1200]],
+   note:"Hay restaurantes con vista en los pisos altos del IFC, la Jin Mao y el World Financial Center, o algo "+
+        "rápido en el IFC Mall. Si quieren ventana, reserven."},
+  {cid:"sh1m-lujiazui",name:"Lujiazui: el paseo del río y los rascacielos",type:"sight",dur:60,
+   note:"La «Manhattan» de Shanghái, que en 1990 eran bodegas y campos: la <b>Perla de Oriente</b> (la torre "+
+        "de las esferas rosas, 1994), la <b>Jin Mao</b> (con forma de pagoda), el <b>World Financial "+
+        "Center</b> («el destapador») y la <b>Shanghai Tower</b>, que gira 120° mientras sube.<br>"+
+        "Caminen el puente peatonal circular (陆家嘴环形天桥) y el paseo junto al río, con el Bund enfrente."},
+  {cid:"sh1m-a-hotel",name:"Ferry de regreso al Bund y al hotel",type:"transfer",dur:35,
+   costos:[["Ferry (2)",10]],
+   note:"El ferry público de Dongchang Road (东昌路) a Jinling Road East cruza en ~10 min por ¥2."},
+  {cid:"sh1m-descanso",name:"Descanso en el hotel",type:"rest",dur:100},
+  {cid:"sh2-ferry",name:"Ferry otra vez a Lujiazui",type:"transfer",dur:30,fixed:"16:45",
+   note:"Del muelle de Jinling Road East (金陵东路) a Dongchang Road, ~10 min por ¥2, y ~15 min a pie a la "+
+        "Shanghai Tower."},
+  {cid:"sh-tower",fixed:"17:30"},
+  {cid:"sh1m-a-muelle",name:"Ferry de vuelta y a pie al muelle Shiliupu",type:"transfer",dur:40,
+   note:"De la torre al ferry de Dongchang Road (~15 min a pie), el ferry al Bund (~10) y ~10 min a pie al "+
+        "muelle Shiliupu (十六铺), al sur del Bund."},
+  {cid:"sh-cruise",fixed:"20:00"},
+  {cid:"sh1-cena",name:"Cena en el Bund",type:"food",dur:90,fixed:"21:15",
+   note:"Después del crucero, a pie. Reserven para las 21:15 un restaurante del Bund con cocina hasta tarde (hay "+
+        "varios en los edificios históricos, con vista a Pudong).<br>"+
+        "Cocina de Shanghái: hongshao rou (cerdo estofado en soya), pescado «ardilla», cangrejo y xiaolongbao."},
+  {cid:"sh1-vuelta",name:"A pie al hotel",type:"transfer",dur:10}
+];
+const SH_DIA2_HISTORICO=[
+  {cid:"g-breakfast",fixed:"07:30"},
+  {cid:"sh2h-guia",name:"Los recoge su guía · tour privado por el Shanghái histórico",type:"transfer",dur:15,fixed:"08:30",
+   costos:[["Tour privado Shanghái histórico (guía + coche), ~€200 por grupo",4100],
+           ["Entradas: Jardín Yu y Templo del Buda de Jade (2)",350]],
+   note:"Tour privado de Civitatis, ~8 h, con guía y coche: Jardín Yu y la Ciudad Vieja → Templo del Buda de "+
+        "Jade → la Concesión Francesa y Tianzifang → el Bund, donde termina, a pasos del hotel.<br>"+
+        "Confirmen que el guía sea en español, si incluye entradas, y pidan la recogida a las 8:30 para llegar "+
+        "al Jardín Yu a la apertura. Que la comida sea en Anfu Road."},
+  {cid:"sh-yu",name:"Jardín Yu (Yuyuan) a la apertura",type:"sight",dur:90,costos:[],
+   note:"Jardín de la dinastía Ming (1559-1577), que un funcionario mandó hacer para sus padres: rocallas, "+
+        "estanques, pabellones y el muro del dragón. A la apertura está tranquilo; a las 10:30 ya no se "+
+        "camina. Cierra los lunes; el domingo abre."},
+  {cid:"sh1-bazar",name:"La Ciudad Vieja: el Templo del Dios de la Ciudad y la casa de té Huxinting",type:"sight",dur:50,
+   note:"Alrededor del jardín, el bazar de techos curvos y el <b>Templo del Dios de la Ciudad</b> (城隍庙), el "+
+        "protector de Shanghái. En el lago, la casa de té <b>Huxinting</b> (湖心亭) con su puente en zigzag, de "+
+        "las más antiguas de la ciudad.<br>Los dumplings de Nanxiang (南翔馒头店), junto al puente, tienen fila "+
+        "eterna: si está corta, pidan una canasta."},
+  {cid:"sh2h-a-jade",name:"Coche al Templo del Buda de Jade",type:"transfer",dur:25},
+  {cid:"sh-jade",name:"Templo del Buda de Jade (玉佛寺)",type:"sight",dur:50,
+   note:"Templo de 1882 construido para dos budas de jade blanco que un monje trajo de Birmania: uno sentado, "+
+        "adornado con joyas, y otro reclinado, el Buda en el momento de morir. Es un templo activo, con monjes."},
+  {cid:"sh2h-a-fcc",name:"Coche a la Concesión Francesa",type:"transfer",dur:20},
+  {cid:"sh1-comida",name:"Comida en Anfu Road",type:"food",dur:75,
+   note:"Anfu Road (安福路): cafés, bistrós y boutiques en casas de la Concesión; la calle de moda de Shanghái. "+
+        "La comida no está incluida en el tour."},
+  {cid:"sh1-wukang",name:"Wukang Road y el Edificio Wukang",type:"sight",dur:45,
+   note:"La calle arbolada de la Concesión Francesa (1849-1943): villas de los años 20 y 30 y el Edificio "+
+        "Wukang (武康大楼), el «Flatiron» de Shanghái."},
+  {cid:"sh1-a-xtd",name:"Coche a Tianzifang",type:"transfer",dur:15},
+  {cid:"sh-fcc",name:"Tianzifang: los callejones shikumen",type:"sight",dur:60,
+   note:"Tianzifang (田子坊): laberinto de callejones de casas shikumen, la casa típica de Shanghái de piedra con "+
+        "portón, convertidas en tiendas, talleres y cafés."},
+  {cid:"sh2h-a-bund",name:"Coche al Bund",type:"transfer",dur:20},
+  {cid:"sh-bund",name:"El Bund con su guía: los edificios coloniales",type:"sight",dur:60,
+   note:"El tour termina donde empezó el Shanghái moderno: los 52 edificios del Bund, bancos, aduana y hoteles "+
+        "de 1900 a 1930. Que el guía les cuente el del HSBC (con el mosaico de su cúpula), la Aduana con su "+
+        "reloj «Big Ching» y el Peace Hotel, donde Noël Coward escribió <i>Private Lives</i>.<br>"+
+        "Termina a pasos del hotel."},
+  {cid:"sh2h-descanso",name:"Descanso y maletas",type:"rest",dur:95,
+   note:"Mañana salen a las 6:00: dejen las maletas casi listas y pidan la caja de desayuno."},
+  {cid:"sh-farewell",name:"Cena de despedida de China",type:"food",dur:120,fixed:"19:00",
+   note:"La última noche en China, en el Bund, a pie del hotel: reserven una mesa con vista a Pudong.<br>"+
+        "<i>Si quieren algo de una vez en la vida: <b>Ultraviolet</b> de Paul Pairet, 3 estrellas Michelin: 10 "+
+        "lugares y ~20 tiempos con proyecciones y sonido. De lo más caro de Asia y se reserva con meses.</i>"},
+  {cid:"sh2h-jazz",name:"Copa con la banda de jazz del Peace Hotel",type:"bar",dur:45,
+   costos:[["Copas (2)",700]],
+   note:"En el bar de jazz del Fairmont Peace Hotel toca la Old Jazz Band, la de los veteranos, más o menos de "+
+        "19:00 a 21:45; no cobran entrada, solo la bebida. Confirmen el horario en el hotel."},
+  {cid:"sh2h-vuelta",name:"Al cuarto: mañana salen a las 6:00",type:"transfer",dur:10}
+];
+const KY_DIA0_V2=[
+  {cid:"ky0-salida",name:"Check-out y taxi al aeropuerto de Pudong (PVG)",type:"transfer",dur:50,fixed:"06:00",
+   costos:[["Taxi el Bund → Pudong (2)",500]],
+   note:"~45 km, 45-50 min a esa hora. Pidan al hotel la caja de desayuno la noche anterior."},
+  {cid:"ky0-pvg",name:"Documentar, migración y a la sala",type:"transfer",dur:105,
+   note:"Vuelo internacional: lleguen 2 h antes. En la migración de salida de China les revisan pasaporte y "+
+        "visa."},
+  {cid:"ky-arrive",name:"Vuelo Shanghái (PVG) → Osaka Kansai (KIX) (a confirmar)",type:"transfer",dur:195,fixed:"08:55",
+   costos:[["Vuelo PVG → KIX (2, estimado)",7900]],
+   note:"China Eastern <b>MU225 8:55 → 12:10</b>, o Juneyao <b>HO1505 7:45 → ~11:00</b> (más temprano, pero "+
+        "habría que salir del hotel a las 5:00). Son ~2 h 15 de vuelo y Japón va 1 hora adelante de China: "+
+        "por eso aterrizan 3 h 15 después en el reloj.<br>"+
+        "⚠ Confirmen horarios al comprar. Mexicanos no necesitan visa para Japón."},
+  {cid:"ky0-kix",name:"Migración de Japón, maletas y a la estación",type:"transfer",dur:50,
+   note:"Tengan el QR de Visit Japan Web listo. La estación JR está conectada a la Terminal 1 (si llegan a la "+
+        "T2, hay shuttle gratis de 7-9 min)."},
+  {cid:"ky0-haruka",name:"JR Haruka: aeropuerto de Kansai → Kioto",type:"transfer",dur:100,
+   costos:[["JR Haruka (2)",700]],
+   note:"75 min a la estación de Kioto; sale cada ~30 min (el tiempo incluye la espera). El boleto «Haruka "+
+        "1-Way» en línea o en la app de JR West sale más barato (~¥2,200 para turistas) que en ventanilla."},
+  {cid:"ky0-hotel",name:"Taxi al hotel y check-in",type:"transfer",dur:30,
+   costos:[["Taxi (2)",250]],
+   note:"Dejen las maletas; si el cuarto no está listo, lo tienen al regresar."},
+  {cid:"ky-fushimi",name:"Fushimi Inari Taisha al atardecer",type:"sight",dur:120,fixed:"15:45",
+   note:"El santuario de los miles de torii naranjas que suben por el monte Inari. En la tarde hay menos gente "+
+        "y la luz es la mejor. Suban por lo menos al mirador de Yotsutsuji (~45 min) para ver Kioto. Gratis y "+
+        "abierto las 24 h.<br>De la estación de Kioto: JR Nara Line, 2 paradas a Inari (5 min)."},
+  {cid:"ky0-a-pontocho",name:"Tren y a pie a Pontocho",type:"transfer",dur:35},
+  {cid:"ky-pontocho",name:"Pontocho: cena junto al río",type:"food",dur:120,fixed:"18:30",
+   note:"El callejón de faroles junto al río Kamo, con restaurantes en casas de madera; en mayo muchos abren "+
+        "su terraza sobre el río (kawayuka). Reserven."},
+  {cid:"ky0-vuelta",name:"Regreso al hotel",type:"transfer",dur:20}
+];
+function migrarShanghaiKioto(s){
+  if(s.shPlanV3)return;
+  const sh=s.bases&&s.bases.shanghai,ky=s.bases&&s.bases.kyoto;
+  if(s.bases&&s.bases.hk&&sh&&Array.isArray(sh.catalog)&&ky&&Array.isArray(ky.catalog)){
+    const costos=(base,lista)=>lista.forEach(a=>{
+      const x=a.costos&&base.catalog.find(y=>y.cid===a.cid);
+      if(x)x.costs=a.costos.map(([label,est])=>({id:uid(),label,est,real:0}));
+    });
+    const quitar=(base,cids)=>{
+      const usados=new Set(Object.values(base.schedule||{}).flat().map(x=>x.ref));
+      base.catalog=base.catalog.filter(a=>!cids.includes(a.cid)||usados.has(a.cid));
+    };
+    sh.schedule=sh.schedule||{};
+    sembrarDia(sh,1,SH_DIA1_MODERNO,"08:30");
+    sembrarDia(sh,2,SH_DIA2_HISTORICO,"07:30");
+    costos(sh,SH_DIA1_MODERNO);costos(sh,SH_DIA2_HISTORICO);
+    quitar(sh,["sh1-a-yu","sh1-a-fcc","sh1-a-hotel","sh1-descanso","sh2-a-zhu","sh2-comida","sh2-regreso",
+               "sh2-descanso","sh2-vuelta"]);
+    ky.schedule=ky.schedule||{};
+    sembrarDia(ky,0,KY_DIA0_V2,"06:00");
+    costos(ky,KY_DIA0_V2);
+  }
+  if(Array.isArray(s.esenciales)){
+    [ESSENTIAL_BJ_SH,ESSENTIAL_SH_KIX].forEach(E=>{
+      const e=s.esenciales.find(x=>x.id===E.id);
+      if(e)Object.assign(e,{t:E.t,s:E.s});
+      else{
+        const i=s.esenciales.findIndex(x=>x.id==="ess-bj-sh");
+        s.esenciales.splice(i<0?s.esenciales.length:i+1,0,{...E});
+      }
+    });
+  }
+  s.shPlanV3=true;
 }
 /* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
 function freshBlankTrip(titulo){
