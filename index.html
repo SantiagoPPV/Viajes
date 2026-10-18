@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v31.5 · 17 oct 2026 · Pekín 3 noches y Shanghái 3, armados día por día";
+const APP_VERSION="v31.6 · 18 oct 2026 · Pekín con sus tres tours; a Shanghái el viernes en la tarde";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -930,7 +930,7 @@ const ROUTE=[
   {id:"zjj",       nights:2, sale:"15:50"},  // 14 → 16 may · llega 20:15 a Zhangjiajie West
   {id:"xian",      nights:2, sale:"14:40"},  // 16 → 18 may · Tianmen y vuelo de la tarde, a confirmar
   {id:"beijing",   nights:3, sale:"15:30"},  // 18 → 21 may · tren de la tarde, llega ~19:50 (a confirmar)
-  {id:"shanghai",  nights:3, sale:"09:00"},  // 21 → 24 may · G de las 9:00, llega ~13:20 a Hongqiao
+  {id:"shanghai",  nights:3, sale:"15:00"},  // 21 → 24 may · Muralla en la mañana y G17 15:00, llega ~19:35
   {id:"kyoto",     nights:2, sale:"07:30"},  // 24 → 26 may · llega 12:30
   {id:"tokyo",     nights:3, sale:"13:00"}   // 26 → 29 may · llega 15:15
 ];
@@ -948,7 +948,7 @@ const VUELOS_INTL={
           sale:"09:35",llega:"07:10"}
 };
 const ROUTE_DROP=["osaka"];   // paradas que se eliminan por completo del viaje
-const ROUTE_VERSION=7;        // súbela al editar ROUTE para reaplicar la ruta
+const ROUTE_VERSION=8;        // súbela al editar ROUTE para reaplicar la ruta
 const ROUTE_IDS=ROUTE.map(r=>r.id);
 const routeNights=id=>{const r=ROUTE.find(x=>x.id===id);return r?r.nights:null;};
 const routeSale=id=>{const r=ROUTE.find(x=>x.id===id);return r&&r.sale||null;};
@@ -1039,7 +1039,7 @@ const XFER={
      pero hay ~2 vuelos al día y el más temprano sale 11:05. */
   "zjj|xian":{mode:"Vuelo",detail:"Tianmen en la mañana · Zhangjiajie (DYG) → Xi'an (XIY) directo ~1 h 45, vuelo de la tarde A CONFIRMAR (hay pocos) · el tren directo son 9 h 48, no sirve",time:"~3 h 45 de la salida al aterrizaje",dur:225,type:"air"},
   "xian|beijing":{mode:"Tren bala",detail:"De Terracota a Xi'an Norte en el coche, con las maletas · G rápido ~15:30 → Pekín Oeste ~19:50, a confirmar (los rápidos solo paran en Zhengzhou Este y Shijiazhuang)",time:"~4 h 20 de tren",dur:260,type:"rail"},
-  "beijing|shanghai":{mode:"Tren bala",detail:"Hotel → Pekín Sur (taxi ~30 min) · G ~9:00 → Shanghái Hongqiao ~13:20, a confirmar · Hongqiao → el Bund ~45 min",time:"~4 h 20 de tren",dur:260,type:"rail"},
+  "beijing|shanghai":{mode:"Tren bala",detail:"De Mutianyu a Pekín Sur en el coche, con las maletas · G17 15:00 → Shanghái Hongqiao 19:34, a confirmar · Hongqiao → el Bund ~45 min",time:"~4 h 35 de tren",dur:275,type:"rail"},
   "shanghai|kyoto":{mode:"Vuelo",detail:"Shanghái (PVG) → Osaka (KIX) 2 h + JR Haruka a Kyoto 75 min",time:"≈5 h total",dur:300,type:"air"},
   "kyoto|tokyo":{mode:"Tren bala",detail:"Kyoto → Tokio (Shinkansen Nozomi, asientos D/E para ver el Fuji)",time:"2 h 15",dur:135,type:"rail"},
   /* --- Alternativas, por si reacomodas la ruta --- */
@@ -1623,13 +1623,13 @@ const ESSENTIAL_XIAN={id:"ess-xian",t:"Xi'an: guía, coche y tren a Pekín",
     "las maletas en la cajuela) · Terracota: reserva con pasaporte 7 días antes (mar 11 may), franja 8:30-9:30 · "+
     "tren G Xi'an Norte → Pekín Oeste ~15:30: la venta abre ~15 días antes (lun 3 may) · hotel: HUALUXE "+
     "Tanghua, 40 Yanyin Rd, Qujiang"};
-const ESSENTIAL_BJ_SH={id:"ess-bj-sh",t:"Pekín y Shanghái: reservas",
-  s:"Ciudad Prohibida: boleto con pasaporte, la venta abre a las 20:00 (Pekín) siete días antes = jueves 13 de "+
-    "mayo, y se agota · guía para el jueves 20 (que saque también la reserva de la Plaza Tiananmen) · Templo del "+
-    "Cielo: con pasaporte, 1-7 días antes · chofer para la Muralla el miércoles 19 a las 7:30 · reservar el pato "+
-    "(Da Dong) y la cena del jueves · tren Pekín Sur → Shanghái Hongqiao del viernes 21 (~9:00): la venta abre ~15 "+
-    "días antes (jue 6 may) · Shanghái: Jardín Yu y Shanghai Tower en línea, crucero del viernes 20:00 · faltan "+
-    "los hoteles de Pekín y Shanghái (hay uno de mientras)"};
+const ESSENTIAL_BJ_SH={id:"ess-bj-sh",t:"Pekín y Shanghái: tours y reservas",
+  s:"Civitatis: «Top 3 de Pekín» el miércoles 19 (recogida 8:00) y «Contrastes de Pekín» el jueves 20 (9:05), "+
+    "privados en español · Ciudad Prohibida: boleto con pasaporte, la venta abre a las 20:00 (Pekín) siete días "+
+    "antes = miércoles 12 de mayo; que lo saque el guía · coche privado a Mutianyu el viernes 21 a las 7:00, con "+
+    "las maletas, que los deje en Pekín Sur · tren G17 15:00 Pekín Sur → Shanghái Hongqiao: la venta abre ~15 días "+
+    "antes (jue 6 may) · reservar el pato (Da Dong) y TRB Hutong · Shanghái: Jardín Yu y Shanghai Tower en "+
+    "línea, crucero del sábado 20:00 · faltan los hoteles de Pekín y Shanghái (hay uno de mientras)"};
 const ESSENTIAL_YS_HOTEL={id:"ess-ys-hotel",t:"Pedirle al Sugar House (Yangshuo)",
   s:"traslado desde la estación el domingo 9 · auto con chofer el lunes 10 a las 4:45 a Xianggong · "+
     "reserva de la balsa del Yulong para el lunes 14:30 · desayuno para llevar el martes 11 a las 7:00"};
@@ -2099,7 +2099,7 @@ const ARRIVE_FIJO={
   "zjj-arrive":{propio:true},  // migrarChongqingV2: la salida de Chongqing del 14
   "xa-arrive":{propio:true},   // migrarZjjXian: Tianmen y el vuelo del domingo 16
   "bj-arrive":{propio:true},   // migrarXianV4: el tren del martes 18, en el último día de Xi'an
-  "sh-arrive":{propio:true},   // migrarPekinShanghai: el tren del viernes 21
+  "sh-arrive":{propio:true},   // migrarPekinV2: el tren del viernes 21, en el último día de Pekín
   "ky-arrive":{name:"Vuelo Shanghái → Osaka KIX + JR Haruka a Kyoto",
                note:"PVG → KIX ≈2 h + Haruka 75 min; check-in"},
   "tk-arrive":{name:"Tren bala Kyoto → Tokio",
@@ -3687,6 +3687,7 @@ function normalizeTripState(s){
   migrarXianV4(s);           // y después: Xi'an se queda con su martes de salida
   migrarXianV5(s);           // su hotel en Qujiang, junto a la Gran Pagoda
   migrarPekinShanghai(s);    // Pekín 3 noches (2 días completos) y Shanghái 3
+  migrarPekinV2(s);          // Pekín con sus 3 tours: se queda con el viernes
   return s;
 }
 /* ---- Llegada a Yangshuo: domingo 9 de mayo de 2027, paso a paso ----
@@ -5333,6 +5334,259 @@ function migrarPekinShanghai(s){
     }
   }
   s.bjshPlanV1=true;
+}
+/* ---- Pekín con sus tres tours (v31.6) ----
+   3 noches (martes 18, miércoles 19 y jueves 20). Tres tours de ~8 h no caben
+   en 2 días: Pekín se queda con su día de salida y se van a Shanghái el viernes
+   en la tarde. El viernes va la Muralla porque es la única que se puede cortar
+   a media jornada y, en coche privado con las maletas, termina en la estación.
+   El «Top 3» va el miércoles: si no salen los boletos de la Ciudad Prohibida
+   (abren el 12 de mayo), todavía queda el jueves (abren el 13) para cambiarlo
+   por «Contrastes». Shanghái queda con su llegada el viernes en la noche y el
+   sábado y domingo completos. */
+const PK_DIA1_TOP3=[
+  {cid:"g-breakfast",fixed:"07:15",dur:45,
+   note:"En el hotel. Los tres días hay tour temprano (el viernes salen a las 7:00): si el buffet abre tarde, "+
+        "pidan desayuno al cuarto o una caja para llevar la noche anterior."},
+  {cid:"pk1-guia",name:"Los recoge su guía en el lobby · tour privado «Top 3 de Pekín»",type:"transfer",dur:25,fixed:"08:00",
+   costos:[["Tour privado Top 3 (guía en español + coche), ~US$250 por grupo",4600],
+           ["Entradas: Templo del Cielo, Ciudad Prohibida + galerías y Palacio de Verano (2)",850]],
+   note:"Tour privado de Civitatis, ~8 h, con guía en español, coche y chofer: Templo del Cielo → Plaza "+
+        "Tiananmen y Ciudad Prohibida → Palacio de Verano → de regreso al hotel.<br>"+
+        "<b>Antes de pagar, confirmen:</b> (1) si incluye las entradas; (2) que el guía saque los boletos de la "+
+        "Ciudad Prohibida con sus pasaportes: la venta abre el <b>miércoles 12 de mayo a las 20:00</b> (hora de "+
+        "Pekín) y se agota; (3) la hora de recogida. Cancelación gratis hasta 3 días antes.<br>"+
+        "Del hotel al Templo del Cielo son ~20 min."},
+  {cid:"bj-temple",name:"Templo del Cielo (天坛)",type:"sight",dur:90,costos:[],
+   note:"Donde los emperadores Ming y Qing rezaban por buenas cosechas: el conjunto de arquitectura imperial "+
+        "más perfecto de Pekín (UNESCO).<br>"+
+        "En la mañana el parque está lleno de pekineses jubilados haciendo tai chi, bailando, cantando ópera o "+
+        "jugando cartas: es de lo más vivo de la ciudad.<br>"+
+        "Orden: el <b>Salón de Oración por las Buenas Cosechas</b> (祈年殿, el templo redondo de techo azul, de "+
+        "madera y sin clavos) → la <b>Bóveda Imperial del Cielo</b> y el <b>Muro del Eco</b> → el <b>Altar "+
+        "Circular</b>, donde el emperador le hablaba al Cielo: párense en la piedra del centro y hablen.<br>"+
+        "Boleto combinado (~¥34 c/u) para entrar a los salones; cierran los lunes."},
+  {cid:"pk1-a-tiananmen",name:"Coche a la Plaza Tiananmen",type:"transfer",dur:25,
+   note:"~6 km al norte. El coche los deja en el control de seguridad: pasaportes a la mano, nada de "+
+        "encendedores."},
+  {cid:"bj-forbidden",name:"Plaza Tiananmen + Ciudad Prohibida",type:"sight",dur:180,fixed:null,costos:[],
+   note:"La <b>Plaza Tiananmen</b>, la más grande del mundo, con el retrato de Mao en la Puerta de Tiananmen. "+
+        "Se cruza la puerta a pie hasta la Puerta Meridiana (午门), la entrada.<br>"+
+        "La <b>Ciudad Prohibida</b> fue el palacio de 24 emperadores durante casi 500 años (1420-1912): 72 "+
+        "hectáreas de patios y salones. Recorrido: los tres grandes salones del eje central (en el de la "+
+        "Suprema Armonía está el trono del Dragón) → los palacios de la vida privada → <b>Galería del "+
+        "Tesoro</b> y <b>Galería de los Relojes</b> (boletos aparte, ~¥10 c/u; pídanselas al guía, valen mucho "+
+        "la pena) → Jardín Imperial → salida por la puerta norte (神武门).<br>"+
+        "⚠ Boleto nominativo por franja horaria, con el pasaporte original. Cierra los lunes."},
+  {cid:"pk1-comida",name:"Comida al salir de la Ciudad Prohibida",type:"food",dur:55,
+   costos:[["Comida (2)",600]],
+   note:"Algo rápido cerca de la salida norte: que el guía los lleve a probar los fideos <b>zhajiangmian</b> "+
+        "(炸酱面, el plato de Pekín: salsa de soya fermentada con cerdo y verduras crudas) o unos jiaozi. La "+
+        "comida no está incluida en el tour."},
+  {cid:"pk1-a-verano",name:"Coche al Palacio de Verano",type:"transfer",dur:45,
+   note:"~18 km al noroeste. Buen momento para dormir 20 minutos."},
+  {cid:"pk1-verano",name:"Palacio de Verano (颐和园)",type:"sight",dur:135,
+   note:"El jardín imperial de verano de los Qing, junto al lago Kunming: el más grande y mejor conservado de "+
+        "China (UNESCO). La emperatriz viuda Cixi lo reconstruyó a finales del siglo XIX.<br>"+
+        "Recorrido: el <b>Corredor Largo</b> (728 m de pasillo techado con miles de pinturas) → la <b>Torre de la "+
+        "Fragancia del Buda</b> en la Colina de la Longevidad (la mejor vista del lago) → el <b>Barco de "+
+        "Mármol</b> → y si da tiempo, el barco por el lago hasta el Puente de los 17 Arcos.<br>"+
+        "Pidan el boleto combinado (incluye la Torre). Los salones cierran ~17:00."},
+  {cid:"pk1-regreso",name:"Coche de regreso al hotel · fin del tour",type:"transfer",dur:55,
+   note:"~20 km con el tráfico de la tarde: 45-60 min."},
+  {cid:"pk1-descanso",name:"Descanso en el hotel",type:"rest",dur:70},
+  {cid:"bj-duck",name:"Pato laqueado de Pekín",type:"food",dur:105,fixed:"19:30",
+   costos:[["Pato laqueado en Da Dong (2)",2400]],
+   note:"La cena que hay que hacer en Pekín: el pato se asa colgado en horno de leña de árboles frutales, se "+
+        "corta en la mesa y se come en crepas delgadas con cebollín, pepino y salsa hoisin; la piel sola se "+
+        "moja en azúcar.<br>"+
+        "<b>Da Dong</b> (大董): el más fino, piel crujiente sin grasa, y <b>acepta reservación</b>: resérvenlo "+
+        "con una semana y escojan la sucursal más cerca del hotel.<br>"+
+        "Alternativa: <b>Siji Minfu</b> (四季民福), la de la Ciudad Prohibida o la de Dong'anmen: más barato y "+
+        "muy bueno, pero no reserva y hay 1-2 h de fila; saquen número desde la tarde.<br>Pidan el pato entero."},
+  {cid:"pk1-vuelta",name:"Regreso al hotel",type:"transfer",dur:20,
+   note:"A pie o en un taxi corto, según la sucursal."}
+];
+const PK_DIA2_CONTRASTES=[
+  {cid:"g-breakfast",fixed:"08:00"},
+  {cid:"pk2-guia",name:"Los recoge su guía en el lobby · tour privado «Contrastes de Pekín»",type:"transfer",dur:20,fixed:"09:05",
+   costos:[["Tour privado Contrastes (guía en español + coche), ~US$296 por grupo",5400],
+           ["Entradas: Torre del Tambor y Templo de los Lamas (2)",250]],
+   note:"Tour privado de Civitatis, ~8 h, con guía en español, coche y chofer: el Pekín antiguo en la mañana y "+
+        "el futurista en la tarde. Torre del Tambor → hutongs en rickshaw → Templo de los Lamas → Guomao, los "+
+        "rascacielos, y comida → Villa Olímpica → Teatro Nacional y Wangfujing, junto al hotel.<br>"+
+        "Confirmen qué entradas incluye y pidan la recogida a las 9:05: la Torre del Tambor abre a las 9:30.<br>"+
+        "Si los boletos de la Ciudad Prohibida no salieron para el miércoles, este tour se cambia al miércoles y "+
+        "el «Top 3» pasa a este día."},
+  {cid:"pk2-tambor",name:"Torre del Tambor (鼓楼) y su toque de tambores",type:"sight",dur:60,
+   note:"La torre que marcaba la hora de Pekín con tambores desde el siglo XIII (la de hoy es Ming), en el "+
+        "extremo norte del eje central, frente a la Torre de la Campana. Se suben unos escalones muy empinados "+
+        "y arriba están los 25 tambores y la vista de los techos grises de los hutongs.<br>"+
+        "El <b>toque de tambores</b> es varias veces al día, más o menos cada hora desde las 9:30 (dura ~15 "+
+        "min): que el guía cuadre la llegada.<br>Boleto ~¥20 c/u (¥30 con la Campana)."},
+  {cid:"bj-hutong",name:"Hutongs en rickshaw",type:"tour",dur:75,costos:[],
+   note:"Los hutongs son los callejones de casas con patio (siheyuan) del Pekín antiguo; los de alrededor de "+
+        "las torres y del lago Houhai son de los mejor conservados.<br>El rickshaw recorre los callejones, pasa "+
+        "por el Puente de Plata (银锭桥) junto al lago y suele parar en un patio con una familia que vive ahí. "+
+        "Va incluido en el tour."},
+  {cid:"pk2-a-lama",name:"Coche al Templo de los Lamas",type:"transfer",dur:15},
+  {cid:"pk2-lama",name:"Templo de los Lamas (雍和宫, Yonghegong)",type:"sight",dur:60,
+   note:"El templo budista tibetano más importante fuera del Tíbet, y vivo: hay monjes y la gente quema "+
+        "incienso en los patios. Fue la casa del príncipe que se volvió el emperador Yongzheng.<br>"+
+        "Lo imperdible, en el último pabellón: el <b>Buda Maitreya de 18 m tallado en un solo tronco de "+
+        "sándalo</b>, que está en el libro de los Récords Guinness.<br>"+
+        "Hombros y rodillas cubiertos; no se toman fotos dentro de los salones. Abre de 9:00 a 16:30 (~¥25 c/u)."},
+  {cid:"pk2-a-guomao",name:"Coche a Guomao, el distrito de negocios",type:"transfer",dur:25},
+  {cid:"pk2-guomao",name:"Guomao (CBD) y comida con vista",type:"food",dur:80,
+   costos:[["Comida (2)",1200]],
+   note:"El Pekín de los rascacielos: la torre de la <b>CCTV</b> (los «calzones», de Rem Koolhaas), el China "+
+        "World Trade Center y la <b>China Zun</b>, el edificio más alto de la ciudad (528 m).<br>"+
+        "Para comer con vista: el piso 80 del <b>China World Summit Wing</b> (Atmosphere o Grill 79). La comida "+
+        "no está incluida en el tour."},
+  {cid:"pk2-a-olimpica",name:"Coche a la Villa Olímpica",type:"transfer",dur:30},
+  {cid:"pk2-olimpica",name:"Villa Olímpica: el Nido de Pájaro y el Cubo de Agua",type:"sight",dur:75,
+   note:"El parque de los Juegos de 2008 (y de los de Invierno de 2022): el Estadio Nacional, el <b>Nido de "+
+        "Pájaro</b> de Herzog &amp; de Meuron, y enfrente el <b>Cubo de Agua</b>, el centro acuático que en 2022 se "+
+        "volvió el «Cubo de Hielo» para el curling.<br>"+
+        "Se pasea por la explanada. Si quieren entrar al Nido, el boleto va de ~¥40 a ¥100 (el de ¥100 sube al "+
+        "techo). Puede cerrar en días de concierto o partido."},
+  {cid:"pk2-a-centro",name:"Coche al Teatro Nacional",type:"transfer",dur:35},
+  {cid:"pk2-teatro",name:"El «Huevo» del Teatro Nacional y la calle Wangfujing",type:"sight",dur:60,
+   note:"El <b>Centro Nacional de Artes Escénicas</b> (国家大剧院): una cúpula de titanio y vidrio sobre un lago, "+
+        "de Paul Andreu (2007), junto a la Plaza Tiananmen. El contraste más fuerte con la Ciudad Prohibida, que "+
+        "está al lado.<br>"+
+        "Y para cerrar, <b>Wangfujing</b> (王府井), la calle peatonal comercial más famosa de Pekín. El tour "+
+        "termina ahí, a pasos del hotel."},
+  {cid:"pk2-a-hotel",name:"A pie al hotel · fin del tour",type:"transfer",dur:10},
+  {cid:"pk2-descanso",name:"Descanso en el hotel",type:"rest",dur:60},
+  {cid:"pk2-cena",name:"Cena especial: TRB Hutong",type:"food",dur:120,fixed:"19:30",
+   costos:[["Cena especial (2)",4500]],
+   note:"Su cena especial de Pekín: cocina europea de autor dentro de un templo de la dinastía Ming, junto a la "+
+        "Ciudad Prohibida. De los restaurantes más reconocidos de la ciudad: <b>reserven</b> y pidan mesa en el "+
+        "patio. ~10 min en taxi del hotel."},
+  {cid:"pk2-vuelta",name:"Regreso al hotel y maletas: mañana salen a las 7:00",type:"transfer",dur:20}
+];
+const PK_DIA3_MURALLA=[
+  {cid:"g-breakfast",fixed:"06:15"},
+  {cid:"pk3-salida",name:"Check-out y coche privado a Mutianyu, con las maletas",type:"transfer",dur:75,fixed:"07:00",
+   costos:[["Coche privado todo el día: Mutianyu y Pekín Sur",2700]],
+   note:"Para este día, <b>coche privado</b> en vez de la excursión en grupo: la de grupo sale de Dongzhimen y "+
+        "regresa a la ciudad en la tarde, y así no alcanzan el tren. Con el coche: las maletas van en la "+
+        "cajuela, ven la muralla temprano y el chofer los deja directo en la estación.<br>"+
+        "Pídanle a Civitatis que cotice su excursión de Mutianyu en privado con recogida a las 7:00 y regreso a "+
+        "Pekín Sur, o contraten un coche con chofer solo.<br>~70 km al noreste, 1 h 10-1 h 20 a esa hora."},
+  {cid:"bj-wall",name:"Gran Muralla de Mutianyu: teleférico arriba, a pie y tobogán abajo",type:"tour",dur:195,
+   costos:[["Entrada, bus interno, teleférico y tobogán (2)",1300]],
+   note:"Mutianyu es el tramo restaurado más bonito cerca de Pekín: 22 torres sobre lomas cubiertas de bosque, "+
+        "con mucha menos gente que Badaling. Llegan ~8:15, antes que los grupos (~10:00); en temporada abre a "+
+        "las 7:30.<br>"+
+        "Del estacionamiento sale un bus interno al pie de la muralla. <b>Hay DOS sistemas que no se "+
+        "combinan:</b> el teleférico cerrado sube a la Torre 14; la silla y el tobogán están en la Torre 6. "+
+        "Compren <b>teleférico de subida</b> y <b>tobogán de bajada</b> por separado.<br>"+
+        "Ruta: suban a la 14, caminen al oeste hacia la 20 si tienen piernas (lo más empinado y bonito, casi sin "+
+        "gente), regresen y caminen al este hasta la 6 (~1.2 km) y bajen en tobogán.<br>"+
+        "⚠ El tobogán no lo dejan a mayores de 60. Lleven pasaporte, agua y zapatos con suela: hay escalones de "+
+        "40 cm."},
+  {cid:"pk3-comida",name:"Comida en The Schoolhouse, al pie de Mutianyu",type:"food",dur:60,
+   costos:[["Comida (2)",800]],
+   note:"Restaurante en la vieja escuela del pueblo de Mutianyu, el favorito de los que vienen a la muralla: "+
+        "trucha de la zona y cocina china y occidental. Si está lleno, en el pueblo hay varios de trucha."},
+  {cid:"pk3-estacion",name:"Coche de Mutianyu a la estación Pekín Sur (北京南)",type:"transfer",dur:105,
+   note:"~90 km cruzando la ciudad de norte a sur: 1 h 30-1 h 50 según el tráfico. Las maletas van en el coche "+
+        "desde la mañana."},
+  {cid:"pk3-anden",name:"Pasaportes, seguridad y al andén",type:"transfer",dur:40,
+   note:"Pekín Sur es enorme: revisión de pasaporte en la entrada, seguridad y la sala de espera de su puerta. "+
+        "Lleguen 40 min antes; el abordaje cierra unos minutos antes de la salida."},
+  {cid:"sh-arrive",name:"Tren G17 Pekín Sur → Shanghái Hongqiao (a confirmar)",type:"transfer",dur:275,fixed:"15:00",
+   costos:[["Tren G Pekín → Shanghái, 2a clase, ~¥660 c/u (2)",3560]],
+   note:"15:00 → 19:34 según Trip.com (4 h 34). El G21 de las 14:00 es demasiado temprano para la muralla.<br>"+
+        "⚠ Confirmen el horario al comprar: la venta abre ~15 días antes (jueves 6 de mayo), con pasaporte. Que "+
+        "llegue a <b>Hongqiao</b> (虹桥), no a la estación de Shanghái.<br>"+
+        "<b>Cenen en el tren:</b> hay vagón comedor y se puede pedir comida al asiento por la app 12306 (o "+
+        "compren algo en la estación).<br><i>Para 4 h 30, primera clase o business (商务座) es un buen gusto.</i>"},
+  {cid:"sh0-hotel",name:"Hongqiao → hotel en el Bund y check-in",type:"transfer",dur:60,
+   costos:[["Taxi Hongqiao → el Bund (2)",270]],
+   note:"~45 min en taxi (fila oficial a la salida). El metro L2 llega directo a East Nanjing Road, pero con "+
+        "maletas mejor el taxi."},
+  {cid:"pk3-bund",name:"Shanghái: el Bund y Nanjing Road de noche, a pie",type:"sight",dur:50,
+   note:"Su primera vista de Shanghái: el malecón de los edificios de los años 20 y 30 frente a los rascacielos "+
+        "iluminados de Pudong, y a la vuelta los neones de Nanjing Road. Todo a pie del hotel.<br>"+
+        "Las luces de los edificios se apagan como a las 22:00-23:00: si llegan tarde, mañana lo ven desde el "+
+        "crucero."},
+  {cid:"pk3-vuelta",name:"A pie al hotel",type:"transfer",dur:10}
+];
+/* Shanghái: el sábado se queda con el crucero y la copa que eran del viernes. */
+const SH_DIA1_V3=[
+  {cid:"g-breakfast",fixed:"07:45"},
+  {cid:"sh1-a-yu",fixed:"08:45"},
+  {cid:"sh-yu"},
+  {cid:"sh1-bazar"},
+  {cid:"sh1-a-fcc"},
+  {cid:"sh1-wukang"},
+  {cid:"sh1-comida"},
+  {cid:"sh1-a-xtd"},
+  {cid:"sh-fcc",dur:120},
+  {cid:"sh1-a-hotel"},
+  {cid:"sh1-descanso",dur:75},
+  {cid:"sh1-cena",name:"Cena shanghainesa cerca del Bund",type:"food",dur:90,fixed:"18:00",
+   note:"Cocina de Shanghái: hongshao rou (cerdo estofado en soya), pescado «ardilla», cangrejo, y xiaolongbao. "+
+        "Reserven un buen local cerca del Bund en Dianping: de ahí caminan al crucero.<br>"+
+        "<i>Si quieren algo de una vez en la vida: <b>Ultraviolet</b> de Paul Pairet, 3 estrellas Michelin: 10 "+
+        "lugares y ~20 tiempos con proyecciones y sonido. De lo más caro de Asia y se reserva con meses.</i>"},
+  {cid:"sh-bund",name:"El Bund iluminado, a pie hasta el muelle",type:"sight",dur:25,
+   note:"Del centro del Bund al muelle Shiliupu (十六铺), en el extremo sur, con los edificios ya prendidos."},
+  {cid:"sh-cruise",fixed:"20:00"},
+  {cid:"sh-rooftop"},
+  {cid:"sh1-vuelta",name:"A pie al hotel",type:"transfer",dur:15}
+];
+function migrarPekinV2(s){
+  if(s.bjPlanV2)return;
+  const bj=s.bases&&s.bases.beijing,sh=s.bases&&s.bases.shanghai;
+  if(s.bases&&s.bases.hk&&bj&&Array.isArray(bj.catalog)&&sh&&Array.isArray(sh.catalog)){
+    const costos=(base,lista)=>lista.forEach(a=>{
+      const x=a.costos&&base.catalog.find(y=>y.cid===a.cid);
+      if(x)x.costs=a.costos.map(([label,est])=>({id:uid(),label,est,real:0}));
+    });
+    const quitar=(base,cids)=>{
+      const usados=new Set(Object.values(base.schedule||{}).flat().map(x=>x.ref));
+      base.catalog=base.catalog.filter(a=>!cids.includes(a.cid)||usados.has(a.cid));
+    };
+    // Pekín: miércoles, jueves y viernes (se queda con el día de salida)
+    bj.nights=3;bj.diaSalida=true;
+    bj.schedule=bj.schedule||{};bj.dayStart=bj.dayStart||{};
+    bj.schedule[0]=[];
+    sembrarDia(bj,1,PK_DIA1_TOP3,"07:15");
+    sembrarDia(bj,2,PK_DIA2_CONTRASTES,"08:00");
+    sembrarDia(bj,3,PK_DIA3_MURALLA,"06:15");
+    [PK_DIA1_TOP3,PK_DIA2_CONTRASTES,PK_DIA3_MURALLA].forEach(l=>costos(bj,l));
+    Object.keys(bj.schedule).forEach(d=>{if(+d>3)delete bj.schedule[d];});
+    quitar(bj,["bj1-chofer","bj1-a-cielo","bj1-a-hotel","bj1-comida","bj2-ir","bj2-a-comida","bj2-comida",
+               "bj2-a-hotel","bj2-descanso","bj2-cena","bj2-vuelta"]);
+    if(!(bj.day>=1&&bj.day<=3))bj.day=1;
+    // Shanghái: el viernes ya es de Pekín (llegan de noche); sábado y domingo
+    sh.schedule=sh.schedule||{};
+    sh.schedule[0]=[];
+    sembrarDia(sh,1,SH_DIA1_V3,"07:45");
+    costos(sh,SH_DIA1_V3);
+    quitar(sh,["sh0-desayuno","sh0-estacion","sh-arrive","sh0-hotel","sh0-a-muelle","sh0-vuelta"]);
+    if(!(sh.day>=1&&sh.day<=2))sh.day=1;
+    (sh.hotels||[]).forEach(h=>{
+      if(h.chosen&&/fairmont peace/i.test(h.name||""))
+        h.note=(h.note||"").replace("viernes 21, sábado 22 y domingo 23","viernes 21 (llegan ~20:35), sábado 22 y domingo 23")
+          .replace("Todo lo del viernes queda a pie (Nanjing Road, el Bund, el muelle del crucero, Bar Rouge)",
+                   "Todo queda a pie: Nanjing Road, el Bund, el muelle del crucero y Bar Rouge");
+    });
+    (bj.hotels||[]).forEach(h=>{
+      if(h.chosen&&/peninsula beijing/i.test(h.name||"")&&!/recogen en el lobby/.test(h.note||""))
+        h.note=(h.note||"").replace("Cualquier hotel de Wangfujing","Los dos tours los recogen en el lobby y el de "+
+          "«Contrastes» termina en Wangfujing. Cualquier hotel de Wangfujing");
+    });
+  }
+  if(Array.isArray(s.esenciales)){
+    const e=s.esenciales.find(x=>x.id===ESSENTIAL_BJ_SH.id);
+    if(e)Object.assign(e,{t:ESSENTIAL_BJ_SH.t,s:ESSENTIAL_BJ_SH.s});
+  }
+  s.bjPlanV2=true;
 }
 /* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
 function freshBlankTrip(titulo){
