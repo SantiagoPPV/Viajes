@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v31.7 · 18 oct 2026 · Shanghái moderno e histórico; el lunes temprano a Kioto";
+const APP_VERSION="v31.8 · 18 oct 2026 · Shanghái: cada actividad descrita a detalle";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -3696,6 +3696,7 @@ function normalizeTripState(s){
   migrarPekinShanghai(s);    // Pekín 3 noches (2 días completos) y Shanghái 3
   migrarPekinV2(s);          // Pekín con sus 3 tours: se queda con el viernes
   migrarShanghaiKioto(s);    // Shanghái moderno y el histórico; el lunes temprano a Kioto
+  migrarShanghaiDetalle(s);  // y la descripción a detalle de cada actividad
   return s;
 }
 /* ---- Llegada a Yangshuo: domingo 9 de mayo de 2027, paso a paso ----
@@ -5766,6 +5767,208 @@ function migrarShanghaiKioto(s){
     });
   }
   s.shPlanV3=true;
+}
+/* ---- Shanghái: la descripción a detalle de cada actividad (v31.8) ----
+   Solo cambian las notas (y algún costo): los horarios se quedan como están.
+   Incluye la llegada del viernes (vive en el último día de Pekín) y la salida
+   del lunes (en el primero de Kioto). */
+const SH_NOTAS_V2={
+ shanghai:{
+  "g-breakfast":{note:
+    "En el hotel. El sábado, sin prisa: el viernes llegaron tarde. El domingo, a las 7:30, porque el guía pasa "+
+    "a las 8:30.<br>Confirmen si su tarifa incluye desayuno; si no, sale más práctico pagarlo en el hotel que "+
+    "salir a buscar."},
+  "sh1m-a-jingan":{note:
+    "~5 km al oeste, 15-20 min en taxi. Pídanlo con DiDi (tiene inglés y se paga con Alipay) o en la fila del "+
+    "hotel. Para el chofer: <b>静安寺, 南京西路1686号</b>.<br>"+
+    "Alternativa: metro línea 2 de East Nanjing Road a Jing'an Temple, 3 paradas."},
+  "sh1m-jingan":{note:
+    "Fundado en el año 247, en la época de los Tres Reinos: de los templos más antiguos de Shanghái, aunque lo "+
+    "que se ve hoy es reconstruido. Es un templo activo, con monjes y gente rezando.<br>"+
+    "<b>Qué ver:</b><ul>"+
+    "<li>La Sala Principal, con un <b>Buda Shakyamuni de plata pura de 15 toneladas</b>.</li>"+
+    "<li>El gran Buda de jade y la pagoda.</li>"+
+    "<li>Los techos y aleros dorados con los rascacielos de Jing'an detrás: la foto del día.</li>"+
+    "<li>El caldero de bronce del patio: la gente le avienta monedas para la buena suerte.</li></ul>"+
+    "~¥50 c/u, de 7:30 a 17:00. Hombros y rodillas cubiertos."},
+  "sh1m-nanjing":{note:
+    "Nanjing Road del Oeste (南京西路) es la parte elegante de la calle comercial más famosa de China: Plaza 66 "+
+    "(las grandes marcas), Jing'an Kerry Centre y HKRI Taikoo Hui. Del templo caminan ~1 km hacia el este.<br>"+
+    "En el HKRI Taikoo Hui está la <b>Starbucks Reserve Roastery</b> (2017), de las más grandes del mundo: "+
+    "~2,700 m² en dos pisos, un barril de cobre de 40 toneladas con más de 1,000 sellos chinos grabados a mano, "+
+    "una barra de café de 27 m y la primera barra de té Teavana de China. Tuestan ahí mismo. Pidan algo que no "+
+    "haya en otro Starbucks (sifón o Clover) y suban al segundo piso.<br>"+
+    "<i>Las compras fuertes, mejor en Tokio: este es el paseo.</i>"},
+  "sh1m-a-pudong":{note:
+    "Metro línea 2 de West Nanjing Road (南京西路) a Lujiazui (陆家嘴): 3 paradas, ~10 min; cruza por debajo del "+
+    "río. Se paga con el QR de Alipay (Transporte → metro de Shanghái) o con boleto en la máquina. Salgan hacia "+
+    "el IFC Mall."},
+  "sh1m-comida":{note:
+    "Comida con vista al Bund, del otro lado del río:<ul>"+
+    "<li><b>Din Tai Fung</b> del Superbrand Mall: xiaolongbao con una de las mejores vistas del Bund; sin "+
+    "complicaciones.</li>"+
+    "<li><b>Jin Xuan</b>, piso 53 del Ritz-Carlton (IFC): cantonés con estrella Michelin. El dim sum del mediodía "+
+    "es la manera de probarlo sin pagar la cena.</li>"+
+    "<li><b>Cucina</b>, piso 56 del Grand Hyatt (en la Jin Mao): italiano.</li></ul>"+
+    "Reserven y pidan mesa en la ventana."},
+  "sh1m-lujiazui":{note:
+    "Hace 35 años esto eran bodegas y campos; hoy es el skyline más famoso de China. Los cuatro grandes:<ul>"+
+    "<li><b>Perla de Oriente</b> (468 m, 1994): la torre de las esferas rosas.</li>"+
+    "<li><b>Jin Mao</b> (420 m, 1999): una pagoda moderna de 88 pisos; el 8 es el número de la suerte.</li>"+
+    "<li><b>World Financial Center</b> (492 m, 2008), «el destapador»: el hueco de arriba iba a ser redondo y "+
+    "lo cambiaron porque recordaba el sol de la bandera de Japón.</li>"+
+    "<li><b>Shanghai Tower</b> (632 m, 2015): gira 120° mientras sube. En la tarde suben.</li></ul>"+
+    "Caminen el <b>puente peatonal circular</b> (陆家嘴环形天桥), que une las torres por encima del tráfico, y "+
+    "después el <b>paseo del río</b>, con el Bund enfrente: la mejor foto de los edificios coloniales."},
+  "sh1m-a-hotel":{note:
+    "Del paseo del río, al muelle de Dongchang Road (东昌路渡口) y crucen en el <b>ferry público</b> a Jinling "+
+    "Road East (金陵东路): ~10 min, ¥2, sale cada 10-15 min. Es la vista del Bund desde el agua por casi nada. "+
+    "Del muelle al hotel, ~15 min a pie por el Bund."},
+  "sh1m-descanso":{note:
+    "Casi dos horas antes de la tarde y noche largas: Shanghai Tower, crucero y cena tarde. Cámbiense con "+
+    "algo para la noche y una chamarra ligera: en el río y a 546 m de altura refresca."},
+  "sh2-ferry":{note:
+    "El mismo ferry: muelle de Jinling Road East (金陵东路) → Dongchang Road, ~10 min por ¥2. Del muelle a la "+
+    "Shanghai Tower, ~15 min a pie entre las torres."},
+  "sh-tower":{note:
+    "El edificio más alto de China (632 m) y su mirador más alto: el piso 118, a 546 m. El elevador es de los "+
+    "más rápidos del mundo, 18 m/s: sube en ~55 segundos y se les van a tapar los oídos.<br>"+
+    "Llegan a las 17:30 para ver la ciudad de día, el atardecer (~18:50) y cómo se prenden el Bund y Pudong. "+
+    "Desde aquí, la Jin Mao y «el destapador» se ven desde arriba.<br>"+
+    "Boleto ~¥180 c/u, con pasaporte físico. Hay upgrade al piso 126 para ver el amortiguador gigante que "+
+    "estabiliza la torre con el viento. En fin de semana hay fila al elevador: compren en línea con horario."},
+  "sh1m-a-muelle":{note:
+    "De la torre al ferry de Dongchang Road (~15 min a pie), el ferry al Bund (~10 min) y ~10 min a pie al "+
+    "muelle <b>Shiliupu</b> (十六铺), en el extremo sur del Bund.<br>"+
+    "Si se les hace tarde, taxi por el túnel: ~15 min."},
+  "sh-cruise":{note:
+    "~50 min por el Huangpu desde el muelle Shiliupu (十六铺): sube frente al Bund y Lujiazui y regresa. De "+
+    "noche se ven las dos orillas prendidas: los edificios coloniales dorados de un lado y las torres con sus "+
+    "pantallas de LED del otro.<br>"+
+    "Suban a la cubierta de arriba (la VIP, ~¥180, incluye bebida y asiento) y salgan a la proa. Boletos en "+
+    "Trip.com con pasaporte; lleguen 20-30 min antes, porque la fila de seguridad es larga en fin de semana.<br>"+
+    "Las luces del Bund se apagan ~22:00: por eso el de las 20:00 y no el de las 21:00."},
+  "sh1-cena":{note:
+    "A pie del muelle. Reserven para las 21:15 un lugar que cocine tarde:<ul>"+
+    "<li><b>Mr &amp; Mrs Bund</b> (Bund 18, piso 6): francés moderno de Paul Pairet, el de Ultraviolet. Cierra "+
+    "tarde y las mesas de la ventana dan a Pudong iluminado. El más de noche.</li>"+
+    "<li><b>Hakkasan</b> (Bund 18, piso 5): cantonés, con vista al río.</li>"+
+    "<li><b>Lost Heaven</b>: cocina de Yunnan, con terraza en la azotea.</li></ul>"+
+    "Si quieren cocina de Shanghái: hongshao rou (cerdo estofado en soya), pescado «ardilla» y cangrejo."},
+  "sh1-vuelta":{note:"Por el Bund, ~10 min."},
+  "sh2h-guia":{note:
+    "Tour privado de Civitatis, ~8 h, con guía y coche: Jardín Yu y la Ciudad Vieja → Templo del Buda de Jade → "+
+    "la Concesión Francesa y Tianzifang → el Bund, donde termina, a pasos del hotel.<br>"+
+    "<b>Antes de pagar, confirmen:</b> que el guía sea en español, si incluye entradas, y pidan la recogida a "+
+    "las 8:30 para llegar al Jardín Yu a la apertura y que la comida sea en Anfu Road.<br>"+
+    "Lleven los pasaportes (el Jardín Yu y el Buda de Jade piden boleto con nombre) y tenis: son varios "+
+    "kilómetros a pie en el día."},
+  "sh-yu":{note:
+    "Jardín privado de la dinastía Ming (1559-1577): un funcionario, Pan Yunduan, lo hizo para que su padre "+
+    "pasara la vejez. Son ~2 hectáreas que parecen mucho más, porque cada patio esconde al siguiente.<br>"+
+    "<b>Qué ver:</b><ul>"+
+    "<li>La <b>Gran Rocalla</b> de piedra amarilla, de ~14 m, la más grande de los jardines del sur de China.</li>"+
+    "<li>El <b>muro del dragón</b> que serpentea sobre las bardas.</li>"+
+    "<li>La <b>Roca de Jade Exquisito</b> (玉玲珑), llena de agujeros: dicen que si se quema incienso abajo, el "+
+    "humo sale por todos.</li>"+
+    "<li>El <b>Jardín Interior</b>, el más tranquilo.</li></ul>"+
+    "~¥40 c/u en temporada alta. A la apertura está tranquilo; a las 10:30 ya no se camina. Cierra los lunes."},
+  "sh1-bazar":{note:
+    "Saliendo del jardín:<ul>"+
+    "<li>El <b>bazar Yuyuan</b>: techos curvos y tiendas de recuerdos (regateen).</li>"+
+    "<li>El <b>Templo del Dios de la Ciudad</b> (城隍庙, de 1403), el protector de Shanghái, donde la gente "+
+    "va a pedir.</li>"+
+    "<li>En el lago, la casa de té <b>Huxinting</b> (湖心亭, 1784), de las más antiguas de China (la visitó la "+
+    "reina Isabel II en 1986), con su <b>puente de nueve vueltas</b> en zigzag: dicen que los malos espíritus "+
+    "solo caminan en línea recta.</li></ul>"+
+    "Los <b>xiaolongbao de Nanxiang</b> (南翔馒头店, desde 1900), junto al puente: si la fila de abajo está "+
+    "corta, pidan una canasta; arriba hay mesas con servicio."},
+  "sh2h-a-jade":{note:"~6 km al norte, 20-30 min en el coche del tour."},
+  "sh-jade":{note:
+    "En 1882 el monje Huigen trajo de Birmania cinco budas de jade y dejó dos en Shanghái; el templo actual es "+
+    "de 1928.<br>"+
+    "<b>Qué ver:</b><ul>"+
+    "<li>El <b>Buda sentado</b> (~1.9 m), de una sola pieza de jade blanco, adornado con piedras preciosas.</li>"+
+    "<li>El <b>Buda reclinado</b>: el Buda en el momento de morir, sereno.</li>"+
+    "<li>La Sala de los Reyes Celestiales y la Gran Sala.</li></ul>"+
+    "Templo activo, con monjes. ~¥20 c/u, más ~¥10 para la sala del Buda de jade; ahí no se permiten fotos."},
+  "sh2h-a-fcc":{note:"~5 km al sur, a la antigua Concesión Francesa."},
+  "sh1-comida":{note:
+    "<b>Anfu Road</b> (安福路): cafés, bistrós y boutiques en las villas de la Concesión, frente al Centro de Artes "+
+    "Dramáticas de Shanghái; la calle de moda de la ciudad. Hay de todo: bistró, cocina de Shanghái y "+
+    "panaderías. Pídanle al guía su favorito. La comida no está incluida en el tour."},
+  "sh1-wukang":{note:
+    "La <b>Concesión Francesa</b> (1849-1943) fue el barrio de los extranjeros: calles con plátanos de sombra y "+
+    "villas art déco y de estilo español. <b>Wukang Road</b> es la más bonita.<br>"+
+    "En la esquina, el <b>Edificio Wukang</b> (武康大楼, 1924), del arquitecto húngaro László Hudec, con forma de "+
+    "proa de barco: el «Flatiron» de Shanghái. La foto se toma desde el otro lado del cruce."},
+  "sh1-a-xtd":{note:"~3 km en el coche del tour."},
+  "sh-fcc":{note:
+    "<b>Tianzifang</b> (田子坊), en Taikang Road: callejones de casas <b>shikumen</b> de los años 20 y 30 (casas "+
+    "de piedra con portón de madera, mezcla de lo chino y lo europeo, típicas de Shanghái). Desde 1998 las "+
+    "tomaron artistas y hoy son tiendas, talleres, galerías y cafés.<br>"+
+    "Piérdanse en los callejones de atrás: las tiendas chicas tienen artesanía mejor que la del bazar."},
+  "sh2h-a-bund":{note:"~4 km, de regreso al río."},
+  "sh-bund":{note:
+    "El Bund (外滩): 1.5 km de malecón con 52 edificios de bancos, hoteles y aduanas de 1900 a 1930, cuando "+
+    "Shanghái era el puerto más rico de Asia. Que el guía les enseñe:<ul>"+
+    "<li>El <b>edificio del HSBC</b> (1923), con el mosaico de su cúpula, que taparon con pintura en la "+
+    "Revolución Cultural y redescubrieron en los años 90.</li>"+
+    "<li>La <b>Aduana</b> (1927) y su reloj «Big Ching», inspirado en el Big Ben.</li>"+
+    "<li>El <b>Peace Hotel</b> (1929), de Victor Sassoon, donde Noël Coward escribió <i>Private Lives</i>.</li></ul>"+
+    "Enfrente, Pudong: lo que vieron ayer. El tour termina a pasos del hotel."},
+  "sh2h-descanso":{note:
+    "Mañana salen a las 6:00: dejen las maletas casi listas. En la recepción pidan la caja de desayuno y el "+
+    "taxi de las 6:00 al aeropuerto de Pudong."},
+  "sh-farewell":{note:
+    "La última noche en China, en el Bund y a pie del hotel. Opciones con vista a Pudong:<ul>"+
+    "<li><b>Canton Table</b> (Three on the Bund): cantonés con estrella Michelin, dim sum y asados.</li>"+
+    "<li><b>Jean Georges</b> (Three on the Bund): francés-asiático, con terraza a Pudong.</li>"+
+    "<li><b>Lost Heaven</b>: cocina de Yunnan, con terraza en la azotea.</li></ul>"+
+    "Reserven terraza o ventana para las 19:00.<br>"+
+    "<i>Si quieren algo de una vez en la vida: <b>Ultraviolet</b> de Paul Pairet, 3 estrellas Michelin: 10 "+
+    "lugares y ~20 tiempos con proyecciones y sonido. De lo más caro de Asia y se reserva con meses.</i>"},
+  "sh2h-jazz":{note:
+    "El bar de jazz del Peace Hotel, en la planta baja, es de los años 30, y la <b>Old Jazz Band</b> lleva "+
+    "décadas tocando el swing de esa época, más o menos de 19:00 a 21:45 (después sigue una cantante). No "+
+    "cobran entrada, solo la bebida; confirmen el horario en el hotel.<br>"+
+    "Aunque se queden en otro hotel vale la pena: está en la esquina de Nanjing Road y el Bund."},
+  "sh2h-vuelta":{note:"Al cuarto temprano: el despertador del lunes suena a las 5:30."}
+ },
+ beijing:{
+  "sh0-hotel":{note:
+    "Taxi de la fila oficial a la salida de Hongqiao (sigan los letreros «Taxi»; no acepten a los que se "+
+    "acercan a ofrecer): ~45 min y ~¥100 al Bund. Para el chofer, el nombre del hotel en chino.<br>"+
+    "El metro L2 llega directo a East Nanjing Road, pero con maletas y de noche, mejor el taxi."},
+  "pk3-bund":{note:
+    "Dejen las maletas y salgan: del hotel, el Bund está cruzando la calle. Caminen hacia el sur por el malecón "+
+    "elevado, con los edificios coloniales iluminados de un lado y las torres de Pudong con sus pantallas del "+
+    "otro. De regreso, <b>Nanjing Road del Este</b> (南京东路), la calle peatonal de los neones.<br>"+
+    "Las luces de los edificios se apagan ~22:00: si llegan tarde, lo ven bien el sábado desde el crucero."}
+ },
+ kyoto:{
+  "ky0-salida":{note:
+    "Taxi del hotel (pídanlo en recepción la noche anterior): ~45 km por autopista, 45-50 min a esa hora y "+
+    "~¥180-200. Lleven la caja de desayuno.<br>"+
+    "<i>Existe el tren Maglev desde Longyang Road (8 min al aeropuerto), pero con maletas y a esta hora el "+
+    "taxi es más simple.</i>"},
+  "ky0-pvg":{note:
+    "Pudong tiene dos terminales: confirmen la suya en el pase de abordar (T1 o T2). Documenten, pasen la "+
+    "migración de salida de China (pasaporte y visa) y seguridad. Los líquidos, en la maleta documentada. "+
+    "Lleguen 2 h antes."}
+ }
+};
+function migrarShanghaiDetalle(s){
+  if(s.shDetalleV1)return;
+  if(s.bases&&s.bases.hk)
+    Object.entries(SH_NOTAS_V2).forEach(([bid,notas])=>{
+      const b=s.bases[bid];if(!b||!Array.isArray(b.catalog))return;
+      Object.entries(notas).forEach(([cid,d])=>{
+        const a=b.catalog.find(x=>x.cid===cid);
+        if(a){if(d.name)a.name=d.name;if(d.note)a.note=d.note;}
+      });
+    });
+  s.shDetalleV1=true;
 }
 /* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
 function freshBlankTrip(titulo){
