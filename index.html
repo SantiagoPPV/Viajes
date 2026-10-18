@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v31.10 · 18 oct 2026 · Shanghái: su hotel en Pudong (H+ Hotel)";
+const APP_VERSION="v31.11 · 18 oct 2026 · Zhangjiajie: su hotel WuYun (五韵观山悦)";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -3700,6 +3700,7 @@ function normalizeTripState(s){
   migrarShanghaiDetalle(s);  // y la descripción a detalle de cada actividad
   migrarPekinHotel(s);       // Pekín con su hotel en Qianmen (Manxin, 大江胡同120号)
   migrarShanghaiHotel(s);    // Shanghái con su hotel en Pudong (H+, 潍坊西路90号)
+  migrarZjjHotelNombre(s);   // el nombre del hotel de Zhangjiajie: WuYun (五韵观山悦)
   return s;
 }
 /* ---- Llegada a Yangshuo: domingo 9 de mayo de 2027, paso a paso ----
@@ -6297,6 +6298,25 @@ function migrarShanghaiHotel(s){
       if(e)Object.assign(e,{t:E.t,s:E.s});
     });
   s.shHotelV1=true;
+}
+/* ---- Zhangjiajie: el nombre de su hotel (v31.11) ---- */
+function migrarZjjHotelNombre(s){
+  if(s.zjjHotelV2)return;
+  const zj=s.bases&&s.bases.zjj;
+  if(s.bases&&s.bases.hk&&zj&&Array.isArray(zj.hotels)){
+    const h=zj.hotels.find(x=>/guanliping|ganzi|官黎坪|wuyun|五韵/i.test((x.name||"")+(x.area||"")));
+    if(h)Object.assign(h,{name:"WuYun Mountain View Designer Hotel (五韵观山悦)",
+      area:"Village Group 3, Ganzi Village, Guanliping, Yongding · a ~4 km del teleférico de Tianmen",
+      note:"<b>★ Viernes 14 y sábado 15</b> (check-out el domingo 16). Hotel boutique de diseño con vista a la "+
+           "montaña, en Guanliping, en la ciudad de Zhangjiajie, del lado de Tianmen (no en Wulingyuan): a ~4 km, "+
+           "unos 5 min en coche, del teleférico de Tianmen y cerca del show «Fox Fairy». 9.6/10 en Trip.com; "+
+           "tiene lounge y bar.<br>"+
+           "Cerca: el aeropuerto (~15-20 min) y la estación Zhangjiajie West (~20-30 min). El parque de los pilares "+
+           "queda a ~1 h, por eso el tour del sábado los recoge a las 6:30.<br>"+
+           (+h.precio>0?"":"<b>⚠ Falta el precio por noche</b> para que cuente en el presupuesto (en los "+
+           "buscadores aparece desde ~€138 por noche, según la fecha).")});
+  }
+  s.zjjHotelV2=true;
 }
 /* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
 function freshBlankTrip(titulo){
