@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v31.12 · 18 oct 2026 · Kansai: vuelo de las 7:50, Kioto, noche en Osaka y Tokio a mediodía";
+const APP_VERSION="v31.13 · 18 oct 2026 · Kioto: su hotel en Sanjo y cada actividad a detalle";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -1638,8 +1638,8 @@ const ESSENTIAL_SH_KIX={id:"ess-sh-kix",t:"Shanghái y el vuelo a Japón",
     "Kansai: Juneyao HO1505 (o Shanghai Airlines FM873) 7:50 → 11:00; si prefieren dormir más, MU225 8:55 → 12:10 · "+
     "Haruka a Kioto: el boleto en línea sale más barato · Visit Japan Web con su QR antes de aterrizar"};
 const ESSENTIAL_KANSAI={id:"ess-kansai",t:"Kioto y la noche en Osaka",
-  s:"falta el hotel de Kioto: conviene cerca de la estación de Kioto (Haruka, Osaka y el Shinkansen) o de "+
-    "Gion/Kawaramachi (lo más bonito) · reservar Pontocho el lunes 18:30 (terraza sobre el río) y el kaiseki del "+
+  s:"hotel de Kioto: Mitsui Garden Hotel Kyoto Sanjo PREMIER (desayuno ~¥3,850 c/u si no va incluido) · "+
+    "reservar Pontocho el lunes 18:30 (terraza sobre el río) y el kaiseki del "+
     "martes al mediodía en Gion · Shinkansen Nozomi del miércoles 12:00 a Tokio, asiento E para ver el Fuji · "+
     "Suica o ICOCA en el celular para trenes y metro · Kioto cobra impuesto de hospedaje por persona y noche "+
     "(hasta ¥10,000 en hoteles de lujo)"};
@@ -3708,6 +3708,7 @@ function normalizeTripState(s){
   migrarShanghaiHotel(s);    // Shanghái con su hotel en Pudong (H+, 潍坊西路90号)
   migrarZjjHotelNombre(s);   // el nombre del hotel de Zhangjiajie: WuYun (五韵观山悦)
   migrarKansai(s);           // vuelo temprano a Kansai, Kioto, la noche en Osaka y a Tokio a mediodía
+  migrarKiotoHotel(s);       // Kioto con su hotel en Sanjo (Mitsui Garden Premier) y notas a detalle
   return s;
 }
 /* ---- Llegada a Yangshuo: domingo 9 de mayo de 2027, paso a paso ----
@@ -6503,6 +6504,181 @@ function migrarKansai(s){
     });
   }
   s.jpPlanV1=true;
+}
+/* ---- Kioto con su hotel (v31.13): Mitsui Garden Hotel Kyoto Sanjo PREMIER ----
+   Sanjo-dori y Higashinotoin, en el centro: metro Karasuma Oike a 6 min, el
+   mercado Nishiki a ~10 min a pie, Pontocho a ~15, el tren Hankyu (a Osaka)
+   a ~10. Cambian los traslados (la llegada en taxi desde la estación, Osaka
+   en Hankyu sin transbordos) y cada actividad lleva sus observaciones. */
+const KY_HOTEL="Mitsui Garden Hotel Kyoto Sanjo PREMIER";
+const KY_DIA0_V4=[
+  {cid:"ky0-salida",fixed:"05:15"},
+  {cid:"ky0-pvg"},
+  {cid:"ky-arrive",fixed:"07:50"},
+  {cid:"ky0-kix",
+   note:"Migración de Japón: tengan listo el QR de <b>Visit Japan Web</b> (sirve para migración y aduana). Recojan "+
+        "maletas y sigan los letreros «JR Line»: la estación del aeropuerto está conectada a la Terminal 1 por el "+
+        "segundo piso (si llegan a la T2, hay shuttle gratis de 7-9 min). Ahí pueden cargar la Suica/ICOCA del "+
+        "celular y sacar el Haruka."},
+  {cid:"ky0-haruka",
+   note:"75 min directo a la estación de Kioto; sale cada ~30 min (el tiempo incluye la espera). El boleto «Haruka "+
+        "1-Way» para turistas, comprado en línea o en la app de JR West, sale más barato (~¥2,200) que en "+
+        "ventanilla (~¥3,000-3,600). Hay espacio para maletas en cada vagón."},
+  {cid:"ky0-hotel",name:"Taxi de la estación de Kioto al hotel y dejar las maletas",dur:30,
+   costos:[["Taxi estación → hotel (2)",200]],
+   note:"Salida norte (Karasuma) de la estación, fila de taxis: ~15 min y ~¥1,500 a <b>"+KY_HOTEL+"</b> "+
+        "(三井ガーデンホテル京都三条プレミア), en Sanjo-dori esquina con Higashinotoin. Con maletas es mejor que el metro "+
+        "(línea Karasuma, 3 paradas a Karasuma Oike y 6 min a pie).<br>"+
+        "El check-in es a las 15:00: si el cuarto no está, dejen las maletas en recepción y salgan."},
+  {cid:"ky0-a-nishiki",name:"A pie al mercado Nishiki",dur:15,
+   note:"~10 min a pie al sur del hotel, por Takakura o Sakaimachi, hasta la calle Nishikikoji. Entren por el lado "+
+        "oeste y crúcenlo hacia el este: termina en el santuario Nishiki Tenmangu, en Teramachi."},
+  {cid:"ky-nishiki",
+   note:"«La cocina de Kioto»: un callejón techado de ~400 m con más de cien puestos, algunos con siglos de "+
+        "historia. Vayan probando: <b>tamagoyaki</b> (omelette dulce en rollo; el de <b>Miki Keiran</b> se hace "+
+        "frente a ustedes), brochetas de pulpito con huevo de codorniz, tofu y <b>yuba</b> (la nata del tofu), "+
+        "<b>tsukemono</b> (encurtidos), mochi, matcha y las donitas de leche de soya de <b>Konnamonja</b>.<br>"+
+        "Si quieren un recuerdo de lujo: <b>Aritsugu</b>, cuchillos de cocina desde 1560; les graban su nombre.<br>"+
+        "No se come caminando: se come junto al puesto. Muchos cierran entre 17:00 y 18:00."},
+  {cid:"ky0-a-fushimi",
+   note:"Del final del mercado (Teramachi), ~7 min a pie a la estación <b>Gion-Shijo</b> del tren Keihan, y a "+
+        "Fushimi-Inari, ~10 min (salen cada pocos minutos). Paguen con la Suica/ICOCA del celular."},
+  {cid:"ky-fushimi",fixed:"15:45",
+   note:"El santuario de Inari, dios del arroz y los negocios, con los <b>miles de torii naranjas</b> que donan "+
+        "empresas y familias (cada uno lleva su nombre por detrás) y que suben por el monte Inari. Los zorros de "+
+        "piedra son sus mensajeros.<br>"+
+        "En la tarde hay menos gente y la luz es la mejor. Pasen las dos hileras de torii pegados (Senbon "+
+        "Torii) y suban por lo menos al mirador de <b>Yotsutsuji</b> (~45 min de subida) para ver Kioto; la "+
+        "cumbre son 2-3 h ida y vuelta, no hace falta. Gratis y abierto las 24 h.<br>"+
+        "Lleven agua y bajen antes de que oscurezca: arriba hay poca luz."},
+  {cid:"ky0-a-pontocho",
+   note:"Keihan de regreso de Fushimi-Inari a Gion-Shijo (~10 min) y a pie cruzando el puente de Shijo: la entrada "+
+        "de Pontocho está del otro lado del río, a la derecha."},
+  {cid:"ky-pontocho",fixed:"18:30",
+   note:"El callejón de faroles junto al río Kamo, con restaurantes en casas de madera. De mayo a septiembre "+
+        "muchos ponen su <b>terraza sobre el río</b> (kawayuka): cenar ahí al atardecer es de lo más bonito de "+
+        "Kioto. Hay de kaiseki, yakitori y hasta italiano.<br>"+
+        "<b>Reserven</b> (en TableCheck o con el hotel, buscando «Pontocho kawayuka») y pidan mesa en la terraza. "+
+        "En mayo la noche es fresca: lleven algo ligero.<br>"+
+        "Al salir, crucen el puente de Shijo: del otro lado empieza Gion."},
+  {cid:"ky0-vuelta",name:"A pie al hotel",dur:20,
+   note:"~15 min a pie hacia el oeste por Sanjo-dori (o taxi de 5 min). En el hotel hay baño público para "+
+        "relajarse después del día."}
+];
+const KY_DIA1_V4=[
+  {cid:"g-breakfast",fixed:"07:15",dur:45,
+   costos:[["Desayuno buffet del hotel (2), si no va incluido",950]],
+   note:"Buffet del hotel de 7:00 a 11:00, ~¥3,850 por persona si su tarifa no lo incluye. Hoy es el día largo: "+
+        "Kioto de día y Osaka de noche."},
+  {cid:"ky1-a-kiyomizu",fixed:"08:00",
+   note:"~15-20 min en taxi de Sanjo al templo, ~¥1,500-2,000. Pidan que los dejen arriba de Kiyomizu-zaka, lo "+
+        "más cerca de la puerta, para no subir la cuesta."},
+  {cid:"ky-kiyomizu"},
+  {cid:"ky1-sannenzaka",
+   note:"Las calles empedradas de casas de madera que bajan del templo: cerámica, dulces y té. Hay un Starbucks "+
+        "en una casa tradicional con tatami.<br>"+
+        "La foto de la <b>pagoda Yasaka</b> (Hokan-ji) entre las casas se toma desde la calle Yasaka-dori.<br>"+
+        "Cuidado con los escalones de Sannenzaka: la leyenda dice que quien se cae ahí tiene tres años de mala "+
+        "suerte."},
+  {cid:"ky-gion"},
+  {cid:"ky1-comida",
+   note:"El <b>kaiseki</b> es la alta cocina de Kioto: muchos tiempos pequeños de temporada, cada uno en su plato. "+
+        "Al mediodía cuesta mucho menos que en la cena. Opciones:<ul>"+
+        "<li><b>Kikunoi Honten</b>: tres estrellas Michelin, al pie de Higashiyama. El más especial (y caro).</li>"+
+        "<li><b>Gion Karyo</b>: estrella Michelin, en Gion.</li></ul>"+
+        "<b>Reserven con semanas</b> (en su página, por TableCheck o con el hotel). Si prefieren algo más ligero: "+
+        "<b>yudofu</b> (tofu de Kioto en caldo) o soba."},
+  {cid:"ky1-a-kinkaku",note:"~30 min en taxi de Gion hacia el noroeste, ~¥3,000."},
+  {cid:"ky-kinkakuji",
+   note:"El pabellón cubierto de hoja de oro que se refleja en el estanque. Fue la villa de retiro de un shogun "+
+        "(1397); el de hoy es de 1955, porque un monje lo incendió en 1950 (la historia de la novela de Mishima).<br>"+
+        "Se recorre en ~45 min por un camino de un solo sentido. ~¥500 c/u; el boleto es un amuleto de papel.<br>"+
+        "Si les sobra energía, a 15 min a pie está <b>Ryoan-ji</b>, el jardín zen de 15 rocas."},
+  {cid:"ky1-a-hotel",note:"~25 min en taxi al hotel, ~¥2,500."},
+  {cid:"ky1-descanso",dur:100,
+   note:"Hora y media en el hotel: el baño público (estilo onsen) es para esto. Para la noche: ropa cómoda y "+
+        "zapatos para caminar; en Osaka se come de pie o en barra."},
+  {cid:"ky1-a-osaka",name:"Tren Hankyu a Osaka (Namba)",fixed:"16:30",dur:60,
+   note:"Del hotel, ~10 min a pie a la estación <b>Karasuma</b> del tren Hankyu (en Shijo-Karasuma). Hankyu línea "+
+        "Kioto, Limited Express a <b>Osaka-Umeda</b>, ~45 min y sin transbordo; de ahí metro Midosuji a "+
+        "<b>Namba</b>, 8 min. Todo se paga con la Suica/ICOCA del celular.<br>"+
+        "Alternativa: metro a la estación de Kioto y JR Special Rapid a Osaka, ~30 min."},
+  {cid:"ky1-dotonbori"},
+  {cid:"ky1-cena-osaka",
+   note:"<b>Kuidaore</b>, «comer hasta caer», es el lema de Osaka. Vayan probando:<ul>"+
+        "<li><b>Takoyaki</b> (bolitas de pulpo): Kukuru o Wanaka, en Dotonbori.</li>"+
+        "<li><b>Okonomiyaki</b> (crepa gruesa de col con carne o mariscos, hecha en la plancha de su mesa): "+
+        "<b>Mizuno</b>, desde 1945, con Bib Gourmand de Michelin; hay fila.</li>"+
+        "<li><b>Kushikatsu</b> (brochetas empanizadas): <b>Kushikatsu Daruma</b>, desde 1929. Regla de la casa: se "+
+        "mojan UNA sola vez en la salsa común.</li></ul>"+
+        "Si quieren algo especial, el cangrejo de <b>Kani Doraku</b>, el del cangrejo gigante. Con cerveza o "+
+        "highball."},
+  {cid:"ky1-hozenji",
+   note:"A una cuadra del ruido: <b>Hozenji Yokocho</b>, un callejón empedrado de faroles con el pequeño templo "+
+        "Hozen-ji. Su estatua, la <b>Mizukake Fudo</b>, está cubierta de musgo porque cada quien le echa agua con el "+
+        "cucharón al pedir un deseo.<br>"+
+        "Después, <b>Ura-Namba</b> («la Namba de atrás»): callejones de barras chiquitas e izakayas, donde salen los "+
+        "de Osaka."},
+  {cid:"ky1-vuelta",name:"Tren de regreso a Kioto",dur:60,
+   note:"Metro Midosuji a Umeda y Hankyu a Karasuma (~55 min), y 10 min a pie al hotel. El último Hankyu sale de "+
+        "Umeda cerca de la medianoche: revísenlo en Google Maps y no lo dejen para el final. Un taxi de Osaka a "+
+        "Kioto cuesta ~¥20,000."}
+];
+const TK_DIA0_V3=[
+  {cid:"tk0-desayuno",fixed:"07:00",
+   note:"El buffet del hotel abre a las 7:00 (~¥3,850 c/u): para algo rápido, mejor café y onigiri de un konbini. "+
+        "Dejen las maletas listas para pasar por ellas después."},
+  {cid:"tk0-a-arashiyama",
+   note:"~25-30 min en taxi de Sanjo hacia el oeste, ~¥3,500-4,000. Pidan que los dejen en la entrada del bosque "+
+        "de bambú (竹林の小径, Chikurin no Komichi)."},
+  {cid:"tk0-bambu"},
+  {cid:"tk0-tenryuji"},
+  {cid:"tk0-togetsukyo"},
+  {cid:"tk0-regreso",
+   note:"Taxi al hotel (~30 min), check-out (antes de las 12:00) y a la estación de Kioto: taxi de ~15 min con las "+
+        "maletas (o metro Karasuma, 3 paradas). Compren un <b>ekiben</b> (el bento de estación) para comer en el "+
+        "tren y lleguen al andén 15 min antes."},
+  {cid:"tk-arrive",fixed:"12:00"},
+  {cid:"tk0-hotel"},
+  {cid:"g-rest"},
+  {cid:"tk-shibuya"},
+  {cid:"tk-shibuyasky",fixed:"18:00"},
+  {cid:"tk-izakaya"}
+];
+function migrarKiotoHotel(s){
+  if(s.kyHotelV1)return;
+  const ky=s.bases&&s.bases.kyoto,tk=s.bases&&s.bases.tokyo;
+  if(s.bases&&s.bases.hk&&ky&&Array.isArray(ky.catalog)&&tk&&Array.isArray(tk.catalog)){
+    const costos=(base,lista)=>lista.forEach(a=>{
+      const x=a.costos&&base.catalog.find(y=>y.cid===a.cid);
+      if(x)x.costs=a.costos.map(([label,est])=>({id:uid(),label,est,real:0}));
+    });
+    sembrarDia(ky,0,KY_DIA0_V4,"05:15");
+    sembrarDia(ky,1,KY_DIA1_V4,"07:15");
+    sembrarDia(tk,0,TK_DIA0_V3,"07:00");
+    costos(ky,KY_DIA0_V4);costos(ky,KY_DIA1_V4);costos(tk,TK_DIA0_V3);
+    if(!Array.isArray(ky.hotels))ky.hotels=[];
+    let h=ky.hotels.find(x=>/mitsui garden.*sanjo/i.test(x.name||""));
+    ky.hotels.forEach(x=>{x.chosen=false;});
+    if(h)ky.hotels.splice(ky.hotels.indexOf(h),1);
+    else h={id:uid(),precio:0};
+    Object.assign(h,{name:KY_HOTEL,
+      area:"45-1 Hishiya-cho, Sanjo-dori Higashinotoin, Nakagyo · 三井ガーデンホテル京都三条プレミア",noches:2,chosen:true,
+      note:"<b>★ Lunes 24 y martes 25</b> (check-out el miércoles 26 antes de las 12:00). Check-in desde las 15:00.<br>"+
+           "En el centro de Kioto, en Sanjo-dori: metro <b>Karasuma Oike</b> a 6 min a pie; el mercado Nishiki a ~10; "+
+           "Pontocho y el río Kamo a ~15; Gion a ~20; la estación <b>Karasuma</b> del tren Hankyu (directo a Osaka) "+
+           "a ~10. La estación de Kioto, a 15 min en taxi o 3 paradas de metro.<br>"+
+           "Tiene <b>baño público</b> estilo onsen y tina de hidromasaje. Desayuno buffet de 7:00 a 11:00, ~¥3,850 "+
+           "por persona si no viene en la tarifa.<br>"+
+           "Kioto cobra impuesto de hospedaje por persona y noche (de ¥200 a ¥10,000 según la tarifa): se paga en el "+
+           "hotel.<br><b>⚠ Falta el precio por noche</b> para que cuente en el presupuesto."});
+    ky.hotels.unshift(h);
+  }
+  if(Array.isArray(s.esenciales)){
+    const e=s.esenciales.find(x=>x.id===ESSENTIAL_KANSAI.id);
+    if(e)Object.assign(e,{t:ESSENTIAL_KANSAI.t,s:ESSENTIAL_KANSAI.s});
+  }
+  s.kyHotelV1=true;
 }
 /* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
 function freshBlankTrip(titulo){
