@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v31.9 · 18 oct 2026 · Pekín: su hotel de patio en Qianmen";
+const APP_VERSION="v31.10 · 18 oct 2026 · Shanghái: su hotel en Pudong (H+ Hotel)";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -1629,11 +1629,12 @@ const ESSENTIAL_BJ_SH={id:"ess-bj-sh",t:"Pekín y Shanghái: tours y reservas",
     "antes = miércoles 12 de mayo; que lo saque el guía · coche privado a Mutianyu el viernes 21 a las 7:00, con "+
     "las maletas, que los deje en Pekín Sur · tren G17 15:00 Pekín Sur → Shanghái Hongqiao: la venta abre ~15 días "+
     "antes (jue 6 may) · reservar el pato y TRB Hutong · hotel de Pekín: Manxin Qianmen (大江胡同120号); denle "+
-    "la dirección a Civitatis y al chofer · falta el hotel de Shanghái (hay uno de mientras)"};
+    "la dirección a Civitatis y al chofer · hotel de Shanghái: H+ Hotel, Pudong (潍坊西路90号)"};
 const ESSENTIAL_SH_KIX={id:"ess-sh-kix",t:"Shanghái y el vuelo a Japón",
-  s:"tour privado por el Shanghái histórico (Civitatis) el domingo 23, recogida 8:30; confirmen si incluye "+
-    "entradas · Shanghai Tower para el sábado 17:30, en línea con pasaporte · crucero del sábado 20:00 (muelle "+
-    "Shiliupu) · reservar la cena del sábado 21:15 en el Bund y la de despedida del domingo · vuelo del lunes 24 "+
+  s:"tour privado por el Shanghái histórico (Civitatis) el domingo 23, recogida 8:30 en el H+ de Pudong "+
+    "(潍坊西路90号); confirmen si incluye entradas · Shanghai Tower para el sábado 17:30, en línea con pasaporte · "+
+    "crucero del sábado 19:30 desde el muelle de la Perla de Oriente (lado de Pudong) · reservar la cena del "+
+    "sábado 20:40 en Lujiazui y la de despedida del domingo en el Bund · vuelo del lunes 24 "+
     "PVG → Osaka Kansai en la mañana (MU225 8:55 → 12:10 o Juneyao 7:45 → ~11:00) · Haruka a Kioto: el boleto "+
     "en línea sale más barato · Visit Japan Web con su QR antes de aterrizar"};
 const ESSENTIAL_YS_HOTEL={id:"ess-ys-hotel",t:"Pedirle al Sugar House (Yangshuo)",
@@ -3698,6 +3699,7 @@ function normalizeTripState(s){
   migrarShanghaiKioto(s);    // Shanghái moderno y el histórico; el lunes temprano a Kioto
   migrarShanghaiDetalle(s);  // y la descripción a detalle de cada actividad
   migrarPekinHotel(s);       // Pekín con su hotel en Qianmen (Manxin, 大江胡同120号)
+  migrarShanghaiHotel(s);    // Shanghái con su hotel en Pudong (H+, 潍坊西路90号)
   return s;
 }
 /* ---- Llegada a Yangshuo: domingo 9 de mayo de 2027, paso a paso ----
@@ -6129,6 +6131,172 @@ function migrarPekinHotel(s){
     if(e)Object.assign(e,{t:ESSENTIAL_BJ_SH.t,s:ESSENTIAL_BJ_SH.s});
   }
   s.bjHotelV1=true;
+}
+/* ---- Shanghái con su hotel (v31.10): H+ Hotel Shanghai Pudong ----
+   No. 90 Weifang West Road, Lujiazui (Pudong), abierto en 2026. Del lado de
+   Pudong y no del Bund: la vista del Bund iluminado es desde su orilla, el
+   crucero sale del muelle de la Perla de Oriente, Lujiazui y la Shanghai Tower
+   quedan cerca, y el aeropuerto de Pudong también. Lo de Puxi (Jing'an, la
+   Ciudad Vieja, la Concesión, el Bund) se cruza en taxi por los túneles. */
+const SH_HOTEL_DIR="浦东新区潍坊西路90号";
+const SH_DIA1_V4=[
+  {cid:"g-breakfast",fixed:"08:30"},
+  {cid:"sh1m-a-jingan",name:"Taxi al Templo Jing'an",dur:25,fixed:"09:30",
+   note:"~8 km cruzando el río por el túnel, 20-25 min. Pídanlo con DiDi (tiene inglés y se paga con Alipay) "+
+        "o en la recepción. Para el chofer: <b>静安寺, 南京西路1686号</b>.<br>"+
+        "Alternativa: metro línea 2 desde la estación más cercana al hotel (Dongchang Road o Century Avenue: "+
+        "confírmenlo en el mapa) hasta Jing'an Temple, ~20 min."},
+  {cid:"sh1m-jingan"},
+  {cid:"sh1m-nanjing"},
+  {cid:"sh1m-a-pudong",name:"Metro L2 de regreso a Pudong (Lujiazui)"},
+  {cid:"sh1m-comida",
+   note:"Comida con vista al Bund, del lado de su hotel:<ul>"+
+        "<li><b>Din Tai Fung</b> del Superbrand Mall: xiaolongbao con una de las mejores vistas del Bund; sin "+
+        "complicaciones. La recomendación para hoy.</li>"+
+        "<li><b>Cucina</b>, piso 56 del Grand Hyatt (en la Jin Mao): italiano con vista.</li></ul>"+
+        "Si quieren ventana, reserven. (El Jin Xuan del Ritz-Carlton se los dejo para la cena.)"},
+  {cid:"sh1m-lujiazui"},
+  {cid:"sh1m-a-hotel",name:"De regreso al hotel",dur:20,costos:[],
+   note:"Del paseo del río al hotel, ~10 min en taxi. Están en Pudong: hoy no hay que cruzar el río para "+
+        "descansar."},
+  {cid:"sh1m-descanso",dur:135,
+   note:"Más de dos horas antes de la tarde y noche: Shanghai Tower, crucero y cena. Cámbiense con algo para la "+
+        "noche y lleven una chamarra ligera: en el río y a 546 m de altura refresca."},
+  {cid:"sh2-ferry",name:"Taxi a la Shanghai Tower",dur:15,fixed:"17:10",costos:[],
+   note:"~10 min del hotel. La entrada al mirador es por el sótano (B1): sigan los letreros «Observation Deck» "+
+        "(上海之巅观光厅)."},
+  {cid:"sh-tower",fixed:"17:30"},
+  {cid:"sh1m-a-muelle",name:"A pie al muelle de la Perla de Oriente",dur:20,
+   note:"~15 min a pie entre las torres hasta el muelle de cruceros del lado de Pudong, junto a la Perla de "+
+        "Oriente (东方明珠游船码头). Ya está oscureciendo: la mejor hora."},
+  {cid:"sh-cruise",fixed:"19:30",
+   note:"~50 min por el Huangpu, saliendo del lado de Pudong: pasa frente al Bund y a los rascacielos y regresa. "+
+        "De noche se ven las dos orillas prendidas: los edificios coloniales dorados de un lado y las torres con "+
+        "sus pantallas de LED del otro.<br>"+
+        "Suban a la cubierta de arriba (la VIP, ~¥180, incluye bebida y asiento) y salgan a la proa. Boletos en "+
+        "Trip.com con pasaporte; <b>fíjense que el boleto sea del muelle de la Perla de Oriente</b> (cada boleto "+
+        "es de un muelle). Si a las 19:30 no hay, el de las 20:00. Lleguen 20 min antes.<br>"+
+        "Las luces del Bund se apagan ~22:00."},
+  {cid:"sh1-cena",name:"Cena en Lujiazui, con vista al Bund",type:"food",dur:90,fixed:"20:40",
+   note:"Al bajar del barco, del mismo lado del río. Reserven para las 20:40:<ul>"+
+        "<li><b>Jin Xuan</b> (金轩), piso 53 del Ritz-Carlton Pudong (en el IFC): cantonés con estrella Michelin, "+
+        "frente al Bund.</li>"+
+        "<li><b>Cucina</b>, piso 56 del Grand Hyatt (si no comieron ahí).</li></ul>"+
+        "Y si quieren una última copa: <b>Flair</b>, la terraza del piso 58 del mismo Ritz-Carlton."},
+  {cid:"sh1-vuelta",name:"Taxi al hotel",dur:15,note:"~10 min."}
+];
+const SH_DIA2_V4=[
+  {cid:"g-breakfast",fixed:"07:30"},
+  {cid:"sh2h-guia",fixed:"08:30",dur:20,
+   note:"Tour privado de Civitatis, ~8 h, con guía y coche: Jardín Yu y la Ciudad Vieja → Templo del Buda de "+
+        "Jade → la Concesión Francesa y Tianzifang → el Bund.<br>"+
+        "<b>Antes de pagar, confirmen:</b> que el guía sea en español, si incluye entradas, la recogida a las "+
+        "8:30 en su hotel (<b>"+SH_HOTEL_DIR+"</b>, del lado de Pudong) y que al final los regrese al hotel. Que "+
+        "la comida sea en Anfu Road.<br>"+
+        "Del hotel al Jardín Yu son ~20 min por el túnel. Lleven los pasaportes (el Jardín Yu y el Buda de Jade "+
+        "piden boleto con nombre) y tenis."},
+  {cid:"sh-yu"},
+  {cid:"sh1-bazar"},
+  {cid:"sh2h-a-jade"},
+  {cid:"sh-jade"},
+  {cid:"sh2h-a-fcc"},
+  {cid:"sh1-comida"},
+  {cid:"sh1-wukang"},
+  {cid:"sh1-a-xtd"},
+  {cid:"sh-fcc"},
+  {cid:"sh2h-a-bund"},
+  {cid:"sh-bund",
+   note:"El Bund (外滩): 1.5 km de malecón con 52 edificios de bancos, hoteles y aduanas de 1900 a 1930, cuando "+
+        "Shanghái era el puerto más rico de Asia. Que el guía les enseñe:<ul>"+
+        "<li>El <b>edificio del HSBC</b> (1923), con el mosaico de su cúpula, que taparon con pintura en la "+
+        "Revolución Cultural y redescubrieron en los años 90.</li>"+
+        "<li>La <b>Aduana</b> (1927) y su reloj «Big Ching», inspirado en el Big Ben.</li>"+
+        "<li>El <b>Peace Hotel</b> (1929), de Victor Sassoon, donde Noël Coward escribió <i>Private Lives</i>.</li></ul>"+
+        "Enfrente, Pudong: su lado del río."},
+  {cid:"sh2h-a-hotel",name:"El coche los regresa al hotel · fin del tour",type:"transfer",dur:25,
+   note:"Del Bund a su hotel en Pudong, ~20 min por el túnel."},
+  {cid:"sh2h-descanso",dur:55,
+   note:"Mañana salen a las 6:00: dejen las maletas casi listas. En la recepción pidan la caja de desayuno y el "+
+        "taxi de las 6:00 al aeropuerto de Pudong."},
+  {cid:"sh2h-a-cena",name:"Taxi al Bund",type:"transfer",dur:20,fixed:"18:40",
+   costos:[["Taxis al Bund y de regreso (2)",200]],
+   note:"~20 min por el túnel. La última noche se cena del lado del Bund, con Pudong iluminado enfrente."},
+  {cid:"sh-farewell",fixed:"19:00",
+   note:"La última noche en China, en el Bund, con vista a Pudong. Opciones:<ul>"+
+        "<li><b>Canton Table</b> (Three on the Bund): cantonés con estrella Michelin, dim sum y asados.</li>"+
+        "<li><b>Jean Georges</b> (Three on the Bund): francés-asiático, con terraza a Pudong.</li>"+
+        "<li><b>Mr &amp; Mrs Bund</b> (Bund 18): francés moderno de Paul Pairet, con ventanas al río.</li></ul>"+
+        "Reserven terraza o ventana para las 19:00.<br>"+
+        "<i>Si quieren algo de una vez en la vida: <b>Ultraviolet</b> de Paul Pairet, 3 estrellas Michelin: 10 "+
+        "lugares y ~20 tiempos con proyecciones y sonido. De lo más caro de Asia y se reserva con meses.</i>"},
+  {cid:"sh2h-jazz",
+   note:"El bar de jazz del Peace Hotel, en la planta baja, es de los años 30, y la <b>Old Jazz Band</b> lleva "+
+        "décadas tocando el swing de esa época, más o menos de 19:00 a 21:45 (después sigue una cantante). No "+
+        "cobran entrada, solo la bebida; confirmen el horario.<br>"+
+        "Está en la esquina de Nanjing Road y el Bund, a pocos minutos a pie de los restaurantes."},
+  {cid:"sh2h-vuelta",name:"Taxi de regreso al hotel: mañana salen a las 6:00",dur:25,
+   note:"~20 min a Pudong. El despertador del lunes suena a las 5:30."}
+];
+function migrarShanghaiHotel(s){
+  if(s.shHotelV1)return;
+  const sh=s.bases&&s.bases.shanghai,bj=s.bases&&s.bases.beijing,ky=s.bases&&s.bases.kyoto;
+  if(s.bases&&s.bases.hk&&sh&&Array.isArray(sh.catalog)){
+    const costos=(base,lista)=>lista.forEach(a=>{
+      const x=a.costos&&base.catalog.find(y=>y.cid===a.cid);
+      if(x)x.costs=a.costos.map(([label,est])=>({id:uid(),label,est,real:0}));
+    });
+    const ficha=(base,cid,d)=>{const a=base&&(base.catalog||[]).find(x=>x.cid===cid);if(a)Object.assign(a,d);};
+    sembrarDia(sh,1,SH_DIA1_V4,"08:30");
+    sembrarDia(sh,2,SH_DIA2_V4,"07:30");
+    costos(sh,SH_DIA1_V4);costos(sh,SH_DIA2_V4);
+    // el hotel
+    if(Array.isArray(sh.hotels)){
+      let h=sh.hotels.find(x=>/h\+ hotel|潍坊西路|weifang/i.test((x.name||"")+(x.area||"")));
+      sh.hotels.forEach(x=>{x.chosen=false;});
+      if(h)sh.hotels.splice(sh.hotels.indexOf(h),1);
+      else h={id:uid(),precio:0};
+      Object.assign(h,{name:"H+ Hotel Shanghai Pudong",
+        area:"No. 90 Weifang West Road, Lujiazui, Pudong · "+SH_HOTEL_DIR,noches:3,chosen:true,
+        note:"<b>★ Viernes 21 (llegan ~20:35), sábado 22 y domingo 23</b> (el lunes 24 salen a las 6:00 al "+
+             "aeropuerto).<br>"+
+             "Hotel nuevo (abrió en 2026), del lado de <b>Pudong</b>, en la zona de Lujiazui: los rascacielos, la "+
+             "Shanghai Tower y el muelle del crucero quedan cerca, y el Bund se ve desde su orilla del río. Lo de "+
+             "Puxi (Jing'an, la Ciudad Vieja, la Concesión Francesa y el Bund) queda a 15-25 min en taxi por los "+
+             "túneles. El aeropuerto de Pudong, a ~40 min.<br>"+
+             "Para taxis y tours: <b>"+SH_HOTEL_DIR+"</b>. Confirmen la hora de check-in y si el desayuno va "+
+             "incluido.<br><b>⚠ Falta el precio por noche</b> para que cuente en el presupuesto."});
+      sh.hotels.unshift(h);
+      sh.hotels.forEach(x=>{
+        if(/fairmont peace/i.test(x.name||"")){
+          delete x.noches;
+          x.note="<b>Ya no está en el plan:</b> se quedan en el H+ de Pudong. Su bar de jazz sigue en el plan del "+
+            "domingo.<br>El clásico Art Déco de 1929 en la esquina del Bund y Nanjing Road.";
+        }
+      });
+    }
+    // viernes: la llegada vive en el último día de Pekín
+    ficha(bj,"sh0-hotel",{name:"Hongqiao → hotel en Pudong y check-in",
+      note:"Taxi de la fila oficial a la salida de Hongqiao (sigan los letreros «Taxi»; no acepten a los que se "+
+        "acercan a ofrecer): ~35 km cruzando la ciudad, 45-50 min. Para el chofer: <b>"+SH_HOTEL_DIR+"</b>."});
+    ficha(bj,"pk3-bund",{name:"Shanghái: el Bund iluminado desde el paseo del río de Pudong",
+      note:"Dejen las maletas y salgan: del hotel al paseo del río de Pudong (滨江大道) son ~10 min en taxi. Desde "+
+        "esta orilla se ve el Bund completo, los edificios coloniales dorados reflejados en el río, y detrás de "+
+        "ustedes los rascacielos de Lujiazui.<br>"+
+        "Las luces del Bund se apagan ~22:00: si llegan tarde, lo ven el sábado desde el crucero."});
+    ficha(bj,"pk3-vuelta",{name:"Taxi de regreso al hotel",dur:15});
+    // lunes: el aeropuerto queda más cerca
+    ficha(ky,"ky0-salida",{name:"Check-out y taxi al aeropuerto de Pudong (PVG)",dur:45,
+      note:"Taxi del hotel (pídanlo en recepción la noche anterior): desde Lujiazui son ~40 km por autopista, "+
+        "35-45 min a esa hora, ~¥150-180. Lleven la caja de desayuno.<br>"+
+        "<i>Existe el tren Maglev desde Longyang Road (8 min al aeropuerto), pero con maletas y a esta hora el "+
+        "taxi es más simple.</i>"});
+  }
+  if(Array.isArray(s.esenciales))
+    [ESSENTIAL_BJ_SH,ESSENTIAL_SH_KIX].forEach(E=>{
+      const e=s.esenciales.find(x=>x.id===E.id);
+      if(e)Object.assign(e,{t:E.t,s:E.s});
+    });
+  s.shHotelV1=true;
 }
 /* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
 function freshBlankTrip(titulo){
