@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v31.14 · 18 oct 2026 · Lo mejor de Kioto: Gion al anochecer, Ginkaku-ji y el Camino del Filósofo";
+const APP_VERSION="v31.15 · 18 oct 2026 · Tokio a detalle: hotel en Ginza, el Tokio clásico y el día de compras";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -1646,6 +1646,13 @@ const ESSENTIAL_KANSAI={id:"ess-kansai",t:"Kioto y la noche en Osaka",
 const ESSENTIAL_YS_HOTEL={id:"ess-ys-hotel",t:"Pedirle al Sugar House (Yangshuo)",
   s:"traslado desde la estación el domingo 9 · auto con chofer el lunes 10 a las 4:45 a Xianggong · "+
     "reserva de la balsa del Yulong para el lunes 14:30 · desayuno para llevar el martes 11 a las 7:00"};
+const ESSENTIAL_TOKIO={id:"ess-tokio",t:"Tokio: reservas, compras y el regreso",
+  s:"Shibuya Sky para el miércoles 26 a las 18:00 (el horario del atardecer se agota; sale a la venta ~2-4 "+
+    "semanas antes) · teamLab Planets el jueves 27 a las 14:30 (las fechas salen ~2 meses antes) · cena de "+
+    "despedida del viernes 28 a las 19:30 en Ginza (sushi en Kyubey o teppanyaki en Ukai-tei): reservar con "+
+    "semanas · confirmar de qué aeropuerto sale el vuelo de regreso (Narita o Haneda) y pedir al hotel el taxi del "+
+    "sábado (5:30 a Narita, 6:30 a Haneda) · compras: desde nov 2026 se paga con impuesto y se devuelve en el "+
+    "aeropuerto: lleven el pasaporte a las tiendas, guarden los tickets y lleven las compras en la maleta de mano"};
 const ESSENTIALS=[
   ESSENTIAL_GDL_MTY,
   ESSENTIAL_TRENES,
@@ -1661,6 +1668,7 @@ const ESSENTIALS=[
   ESSENTIAL_BJ_SH,
   ESSENTIAL_SH_KIX,
   ESSENTIAL_KANSAI,
+  ESSENTIAL_TOKIO,
   {id:"ess-jp",t:"Japón: Visit Japan Web + boleto de salida",s:"mexicanos sin visa (exención de turista)"},
   {id:"ess-visa",t:"Visa de turista China (L)",s:"tramitar 1–2 meses antes"},
   {id:"ess-pass",t:"Pasaporte 6+ meses de vigencia",s:"revisar ambos"},
@@ -3710,6 +3718,7 @@ function normalizeTripState(s){
   migrarKansai(s);           // vuelo temprano a Kansai, Kioto, la noche en Osaka y a Tokio a mediodía
   migrarKiotoHotel(s);       // Kioto con su hotel en Sanjo (Mitsui Garden Premier) y notas a detalle
   migrarKiotoMejor(s);       // lo mejor de Kioto: Gion al anochecer, Ginkaku-ji y el Camino del Filósofo
+  migrarTokio(s);            // Tokio a detalle con su hotel en Ginza y el día de compras
   return s;
 }
 /* ---- Llegada a Yangshuo: domingo 9 de mayo de 2027, paso a paso ----
@@ -6837,6 +6846,251 @@ function migrarKiotoMejor(s){
     if(e)Object.assign(e,{t:ESSENTIAL_KANSAI.t,s:ESSENTIAL_KANSAI.s});
   }
   s.kyMejorV1=true;
+}
+/* ---- Tokio a detalle (v31.15): Mitsui Garden Hotel Ginza Premier ----
+   8-13-1 Ginza, a 4-5 min de la estación Shimbashi (metro Ginza y JR) y a pie
+   de Tsukiji y del jardín Hama-rikyu. Tres noches: el miércoles 26 llegan a
+   las 14:45 (la mañana fue Kioto), el jueves 27 es el Tokio clásico con
+   teamLab, el viernes 28 el día de compras con Meiji Jingu y la cena de
+   despedida, y el sábado 29 salen al aeropuerto: Tokio se queda con su día de
+   salida. La excursión al Fuji/Hakone no cabe (lo ven desde el Shinkansen). */
+const TK_HOTEL="Mitsui Garden Hotel Ginza Premier";
+const TK_DIA0_V5=[
+  {cid:"tk0-desayuno",fixed:"06:30"},
+  {cid:"tk0-a-arashiyama",fixed:"07:00"},
+  {cid:"tk0-bambu"},
+  {cid:"tk0-tenryuji",fixed:"08:30"},
+  {cid:"tk0-togetsukyo"},
+  {cid:"tk0-a-kinkaku"},
+  {cid:"tk0-kinkaku"},
+  {cid:"tk0-regreso"},
+  {cid:"tk-arrive",fixed:"12:30"},
+  {cid:"tk0-hotel",name:"Tokio: taxi de la estación de Tokio al hotel y check-in",dur:30,
+   costos:[["Taxi (2)",200]],
+   note:"Salida Yaesu de la estación de Tokio, fila de taxis: ~10 min y ~¥1,500 a <b>"+TK_HOTEL+"</b> "+
+        "(三井ガーデンホテル銀座プレミア, 銀座8-13-1). La recepción está en el <b>piso 16</b>. Check-in desde las 15:00."},
+  {cid:"g-rest",name:"Descanso en el hotel",dur:90,
+   note:"El lobby del piso 16 tiene vista a la Torre de Tokio, y los cuartos están del 17 para arriba: pidan uno "+
+        "con vista a la torre. Descansen: la noche es en Shibuya."},
+  {cid:"tk0-a-shibuya",name:"Metro Ginza Line de Shimbashi a Shibuya",type:"transfer",dur:25,
+   costos:[["Metro (2)",50]],
+   note:"La estación Shimbashi (línea Ginza, salida 1) está a 4 min del hotel, y la línea Ginza llega directo a "+
+        "Shibuya en ~20 min, sin transbordo. Se paga con la Suica del celular."},
+  {cid:"tk-shibuya",name:"El cruce de Shibuya y la estatua de Hachikō",type:"sight",dur:40,
+   note:"El cruce peatonal más famoso del mundo: con cada luz verde lo atraviesan cientos de personas a la vez "+
+        "desde cinco direcciones. Crúcenlo una vez y véanlo desde arriba en el pasillo de la estación (Shibuya "+
+        "Mark City) o desde el Starbucks de Tsutaya.<br>"+
+        "A la salida, la estatua de <b>Hachikō</b>, el perro que esperó a su dueño en la estación casi diez años "+
+        "después de que él murió: el punto de reunión de Tokio."},
+  {cid:"tk-shibuyasky",name:"Shibuya Sky al atardecer",type:"sight",dur:90,fixed:"18:00",
+   costos:[["Shibuya Sky, horario del atardecer (2)",800]],
+   note:"La azotea abierta del Shibuya Scramble Square, a 229 m: vista de 360° sobre Tokio, con el cruce abajo, la "+
+        "Torre de Tokio y, si está despejado, el Fuji. Lleguen a las 18:00 y vean el atardecer (~18:45) y cómo se "+
+        "prende la ciudad.<br>"+
+        "⚠ El horario del atardecer se agota: compren en línea apenas salga (~2-4 semanas antes), ~¥2,500-3,400 "+
+        "c/u. Arriba no se suben bolsas ni sombreros (hay lockers). Si llueve o hay mucho viento, cierran la "+
+        "azotea."},
+  {cid:"tk-izakaya",name:"Cena en Shibuya Yokocho o Nonbei Yokocho",type:"food",dur:90,
+   costos:[["Cena (2)",1000]],
+   note:"<b>Shibuya Yokocho</b>, bajo el parque Miyashita: una calle techada con puestos de comida de cada región "+
+        "de Japón, de Hokkaido a Okinawa, con mucho ambiente y gente local.<br>"+
+        "O <b>Nonbei Yokocho</b> («el callejón de los borrachos»), junto a las vías: barras de 6-8 lugares de "+
+        "yakitori y sake; algunas cobran un pequeño cover."},
+  {cid:"tk0-vuelta",name:"Metro Ginza Line de regreso al hotel",type:"transfer",dur:30,
+   note:"Línea Ginza de Shibuya a Shimbashi (~20 min) y 4 min a pie."}
+];
+const TK_DIA1_V2=[
+  {cid:"tk1-a-tsukiji",name:"A pie al mercado de Tsukiji",type:"transfer",dur:20,fixed:"07:30",
+   note:"~15-20 min caminando hacia el este por Ginza. Desayunan en el mercado: no hace falta el buffet."},
+  {cid:"tk-tsukiji",name:"Desayuno en el mercado exterior de Tsukiji",type:"food",dur:70,
+   costos:[["Desayuno en Tsukiji (2)",800]],
+   note:"La subasta de atún se fue a Toyosu en 2018, pero el mercado exterior sigue: callejones de puestos de "+
+        "pescado, cuchillos y comida al momento. Vayan probando: <b>tamagoyaki</b> (omelette dulce) en palito, "+
+        "brochetas de atún, erizo y ostiones, un tazón de sushi o de atún (maguro-don) en una barra chiquita, y "+
+        "fresas con mochi (ichigo daifuku).<br>"+
+        "Mejor de 7:30 a 10:00. Cierra los domingos y festivos, y muchos puestos los miércoles: el jueves está "+
+        "completo. No se come caminando: junto al puesto."},
+  {cid:"tk1-a-asakusa",name:"Metro línea Asakusa a Asakusa",type:"transfer",dur:25,costos:[["Metro (2)",50]],
+   note:"De Tsukiji, ~7 min a pie a la estación Higashi-Ginza, y la línea Asakusa llega directo a Asakusa en ~15 "+
+        "min."},
+  {cid:"tk-sensoji",name:"Asakusa: Senso-ji y la calle Nakamise",type:"sight",dur:90,costos:[],
+   note:"El templo más antiguo de Tokio (fundado en el año 628). Se entra por la <b>Kaminarimon</b>, la «puerta "+
+        "del trueno» con su farol rojo gigante, y se sigue por <b>Nakamise-dori</b>, 250 m de puestos desde la "+
+        "época Edo: galletas ningyo-yaki, melon pan, dulces de arroz. Luego la puerta Hozomon, la sala principal y "+
+        "la pagoda de cinco pisos.<br>"+
+        "Pasen por el humo del incienso (dicen que cura) y saquen su fortuna (<b>omikuji</b>, ¥100): si sale mala, "+
+        "se amarra en los alambres y se queda en el templo.<br>"+
+        "Opción: rentar kimono en Asakusa por unas horas para las fotos."},
+  {cid:"tk1-barco",name:"Barco por el río Sumida: de Asakusa al jardín Hama-rikyu",type:"transfer",dur:40,fixed:"11:15",
+   costos:[["Barco + entrada al jardín (2)",250]],
+   note:"El barco de Tokyo Cruise sale del muelle de Asakusa (junto al puente Azumabashi, a 5 min del templo) y "+
+        "baja ~35 min por el río Sumida, bajo una docena de puentes, hasta el jardín <b>Hama-rikyu</b>: el boleto "+
+        "(~¥1,040 c/u) incluye la entrada al jardín. Hay ~8-10 salidas al día: confirmen la hora; si no coincide, "+
+        "metro línea Asakusa a Shimbashi."},
+  {cid:"tk1-hamarikyu",name:"Jardín Hama-rikyu y matcha en la casa de té",type:"sight",dur:60,
+   costos:[["Matcha y dulce (2)",300]],
+   note:"El jardín de la villa de cetrería de los shogunes de Edo, con un estanque de agua de mar que sube y baja "+
+        "con la marea, y los rascacielos de Shiodome detrás: el Tokio antiguo y el nuevo en una foto.<br>"+
+        "En medio del estanque, la casa de té <b>Nakajima no Ochaya</b>: matcha con un dulce japonés frente al "+
+        "agua. Está a ~10 min a pie del hotel."},
+  {cid:"tk1-comida",name:"Comida en Shiodome o Shimbashi",type:"food",dur:60,costos:[["Comida (2)",600]],
+   note:"Shimbashi es el barrio de los oficinistas: ramen, soba, tonkatsu y yakitori buenos y sin turistas. O "+
+        "los restaurantes con vista de los pisos 46-47 del Caretta Shiodome."},
+  {cid:"tk1-a-teamlab",name:"Yurikamome a Shin-Toyosu (teamLab)",type:"transfer",dur:30,costos:[["Tren (2)",100]],
+   note:"La <b>Yurikamome</b> sale de Shiodome, a pasos del hotel: tren automático sin conductor que cruza el "+
+        "puente Rainbow y pasa por Odaiba (siéntense hasta adelante). A Shin-Toyosu, ~25 min; teamLab está a 1-3 "+
+        "min de la estación."},
+  {cid:"tk-teamlab",name:"teamLab Planets",type:"tour",dur:105,fixed:"14:30",
+   costos:[["teamLab Planets (2)",900]],
+   note:"Museo de arte digital en el que se camina descalzo: un salón con agua hasta las rodillas donde nadan "+
+        "carpas de luz, un universo infinito de cristales de LED, un jardín de orquídeas reales que flotan y "+
+        "suben y bajan, y cuartos de espejos. Toma ~1 h 30.<br>"+
+        "Lleven pantalón que se pueda arremangar arriba de la rodilla (prestan shorts) y no falda: el piso de "+
+        "algunos cuartos es de espejo. Lockers gratis.<br>"+
+        "⚠ Boletos con horario en línea (~¥3,600-4,200 c/u); las fechas salen ~2 meses antes y se agotan."},
+  {cid:"tk1-a-hotel",name:"De regreso al hotel",type:"transfer",dur:30,costos:[["Metro o taxi (2)",200]],
+   note:"Línea Yurakucho de Toyosu a Ginza-itchome (~10 min) y a pie, o taxi de ~15 min."},
+  {cid:"tk1-descanso",name:"Descanso en el hotel",type:"rest",dur:75},
+  {cid:"tk1-a-shinjuku",name:"Metro a Shinjuku",type:"transfer",dur:30,fixed:"18:00",costos:[["Metro (2)",60]],
+   note:"Línea Marunouchi de Ginza a Shinjuku, ~16 min sin transbordo (la estación Ginza está a 7 min del "+
+        "hotel)."},
+  {cid:"tk1-tocho",name:"Shinjuku: el mirador gratis del Gobierno de Tokio",type:"sight",dur:40,
+   note:"El edificio del Gobierno Metropolitano (Tocho), de Kenzo Tange: su mirador del piso 45, a 202 m, es "+
+        "<b>gratis</b>. Llegan con la última luz y ven prenderse Shinjuku; en días claros, el Fuji al atardecer.<br>"+
+        "En las noches proyectan un espectáculo de luces sobre la fachada: confirmen el horario. Hay revisión de "+
+        "bolsas."},
+  {cid:"tk1-omoide",name:"Cena en Omoide Yokocho",type:"food",dur:80,costos:[["Cena (2)",1000]],
+   note:"«El callejón de los recuerdos», junto a la salida oeste de la estación: puestos de yakitori de la "+
+        "posguerra con 6-8 lugares cada uno, humo de carbón y faroles rojos. Escojan uno con lugar, pidan "+
+        "brochetas y una cerveza. Lleven efectivo."},
+  {cid:"tk-shinjuku",name:"Copas en Golden Gai",type:"bar",dur:75,costos:[["Copas y cover (2)",800]],
+   note:"Seis callejones con ~200 bares diminutos, de 5 a 10 lugares cada uno, cada uno con su tema y su "+
+        "dueño. Muchos cobran un cover (~¥500-1,500 por persona) y algunos son solo para clientes: busquen los que "+
+        "tienen letrero en inglés o «welcome». De camino, la cabeza de Godzilla asomada sobre Kabukicho."},
+  {cid:"tk1-vuelta",name:"Metro de regreso al hotel",type:"transfer",dur:35,costos:[["Metro (2)",60]],
+   note:"Línea Marunouchi a Ginza y 7 min a pie. El último metro sale cerca de la medianoche."}
+];
+const TK_DIA2_V2=[
+  {cid:"g-breakfast",fixed:"08:00",dur:45,costos:[["Desayuno buffet (2), si no va incluido",900]],
+   note:"Buffet en el piso 16 del hotel, con vista, de 6:30 a 10:00 (última entrada 9:30); ~¥3,300-3,850 por "+
+        "persona si su tarifa no lo incluye."},
+  {cid:"tk2-a-meiji",name:"Metro a Harajuku (Meiji-jingumae)",type:"transfer",dur:30,fixed:"08:45",
+   costos:[["Metro (2)",60]],
+   note:"Línea Ginza de Shimbashi a Omotesando (~15 min) y línea Chiyoda una parada a Meiji-jingumae; o JR "+
+        "Yamanote de Shimbashi a Harajuku (~25 min)."},
+  {cid:"tk-meiji",name:"Meiji Jingu: el santuario en el bosque",type:"sight",dur:60,costos:[],
+   note:"El santuario sintoísta del emperador Meiji y la emperatriz Shoken (1920), en medio de un bosque de "+
+        "~100,000 árboles que se donaron desde todo Japón. Se entra por un torii gigante de ciprés y se camina "+
+        "~10 min bajo los árboles: el ruido de la ciudad desaparece.<br>"+
+        "Vean la pared de barriles de sake y la de barricas de vino de Borgoña, purifíquense en la fuente antes "+
+        "de la sala principal y escriban un deseo en una tablilla (ema). En la mañana es común ver una "+
+        "<b>boda sintoísta</b> cruzando los patios: para unos recién casados, es su momento."},
+  {cid:"tk2-takeshita",name:"Harajuku: la calle Takeshita",type:"sight",dur:40,costos:[["Crepas (2)",150]],
+   note:"La calle de la moda juvenil de Tokio: tiendas kawaii, ropa extravagante, dulces de colores y las "+
+        "<b>crepas de Harajuku</b> (Marion Crepes, desde 1976). Abren ~10:00-11:00; a esa hora todavía se camina."},
+  {cid:"tk2-omotesando",name:"Compras en Omotesando y Cat Street",type:"free",dur:125,
+   note:"Omotesando es los Campos Elíseos de Tokio: la avenida arbolada de las tiendas insignia, cada una de un "+
+        "gran arquitecto (Dior de SANAA, Tod's de Toyo Ito, Prada de Herzog &amp; de Meuron) y Omotesando Hills de "+
+        "Tadao Ando. Kiddy Land para juguetes y personajes.<br>"+
+        "Paralela, <b>Cat Street</b>: ropa urbana, tenis, marcas japonesas y vintage.<br>"+
+        "<b>Compras sin impuesto:</b> desde noviembre de 2026 se paga el precio con el 10% y se devuelve al salir "+
+        "de Japón. Lleven el pasaporte, guarden los tickets y no documenten lo que compren. Pongan su "+
+        "presupuesto de compras en el costo de esta actividad."},
+  {cid:"tk2-comida",name:"Comida: tonkatsu en Maisen",type:"food",dur:60,costos:[["Comida (2)",700]],
+   note:"<b>Maisen Aoyama</b>, en un antiguo baño público: el tonkatsu (cerdo empanizado) más famoso de Tokio, "+
+        "de cerdo negro, con col en tiritas sin límite. Hay fila al mediodía: a las 13:00 baja."},
+  {cid:"tk2-a-shibuya",name:"A pie por Cat Street hasta Shibuya",type:"transfer",dur:20},
+  {cid:"tk2-shibuya",name:"Compras en Shibuya: Parco, Loft y Don Quijote",type:"free",dur:100,
+   note:"<ul><li><b>Shibuya Parco</b>, piso 6: Nintendo Tokyo, el Pokémon Center y la tienda de Capcom.</li>"+
+        "<li><b>Loft</b> y <b>Tokyu Hands</b>: diseño, papelería, cosmética japonesa.</li>"+
+        "<li><b>MEGA Don Quijote</b>: de todo, de dulces a electrónicos, abierto las 24 h y con trámite sin "+
+        "impuesto.</li>"+
+        "<li><b>Shibuya 109</b>, moda juvenil, y el parque <b>Miyashita</b>, con tiendas de lujo y un parque en "+
+        "la azotea.</li></ul>"},
+  {cid:"tk2-a-ginza",name:"Metro Ginza Line de regreso a Ginza",type:"transfer",dur:30,costos:[["Metro (2)",60]],
+   note:"Línea Ginza de Shibuya a Ginza (~17 min). Pasen a dejar las bolsas al hotel."},
+  {cid:"tk-ginza",name:"Compras en Ginza",type:"free",dur:110,costos:[],
+   note:"El barrio de lujo de Tokio, a pasos del hotel:<ul>"+
+        "<li><b>Ginza Six</b>: lujo y diseño, con jardín en la azotea.</li>"+
+        "<li><b>Uniqlo Ginza</b>: la tienda insignia de 12 pisos.</li>"+
+        "<li><b>Itoya</b>: 12 pisos de papelería, plumas y papel japonés.</li>"+
+        "<li>Los sótanos de comida (depachika) de <b>Mitsukoshi</b> y <b>Matsuya</b>: dulces japoneses, fruta "+
+        "perfecta y regalos para llevar.</li>"+
+        "<li><b>Dover Street Market</b> y la <b>Maison Hermès</b>, el edificio de bloques de vidrio de Renzo "+
+        "Piano.</li></ul>"+
+        "Abren ~11:00-20:00."},
+  {cid:"tk2-descanso",name:"Al hotel: dejar compras y cambiarse",type:"rest",dur:55,
+   note:"Empiecen a acomodar las maletas: lo comprado sin impuesto va en la de mano para mostrarlo en el "+
+        "aeropuerto."},
+  {cid:"tk-sushi",name:"Cena de despedida del viaje: Ginza",type:"food",dur:120,fixed:"19:30",
+   costos:[["Cena de despedida (2)",6000]],
+   note:"La última cena de la luna de miel, en el barrio del mejor sushi del mundo:<ul>"+
+        "<li><b>Ginza Kyubey</b> (desde 1935): sushi en barra, frente al chef, con reservación y trato fácil "+
+        "para extranjeros.</li>"+
+        "<li><b>Ukai-tei Ginza</b>: teppanyaki de wagyu en un salón art nouveau, muy romántico.</li></ul>"+
+        "<b>Reserven con semanas</b> (en su página, por Omakase/TableCheck o con el hotel). Pidan barra."},
+  {cid:"tk2-copa",name:"Una última copa con vista",type:"bar",dur:45,costos:[["Copas (2)",900]],
+   note:"<b>Peter: The Bar</b>, en el piso 24 del Peninsula Tokyo (a ~10 min en taxi), con Tokio iluminado a sus "+
+        "pies; o un bar clásico de coctelería de Ginza, como Star Bar Ginza."},
+  {cid:"tk2-vuelta",name:"Al hotel y las maletas: mañana salen temprano",type:"transfer",dur:15}
+];
+const TK_DIA3_V1=[
+  {cid:"tk3-salida",name:"Check-out y taxi al aeropuerto",type:"transfer",dur:75,fixed:"05:30",
+   costos:[["Taxi al aeropuerto (2)",3000]],
+   note:"⚠ <b>Confirmen de qué aeropuerto sale su vuelo.</b><br>"+
+        "<b>Narita</b>: ~70-80 min; el taxi de tarifa fija cuesta ~¥25,000 (pídanlo al hotel la noche anterior). Por "+
+        "eso salen a las 5:30.<br>"+
+        "<b>Haneda</b>: ~30 min y ~¥8,000 en taxi, o el tren directo de la línea Asakusa desde Shimbashi: pueden "+
+        "salir a las 6:30.<br>"+
+        "Pidan la caja de desayuno: el buffet abre a las 6:30."},
+  {cid:"tk3-aeropuerto",name:"Devolución de impuestos, documentar y migración",type:"transfer",dur:150,
+   note:"<b>Primero</b>, antes de documentar las maletas, el trámite de devolución de impuestos de sus compras "+
+        "en aduana: pasaporte, tickets y las compras a la mano. Después documenten y pasen migración. Vuelo "+
+        "internacional: lleguen ~2 h 30 antes."},
+  {cid:"tk3-vuelo",name:"Vuelo de regreso a Ciudad de México",type:"transfer",dur:30,fixed:"09:35",
+   note:"Sale a las 9:35 y llega a Ciudad de México a las 7:10 del mismo sábado: cruzan la línea de cambio de "+
+        "fecha y recuperan el día. Fin de la luna de miel."}
+];
+function migrarTokio(s){
+  if(s.tkPlanV2)return;
+  const tk=s.bases&&s.bases.tokyo;
+  if(s.bases&&s.bases.hk&&tk&&Array.isArray(tk.catalog)){
+    const costos=(base,lista)=>lista.forEach(a=>{
+      const x=a.costos&&base.catalog.find(y=>y.cid===a.cid);
+      if(x)x.costs=a.costos.map(([label,est])=>({id:uid(),label,est,real:0}));
+    });
+    tk.diaSalida=true;                       // el sábado 29 (la salida al aeropuerto) es de Tokio
+    tk.schedule=tk.schedule||{};
+    sembrarDia(tk,0,TK_DIA0_V5,"06:30");
+    sembrarDia(tk,1,TK_DIA1_V2,"07:30");
+    sembrarDia(tk,2,TK_DIA2_V2,"08:00");
+    sembrarDia(tk,3,TK_DIA3_V1,"05:30");
+    [TK_DIA0_V5,TK_DIA1_V2,TK_DIA2_V2,TK_DIA3_V1].forEach(l=>costos(tk,l));
+    if(!Array.isArray(tk.hotels))tk.hotels=[];
+    let h=tk.hotels.find(x=>/mitsui garden.*ginza/i.test(x.name||""));
+    tk.hotels.forEach(x=>{x.chosen=false;});
+    if(h)tk.hotels.splice(tk.hotels.indexOf(h),1);
+    else h={id:uid(),precio:0};
+    Object.assign(h,{name:TK_HOTEL+" (三井ガーデンホテル銀座プレミア)",
+      area:"8-13-1 Ginza, Chuo · a 4-5 min de la estación Shimbashi",noches:3,chosen:true,
+      note:"<b>★ Miércoles 26, jueves 27 y viernes 28</b> (el sábado 29 salen temprano al aeropuerto). Check-in "+
+           "desde las 15:00, check-out a las 12:00.<br>"+
+           "La recepción está en el <b>piso 16</b>, con vista a la Torre de Tokio, y los cuartos del 17 para arriba "+
+           "(pidan vista a la torre). Desayuno buffet en el 16, de 6:30 a 10:00.<br>"+
+           "A pie: metro Shimbashi (línea Ginza, salida 1) a 4 min, JR Shimbashi a 5, Ginza a 7; el mercado de "+
+           "Tsukiji a ~15 y el jardín Hama-rikyu a ~10. La línea Ginza va directo a Shibuya y la Asakusa, a "+
+           "Asakusa y a Haneda.<br><b>⚠ Falta el precio por noche</b> para que cuente en el presupuesto."});
+    tk.hotels.unshift(h);
+  }
+  if(Array.isArray(s.esenciales)){
+    const E=ESSENTIAL_TOKIO,e=s.esenciales.find(x=>x.id===E.id);
+    if(e)Object.assign(e,{t:E.t,s:E.s});
+    else{
+      const i=s.esenciales.findIndex(x=>x.id==="ess-kansai");
+      s.esenciales.splice(i<0?s.esenciales.length:i+1,0,{...E});
+    }
+  }
+  s.tkPlanV2=true;
 }
 /* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
 function freshBlankTrip(titulo){
