@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v31.8 · 18 oct 2026 · Shanghái: cada actividad descrita a detalle";
+const APP_VERSION="v31.9 · 18 oct 2026 · Pekín: su hotel de patio en Qianmen";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -1624,12 +1624,12 @@ const ESSENTIAL_XIAN={id:"ess-xian",t:"Xi'an: guía, coche y tren a Pekín",
     "tren G Xi'an Norte → Pekín Oeste ~15:30: la venta abre ~15 días antes (lun 3 may) · hotel: HUALUXE "+
     "Tanghua, 40 Yanyin Rd, Qujiang"};
 const ESSENTIAL_BJ_SH={id:"ess-bj-sh",t:"Pekín y Shanghái: tours y reservas",
-  s:"Civitatis: «Top 3 de Pekín» el miércoles 19 (recogida 8:00) y «Contrastes de Pekín» el jueves 20 (9:05), "+
+  s:"Civitatis: «Top 3 de Pekín» el miércoles 19 (recogida 8:00) y «Contrastes de Pekín» el jueves 20 (9:00), "+
     "privados en español · Ciudad Prohibida: boleto con pasaporte, la venta abre a las 20:00 (Pekín) siete días "+
     "antes = miércoles 12 de mayo; que lo saque el guía · coche privado a Mutianyu el viernes 21 a las 7:00, con "+
     "las maletas, que los deje en Pekín Sur · tren G17 15:00 Pekín Sur → Shanghái Hongqiao: la venta abre ~15 días "+
-    "antes (jue 6 may) · reservar el pato (Da Dong) y TRB Hutong · faltan los hoteles de Pekín y Shanghái "+
-    "(hay uno de mientras)"};
+    "antes (jue 6 may) · reservar el pato y TRB Hutong · hotel de Pekín: Manxin Qianmen (大江胡同120号); denle "+
+    "la dirección a Civitatis y al chofer · falta el hotel de Shanghái (hay uno de mientras)"};
 const ESSENTIAL_SH_KIX={id:"ess-sh-kix",t:"Shanghái y el vuelo a Japón",
   s:"tour privado por el Shanghái histórico (Civitatis) el domingo 23, recogida 8:30; confirmen si incluye "+
     "entradas · Shanghai Tower para el sábado 17:30, en línea con pasaporte · crucero del sábado 20:00 (muelle "+
@@ -3697,6 +3697,7 @@ function normalizeTripState(s){
   migrarPekinV2(s);          // Pekín con sus 3 tours: se queda con el viernes
   migrarShanghaiKioto(s);    // Shanghái moderno y el histórico; el lunes temprano a Kioto
   migrarShanghaiDetalle(s);  // y la descripción a detalle de cada actividad
+  migrarPekinHotel(s);       // Pekín con su hotel en Qianmen (Manxin, 大江胡同120号)
   return s;
 }
 /* ---- Llegada a Yangshuo: domingo 9 de mayo de 2027, paso a paso ----
@@ -5969,6 +5970,165 @@ function migrarShanghaiDetalle(s){
       });
     });
   s.shDetalleV1=true;
+}
+/* ---- Pekín con su hotel (v31.9): Manxin, hotel de patio en Qianmen ----
+   No. 120 Dajiang Hutong, Qianmen East Road: ~2 min a pie de la calle Qianmen,
+   ~10-15 de la Plaza Tiananmen, ~2 km del Templo del Cielo y ~650 m del metro
+   Qianmen (L2/L8). Ojo: por el control de tráfico de Qianmen, los coches a
+   veces no entran al hutong y los dejan en la calle. Cambian los traslados, el
+   pato (a pie) y las noches terminan paseando por Qianmen y Dashilar. */
+const BJ_HOTEL_DIR="前门东路 大江胡同120号";
+const PK_DIA1_V2=[
+  {cid:"g-breakfast",fixed:"07:15"},
+  {cid:"pk1-guia",fixed:"08:00",dur:15,
+   note:"Tour privado de Civitatis, ~8 h, con guía en español, coche y chofer: Templo del Cielo → Plaza "+
+        "Tiananmen y Ciudad Prohibida → Palacio de Verano → de regreso al hotel.<br>"+
+        "<b>Antes de pagar, confirmen:</b> (1) si incluye las entradas; (2) que el guía saque los boletos de la "+
+        "Ciudad Prohibida con sus pasaportes: la venta abre el <b>miércoles 12 de mayo a las 20:00</b> (hora de "+
+        "Pekín) y se agota; (3) la hora de recogida, y denles la dirección del hotel: <b>"+BJ_HOTEL_DIR+"</b>. "+
+        "Si el coche no puede entrar al hutong, que los espere en Qianmen East Road.<br>"+
+        "El Templo del Cielo está a solo ~2 km al sur del hotel: ~10 min."},
+  {cid:"bj-temple"},
+  {cid:"pk1-a-tiananmen",dur:15,
+   note:"~3 km al norte por la avenida Qianmen. El coche los deja en el control de seguridad: pasaportes a la "+
+        "mano, nada de encendedores."},
+  {cid:"bj-forbidden"},
+  {cid:"pk1-comida"},
+  {cid:"pk1-a-verano"},
+  {cid:"pk1-verano"},
+  {cid:"pk1-regreso",dur:60,
+   note:"~22 km del Palacio de Verano a Qianmen, con el tráfico de la tarde: 50-60 min."},
+  {cid:"pk1-descanso",dur:80},
+  {cid:"bj-duck",fixed:"19:30",
+   costos:[["Pato laqueado (2)",1800]],
+   note:"La cena que hay que hacer en Pekín: el pato se asa colgado en horno de leña de árboles frutales, se "+
+        "corta en la mesa y se come en crepas delgadas con cebollín, pepino y salsa hoisin; la piel sola se "+
+        "moja en azúcar.<br>"+
+        "Desde su hotel, a pie:<ul>"+
+        "<li><b>Siji Minfu</b> (四季民福), la de Qianmen: de los más queridos por los pekineses. No reserva y hay "+
+        "fila: saquen número desde la tarde (desde su mini-programa o pasando a pedirlo).</li>"+
+        "<li><b>Quanjude</b> (全聚德), la casa original de Qianmen, abierta desde 1864: la historia del pato; más "+
+        "turística.</li></ul>"+
+        "Si prefieren reservar y algo más fino: <b>Da Dong</b> (大董), en taxi. Pidan el pato entero."},
+  {cid:"bj-qianmen",name:"Paseo de noche por Qianmen y Dashilar, de regreso al hotel",type:"sight",dur:45,
+   note:"La calle peatonal de <b>Qianmen</b> (前门大街), con sus fachadas restauradas y el tranvía antiguo, "+
+        "iluminada de noche, con la puerta Zhengyang al fondo. Al lado, <b>Dashilar</b> (大栅栏), la calle "+
+        "comercial de hace 600 años: farmacia Tongrentang, sedas Ruifuxiang, zapatos Neiliansheng. Su hotel "+
+        "está a la vuelta."}
+];
+const PK_DIA2_V2=[
+  {cid:"g-breakfast",fixed:"08:00"},
+  {cid:"pk2-guia",fixed:"09:00",dur:25,
+   note:"Tour privado de Civitatis, ~8 h, con guía en español, coche y chofer: el Pekín antiguo en la mañana y "+
+        "el futurista en la tarde. Torre del Tambor → hutongs en rickshaw → Templo de los Lamas → Guomao y "+
+        "comida → Villa Olímpica → Wangfujing y el Teatro Nacional → de regreso al hotel.<br>"+
+        "Confirmen qué entradas incluye y pidan la recogida a las 9:00 (la Torre del Tambor abre a las 9:30): son "+
+        "~6 km al norte, ~25 min.<br>"+
+        "Si los boletos de la Ciudad Prohibida no salieron para el miércoles, este tour se cambia al miércoles y "+
+        "el «Top 3» pasa a este día."},
+  {cid:"pk2-tambor"},
+  {cid:"bj-hutong"},
+  {cid:"pk2-a-lama"},
+  {cid:"pk2-lama"},
+  {cid:"pk2-a-guomao"},
+  {cid:"pk2-guomao"},
+  {cid:"pk2-a-olimpica"},
+  {cid:"pk2-olimpica"},
+  {cid:"pk2-a-centro",name:"Coche a Wangfujing",
+   note:"De la Villa Olímpica al centro, ~12 km."},
+  {cid:"pk2-teatro",name:"La calle Wangfujing y el «Huevo» del Teatro Nacional",
+   note:"<b>Wangfujing</b> (王府井), la calle peatonal comercial más famosa de Pekín: grandes almacenes, la "+
+        "librería de idiomas y la iglesia de San José.<br>"+
+        "Y al final, el <b>Centro Nacional de Artes Escénicas</b> (国家大剧院): una cúpula de titanio y vidrio sobre "+
+        "un lago, de Paul Andreu (2007), junto a la Plaza Tiananmen. El contraste más fuerte con la Ciudad "+
+        "Prohibida, que está al lado. Pidan terminar aquí: el hotel queda a ~1.5 km."},
+  {cid:"pk2-a-hotel",name:"El coche los deja en el hotel · fin del tour",dur:15},
+  {cid:"pk2-descanso",dur:55},
+  {cid:"pk2-cena",fixed:"19:30",
+   note:"Su cena especial de Pekín: cocina europea de autor dentro de un templo de la dinastía Ming, junto a la "+
+        "Ciudad Prohibida. De los restaurantes más reconocidos de la ciudad: <b>reserven</b> y pidan mesa en el "+
+        "patio. ~15 min en taxi desde Qianmen."},
+  {cid:"pk2-vuelta"}
+];
+const PK_DIA3_V2=[
+  {cid:"g-breakfast",fixed:"06:15"},
+  {cid:"pk3-salida",fixed:"07:00",dur:85,
+   note:"Para este día, <b>coche privado</b> en vez de la excursión en grupo: la de grupo sale de Dongzhimen y "+
+        "regresa a la ciudad en la tarde, y así no alcanzan el tren. Con el coche: las maletas van en la "+
+        "cajuela, ven la muralla temprano y el chofer los deja directo en la estación.<br>"+
+        "Pídanle a Civitatis que cotice su excursión de Mutianyu en privado con recogida a las 7:00 y regreso a "+
+        "Pekín Sur, o contraten un coche con chofer solo. Dirección: <b>"+BJ_HOTEL_DIR+"</b> (si no entra al "+
+        "hutong, que espere en Qianmen East Road).<br>~80 km al noreste cruzando la ciudad: 1 h 20-1 h 30."},
+  {cid:"bj-wall",dur:185},
+  {cid:"pk3-comida"},
+  {cid:"pk3-estacion"},
+  {cid:"pk3-anden"},
+  {cid:"sh-arrive",fixed:"15:00"},
+  {cid:"sh0-hotel"},
+  {cid:"pk3-bund"},
+  {cid:"pk3-vuelta"}
+];
+function migrarPekinHotel(s){
+  if(s.bjHotelV1)return;
+  const bj=s.bases&&s.bases.beijing,xa=s.bases&&s.bases.xian;
+  if(s.bases&&s.bases.hk&&bj&&Array.isArray(bj.catalog)){
+    const costos=(base,lista)=>lista.forEach(a=>{
+      const x=a.costos&&base.catalog.find(y=>y.cid===a.cid);
+      if(x)x.costs=a.costos.map(([label,est])=>({id:uid(),label,est,real:0}));
+    });
+    const quitar=(base,cids)=>{
+      const usados=new Set(Object.values(base.schedule||{}).flat().map(x=>x.ref));
+      base.catalog=base.catalog.filter(a=>!cids.includes(a.cid)||usados.has(a.cid));
+    };
+    sembrarDia(bj,1,PK_DIA1_V2,"07:15");
+    sembrarDia(bj,2,PK_DIA2_V2,"08:00");
+    sembrarDia(bj,3,PK_DIA3_V2,"06:15");
+    [PK_DIA1_V2,PK_DIA2_V2,PK_DIA3_V2].forEach(l=>costos(bj,l));
+    quitar(bj,["pk1-vuelta"]);
+    // el hotel
+    if(Array.isArray(bj.hotels)){
+      let h=bj.hotels.find(x=>/manxin|漫心|dajiang|大江胡同/i.test((x.name||"")+(x.area||"")));
+      bj.hotels.forEach(x=>{x.chosen=false;});
+      if(h)bj.hotels.splice(bj.hotels.indexOf(h),1);
+      else h={id:uid(),precio:0};
+      Object.assign(h,{name:"Manxin Hotel Qianmen (hotel de patio)",
+        area:"No. 120 Dajiang Hutong, Qianmen East Road, Dongcheng · "+BJ_HOTEL_DIR,noches:3,chosen:true,
+        note:"<b>★ Martes 18, miércoles 19 y jueves 20</b> (check-out el viernes 21 a las 7:00, rumbo a la "+
+             "muralla). Check-in desde las 14:00, check-out a las 12:00.<br>"+
+             "Hotel de patio (siheyuan) renovado, dentro de un hutong de Qianmen. A pie: la calle Qianmen ~2 min, "+
+             "la Plaza Tiananmen ~10-15, el pato de Siji Minfu y Quanjude. El Templo del Cielo está a ~2 km. "+
+             "Metro: Qianmen (L2/L8) a ~650 m y Zhushikou (L8) a ~570 m.<br>"+
+             "⚠ Por el control de tráfico de Qianmen, a veces los coches no entran al hutong y los dejan en la "+
+             "calle: con maletas, pidan al hotel que salga alguien por ustedes. Para taxis y tours: <b>"+
+             BJ_HOTEL_DIR+"</b>.<br>"+
+             "<i>Anuncian una terraza en la azotea con vista hacia la Ciudad Prohibida: pregunten.</i>"+
+             "<br><b>⚠ Falta el precio por noche</b> para que cuente en el presupuesto."});
+      bj.hotels.unshift(h);
+      bj.hotels.forEach(x=>{
+        if(/peninsula beijing/i.test(x.name||"")){
+          delete x.noches;
+          x.note="<b>Ya no está en el plan:</b> se quedan en el Manxin de Qianmen.<br>Lujo céntrico en Wangfujing.";
+        }
+      });
+    }
+  }
+  // martes 18: la llegada de Xi'an, ahora a Qianmen
+  if(xa&&Array.isArray(xa.catalog)){
+    const ph=xa.catalog.find(a=>a.cid==="xa2-pekin-hotel");
+    if(ph){ph.dur=45;
+      ph.note="Fila de taxis oficial a la salida de Pekín Oeste (o DiDi): ~8 km, 25-35 min. Para el chofer: <b>"+
+        BJ_HOTEL_DIR+"</b>. Si el coche no puede entrar al hutong por el control de tráfico de Qianmen, los "+
+        "deja en la calle: son unos minutos a pie con las maletas (pidan al hotel que salga alguien).";}
+    const ce=xa.catalog.find(a=>a.cid==="xa2-cena");
+    if(ce){ce.name="Cena ligera cerca del hotel";
+      ce.note="Llegan cansados: algo sencillo en la calle Qianmen, a ~2 min del hotel, que tiene opciones hasta "+
+        "tarde. El pato es mañana, sin prisa.";}
+  }
+  if(Array.isArray(s.esenciales)){
+    const e=s.esenciales.find(x=>x.id===ESSENTIAL_BJ_SH.id);
+    if(e)Object.assign(e,{t:ESSENTIAL_BJ_SH.t,s:ESSENTIAL_BJ_SH.s});
+  }
+  s.bjHotelV1=true;
 }
 /* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
 function freshBlankTrip(titulo){
