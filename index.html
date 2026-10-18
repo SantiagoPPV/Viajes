@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v31.11 · 18 oct 2026 · Zhangjiajie: su hotel WuYun (五韵观山悦)";
+const APP_VERSION="v31.12 · 18 oct 2026 · Kansai: vuelo de las 7:50, Kioto, noche en Osaka y Tokio a mediodía";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -931,8 +931,8 @@ const ROUTE=[
   {id:"xian",      nights:2, sale:"14:40"},  // 16 → 18 may · Tianmen y vuelo de la tarde, a confirmar
   {id:"beijing",   nights:3, sale:"15:30"},  // 18 → 21 may · tren de la tarde, llega ~19:50 (a confirmar)
   {id:"shanghai",  nights:3, sale:"15:00"},  // 21 → 24 may · Muralla en la mañana y G17 15:00, llega ~19:35
-  {id:"kyoto",     nights:2, sale:"08:55"},  // 24 → 26 may · vuelo de la mañana PVG → KIX, en Kioto ~14:40
-  {id:"tokyo",     nights:3, sale:"13:00"}   // 26 → 29 may · llega 15:15
+  {id:"kyoto",     nights:2, sale:"07:50"},  // 24 → 26 may · vuelo de las 7:50 PVG → KIX, en Kioto ~13:15
+  {id:"tokyo",     nights:3, sale:"12:00"}   // 26 → 29 may · Arashiyama temprano y Nozomi 12:00, llega 14:15
 ];
 /* Vuelos internacionales de ida y de regreso. La ida trae una escala larga en
    Tokio: ahí va el hotel del aeropuerto por horas, que se registra como costo
@@ -948,7 +948,7 @@ const VUELOS_INTL={
           sale:"09:35",llega:"07:10"}
 };
 const ROUTE_DROP=["osaka"];   // paradas que se eliminan por completo del viaje
-const ROUTE_VERSION=9;        // súbela al editar ROUTE para reaplicar la ruta
+const ROUTE_VERSION=10;        // súbela al editar ROUTE para reaplicar la ruta
 const ROUTE_IDS=ROUTE.map(r=>r.id);
 const routeNights=id=>{const r=ROUTE.find(x=>x.id===id);return r?r.nights:null;};
 const routeSale=id=>{const r=ROUTE.find(x=>x.id===id);return r&&r.sale||null;};
@@ -1040,8 +1040,8 @@ const XFER={
   "zjj|xian":{mode:"Vuelo",detail:"Tianmen en la mañana · Zhangjiajie (DYG) → Xi'an (XIY) directo ~1 h 45, vuelo de la tarde A CONFIRMAR (hay pocos) · el tren directo son 9 h 48, no sirve",time:"~3 h 45 de la salida al aterrizaje",dur:225,type:"air"},
   "xian|beijing":{mode:"Tren bala",detail:"De Terracota a Xi'an Norte en el coche, con las maletas · G rápido ~15:30 → Pekín Oeste ~19:50, a confirmar (los rápidos solo paran en Zhengzhou Este y Shijiazhuang)",time:"~4 h 20 de tren",dur:260,type:"rail"},
   "beijing|shanghai":{mode:"Tren bala",detail:"De Mutianyu a Pekín Sur en el coche, con las maletas · G17 15:00 → Shanghái Hongqiao 19:34, a confirmar · Hongqiao → el Bund ~45 min",time:"~4 h 35 de tren",dur:275,type:"rail"},
-  "shanghai|kyoto":{mode:"Vuelo",detail:"El Bund → aeropuerto de Pudong (taxi ~50 min) · PVG → Osaka Kansai (KIX) ~2 h 15, p. ej. MU225 8:55 → 12:10 hora de Japón (a confirmar) · JR Haruka a Kioto 75 min",time:"~8 h 40 de puerta a puerta (Japón va 1 h adelante)",dur:195,type:"air"},
-  "kyoto|tokyo":{mode:"Tren bala",detail:"Kyoto → Tokio (Shinkansen Nozomi, asientos D/E para ver el Fuji)",time:"2 h 15",dur:135,type:"rail"},
+  "shanghai|kyoto":{mode:"Vuelo",detail:"Hotel en Pudong → aeropuerto (taxi ~40 min) · directo PVG → Osaka Kansai (KIX), Juneyao HO1505 7:50 → 11:00 hora de Japón (a confirmar) · JR Haruka a Kioto 75 min (Kioto no tiene aeropuerto)",time:"~7 h 30 de puerta a puerta (Japón va 1 h adelante)",dur:190,type:"air"},
+  "kyoto|tokyo":{mode:"Tren bala",detail:"Arashiyama temprano · Shinkansen Nozomi Kioto 12:00 → Tokio 14:15 (sale uno cada ~10 min) · asiento E para ver el Fuji",time:"2 h 15",dur:135,type:"rail"},
   /* --- Alternativas, por si reacomodas la ruta --- */
   "yangshuo|zjj":{mode:"Tren bala",detail:"Transbordo Guilin o Huaihua",time:"3.5–4.5 h",dur:255,type:"rail"},
   "chongqing|chengdu":{mode:"Tren bala",detail:"Chongqing → Chengdu East",time:"1–1.5 h",dur:90,type:"rail"},
@@ -1634,9 +1634,15 @@ const ESSENTIAL_SH_KIX={id:"ess-sh-kix",t:"Shanghái y el vuelo a Japón",
   s:"tour privado por el Shanghái histórico (Civitatis) el domingo 23, recogida 8:30 en el H+ de Pudong "+
     "(潍坊西路90号); confirmen si incluye entradas · Shanghai Tower para el sábado 17:30, en línea con pasaporte · "+
     "crucero del sábado 19:30 desde el muelle de la Perla de Oriente (lado de Pudong) · reservar la cena del "+
-    "sábado 20:40 en Lujiazui y la de despedida del domingo en el Bund · vuelo del lunes 24 "+
-    "PVG → Osaka Kansai en la mañana (MU225 8:55 → 12:10 o Juneyao 7:45 → ~11:00) · Haruka a Kioto: el boleto "+
-    "en línea sale más barato · Visit Japan Web con su QR antes de aterrizar"};
+    "sábado 20:40 en Lujiazui y la de despedida del domingo en el Bund · vuelo directo del lunes 24 PVG → Osaka "+
+    "Kansai: Juneyao HO1505 (o Shanghai Airlines FM873) 7:50 → 11:00; si prefieren dormir más, MU225 8:55 → 12:10 · "+
+    "Haruka a Kioto: el boleto en línea sale más barato · Visit Japan Web con su QR antes de aterrizar"};
+const ESSENTIAL_KANSAI={id:"ess-kansai",t:"Kioto y la noche en Osaka",
+  s:"falta el hotel de Kioto: conviene cerca de la estación de Kioto (Haruka, Osaka y el Shinkansen) o de "+
+    "Gion/Kawaramachi (lo más bonito) · reservar Pontocho el lunes 18:30 (terraza sobre el río) y el kaiseki del "+
+    "martes al mediodía en Gion · Shinkansen Nozomi del miércoles 12:00 a Tokio, asiento E para ver el Fuji · "+
+    "Suica o ICOCA en el celular para trenes y metro · Kioto cobra impuesto de hospedaje por persona y noche "+
+    "(hasta ¥10,000 en hoteles de lujo)"};
 const ESSENTIAL_YS_HOTEL={id:"ess-ys-hotel",t:"Pedirle al Sugar House (Yangshuo)",
   s:"traslado desde la estación el domingo 9 · auto con chofer el lunes 10 a las 4:45 a Xianggong · "+
     "reserva de la balsa del Yulong para el lunes 14:30 · desayuno para llevar el martes 11 a las 7:00"};
@@ -1654,6 +1660,7 @@ const ESSENTIALS=[
   ESSENTIAL_XIAN,
   ESSENTIAL_BJ_SH,
   ESSENTIAL_SH_KIX,
+  ESSENTIAL_KANSAI,
   {id:"ess-jp",t:"Japón: Visit Japan Web + boleto de salida",s:"mexicanos sin visa (exención de turista)"},
   {id:"ess-visa",t:"Visa de turista China (L)",s:"tramitar 1–2 meses antes"},
   {id:"ess-pass",t:"Pasaporte 6+ meses de vigencia",s:"revisar ambos"},
@@ -2109,8 +2116,7 @@ const ARRIVE_FIJO={
   "bj-arrive":{propio:true},   // migrarXianV4: el tren del martes 18, en el último día de Xi'an
   "sh-arrive":{propio:true},   // migrarPekinV2: el tren del viernes 21, en el último día de Pekín
   "ky-arrive":{propio:true},   // migrarShanghaiKioto: el vuelo del lunes 24 en la mañana
-  "tk-arrive":{name:"Tren bala Kyoto → Tokio",
-               note:"Shinkansen Nozomi 2 h 15, asientos D/E para ver el Fuji; check-in"}
+  "tk-arrive":{propio:true}    // migrarKansai: el Nozomi del miércoles 26 a mediodía
 };
 /* Plan de Yangshuo con 2 noches (se re-siembra si la parada sigue con el viejo). */
 const YANGSHUO_V2={
@@ -3551,7 +3557,7 @@ function migrarRuta(s){
   const ky=s.bases.kyoto&&(s.bases.kyoto.catalog||[]).find(a=>a.cid==="ky-arrive");
   if(ky&&!s.shPlanV3)ky.costs=[{id:uid(),label:"Vuelo Shanghái → Osaka KIX + JR Haruka a Kyoto (2)",est:8630,real:0}];
   const tk=s.bases.tokyo&&(s.bases.tokyo.catalog||[]).find(a=>a.cid==="tk-arrive");
-  if(tk)tk.costs=[{id:uid(),label:"Tren bala Kyoto → Tokio (2)",est:3300,real:0}];
+  if(tk&&!s.jpPlanV1)tk.costs=[{id:uid(),label:"Tren bala Kyoto → Tokio (2)",est:3300,real:0}];
 
   // 6. Yangshuo: plan nuevo de 2 noches. Si ya está el plan de migrarYangshuo
   //    (sus dos días armados a detalle), no se toca: subir ROUTE_VERSION no
@@ -3701,6 +3707,7 @@ function normalizeTripState(s){
   migrarPekinHotel(s);       // Pekín con su hotel en Qianmen (Manxin, 大江胡同120号)
   migrarShanghaiHotel(s);    // Shanghái con su hotel en Pudong (H+, 潍坊西路90号)
   migrarZjjHotelNombre(s);   // el nombre del hotel de Zhangjiajie: WuYun (五韵观山悦)
+  migrarKansai(s);           // vuelo temprano a Kansai, Kioto, la noche en Osaka y a Tokio a mediodía
   return s;
 }
 /* ---- Llegada a Yangshuo: domingo 9 de mayo de 2027, paso a paso ----
@@ -6317,6 +6324,185 @@ function migrarZjjHotelNombre(s){
            "buscadores aparece desde ~€138 por noche, según la fecha).")});
   }
   s.zjjHotelV2=true;
+}
+/* ---- Kansai (v31.12): vuelo temprano, Kioto, la noche en Osaka y a Tokio ----
+   Kioto no tiene aeropuerto: los directos de Shanghái llegan a Osaka-Kansai.
+   El razonable más temprano es el de las 7:50 (llega 11:00); el de Peach de
+   las 6:05 obliga a salir del hotel a las 3:45. Duermen en Kioto las dos
+   noches; el martes en la noche van a Osaka a cenar y a ver su vida nocturna.
+   El miércoles: Arashiyama a primera hora (solo se puede durmiendo en Kioto)
+   y el Nozomi de las 12:00, que llega a Tokio a las 14:15, justo para el
+   check-in, Shibuya al atardecer y la cena. Ir a Tokio temprano cambiaría lo
+   mejor de Kioto por unas horas más en una ciudad que ya tiene dos días
+   completos; ir tarde perdería el atardecer en Shibuya. */
+const KY_DIA0_V3=[
+  {cid:"ky0-salida",fixed:"05:15",dur:40,
+   note:"Taxi del hotel (pídanlo en recepción la noche anterior): de Lujiazui al aeropuerto de Pudong son ~40 km, "+
+        "35-40 min a esa hora, ~¥150-180. Lleven la caja de desayuno."},
+  {cid:"ky0-pvg",dur:100,
+   note:"Pudong tiene dos terminales: confirmen la suya en el pase de abordar (T1 o T2). Documenten, pasen la "+
+        "migración de salida de China (pasaporte y visa) y seguridad. Los líquidos, en la maleta documentada. "+
+        "El abordaje cierra ~20 min antes."},
+  {cid:"ky-arrive",name:"Vuelo directo Shanghái (PVG) → Osaka Kansai (KIX)",fixed:"07:50",dur:190,
+   costos:[["Vuelo PVG → KIX (2, estimado)",7900]],
+   note:"<b>Juneyao HO1505</b> o <b>Shanghai Airlines FM873</b>: 7:50 → 11:00. Son ~2 h 10 de vuelo y Japón va 1 "+
+        "hora adelante de China: por eso aterrizan 3 h 10 después en el reloj.<br>"+
+        "Otras: Spring Airlines 9C6575 8:10 → 11:20 (de bajo costo: la maleta documentada se paga aparte), o "+
+        "China Eastern MU225 8:55 → 12:10 si prefieren dormir una hora más (llegan a Kioto ~14:40). El de Peach "+
+        "de las 6:05 obliga a salir del hotel a las 3:45: no vale la pena.<br>"+
+        "⚠ Confirmen horarios al comprar. Kioto no tiene aeropuerto: todos llegan a Osaka-Kansai. Mexicanos no "+
+        "necesitan visa para Japón."},
+  {cid:"ky0-kix",dur:45},
+  {cid:"ky0-haruka",dur:90},
+  {cid:"ky0-hotel",name:"Taxi al hotel y dejar las maletas",dur:30,
+   note:"Si el cuarto no está listo (el check-in suele ser a las 15:00), dejen las maletas y salgan."},
+  {cid:"ky0-a-nishiki",name:"Al mercado Nishiki",type:"transfer",dur:15,
+   note:"En el centro, entre Shijo y Teramachi; en taxi o a pie según el hotel."},
+  {cid:"ky-nishiki",name:"Comida de antojitos en el mercado Nishiki",type:"food",dur:75,
+   note:"«La cocina de Kioto»: un callejón techado de ~400 m con más de cien puestos, algunos con siglos de "+
+        "historia. Vayan probando: <b>tamagoyaki</b> (omelette dulce en rollo), brochetas de pulpito con huevo de "+
+        "codorniz, tofu y <b>yuba</b> (la nata del tofu), <b>tsukemono</b> (encurtidos), mochi y matcha.<br>"+
+        "No se come caminando: se come junto al puesto. Muchos cierran entre 17:00 y 18:00."},
+  {cid:"ky0-a-fushimi",name:"Tren a Fushimi Inari",type:"transfer",dur:25,
+   note:"De Gion-Shijo, tren Keihan a Fushimi-Inari, ~10 min (desde la estación de Kioto, JR Nara Line, 5 min). "+
+        "Paguen con la Suica/ICOCA del celular."},
+  {cid:"ky-fushimi",fixed:"15:45",
+   note:"El santuario de Inari, dios del arroz y los negocios, con los <b>miles de torii naranjas</b> que donan "+
+        "empresas y familias (cada uno lleva su nombre por detrás) y que suben por el monte Inari. Los zorros de "+
+        "piedra son sus mensajeros.<br>"+
+        "En la tarde hay menos gente y la luz es la mejor. Pasen las dos hileras de torii pegados (Senbon "+
+        "Torii) y suban por lo menos al mirador de <b>Yotsutsuji</b> (~45 min de subida) para ver Kioto; la "+
+        "cumbre son 2-3 h ida y vuelta, no hace falta. Gratis y abierto las 24 h."},
+  {cid:"ky0-a-pontocho",name:"Tren y a pie a Pontocho",dur:35},
+  {cid:"ky-pontocho",fixed:"18:30",
+   note:"El callejón de faroles junto al río Kamo, con restaurantes en casas de madera. De mayo a septiembre "+
+        "muchos ponen su <b>terraza sobre el río</b> (kawayuka): cenar ahí al atardecer es de lo más bonito de "+
+        "Kioto. <b>Reserven</b> y pidan mesa en la terraza.<br>"+
+        "Al salir, crucen el puente de Shijo: del otro lado empieza Gion."},
+  {cid:"ky0-vuelta",dur:20}
+];
+const KY_DIA1_V3=[
+  {cid:"g-breakfast",fixed:"07:15",dur:45,note:"En el hotel. Hoy es el día largo: Kioto en el día y Osaka en la noche."},
+  {cid:"ky1-a-kiyomizu",name:"Taxi a Kiyomizu-dera",type:"transfer",dur:20,fixed:"08:00",
+   costos:[["Taxi (2)",300]]},
+  {cid:"ky-kiyomizu",name:"Kiyomizu-dera, temprano",type:"sight",dur:75,
+   note:"Templo fundado en el año 778 en la ladera del monte Otowa, Patrimonio de la Humanidad. Su gran "+
+        "<b>terraza de madera</b>, construida sin un solo clavo, está a 13 m sobre el bosque: la vista de Kioto.<br>"+
+        "Abajo, la <b>cascada Otowa</b>: tres chorros (salud, amor y estudio); se toma de uno solo.<br>"+
+        "Abre a las 6:00: a las 8:20 todavía se camina; a las 10:00 se llena. ~¥500 c/u."},
+  {cid:"ky1-sannenzaka",name:"Sannenzaka y Ninenzaka, de bajada",type:"sight",dur:50,
+   note:"Las calles empedradas de casas de madera que bajan del templo: cerámica, dulces y té. Hay un Starbucks "+
+        "en una casa tradicional con tatami.<br>Cuidado con los escalones de Sannenzaka: la leyenda dice que quien "+
+        "se cae ahí tiene tres años de mala suerte."},
+  {cid:"ky-gion",name:"Gion: Yasaka, Hanamikoji y Shirakawa",type:"sight",dur:70,
+   note:"El barrio de las geishas (geiko) y sus aprendices (maiko). Pasen por el santuario <b>Yasaka</b>, la calle "+
+        "<b>Hanamikoji</b> con sus casas de té de madera, y el canal <b>Shirakawa</b>, con sauces y puentecitos: el "+
+        "rincón más bonito de Kioto.<br>"+
+        "⚠ En Hanamikoji hay callejones privados donde multan por entrar o tomar fotos: respeten los letreros y no "+
+        "persigan a las maiko."},
+  {cid:"ky1-comida",name:"Comida kaiseki en Gion",type:"food",dur:75,
+   costos:[["Comida kaiseki (2)",2500]],
+   note:"El <b>kaiseki</b> es la alta cocina de Kioto: muchos tiempos pequeños de temporada, cada uno en su plato. "+
+        "Al mediodía cuesta mucho menos que en la cena. Si prefieren algo más ligero, <b>yudofu</b> (tofu de "+
+        "Kioto en caldo) o soba. <b>Reserven.</b>"},
+  {cid:"ky1-a-kinkaku",name:"Taxi a Kinkaku-ji",type:"transfer",dur:30,costos:[["Taxi (2)",450]]},
+  {cid:"ky-kinkakuji",name:"Kinkaku-ji, el Pabellón Dorado",type:"sight",dur:60,
+   note:"El pabellón cubierto de hoja de oro que se refleja en el estanque. Fue la villa de retiro de un shogun "+
+        "(1397); el de hoy es de 1955, porque un monje lo incendió en 1950 (la historia de la novela de Mishima).<br>"+
+        "Se recorre en ~45 min por un camino de un solo sentido. ~¥500 c/u; el boleto es un amuleto de papel."},
+  {cid:"ky1-a-hotel",name:"Taxi al hotel",type:"transfer",dur:30},
+  {cid:"ky1-descanso",name:"Descanso antes de Osaka",type:"rest",dur:115},
+  {cid:"ky1-a-osaka",name:"Tren a Osaka (Namba)",type:"transfer",dur:50,fixed:"16:45",
+   costos:[["Trenes Kioto ⇄ Osaka, ida y vuelta (2)",450]],
+   note:"<b>JR Special Rapid</b> de Kioto a Osaka, ~30 min, sale cada ~15 min; ahí metro Midosuji a Namba, 10 min. "+
+        "(Si el hotel está del lado de Gion o Kawaramachi, el Hankyu o el Keihan llegan directo a Osaka.) Se paga "+
+        "con la Suica/ICOCA del celular."},
+  {cid:"ky1-dotonbori",name:"Osaka: Dotonbori y Shinsaibashi al anochecer",type:"sight",dur:60,
+   note:"El Osaka de los neones: el canal de Dotonbori con el <b>letrero del corredor de Glico</b>, el cangrejo "+
+        "gigante que mueve las patas y las fachadas con pulpos y dragones. Crucen el puente Ebisu (la foto del "+
+        "Glico) y caminen la galería techada de Shinsaibashi. A esta hora se prenden los letreros."},
+  {cid:"ky1-cena-osaka",name:"Osaka: cena callejera de takoyaki, okonomiyaki y kushikatsu",type:"food",dur:105,
+   costos:[["Cena en Osaka (2)",1400]],
+   note:"<b>Kuidaore</b>, «comer hasta caer», es el lema de Osaka. Vayan probando:<ul>"+
+        "<li><b>Takoyaki</b>: bolitas de pulpo, en un puesto de Dotonbori.</li>"+
+        "<li><b>Okonomiyaki</b>: una crepa gruesa de col con carne o mariscos, hecha en la plancha de su mesa.</li>"+
+        "<li><b>Kushikatsu</b>: brochetas empanizadas. Regla de la casa: se mojan UNA sola vez en la salsa común.</li></ul>"+
+        "Con cerveza o highball."},
+  {cid:"ky1-hozenji",name:"Osaka: Hozenji Yokocho y copas en Ura-Namba",type:"bar",dur:90,
+   costos:[["Copas (2)",1000]],
+   note:"A una cuadra del ruido: <b>Hozenji Yokocho</b>, un callejón empedrado de faroles con el pequeño templo "+
+        "Hozen-ji, cuya estatua está cubierta de musgo porque cada quien le echa agua al pedir un deseo.<br>"+
+        "Después, <b>Ura-Namba</b> («la Namba de atrás»): callejones de barras chiquitas e izakayas, donde salen "+
+        "los de Osaka."},
+  {cid:"ky1-vuelta",name:"Tren de regreso a Kioto",type:"transfer",dur:60,
+   note:"Metro a Osaka/Umeda y JR a Kioto (~45 min) y taxi al hotel. El último tren sale cerca de la medianoche: "+
+        "no lo dejen para el final."}
+];
+const TK_DIA0_V2=[
+  {cid:"tk0-desayuno",name:"Kioto: desayuno rápido",type:"food",dur:30,fixed:"07:00",
+   costos:[["Desayuno (2)",300]],
+   note:"Rápido: Arashiyama es mejor antes de las 9:00. Dejen las maletas listas para pasar por ellas después."},
+  {cid:"tk0-a-arashiyama",name:"Kioto: taxi a Arashiyama",type:"transfer",dur:30,costos:[["Taxi (2)",450]],
+   note:"~30 min al oeste de la ciudad."},
+  {cid:"tk0-bambu",name:"Kioto: el bosque de bambú de Arashiyama",type:"sight",dur:40,
+   note:"El camino entre tallos de bambú de más de 20 m que crujen con el viento. A las 8:00 todavía se camina; a "+
+        "las 10:00 es una fila. Gratis y abierto siempre. Es la razón de dormir en Kioto: desde Osaka o Tokio "+
+        "no se llega a esta hora."},
+  {cid:"tk0-tenryuji",name:"Kioto: Tenryu-ji y su jardín",type:"sight",dur:60,
+   note:"Templo zen de 1339, Patrimonio de la Humanidad, con uno de los jardines más antiguos de Japón: el "+
+        "estanque Sogen-chi, que «toma prestadas» las montañas de Arashiyama como fondo. Tiene puerta directa al "+
+        "bosque de bambú. Abre a las 8:30; ~¥500 el jardín."},
+  {cid:"tk0-togetsukyo",name:"Kioto: puente Togetsukyo y un café junto al río",type:"sight",dur:40,
+   costos:[["Café (2)",200]],
+   note:"El «puente que cruza la luna», sobre el río Katsura con las montañas de fondo. Café en % Arabica, junto "+
+        "al río."},
+  {cid:"tk0-regreso",name:"Kioto: por las maletas y a la estación",type:"transfer",dur:70,costos:[["Taxis (2)",450]],
+   note:"Taxi al hotel, check-out y a la estación de Kioto. Compren un <b>ekiben</b> (el bento de estación) para "+
+        "comer en el tren. Lleguen al andén 15 min antes."},
+  {cid:"tk-arrive",name:"Shinkansen Nozomi Kioto → Tokio",type:"transfer",fixed:"12:00",dur:135,
+   costos:[["Shinkansen Nozomi, asiento reservado (2)",3500]],
+   note:"2 h 15; sale uno cada ~10 min. Pidan <b>asiento E</b> (ventana de la fila de dos, del lado norte): ahí se "+
+        "ve el monte Fuji ~45 min antes de llegar, si está despejado. ~¥14,400 c/u con asiento reservado. Llegan "+
+        "a la estación de Tokio."},
+  {cid:"tk0-hotel",name:"Tokio: al hotel y check-in",type:"transfer",dur:45,
+   note:"Taxi o metro según el hotel (todavía no lo tienen). El check-in suele ser a las 15:00."},
+  {cid:"g-rest",dur:90},
+  {cid:"tk-shibuya"},
+  {cid:"tk-shibuyasky",fixed:"18:00"},
+  {cid:"tk-izakaya"}
+];
+function migrarKansai(s){
+  if(s.jpPlanV1)return;
+  const ky=s.bases&&s.bases.kyoto,tk=s.bases&&s.bases.tokyo,sh=s.bases&&s.bases.shanghai;
+  if(s.bases&&s.bases.hk&&ky&&Array.isArray(ky.catalog)&&tk&&Array.isArray(tk.catalog)){
+    const costos=(base,lista)=>lista.forEach(a=>{
+      const x=a.costos&&base.catalog.find(y=>y.cid===a.cid);
+      if(x)x.costs=a.costos.map(([label,est])=>({id:uid(),label,est,real:0}));
+    });
+    const ficha=(base,cid,d)=>{const a=base&&(base.catalog||[]).find(x=>x.cid===cid);if(a)Object.assign(a,d);};
+    sembrarDia(ky,0,KY_DIA0_V3,"05:15");
+    sembrarDia(ky,1,KY_DIA1_V3,"07:15");
+    sembrarDia(tk,0,TK_DIA0_V2,"07:00");
+    costos(ky,KY_DIA0_V3);costos(ky,KY_DIA1_V3);costos(tk,TK_DIA0_V2);
+    // domingo en Shanghái: el lunes salen a las 5:15, la noche termina antes
+    ficha(sh,"sh2h-descanso",{note:"Mañana salen a las 5:15: dejen las maletas casi listas. En la recepción pidan "+
+      "la caja de desayuno y el taxi de las 5:15 al aeropuerto de Pudong."});
+    ficha(sh,"sh-farewell",{dur:105});
+    ficha(sh,"sh2h-jazz",{dur:30});
+    ficha(sh,"sh2h-vuelta",{name:"Taxi de regreso al hotel: mañana salen a las 5:15",
+      note:"~20 min a Pudong. El despertador del lunes suena a las 4:45."});
+  }
+  if(Array.isArray(s.esenciales)){
+    [ESSENTIAL_SH_KIX,ESSENTIAL_KANSAI].forEach(E=>{
+      const e=s.esenciales.find(x=>x.id===E.id);
+      if(e)Object.assign(e,{t:E.t,s:E.s});
+      else{
+        const i=s.esenciales.findIndex(x=>x.id==="ess-sh-kix");
+        s.esenciales.splice(i<0?s.esenciales.length:i+1,0,{...E});
+      }
+    });
+  }
+  s.jpPlanV1=true;
 }
 /* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
 function freshBlankTrip(titulo){
