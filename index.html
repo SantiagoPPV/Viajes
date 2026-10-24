@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v31.15 · 18 oct 2026 · Tokio a detalle: hotel en Ginza, el Tokio clásico y el día de compras";
+const APP_VERSION="v31.16 · 24 oct 2026 · Yangshuo: la reserva del Sugar House, con precio y lo que incluye";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -3719,6 +3719,7 @@ function normalizeTripState(s){
   migrarKiotoHotel(s);       // Kioto con su hotel en Sanjo (Mitsui Garden Premier) y notas a detalle
   migrarKiotoMejor(s);       // lo mejor de Kioto: Gion al anochecer, Ginkaku-ji y el Camino del Filósofo
   migrarTokio(s);            // Tokio a detalle con su hotel en Ginza y el día de compras
+  migrarYangshuoHotel(s);    // la reserva del Sugar House: precio, qué incluye y cancelación
   return s;
 }
 /* ---- Llegada a Yangshuo: domingo 9 de mayo de 2027, paso a paso ----
@@ -7091,6 +7092,49 @@ function migrarTokio(s){
     }
   }
   s.tkPlanV2=true;
+}
+/* ---- Yangshuo: la reserva del Sugar House (v31.16) ----
+   Del comprobante de Trip.com: 2 noches (9-11 may 2027), Deluxe Retreat King,
+   CNY 5,130 con IVA, se paga en el hotel; preautorización de MXN 14,351.18.
+   Sin el PIN ni el número de reserva: esos se quedan en el comprobante. */
+function migrarYangshuoHotel(s){
+  if(s.ysHotelV2)return;
+  const ys=s.bases&&s.bases.yangshuo;
+  if(s.bases&&s.bases.hk&&ys&&Array.isArray(ys.hotels)){
+    let h=ys.hotels.find(x=>/sugar house/i.test(x.name||""));
+    ys.hotels.forEach(x=>{x.chosen=false;});
+    if(h)ys.hotels.splice(ys.hotels.indexOf(h),1);
+    else h={id:uid()};
+    Object.assign(h,{name:"Yangshuo Sugar House",chosen:true,noches:2,precio:7175.59,
+      area:"No. 102 Dongling Road (antigua fábrica de azúcar), Yangshuo · Tel. +86-773-8883999",
+      note:"<b>★ RESERVADO en Trip.com · domingo 9 al martes 11 de mayo, 2 noches.</b> Check-in desde las 15:00 y "+
+           "check-out antes de las 12:00 (hora local); si llegan antes, dejen las maletas y vayan a comer.<br>"+
+           "<b>Habitación:</b> Sugar House Deluxe Retreat King, 1 cama king, para 2 adultos.<br>"+
+           "<b>Precio:</b> CNY 5,130 en total, con IVA (CNY 290.38) incluido, y <b>se paga en el hotel</b>. Trip.com "+
+           "hizo una preautorización de <b>MXN 14,351.18</b> en la tarjeta: es lo que cuenta en el presupuesto "+
+           "(~$7,176 por noche). El cargo final depende del tipo de cambio del día en que paguen.<br>"+
+           "<b>Incluye:</b><ul>"+
+           "<li>Desayuno para 2 el lunes 10 y el martes 11 (el martes pídanlo para llevar: salen a las 7:00).</li>"+
+           "<li>Fruta de bienvenida y un snack en el servicio de cobertura.</li>"+
+           "<li>Refrescos del minibar todos los días.</li>"+
+           "<li>Clase de tai chi o yoga cada mañana (el lunes salen a las 4:45 a Xianggong: pregunten la hora).</li>"+
+           "<li>Recorrido de arte por la fábrica (Sugar House art tour).</li>"+
+           "<li>Una sesión de fotografía de viaje: buena para el domingo en la tarde, en la alberca y la fábrica.</li>"+
+           "<li>2 vales de spa de CNY 300 cada uno: el lunes, de las 16:30 en adelante, tienen la tarde libre.</li>"+
+           "<li>Un detalle sorpresa, «Childhood memories in a hanging basket».</li></ul>"+
+           "<b>⚠ Cancelación:</b> gratis solo hasta el 25 de octubre de 2026 a las 6:59 hora de China (el 24 a las "+
+           "16:59 en México). Después es <b>no reembolsable</b>, y si no llegan se cobra.<br>"+
+           "El número de reserva y el PIN están en su comprobante de Trip.com: no los compartan.<br>"+
+           "<b>El hotel:</b> antigua fábrica de azúcar de 1969 convertida por Vector Architects, con la alberca entre "+
+           "los picos kársticos; restaurante en la vieja sala de prensado y el 1969 Bar. A ~2.5 km de West Street; "+
+           "de la estación de Yangshuo son 28 km (~45 min)."});
+    ys.hotels.unshift(h);
+    const d=(ys.catalog||[]).find(a=>a.cid==="ys-desayuno");
+    if(d){d.costs=[];
+      d.note="<b>8:00, con calma.</b> Incluido en su tarifa: desayuno para 2 el lunes y el martes.<br>"+
+        "El martes salen a las 7:00 a la estación: pidan la noche anterior el desayuno para llevar.";}
+  }
+  s.ysHotelV2=true;
 }
 /* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
 function freshBlankTrip(titulo){
