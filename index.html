@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v31.16 · 24 oct 2026 · Yangshuo: la reserva del Sugar House, con precio y lo que incluye";
+const APP_VERSION="v31.17 · 24 oct 2026 · Hong Kong: la reserva del Renaissance, con precio y cancelación";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -3720,6 +3720,7 @@ function normalizeTripState(s){
   migrarKiotoMejor(s);       // lo mejor de Kioto: Gion al anochecer, Ginkaku-ji y el Camino del Filósofo
   migrarTokio(s);            // Tokio a detalle con su hotel en Ginza y el día de compras
   migrarYangshuoHotel(s);    // la reserva del Sugar House: precio, qué incluye y cancelación
+  migrarHongKongHotel(s);    // la reserva del Renaissance en Booking.com: precio y cancelación
   return s;
 }
 /* ---- Llegada a Yangshuo: domingo 9 de mayo de 2027, paso a paso ----
@@ -7135,6 +7136,41 @@ function migrarYangshuoHotel(s){
         "El martes salen a las 7:00 a la estación: pidan la noche anterior el desayuno para llevar.";}
   }
   s.ysHotelV2=true;
+}
+/* ---- Hong Kong: la reserva del Renaissance (v31.17) ----
+   De la confirmación de Booking.com: 3 noches (6-9 may 2027), cama grande con
+   vista al jardín, HK$ 6,780 en total (6,000 + 180 de impuesto municipal + 600
+   de servicio), sin pago por adelantado. En pesos, con el dólar a ~$17.8 y el
+   HK$ fijo a ~7.8 por dólar: ~$2.28 por HK$. Sin el PIN ni el nombre. */
+function migrarHongKongHotel(s){
+  if(s.hkHotelV9)return;
+  const hk=s.bases&&s.bases.hk;
+  if(hk&&Array.isArray(hk.hotels)){
+    let h=hk.hotels.find(x=>/renaissance/i.test(x.name||""));
+    if(h){
+      hk.hotels.forEach(x=>{x.chosen=false;});
+      hk.hotels.splice(hk.hotels.indexOf(h),1);
+      Object.assign(h,{name:"Renaissance Hong Kong Harbour View",chosen:true,noches:3,precio:5152.8,
+        area:"1 Harbour Road, Wan Chai · isla de Hong Kong · Tel. +852 2802 8888",
+        note:"<b>★ RESERVADO en Booking.com · jueves 6 al domingo 9 de mayo, 3 noches.</b> Check-in desde las 14:00 y "+
+             "check-out hasta las 12:00.<br>"+
+             "<b>Habitación:</b> cama grande con vista al jardín, para 2 adultos.<br>"+
+             "<b>Precio:</b> HK$ 6,780 en total: habitación HK$ 6,000 + impuesto municipal HK$ 180 + cargo por "+
+             "servicio HK$ 600. <b>No se paga por adelantado:</b> se paga en el hotel, que puede bloquear un "+
+             "depósito temporal en la tarjeta (se libera completo).<br>"+
+             "En el presupuesto: <b>~$15,458</b> (~$5,153 por noche), con el dólar a ~$17.8 (el HK$ está fijo a ~7.8 "+
+             "por dólar). Ajústenlo al tipo de cambio del día en que paguen.<br>"+
+             "<b>Cancelación:</b> gratis hasta el <b>lunes 3 de mayo de 2027 a las 23:59</b> (hora de Hong Kong). "+
+             "Desde el 4 de mayo, o si no llegan, cobran HK$ 2,200 (la primera noche).<br>"+
+             "El PIN de Booking.com sirve para cambiar o cancelar la reserva: no lo compartan.<br>"+
+             "<b>El hotel:</b> en el malecón de Wan Chai, con acceso directo al Centro de Convenciones. Estación "+
+             "Exhibition Centre (East Rail) a 3 min a pie y Wan Chai (línea Isla) a 10 min por pasillos techados.<br>"+
+             "<i>Ojo: está en la ISLA, no en Kowloon; los traslados de los tres días ya están calculados desde Wan "+
+             "Chai.</i>"});
+      hk.hotels.unshift(h);
+    }
+  }
+  s.hkHotelV9=true;
 }
 /* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
 function freshBlankTrip(titulo){
