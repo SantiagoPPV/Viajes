@@ -69,7 +69,7 @@
   .datestrip b{color:var(--ink);font-weight:600}
   .countdown{color:var(--seal-deep)}
 
-  .summary{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:16px 0 6px}
+  .summary{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin:16px 0 6px}
   .chip{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;box-shadow:var(--shadow)}
   .chip .n{font-family:"Cormorant Garamond",serif;font-size:30px;font-weight:600;line-height:1}
   .chip .l{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;
@@ -532,6 +532,110 @@
     padding:2px 4px;margin-left:6px}
   button.linkbtn:hover{color:var(--jade)}
 
+  /* ---------- hoteles: ficha de la reserva ---------- */
+  .rf-view{display:flex;flex-direction:column;gap:8px;margin:4px 0 2px}
+  .rf-pills{display:flex;flex-wrap:wrap;gap:6px}
+  .rf-pill{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.03em;border-radius:20px;
+    padding:3px 10px;border:1px solid var(--line);background:var(--card);color:var(--ink-soft);white-space:nowrap}
+  .rf-pill.ok{color:var(--jade);border-color:var(--jade);background:rgba(95,117,101,.10)}
+  .rf-pill.ok2{color:var(--jade);border-color:var(--line)}
+  .rf-pill.pend{color:#8a6420;border-color:#d9b46a;background:#fbf1dc}
+  .rf-pill.warn{color:#8a6420;border-color:#c09146;background:#fbf1dc}
+  .rf-pill.urg{color:#fff;border-color:var(--seal);background:var(--seal)}
+  .rf-pill.gris{color:var(--ink-soft);background:var(--paper-2)}
+  .rf-pill.hoy{color:#fff;border-color:var(--ink);background:var(--ink)}
+  .rf-fechas{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;
+    background:var(--card-2);border:1px solid var(--line-soft);border-radius:10px;padding:9px 12px}
+  .rf-fechas>div{display:flex;flex-direction:column;line-height:1.25}
+  .rf-fechas>div:last-child{text-align:right}
+  .rf-fechas small{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-soft)}
+  .rf-fechas b{font-family:"Cormorant Garamond",serif;font-size:21px;font-weight:600}
+  .rf-fechas span{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft)}
+  .rf-fechas .rf-n{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--jade);text-align:center;
+    border-top:1px dashed var(--line);padding-top:3px}
+  .rf-grid{display:flex;flex-direction:column;border-top:1px solid var(--line-soft)}
+  .rf-row{display:grid;grid-template-columns:128px 1fr;gap:10px;padding:7px 0;border-bottom:1px solid var(--line-soft);
+    font-size:13px;line-height:1.45}
+  .rf-l{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.06em;color:var(--ink-soft);
+    text-transform:uppercase;padding-top:2px}
+  .rf-v{min-width:0;overflow-wrap:anywhere}
+  .rf-sub{font-size:11.5px;color:var(--ink-soft);font-style:italic;margin:2px 0 0}
+  .rf-warn{font-size:12.5px;color:var(--seal-deep);background:#f8ece6;border:1px solid var(--seal);
+    border-radius:9px;padding:7px 10px}
+  .rf-local{font-size:15px;line-height:1.5}
+  .rf-num{font-family:"IBM Plex Mono",monospace;font-size:13.5px;font-weight:600;letter-spacing:.04em}
+  .rf-falta{font-size:12px;color:#8a6420;font-style:italic}
+  .rf-tel{color:var(--ink);font-family:"IBM Plex Mono",monospace;font-size:13px}
+  .rf-acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px}
+  .rf-btn{font-family:"IBM Plex Mono",monospace;font-size:11px;border:1px solid var(--line);background:var(--card);
+    color:var(--ink);border-radius:8px;padding:5px 9px;cursor:pointer;text-decoration:none;display:inline-flex;
+    align-items:center;gap:4px;line-height:1.3;min-height:30px}
+  .rf-btn:hover{background:var(--card-2);border-color:var(--jade)}
+  .rf-btn.fuerte{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .rf-btn.fuerte:hover{background:var(--jade);border-color:var(--jade)}
+  details.resedit{border:1px dashed var(--line);border-radius:10px;padding:0 10px;background:rgba(255,255,255,.35)}
+  details.resedit>summary{cursor:pointer;font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-soft);
+    padding:8px 0;list-style:none}
+  details.resedit>summary::-webkit-details-marker{display:none}
+  details.resedit[open]>summary{color:var(--ink)}
+  .rgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 12px;padding:2px 0 8px}
+  .rgf{display:flex;flex-direction:column;gap:3px;min-width:0}
+  .rgf.ancho{grid-column:1/-1}
+  .rgf>span{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.06em;color:var(--ink-soft);
+    text-transform:uppercase}
+  .rgf .f{width:100%;min-width:0;box-sizing:border-box}
+  .hline{font-size:12.5px;color:var(--ink-soft);margin-top:5px;cursor:pointer;line-height:1.35}
+  .hline:hover{color:var(--jade);text-decoration:underline}
+  /* sección «Hoteles» */
+  .hlist{display:flex;flex-direction:column;gap:7px}
+  .hrow{background:var(--card);border:1px solid var(--line);border-left-width:3px;border-radius:11px;box-shadow:var(--shadow)}
+  .hrow.res{border-left-color:var(--jade)}
+  .hrow.hoy{border-color:var(--ink);box-shadow:0 0 0 2px rgba(28,28,25,.12),var(--shadow)}
+  .hrow>summary,.hrow.vacio{display:grid;grid-template-columns:118px minmax(0,1fr) auto;align-items:center;
+    gap:10px;padding:10px 14px;cursor:pointer;list-style:none}
+  .hrow>summary::-webkit-details-marker{display:none}
+  .hrow.vacio{cursor:default;opacity:.75;box-shadow:none;background:transparent;border-style:dashed}
+  .hr-f{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink);font-weight:600}
+  .hr-c{display:flex;flex-direction:column;min-width:0;line-height:1.25}
+  .hr-c b{font-family:"Cormorant Garamond",serif;font-size:19px;font-weight:600}
+  .hr-c span{font-size:12.5px;color:var(--ink-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .hr-p{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+  .hrow[open]>summary{border-bottom:1px solid var(--line-soft)}
+  .hrow[open] .hr-c span{white-space:normal}
+  .hr-body{padding:10px 14px 14px;display:flex;flex-direction:column;gap:8px}
+  .chip.link{cursor:pointer}
+  .chip.link:hover{border-color:var(--jade)}
+  /* pantalla para el taxista */
+  .taxiov{position:fixed;inset:0;z-index:10001;background:#fff;display:flex;align-items:center;
+    justify-content:center;padding:24px;cursor:pointer;animation:cffade .15s ease}
+  .taxibox{max-width:760px;width:100%;text-align:center;color:#111}
+  .tx-frase{font-size:clamp(20px,5vw,30px);color:#555;margin-bottom:18px}
+  .tx-dir{font-size:clamp(30px,8.5vw,58px);font-weight:700;line-height:1.35;word-break:break-all}
+  .tx-tel{font-family:"IBM Plex Mono",monospace;font-size:clamp(18px,4.5vw,26px);margin-top:20px}
+  .tx-es{font-size:13px;color:#888;margin-top:26px;font-style:italic}
+  /* la ficha se acomoda al ancho de su caja: en la pestaña 🏨 del celular es angosta */
+  .pbody,.hr-body{container-type:inline-size}
+  @container (max-width:460px){
+    .rf-row{grid-template-columns:1fr;gap:1px}
+    .rgrid{grid-template-columns:1fr}
+    .rf-fechas{grid-template-columns:1fr 1fr;row-gap:5px}
+    .rf-fechas .rf-n{grid-column:1/-1;order:3}
+    .rf-fechas b{font-size:17px}
+    .rf-pill{white-space:normal}
+  }
+  @container (max-width:300px){
+    .rf-fechas{grid-template-columns:1fr}
+    .rf-fechas>div:last-child{text-align:left}
+    .rf-fechas b{font-size:16px;white-space:nowrap}
+  }
+  @media (max-width:560px){
+    .rgrid{grid-template-columns:1fr}
+    .hrow>summary,.hrow.vacio{grid-template-columns:1fr auto;gap:4px 10px}
+    .hr-f{grid-column:1/-1;font-size:11px;font-weight:500;color:var(--ink-soft)}
+  }
+  #printview .pv-res{font-size:8.5pt;color:#5c5648;margin:0 0 3px 16px}
+
   /* ---------- buscador ---------- */
   .findbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:12px}
   .findbar input{flex:1;min-width:180px;font-size:13.5px;padding:10px 12px;border-radius:10px;
@@ -830,6 +934,12 @@
 
   <div class="summary" id="summary"></div>
 
+  <section class="sec" id="hotelsSection">
+    <div class="sec-head"><h2>Hoteles</h2><span class="rule"></span>
+      <span class="hint" id="hotelsHint"></span></div>
+    <div id="hotelsList"></div>
+  </section>
+
   <section class="sec" id="mapSection">
     <div class="sec-head"><h2>Mapa de la ruta</h2><span class="rule"></span>
       <span class="hint">tinta = tren · rojo punteado = vuelo</span></div>
@@ -905,7 +1015,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v31.18 · 24 oct 2026 · Chengdu y Chongqing: sus reservas, con precio";
+const APP_VERSION="v31.19 · 24 oct 2026 · Hoteles: ficha de cada reserva y Xi'an reservado";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -3671,6 +3781,10 @@ function normalizeTripState(s){
     [st.hotels,st.food].forEach(arr=>(arr||[]).forEach(x=>{
       if(x.note&&pareceHTML(x.note))x.note=limpiarHTML(x.note);
     }));
+    (st.hotels||[]).forEach(h=>{             // ficha de la reserva: solo campos conocidos, como texto
+      if(h.reserva===undefined)return;
+      const r=limpiarReserva(h.reserva);if(r)h.reserva=r;else delete h.reserva;
+    });
     if(!st.budget)st.budget={lodgingEst:0,lodgingReal:0,miscEst:0,miscReal:0};
     if(st.expanded===undefined)st.expanded=false;
     if(st.tab===undefined)st.tab="plan";
@@ -3723,6 +3837,8 @@ function normalizeTripState(s){
   migrarHongKongHotel(s);    // la reserva del Renaissance en Booking.com: precio y cancelación
   migrarChengduHotel(s);     // la reserva del Chuanxing Yinli en Trip.com: precio y cancelación
   migrarChongqingHotel(s);   // la reserva del InterContinental Raffles City en Trip.com
+  migrarXianHotel(s);        // la reserva del HUALUXE en Trip.com
+  migrarFichasReserva(s);    // la ficha de reserva de cada hotel
   return s;
 }
 /* ---- Llegada a Yangshuo: domingo 9 de mayo de 2027, paso a paso ----
@@ -7244,6 +7360,138 @@ function migrarChongqingHotel(s){
   }
   s.cqHotelV6=true;
 }
+/* ---- Xi'an: la reserva del HUALUXE Tanghua (v31.19) ----
+   Del comprobante de Trip.com: 2 noches (16-18 may 2027), 1 King Standard
+   Walk-in Shower, CNY 2,245.72 con IVA y cargo por servicio, se paga en el
+   hotel, desayuno para 2 los dos días y late check-out hasta las 14:00;
+   preautorización de MXN 6,282.40. Sin el PIN ni los números. */
+function migrarXianHotel(s){
+  if(s.xaHotelV6)return;
+  const xa=s.bases&&s.bases.xian;
+  if(s.bases&&s.bases.hk&&xa&&Array.isArray(xa.hotels)){
+    let h=xa.hotels.find(x=>/hualuxe|tanghua|唐华/i.test(x.name||""));
+    xa.hotels.forEach(x=>{x.chosen=false;});
+    if(h)xa.hotels.splice(xa.hotels.indexOf(h),1);
+    else h={id:uid()};
+    Object.assign(h,{name:"HUALUXE Xi'an Tanghua (西安唐华华邑酒店)",chosen:true,noches:2,precio:3141.2,
+      area:"No. 40 Yanyin Road, Qujiang · a ~6 min a pie de la Gran Pagoda · Tel. +86-29-87990000",
+      note:"<b>★ RESERVADO en Trip.com · domingo 16 al martes 18 de mayo, 2 noches.</b> Check-in desde las 15:00 "+
+           "(llegan ~19:45 de Zhangjiajie) y check-out hasta las <b>14:00</b>: el late check-out viene de regalo "+
+           "en su tarifa (el martes salen a las 7:30 con las maletas, así que no lo van a necesitar).<br>"+
+           "<b>Habitación:</b> 1 King Standard Walk-in Shower: 1 cama king y regadera walk-in, para 2 adultos; "+
+           "batas y pantuflas.<br>"+
+           "<b>Precio:</b> CNY 2,245.72 en total, con IVA (CNY 127.12) y cargo por servicio (CNY 192.60) incluidos, "+
+           "y <b>se paga en el hotel</b>. Trip.com hizo una preautorización de <b>MXN 6,282.40</b>: es lo que cuenta "+
+           "en el presupuesto (~$3,141 por noche). El cargo final depende del tipo de cambio del día.<br>"+
+           "<b>Incluye desayuno</b> para 2 el lunes 17 y el martes 18: buffet chino y occidental, con antojitos de "+
+           "Shaanxi. El martes salen a las 7:30: pidan la noche anterior que los dejen pasar a las 6:30 o una caja "+
+           "para llevar.<br>"+
+           "<b>⚠ Cancelación:</b> gratis solo hasta el 25 de octubre de 2026 a las 7:58 hora de China (el 24 a las "+
+           "17:58 en México). Después es <b>no reembolsable</b>, y si no llegan se cobra.<br>"+
+           "El número de reserva y el PIN están en su comprobante de Trip.com: no los compartan.<br>"+
+           "<b>El hotel:</b> el antiguo Tang Hua, hoy la marca de lujo china de IHG, en un conjunto de estilo Tang "+
+           "con jardines, a un costado de la Gran Pagoda. A pie: Gran Pagoda ~6 min, Datang Everbright City ~7, "+
+           "Plaza Norte (fuentes) ~6-8 y Tang Paradise ~10. El centro amurallado queda a ~7 km (25-40 min en coche)."});
+    xa.hotels.unshift(h);
+    const d=(xa.catalog||[]).find(a=>a.cid==="g-breakfast");
+    if(d){d.costs=[];
+      d.note="<b>En el HUALUXE, incluido en su tarifa:</b> desayuno para 2 el lunes y el martes, buffet chino y "+
+        "occidental con antojitos de Shaanxi.<br><b>El martes salen a las 7:30:</b> pidan la noche anterior que los "+
+        "dejen pasar a las 6:30 o una caja para llevar.";}
+  }
+  s.xaHotelV6=true;
+}
+/* ---- Ficha de reserva de cada hotel (v31.19) ----
+   Pasa a campos lo de cada comprobante —y lo que ya se sabe de los que
+   faltan—: fechas y horas, cuarto, precio local, pago, desayuno, cancelación,
+   teléfono y la dirección para el taxista. Los números de confirmación y de
+   reserva NO van aquí: los capturan ustedes en la app. */
+const FICHAS_2027=[
+  {base:"hk",re:/renaissance/i,r:{estado:"reservado",via:"Booking.com",
+    entrada:"2027-05-06",horaEntrada:"14:00",salida:"2027-05-09",horaSalida:"12:00",
+    habitacion:"Cama grande con vista al jardín · 2 adultos",moneda:"HKD",monto:"6780",
+    desglose:"Habitación HK$ 6,000 + impuesto municipal HK$ 180 + cargo por servicio HK$ 600",
+    pago:"En el hotel, sin pago por adelantado; pueden bloquear un depósito temporal en la tarjeta (se libera completo)",
+    desayuno:"No viene en la reserva",
+    cancelacion:"Gratis hasta el lunes 3 de mayo de 2027 a las 23:59 (hora de Hong Kong). Desde el 4 de mayo, o si no llegan: HK$ 2,200 (la primera noche)",
+    cancelLimite:"2027-05-03T23:59",zona:"+08:00",
+    direccion:"1 Harbour Road, Wan Chai, Hong Kong",
+    direccionLocal:"香港萬麗海景酒店 · 香港灣仔港灣道1號",tel:"+852 2802 8888"}},
+  {base:"yangshuo",re:/sugar house|糖舍/i,r:{estado:"reservado",via:"Trip.com",
+    entrada:"2027-05-09",horaEntrada:"15:00",salida:"2027-05-11",horaSalida:"12:00",
+    habitacion:"Sugar House Deluxe Retreat King · 1 cama king · 2 adultos",moneda:"CNY",monto:"5130",
+    desglose:"IVA (CNY 290.38) incluido",
+    pago:"En el hotel · Trip.com hizo una preautorización de MXN 14,351.18",
+    desayuno:"Incluido para 2: lunes 10 y martes 11 (el martes, para llevar)",
+    extras:"Fruta de bienvenida, refrescos del minibar, snack en la cobertura, tai chi o yoga cada mañana, recorrido de arte, sesión de fotos, 2 vales de spa de CNY 300 y el detalle «hanging basket»",
+    cancelacion:"Gratis hasta el 25 de octubre de 2026 a las 6:59 (hora de China); después es no reembolsable, y si no llegan se cobra",
+    cancelLimite:"2026-10-25T06:59",zona:"+08:00",
+    direccion:"No. 102 Dongling Road (antigua fábrica de azúcar), Yangshuo, Guangxi",
+    direccionLocal:"阳朔糖舍度假酒店 · 广西桂林市阳朔县东岭路102号（原糖厂）",tel:"+86-773-8883999"}},
+  {base:"chengdu",re:/chuanxing|yinli|隐里/i,r:{estado:"reservado",via:"Trip.com",
+    entrada:"2027-05-11",horaEntrada:"14:00",salida:"2027-05-13",horaSalida:"12:00",
+    habitacion:"Beili Big Bed Room · 1 cama queen · 2 adultos",moneda:"CNY",monto:"1216",
+    desglose:"IVA (CNY 68.84) incluido",pago:"En el hotel",
+    desayuno:"No incluido: compren algo la noche anterior (el miércoles salen a las 6:55 y el jueves a las 8:15)",
+    extras:"Fruta de bienvenida; Nespresso con cápsulas, minibar y purificador de aire",
+    cancelacion:"Gratis en cualquier momento antes del check-in",
+    direccion:"Building 1, No. 19 Shierqiao Road, Jinniu, Chengdu",
+    direccionLocal:"川行隐里酒店 · 成都市金牛区十二桥路19号1栋",tel:"+86-28-89109888"}},
+  {base:"chongqing",re:/intercontinental|洲际/i,r:{estado:"reservado",via:"Trip.com",
+    entrada:"2027-05-13",horaEntrada:"15:00",salida:"2027-05-14",horaSalida:"12:00",
+    habitacion:"King Classic City View · 1 cama king · 2 adultos",moneda:"CNY",monto:"1507.64",
+    desglose:"IVA (CNY 85.34) y cargo por servicio (CNY 129.30) incluidos",
+    pago:"En el hotel · Trip.com hizo una preautorización de MXN 4,217.62",
+    desayuno:"No incluido: el del viernes en Botanica (piso 42) es aparte",
+    cancelacion:"El comprobante solo dice que si no llegan se cobra: confirmen en Trip.com si se puede cancelar sin costo",
+    direccion:"No. 2 Changjiang Binjiang Road, Raffles City, Yuzhong, Chongqing",
+    direccionLocal:"重庆来福士洲际酒店 · 重庆市渝中区长江滨江路2号（来福士）",tel:"+86-23-89888888"}},
+  {base:"zjj",re:/wuyun|五韵/i,r:{estado:"pendiente",entrada:"2027-05-14",salida:"2027-05-16",
+    direccion:"Village Group 3, Ganzi Village, Guanliping, Yongding, Zhangjiajie",
+    direccionLocal:"五韵观山悦酒店 · 张家界市永定区官黎坪甘子村3组"}},
+  {base:"xian",re:/hualuxe|tanghua|唐华/i,r:{estado:"reservado",via:"Trip.com",
+    entrada:"2027-05-16",horaEntrada:"15:00",salida:"2027-05-18",horaSalida:"14:00",
+    habitacion:"1 King Standard Walk-in Shower · 1 cama king · 2 adultos",moneda:"CNY",monto:"2245.72",
+    desglose:"IVA (CNY 127.12) y cargo por servicio (CNY 192.60) incluidos",
+    pago:"En el hotel · Trip.com hizo una preautorización de MXN 6,282.40",
+    desayuno:"Incluido para 2: lunes 17 y martes 18 (el martes salen a las 7:30)",
+    extras:"Late check-out hasta las 14:00, de regalo en su tarifa",
+    cancelacion:"Gratis hasta el 25 de octubre de 2026 a las 7:58 (hora de China); después es no reembolsable, y si no llegan se cobra",
+    cancelLimite:"2026-10-25T07:58",zona:"+08:00",
+    direccion:"No. 40 Yanyin Road, Qujiang New District, Yanta District, Xi'an, Shaanxi",
+    direccionLocal:"西安唐华华邑酒店 · 陕西省西安市雁塔区曲江新区雁引路40号",tel:"+86-29-87990000"}},
+  {base:"beijing",re:/manxin|漫心/i,r:{estado:"pendiente",
+    entrada:"2027-05-18",horaEntrada:"14:00",salida:"2027-05-21",horaSalida:"12:00",
+    direccion:"No. 120 Dajiang Hutong, Qianmen East Road, Dongcheng, Beijing",
+    direccionLocal:"北京漫心酒店（前门四合院店） · 北京市东城区前门东路大江胡同120号"}},
+  {base:"shanghai",re:/h\+ hotel/i,r:{estado:"pendiente",entrada:"2027-05-21",salida:"2027-05-24",
+    direccion:"No. 90 Weifang West Road, Lujiazui, Pudong, Shanghai",
+    direccionLocal:"上海陆家嘴H+酒店 · 上海市浦东新区潍坊西路90号"}},
+  {base:"kyoto",re:/mitsui garden.*sanjo/i,r:{estado:"pendiente",
+    entrada:"2027-05-24",horaEntrada:"15:00",salida:"2027-05-26",horaSalida:"12:00",
+    desayuno:"Buffet de 7:00 a 11:00; ~¥3,850 por persona si no viene en la tarifa",
+    extras:"Baño público estilo onsen. Kioto cobra un impuesto de hospedaje por persona y noche: se paga en el hotel",
+    direccion:"45-1 Hishiya-cho, Sanjo-dori Higashinotoin Higashi-iru, Nakagyo, Kyoto 604-8131",
+    direccionLocal:"三井ガーデンホテル京都三条プレミア · 京都市中京区三条通東洞院東入菱屋町45-1"}},
+  {base:"tokyo",re:/mitsui garden.*ginza/i,r:{estado:"pendiente",
+    entrada:"2027-05-26",horaEntrada:"15:00",salida:"2027-05-29",horaSalida:"12:00",
+    desayuno:"Buffet en el piso 16, de 6:30 a 10:00 (confirmen si viene en la tarifa)",
+    extras:"Recepción en el piso 16, con vista a la Torre de Tokio: pidan un cuarto con vista",
+    direccion:"8-13-1 Ginza, Chuo, Tokyo 104-0061",
+    direccionLocal:"三井ガーデンホテル銀座プレミア · 東京都中央区銀座8-13-1",tel:"+81-3-3543-1131"}}
+];
+function migrarFichasReserva(s){
+  if(s.resFichaV1)return;
+  if(s.bases&&s.bases.hk)FICHAS_2027.forEach(f=>{
+    const st=s.bases[f.base];if(!st||!Array.isArray(st.hotels))return;
+    const h=st.hotels.find(x=>x.chosen&&f.re.test(x.name||""))||st.hotels.find(x=>f.re.test(x.name||""));
+    if(!h)return;
+    const previo=h.reserva||{};          // lo que ya hayan capturado se respeta
+    h.reserva=limpiarReserva(Object.assign({},f.r,
+      {conf:previo.conf||"",reservaNo:previo.reservaNo||""}));
+  });
+  s.resFichaV1=true;
+}
 /* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
 function freshBlankTrip(titulo){
   const b=seedCustomBase("Primera parada",0);
@@ -7735,6 +7983,270 @@ const hotelesElegidos=st=>(st.hotels||[]).filter(h=>h.chosen&&(+h.precio>0));
 const hotelElegido=st=>hotelesElegidos(st)[0]||null;
 const nochesHotel=(st,h)=>{const n=+h.noches;return n>0?n:nochesDe(st);};
 const nochesMarcadas=st=>hotelesElegidos(st).reduce((a,h)=>a+nochesHotel(st,h),0);
+/* ===================== Hoteles: ficha de la reserva =====================
+   Cada hotel puede llevar h.reserva con lo que dice su comprobante: fechas y
+   horas, cuarto, precio en la moneda local, pago, desayuno, cancelación,
+   teléfono y la dirección escrita para el taxista. Se edita en la pestaña 🏨
+   de cada parada y se ve todo junto en la sección «Hoteles».
+   Los números de confirmación y de reserva los capturan ustedes en la app: se
+   guardan en su viaje (privado, en su cuenta), nunca en el código. */
+const RES_CAMPOS=[
+  {k:"estado",l:"Estado",tipo:"estado"},
+  {k:"via",l:"Reservado en",ph:"Trip.com, Booking.com, directo…"},
+  {k:"entrada",l:"Entrada",tipo:"date"},
+  {k:"horaEntrada",l:"Check-in desde",tipo:"time"},
+  {k:"salida",l:"Salida",tipo:"date"},
+  {k:"horaSalida",l:"Check-out hasta",tipo:"time"},
+  {k:"habitacion",l:"Habitación",ph:"tipo de cuarto, cama, personas",ancho:1},
+  {k:"moneda",l:"Moneda",ph:"CNY, HKD, JPY…"},
+  {k:"monto",l:"Total en esa moneda",tipo:"number"},
+  {k:"desglose",l:"El precio incluye",ph:"impuestos, cargo por servicio…",ancho:1},
+  {k:"pago",l:"Pago",ph:"en el hotel, prepagado, depósito…",ancho:1},
+  {k:"desayuno",l:"Desayuno",ph:"incluido, aparte, horario…",ancho:1},
+  {k:"extras",l:"Extras",ph:"late check-out, spa, upgrade…",ancho:1},
+  {k:"cancelacion",l:"Cancelación",ph:"condiciones y cargos",ancho:1},
+  {k:"cancelLimite",l:"Cancelación gratis hasta",tipo:"datetime-local"},
+  {k:"zona",l:"…en la hora de",tipo:"zona"},
+  {k:"direccion",l:"Dirección",ph:"como viene en la reserva",ancho:1},
+  {k:"direccionLocal",l:"Para el taxi (en chino o japonés)",ph:"nombre · dirección en el idioma local",ancho:1},
+  {k:"tel",l:"Teléfono del hotel",tipo:"tel"},
+  {k:"conf",l:"Nº de confirmación",ph:"se guarda solo en su viaje"},
+  {k:"reservaNo",l:"Nº de reserva",ph:"el de Trip.com o Booking"}
+];
+const RES_ZONAS=[["","este dispositivo"],["+08:00","China y Hong Kong (UTC+8)"],
+  ["+09:00","Japón (UTC+9)"],["-06:00","Ciudad de México (UTC−6)"]];
+/* Deja solo los campos conocidos, como texto; borra los vacíos. Si no es un
+   objeto, devuelve undefined (y el hotel se queda sin ficha). */
+function limpiarReserva(r){
+  if(!r||typeof r!=="object"||Array.isArray(r))return undefined;
+  const o={};
+  RES_CAMPOS.forEach(c=>{const v=r[c.k];if(v!=null&&v!=="")o[c.k]=String(v).slice(0,800);});
+  if(o.estado!=="reservado")o.estado="pendiente";
+  return o;
+}
+const resFecha=s=>{const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(s||"");return m?new Date(+m[1],+m[2]-1,+m[3]):null;};
+const hotelesDeParada=st=>(st.hotels||[]).filter(h=>h.chosen);
+/* Límite de cancelación gratis en milisegundos, o null. */
+function limiteCancel(r){
+  const m=/^(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2})(?::\d{2})?$/.exec((r&&r.cancelLimite)||"");if(!m)return null;
+  const t=r.zona?Date.parse(m[1]+"T"+m[2]+":00"+r.zona):new Date(m[1]+"T"+m[2]+":00").getTime();
+  return isNaN(t)?null:t;
+}
+function plazoTxt(ms){
+  const min=Math.max(1,Math.floor(ms/6e4));
+  if(min<60)return min+" min";
+  const h=Math.floor(min/60);
+  if(h<48)return h+" h"+(min%60?" "+(min%60)+" min":"");
+  return Math.floor(h/24)+" días";
+}
+function estadoCancel(r){
+  const t=limiteCancel(r);if(t==null)return null;
+  const diff=t-Date.now(),fd=resFecha(r.cancelLimite.slice(0,10)),hh=r.cancelLimite.slice(11,16),loc=new Date(t);
+  const hm=d=>d.getHours()+":"+String(d.getMinutes()).padStart(2,"0");
+  return{diff,vencida:diff<=0,urgente:diff>0&&diff<48*36e5,pronto:diff>0&&diff<14*864e5,
+    dia:fd,hotel:fmtDia(fd)+" "+fd.getFullYear()+", "+hh.replace(/^0(?=\d)/,""),
+    suya:r.zona?fmtDia(loc)+", "+hm(loc):""};
+}
+const btnCopiar=v=>`<button type="button" class="rf-btn" data-rf="copiar" data-v="${esc(v)}" title="Copiar">📋 Copiar</button>`;
+/* Fechas de la reserva; si no las trae, las de la parada en el itinerario. */
+function fechasReserva(st,h,dd){
+  const r=h.reserva||{},fe=resFecha(r.entrada),fs=resFecha(r.salida);
+  return{fe,fs,ie:fe||(dd?dd.checkin:null),is:fs||(dd?dd.checkout:null)};
+}
+/* La ficha que se lee: estado, fechas y horas, y los datos útiles con botones
+   para copiar, abrir el mapa, llamar o enseñarle la dirección al taxista. */
+function fichaReservaHTML(bid,st,h,dd){
+  const r=h.reserva||{},res=r.estado==="reservado",ec=estadoCancel(r);
+  const {fe,fs,ie,is}=fechasReserva(st,h,dd);
+  const n=ie&&is?Math.round((is-ie)/864e5):nochesHotel(st,h);
+  const pills=[res?`<span class="rf-pill ok">✅ Reservado${r.via?" · "+esc(r.via):""}</span>`
+                  :`<span class="rf-pill pend">⏳ Falta el comprobante</span>`];
+  if(ec)pills.push(ec.vencida?`<span class="rf-pill gris">↩ Ya no se cancela gratis</span>`
+    :`<span class="rf-pill ${ec.urgente?"urg":ec.pronto?"warn":"ok2"}">↩ Cancelación gratis: ${
+      ec.urgente||ec.pronto?"quedan "+plazoTxt(ec.diff):"hasta el "+fmt(ec.dia)}</span>`);
+  if(!(+h.precio>0))pills.push(`<span class="rf-pill pend">💵 Falta el precio</span>`);
+  let html=`<div class="rf-pills">${pills.join("")}</div>`;
+  if(ie&&is)html+=`<div class="rf-fechas">
+      <div><small>Entrada</small><b>${fmtDia(ie)}</b><span>${r.horaEntrada?"desde las "+esc(r.horaEntrada):"&nbsp;"}</span></div>
+      <div class="rf-n">${n} noche${n===1?"":"s"}</div>
+      <div><small>Salida</small><b>${fmtDia(is)}</b><span>${r.horaSalida?"hasta las "+esc(r.horaSalida):"&nbsp;"}</span></div>
+    </div>`+((!fe||!fs)?`<div class="rf-sub">Fechas según el itinerario.</div>`:"");
+  // la reserva no cuadra con la parada (salvo estancias partidas en dos hoteles)
+  if(dd&&fe&&fs&&hotelesDeParada(st).length===1&&
+     (isoDia(fe)!==isoDia(dd.checkin)||isoDia(fs)!==isoDia(dd.checkout)))
+    html+=`<div class="rf-warn">⚠ La reserva es del ${fmtDia(fe)} al ${fmtDia(fs)}, pero en el itinerario esta
+      parada va del ${fmtDia(dd.checkin)} al ${fmtDia(dd.checkout)}. Revisen una de las dos.</div>`;
+  const filas=[];
+  const fila=(ic,et,v)=>{if(v)filas.push(`<div class="rf-row"><div class="rf-l">${ic} ${et}</div><div class="rf-v">${v}</div></div>`);};
+  fila("🛏","Habitación",esc(r.habitacion||""));
+  const m=+r.monto,local=r.monto?(r.moneda?esc(r.moneda)+" ":"")+
+    (isNaN(m)?esc(r.monto):m.toLocaleString("es-MX",{maximumFractionDigits:2})):"";
+  const hn=nochesHotel(st,h);
+  fila("💴","Precio",[local?`<b>${local}</b> en total`:"",esc(r.desglose||""),
+    +h.precio>0?`≈ <b>${fmtMoney(h.precio*hn)}</b> en el presupuesto (${fmtMoney(h.precio)} por noche)`:""]
+    .filter(Boolean).join("<br>"));
+  fila("💳","Pago",esc(r.pago||""));
+  fila("☕","Desayuno",esc(r.desayuno||""));
+  fila("✨","Extras",esc(r.extras||""));
+  if(r.cancelacion||ec)fila("↩","Cancelación",esc(r.cancelacion||"")+
+    (ec?`<div class="rf-sub">Límite: ${ec.hotel} (hora del hotel)${ec.suya?" · en su hora: "+ec.suya:""}</div>`:""));
+  if(r.direccion||r.direccionLocal){
+    const q=encodeURIComponent([h.name,r.direccion||r.direccionLocal].filter(Boolean).join(", "));
+    fila("📍","Dirección",esc(r.direccion||"")+`<div class="rf-acts">${r.direccion?btnCopiar(r.direccion):""}
+      <a class="rf-btn" href="https://www.google.com/maps/search/?api=1&amp;query=${q}" target="_blank" rel="noopener">🗺 Google Maps</a>
+      <a class="rf-btn" href="https://maps.apple.com/?q=${q}" target="_blank" rel="noopener">🗺 Apple Maps</a></div>`);
+  }
+  if(r.direccionLocal)fila("🚕","Para el taxi",`<span class="rf-local">${esc(r.direccionLocal)}</span><div class="rf-acts">
+      <button type="button" class="rf-btn fuerte" data-rf="taxi" data-bid="${bid}" data-item="${h.id}">🀄 Mostrar al taxista</button>${btnCopiar(r.direccionLocal)}</div>`);
+  if(r.tel)fila("📞","Teléfono",`<a class="rf-tel" href="tel:${esc(r.tel.replace(/[^\d+]/g,""))}">${esc(r.tel)}</a> ${btnCopiar(r.tel)}`);
+  if(res||r.conf||r.reservaNo)fila("🔖","Confirmación",(r.conf||r.reservaNo)
+    ?[r.conf?`<span class="rf-num">${esc(r.conf)}</span> ${btnCopiar(r.conf)}`:"",
+      r.reservaNo?`Nº de reserva <span class="rf-num">${esc(r.reservaNo)}</span> ${btnCopiar(r.reservaNo)}`:""]
+      .filter(Boolean).join("<br>")
+    :`<span class="rf-falta">Sin capturar: pónganlo en «✎ Datos de la reserva» (se guarda solo en su viaje).</span>`);
+  return html+(filas.length?`<div class="rf-grid">${filas.join("")}</div>`:"");
+}
+/* El formulario para capturar o corregir la reserva. */
+const resEditAbierto=new Set();
+function editorReservaHTML(bid,h){
+  const r=h.reserva||{};
+  const campo=c=>{
+    const v=r[c.k]||"",at=`data-bid="${bid}" data-item="${h.id}" data-rk="${c.k}"`;
+    let inp;
+    if(c.tipo==="estado")inp=`<select class="f rfield" ${at}>
+        <option value="pendiente" ${v!=="reservado"?"selected":""}>⏳ Falta el comprobante</option>
+        <option value="reservado" ${v==="reservado"?"selected":""}>✅ Reservado</option></select>`;
+    else if(c.tipo==="zona")inp=`<select class="f rfield" ${at}>${RES_ZONAS.map(([z,l])=>
+        `<option value="${z}" ${v===z?"selected":""}>${l}</option>`).join("")}</select>`;
+    else{const ty={number:"number",date:"date",time:"time","datetime-local":"datetime-local",tel:"tel"}[c.tipo]||"text";
+      inp=`<input class="f rfield" type="${ty}" ${at} value="${esc(v)}" placeholder="${esc(c.ph||"")}"${
+        ty==="number"?' min="0" step="0.01" inputmode="decimal"':""}${c.k==="conf"||c.k==="reservaNo"?' autocomplete="off"':""}>`;}
+    return `<label class="rgf${c.ancho?" ancho":""}"><span>${c.l}</span>${inp}</label>`;
+  };
+  return `<details class="resedit" data-reh="${h.id}" ${resEditAbierto.has(h.id)?"open":""}>
+    <summary>✎ Datos de la reserva</summary>
+    <div class="rgrid">${RES_CAMPOS.map(campo).join("")}</div>
+    <p class="rf-sub">Los números de confirmación y de reserva se guardan solo en este viaje, en su cuenta.
+      El PIN no hace falta para llegar al hotel: mejor no lo guarden.</p></details>`;
+}
+/* Pantalla completa con la dirección en grande, para enseñársela al taxista. */
+function mostrarTaxista(bid,id){
+  const st=state.bases[bid],h=st&&(st.hotels||[]).find(x=>x.id===id),r=h&&h.reserva;
+  if(!r||!r.direccionLocal)return;
+  const jp=/[\u3040-\u30ff]/.test(r.direccionLocal)||r.zona==="+09:00";   // kana, o un hotel en Japón
+  const ov=document.createElement("div");ov.className="taxiov";ov.setAttribute("role","dialog");
+  ov.setAttribute("aria-label","Dirección del hotel para el taxista");
+  ov.innerHTML=`<div class="taxibox">
+      <div class="tx-frase">${jp?"こちらまでお願いします":"请带我们去这里"}</div>
+      <div class="tx-dir">${r.direccionLocal.split(/\s*·\s*/).map(esc).join("<br>")}</div>
+      ${r.tel?`<div class="tx-tel">☎ ${esc(r.tel)}</div>`:""}
+      <div class="tx-es">«Por favor, llévenos a esta dirección» · toquen para cerrar</div></div>`;
+  document.body.appendChild(ov);
+  const cerrar=()=>{ov.remove();document.removeEventListener("keydown",onKey);};
+  const onKey=e=>{if(e.key==="Escape")cerrar();};
+  document.addEventListener("keydown",onKey);ov.addEventListener("click",cerrar);
+}
+function copiarTexto(t){
+  const ok=()=>toast("Copiado ✓",{tipo:"ok"});
+  const viejo=()=>{try{const ta=document.createElement("textarea");ta.value=t;ta.setAttribute("readonly","");
+    ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();
+    const r=document.execCommand("copy");ta.remove();return r;}catch(e){return false;}};
+  const falla=()=>toast("No se pudo copiar",{tipo:"err"});
+  if(navigator.clipboard&&window.isSecureContext)
+    navigator.clipboard.writeText(t).then(ok,()=>{viejo()?ok():falla();});
+  else viejo()?ok():falla();
+}
+/* Abre la pestaña 🏨 de la parada (y, si se pide, el formulario del hotel). */
+function irAHoteles(bid,hid,editar){
+  const st=state&&state.bases[bid];if(!st)return;
+  st.expanded=true;st.tab="hotels";
+  if(hid&&editar)resEditAbierto.add(hid);
+  save();renderCards();
+  setTimeout(()=>{
+    const t=(hid&&document.querySelector(`.pcard[data-hid="${hid}"]`))||document.querySelector(`.card-head[data-bid="${bid}"]`);
+    if(t&&t.scrollIntoView)t.scrollIntoView({behavior:"smooth",block:"start"});},60);
+}
+document.addEventListener("click",e=>{
+  const el=e.target.closest("[data-rf]");if(!el)return;
+  const a=el.dataset.rf;e.preventDefault();e.stopPropagation();
+  if(a==="copiar")copiarTexto(el.dataset.v||"");
+  else if(a==="taxi")mostrarTaxista(el.dataset.bid,el.dataset.item);
+  else if(a==="ver")irAHoteles(el.dataset.bid,el.dataset.item,el.dataset.edit==="1");
+});
+/* Línea del hotel en la cabecera de cada parada: un toque lleva a la ficha. */
+const hotelLineaTxt=st=>hotelesDeParada(st).map(h=>{
+  const r=h.reserva||{},ec=estadoCancel(r);
+  return `🏨 ${resaltar(esc(h.name||"(sin nombre)"))} ${r.estado==="reservado"?"✅":"⏳"}${ec&&ec.urgente?" ⚠":""}`;
+}).join(" · ");
+function hotelLineaHTML(bid,st){
+  if(!hotelesDeParada(st).length)return "";
+  return `<div class="hline" data-act="verhotel" data-bid="${bid}" title="Ver la reserva">${hotelLineaTxt(st)}</div>`;
+}
+/* Renglones de la reserva para el PDF. */
+function pvReserva(ht){
+  const r=ht.reserva;if(!r)return "";
+  const p=[r.estado==="reservado"?"✅ Reservado"+(r.via?" en "+r.via:""):"⏳ Falta el comprobante",
+    r.horaEntrada?"check-in desde las "+r.horaEntrada:"",r.horaSalida?"check-out hasta las "+r.horaSalida:"",
+    r.habitacion||"",r.desayuno?"desayuno: "+r.desayuno:"",r.tel?"tel. "+r.tel:"",
+    r.conf?"confirmación "+r.conf:"",r.reservaNo?"nº de reserva "+r.reservaNo:""].filter(Boolean);
+  let s=`<div class="pv-res">${esc(p.join(" · "))}</div>`;
+  if(r.cancelacion)s+=`<div class="pv-res">↩ ${esc(r.cancelacion)}</div>`;
+  if(r.direccionLocal)s+=`<div class="pv-res">🚕 ${esc(r.direccionLocal)}</div>`;
+  return s;
+}
+/* ---- Sección «Hoteles»: todos los hoteles del viaje, en orden ----
+   Una fila por hotel con fechas, parada y estado; al abrirla, su ficha. La del
+   hotel de esta noche (durante el viaje) se marca y se abre sola. */
+const hotelAbierto=new Set(),hotelCerrado=new Set();
+function renderHospedaje(){
+  const el=document.getElementById("hotelsList"),hint=document.getElementById("hotelsHint");
+  if(!el||!state)return;
+  const hoy=isoDia(new Date()),filas=[],avisos=[];
+  let reservados=0,total=0,suma=0;
+  withDates().forEach(o=>{
+    const st=o.st,hs=hotelesDeParada(st);
+    if(!hs.length){filas.push(`<div class="hrow vacio">
+        <span class="hr-f">${fmt(o.checkin)} → ${fmt(o.checkout)}</span>
+        <span class="hr-c"><b>${esc(o.def.name)}</b><span>sin hotel elegido</span></span>
+        <button type="button" class="rf-btn" data-rf="ver" data-bid="${o.def.id}">＋ Elegir</button></div>`);return;}
+    hs.forEach(h=>{
+      const r=h.reserva||{},res=r.estado==="reservado",ec=estadoCancel(r);
+      const {ie,is}=fechasReserva(st,h,o);
+      total++;if(res)reservados++;if(+h.precio>0)suma+=h.precio*nochesHotel(st,h);
+      if(ec&&!ec.vencida&&ec.pronto)avisos.push(`<div class="inlinewarn"><span>${ec.urgente?"⚠":"↩"} <b>${esc(o.def.name)}</b>:
+        la cancelación gratis de ${esc(h.name)} vence en ${plazoTxt(ec.diff)} (${ec.hotel}, hora del hotel${
+        ec.suya?"; en su hora: "+ec.suya:""}).</span></div>`);
+      const noche=ie&&is&&hoy>=isoDia(ie)&&hoy<isoDia(is);
+      const abierto=hotelAbierto.has(h.id)||(noche&&!hotelCerrado.has(h.id));
+      filas.push(`<details class="hrow${noche?" hoy":""}${res?" res":""}" data-hrow="${h.id}" ${abierto?"open":""}>
+        <summary>
+          <span class="hr-f">${ie?fmt(ie):"?"} → ${is?fmt(is):"?"}</span>
+          <span class="hr-c"><b>${esc(o.def.name)}</b><span>${esc(h.name||"(sin nombre)")}</span></span>
+          <span class="hr-p">${noche?'<span class="rf-pill hoy">🌙 Esta noche</span>':""}${
+            res?'<span class="rf-pill ok">✅ Reservado</span>':'<span class="rf-pill pend">⏳ Sin comprobante</span>'}${
+            ec&&ec.urgente?'<span class="rf-pill urg">⚠ '+plazoTxt(ec.diff)+"</span>":""}</span>
+        </summary>
+        <div class="hr-body">${fichaReservaHTML(o.def.id,st,h,o)}
+          <div class="rf-acts"><button type="button" class="rf-btn" data-rf="ver" data-edit="1" data-bid="${o.def.id}"
+            data-item="${h.id}">✎ Editar en ${esc(o.def.name)}</button></div></div>
+      </details>`);
+    });
+  });
+  el.innerHTML=avisos.join("")+(filas.length?`<div class="hlist">${filas.join("")}</div>`
+    :'<div class="empty"><div class="ebig">🏨</div><p>Aún no hay paradas con hotel.</p></div>');
+  if(hint)hint.textContent=total?`${reservados} de ${total} reservado${total===1?"":"s"}`+
+    (suma?` · ${fmtMoney(suma)} en hospedaje`:""):"";
+  el.querySelectorAll("details.hrow").forEach(d=>d.addEventListener("toggle",()=>{
+    const id=d.dataset.hrow;
+    if(d.open){hotelAbierto.add(id);hotelCerrado.delete(id);}else{hotelAbierto.delete(id);hotelCerrado.add(id);}
+  }));
+}
+/* Los avisos de cancelación cuentan minutos: se refrescan solos si hay uno cerca. */
+setInterval(()=>{
+  if(document.hidden||!state||!document.getElementById("hotelsList"))return;
+  const cerca=activeBases().some(o=>hotelesDeParada(o.st).some(h=>{const ec=estadoCancel(h.reserva||{});return ec&&ec.urgente;}));
+  if(cerca&&!document.querySelector("#hotelsList :focus"))renderHospedaje();
+},60000);
 function lodgingAutoActivo(st){
   return (st.budget||{}).lodgingAuto!==false && hotelesElegidos(st).length>0;
 }
@@ -7789,8 +8301,17 @@ function renderSummary(){
     {n:active.length,l:active.length===1?"parada":"paradas"},
     {n:new Set(active.map(o=>o.def.cluster)).size,l:"zonas"},
     {n:air,l:air===1?"vuelo":"vuelos"}];
-  document.getElementById("summary").innerHTML=chips.map(c=>
-    `<div class="chip ${c.cls||''}"><div class="n">${c.n}</div><div class="l">${c.l}</div></div>`).join("");
+  const hs={t:0,r:0};
+  active.forEach(o=>hotelesDeParada(o.st).forEach(h=>{hs.t++;if(h.reserva&&h.reserva.estado==="reservado")hs.r++;}));
+  chips.push({n:hs.t?hs.r+" / "+hs.t:"—",l:"hoteles reservados",cls:"link",go:"hotelsSection"});
+  const el=document.getElementById("summary");
+  el.innerHTML=chips.map(c=>
+    `<div class="chip ${c.cls||''}"${c.go?` data-goto="${c.go}" role="button" tabindex="0" title="Ver los hoteles"`:""}><div class="n">${c.n}</div><div class="l">${c.l}</div></div>`).join("");
+  el.querySelectorAll("[data-goto]").forEach(c=>{
+    const ir=()=>{const t=document.getElementById(c.dataset.goto);if(t)t.scrollIntoView({behavior:"smooth",block:"start"});};
+    c.addEventListener("click",ir);
+    c.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();ir();}});
+  });
 }
 
 /* ===================== Mapa ===================== */
@@ -7904,7 +8425,7 @@ function renderCards(){
       <div class="card ${on?'':'off'}">
         <div class="card-head" data-act="expand" data-bid="${b.id}">
           <div class="seal">${on?seq:'·'}</div>
-          <div class="titlecol"><h3>${resaltar(esc(b.name))}</h3><div class="region">${resaltar(esc(b.region))}</div>
+          <div class="titlecol"><h3>${resaltar(esc(b.name))}</h3><div class="region">${resaltar(esc(b.region))}</div>${on?hotelLineaHTML(b.id,st):""}
             ${coinc&&coinc.total&&!st.expanded?`<div class="region" style="color:var(--jade)">${
               [coinc.actividades.length?coinc.actividades.length+" actividad"+(coinc.actividades.length===1?"":"es"):"",
                coinc.lugares.length?coinc.lugares.length+" lugar"+(coinc.lugares.length===1?"":"es"):""]
@@ -7979,6 +8500,7 @@ function renderCards(){
     holder.appendChild(addLeg);
   }
   wireCardEvents();
+  renderHospedaje();
 }
 function makeRibbon(html){const rib=document.createElement("div");rib.className="leg";
   rib.innerHTML=`<span class="node" style="background:transparent;border-color:transparent;box-shadow:none"></span>`+html;return rib;}
@@ -8606,10 +9128,10 @@ function renderCatalog(b,st){
 
 function renderHotels(b,st){
   const n=nochesDe(st);
-  const elegido=hotelElegido(st);
+  const elegido=hotelElegido(st),dd=withDates().find(o=>o.def.id===b.id);
   const list=st.hotels.map(h=>{
     const p=+h.precio||0, hn=nochesHotel(st,h), tot=p*hn;
-    return `<div class="pcard ${h.chosen?'chosen':''}">
+    return `<div class="pcard ${h.chosen?'chosen':''}" data-hid="${h.id}">
       <button class="star" data-act="choosehotel" data-bid="${b.id}" data-item="${h.id}" title="Elegir este hotel">${h.chosen?'★':'☆'}</button>
       <div class="pbody">
         <input class="f rtitle hfield" data-list="hotels" data-fld="name" data-bid="${b.id}" data-item="${h.id}" value="${esc(h.name)}" placeholder="Hotel">
@@ -8623,6 +9145,8 @@ function renderHotels(b,st){
           <span class="htotal">${p?`× ${hn} noche${hn===1?'':'s'} = <b>${fmtMoney(tot)}</b>`:'<span class="hsin">sin precio</span>'}</span>
           ${h.chosen&&p?'<span class="hbadge">cuenta en el presupuesto</span>':''}
         </div>
+        ${h.chosen||h.reserva?`<div class="rf-view" data-rfv="${h.id}">${fichaReservaHTML(b.id,st,h,dd)}</div>
+        ${editorReservaHTML(b.id,h)}`:''}
         ${rteHTML(`data-rtekind="hotel" data-bid="${b.id}" data-item="${h.id}"`,h.note,"✎ Notas: qué incluye, comparativa, cancelación, qué pedir al reservar…")}
       </div>
       <button class="del" data-act="delhotel" data-bid="${b.id}" data-item="${h.id}">×</button>
@@ -8702,7 +9226,8 @@ function coincidencias(st){
   const actividades=(st.catalog||[]).filter(a=>
     norm(a.name).includes(q)||norm(textoPlano(a.note)).includes(q)||norm(a.src).includes(q));
   const lugares=[].concat(st.hotels||[],st.food||[]).filter(p=>
-    norm(p.name).includes(q)||norm(textoPlano(p.note)).includes(q)||norm(p.area).includes(q));
+    norm(p.name).includes(q)||norm(textoPlano(p.note)).includes(q)||norm(p.area).includes(q)||
+    norm(Object.values(p.reserva||{}).join(" ")).includes(q));
   return{base,actividades,lugares,total:(base?1:0)+actividades.length+lugares.length};
 }
 function aplicarFiltro(valor){
@@ -8921,6 +9446,7 @@ function wireCardEvents(){
       if(a==="dupsel"){duplicarSeleccion(el.dataset.bid,+el.dataset.day);return;}
       if(a==="delsel"){quitarSeleccion(el.dataset.bid,+el.dataset.day);return;}
       if(a==="cancelsel"){limpiarSeleccion();renderCards();return;}
+      if(a==="verhotel"){irAHoteles(bid);return;}
       if(a==="tab"){st.tab=el.dataset.tab;limpiarSeleccion();save();renderCards();return;}
       if(a==="day"){st.day=+el.dataset.day;limpiarSeleccion();save();renderCards();return;}
       if(a==="additem"){
@@ -9102,6 +9628,36 @@ function wireCardEvents(){
       it[el.dataset.fld]=el.value;
       if(el.tagName==="SELECT")save();else saveDebounced();
     });
+    if(el.dataset.list==="hotels")el.addEventListener("change",()=>renderHospedaje());
+  });
+  /* ficha de la reserva del hotel */
+  holder.querySelectorAll("details.resedit").forEach(d=>d.addEventListener("toggle",()=>{
+    if(d.open)resEditAbierto.add(d.dataset.reh);else resEditAbierto.delete(d.dataset.reh);}));
+  holder.querySelectorAll(".rfield").forEach(el=>{
+    const deUnGolpe=el.tagName==="SELECT"||/^(date|time|datetime-local)$/.test(el.type);
+    const hotel=()=>{const st=state.bases[el.dataset.bid],h=st&&(st.hotels||[]).find(x=>x.id===el.dataset.item);
+      return h?{st,h}:null;};
+    const aplicar=()=>{
+      if(!puedeEditar())return null;
+      const x=hotel();if(!x)return null;
+      const r=x.h.reserva||(x.h.reserva={estado:"pendiente"});
+      if(el.value==="")delete r[el.dataset.rk];else r[el.dataset.rk]=el.value;
+      return x;
+    };
+    // refresca la ficha, la línea de la cabecera y la sección «Hoteles» sin tocar el formulario
+    const refrescar=x=>{
+      if(!x)return;
+      const v=holder.querySelector(`.rf-view[data-rfv="${x.h.id}"]`);
+      if(v)v.innerHTML=fichaReservaHTML(el.dataset.bid,x.st,x.h,withDates().find(o=>o.def.id===el.dataset.bid));
+      const hl=holder.querySelector(`.hline[data-bid="${el.dataset.bid}"]`);
+      if(hl)hl.innerHTML=hotelLineaTxt(x.st);
+      renderHospedaje();renderSummary();
+    };
+    if(deUnGolpe)el.addEventListener("change",()=>{const x=aplicar();if(x){save();refrescar(x);}});
+    else{
+      el.addEventListener("input",()=>{if(aplicar())saveDebounced();});
+      el.addEventListener("change",()=>refrescar(hotel()));
+    }
   });
   /* traslados: trenes / vuelos editables */
   holder.querySelectorAll(".legfield").forEach(el=>{
@@ -9254,7 +9810,7 @@ function armarImpresion(){
     const hoteles=(st.hotels||[]).filter(x=>x.chosen),comida=(st.food||[]).filter(x=>x.chosen);
     hoteles.forEach(ht=>{h+=`<div class="pv-pick">🛏 <b>${esc(ht.name)}</b>${ht.area?" · "+esc(ht.area):""}${
       +ht.precio>0?" · "+esc(fmtMoney(ht.precio))+"/noche":""}${
-      +ht.noches>0&&+ht.noches<st.nights?" · "+(+ht.noches)+" noche"+(+ht.noches===1?"":"s"):""}</div>`;});
+      +ht.noches>0&&+ht.noches<st.nights?" · "+(+ht.noches)+" noche"+(+ht.noches===1?"":"s"):""}</div>`+pvReserva(ht);});
     if(comida.length)h+=`<div class="pv-pick">🍜 ${comida.map(f=>esc(f.name)).join(" · ")}</div>`;
     const rg=rangoDias(st);
     for(let d=rg.ini;d<rg.fin;d++)h+=pvDia(st,d,addDays(o.checkin,d));
