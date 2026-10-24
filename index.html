@@ -905,7 +905,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v31.17 · 24 oct 2026 · Hong Kong: la reserva del Renaissance, con precio y cancelación";
+const APP_VERSION="v31.18 · 24 oct 2026 · Chengdu y Chongqing: sus reservas, con precio";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -3721,6 +3721,8 @@ function normalizeTripState(s){
   migrarTokio(s);            // Tokio a detalle con su hotel en Ginza y el día de compras
   migrarYangshuoHotel(s);    // la reserva del Sugar House: precio, qué incluye y cancelación
   migrarHongKongHotel(s);    // la reserva del Renaissance en Booking.com: precio y cancelación
+  migrarChengduHotel(s);     // la reserva del Chuanxing Yinli en Trip.com: precio y cancelación
+  migrarChongqingHotel(s);   // la reserva del InterContinental Raffles City en Trip.com
   return s;
 }
 /* ---- Llegada a Yangshuo: domingo 9 de mayo de 2027, paso a paso ----
@@ -7171,6 +7173,76 @@ function migrarHongKongHotel(s){
     }
   }
   s.hkHotelV9=true;
+}
+/* ---- Chengdu: la reserva del Chuanxing Yinli (v31.18) ----
+   Del comprobante de Trip.com: 2 noches (11-13 may 2027), habitación Beili con
+   cama queen, CNY 1,216 con IVA, se paga en el hotel, sin desayuno. En pesos,
+   al tipo que usa Trip.com en sus preautorizaciones de Yangshuo y Chongqing
+   (~$2.7975 por yuan). Sin el PIN ni los números de reserva. */
+function migrarChengduHotel(s){
+  if(s.cdHotelV3)return;
+  const cd=s.bases&&s.bases.chengdu;
+  if(s.bases&&s.bases.hk&&cd&&Array.isArray(cd.hotels)){
+    let h=cd.hotels.find(x=>/chuanxing|川行/i.test(x.name||""));
+    cd.hotels.forEach(x=>{x.chosen=false;});
+    if(h)cd.hotels.splice(cd.hotels.indexOf(h),1);
+    else h={id:uid()};
+    Object.assign(h,{name:"Chuanxing Yinli Hotel · Kuanzhai Alley (川行隐里酒店)",chosen:true,noches:2,precio:1700.88,
+      area:"Building 1, No. 19 Shierqiao Road (十二桥路19号1栋), Jinniu · Tel. +86-28-89109888",
+      note:"<b>★ RESERVADO en Trip.com · martes 11 al jueves 13 de mayo, 2 noches.</b> Check-in desde las 14:00 y "+
+           "check-out antes de las 12:00 (el jueves salen a las 8:15 a la estación).<br>"+
+           "<b>Habitación:</b> Beili Big Bed Room, 1 cama queen, para 2 adultos: cafetera Nespresso con cápsulas, "+
+           "baño Duravit con inodoro inteligente y regadera de lluvia, minibar y purificador de aire. Batas y "+
+           "pantuflas.<br>"+
+           "<b>Precio:</b> CNY 1,216 en total, con IVA (CNY 68.84) incluido, y <b>se paga en el hotel</b>. En el "+
+           "presupuesto: <b>~$3,402</b> (~$1,701 por noche), al tipo de cambio que usa Trip.com en sus otras reservas "+
+           "(~$2.80 por yuan); el cargo final depende del tipo del día.<br>"+
+           "<b>No incluye desayuno</b> (fruta de bienvenida, sí). El miércoles salen a las 6:55 a los pandas y el "+
+           "jueves a las 8:15 a la estación: compren pan, fruta o bollos la noche anterior en un 7-Eleven o "+
+           "FamilyMart, que hay en cada esquina.<br>"+
+           "<b>Cancelación:</b> gratis en cualquier momento antes del check-in.<br>"+
+           "El número de reserva y el PIN están en su comprobante de Trip.com: no los compartan.<br>"+
+           "<b>Ubicación:</b> metro <b>Tonghuimen</b> (línea 2) a 300 m y <b>Zhongyi Da Shengyiyuan</b> (líneas 2 y "+
+           "4) a 370 m. La línea 2 va directo a <b>Chengdu East</b> (trenes a Chongqing). Kuanzhai a 850 m, "+
+           "People's Park a ~15 min a pie."});
+    cd.hotels.unshift(h);
+  }
+  s.cdHotelV3=true;
+}
+/* ---- Chongqing: la reserva del InterContinental Raffles City (v31.18) ----
+   Del comprobante de Trip.com: 1 noche (13-14 may 2027), King Classic City
+   View, CNY 1,507.64 con IVA y cargo por servicio, se paga en el hotel, sin
+   desayuno; preautorización de MXN 4,217.62. Sin el PIN ni los números. */
+function migrarChongqingHotel(s){
+  if(s.cqHotelV6)return;
+  const cq=s.bases&&s.bases.chongqing;
+  if(s.bases&&s.bases.hk&&cq&&Array.isArray(cq.hotels)){
+    let h=cq.hotels.find(x=>/intercontinental|洲际/i.test(x.name||""));
+    cq.hotels.forEach(x=>{x.chosen=false;});
+    if(h)cq.hotels.splice(cq.hotels.indexOf(h),1);
+    else h={id:uid()};
+    Object.assign(h,{name:"InterContinental Chongqing Raffles City (重庆来福士洲际酒店)",chosen:true,noches:1,
+      precio:4217.62,
+      area:"No. 2 Changjiang Binjiang Road (长江滨江路2号), Yuzhong · Raffles City, Chaotianmen · Tel. +86-23-89888888",
+      note:"<b>★ RESERVADO en Trip.com · jueves 13 al viernes 14 de mayo, 1 noche.</b> Check-in desde las 15:00 y "+
+           "check-out antes de las 12:00 (en la mañana llegan a dejar las maletas; el viernes las dejan en "+
+           "recepción hasta las 15:50).<br>"+
+           "<b>Habitación:</b> King Classic City View, 1 cama king, para 2 adultos; tina, TV en el baño, batas y "+
+           "pantuflas.<br>"+
+           "<b>Precio:</b> CNY 1,507.64 en total, con IVA (CNY 85.34) y cargo por servicio (CNY 129.30) incluidos, y "+
+           "<b>se paga en el hotel</b>. Trip.com hizo una preautorización de <b>MXN 4,217.62</b>: es lo que cuenta en "+
+           "el presupuesto. El cargo final depende del tipo de cambio del día.<br>"+
+           "<b>No incluye desayuno:</b> el del viernes (7:45) es aparte, en Botanica, el restaurante del piso 42.<br>"+
+           "<b>Cancelación:</b> el comprobante solo dice que si no llegan se cobra; confirmen en Trip.com si se "+
+           "puede cancelar sin costo antes de la fecha.<br>"+
+           "El número de reserva y el PIN están en su comprobante: no los compartan.<br>"+
+           "<b>El hotel:</b> en la punta de la península, donde se juntan los dos ríos. El lobby está en el piso 42, "+
+           "dentro del Crystal; los cuartos, del 44 al 65, y en el 43 la alberca infinita y el gimnasio. "+
+           "Restaurantes en el 42: Botanica (todo el día) y Jing. El muelle 9 de Chaotianmen y la plaza están a "+
+           "pie; metro Chaotianmen a 2 min."});
+    cq.hotels.unshift(h);
+  }
+  s.cqHotelV6=true;
 }
 /* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
 function freshBlankTrip(titulo){
