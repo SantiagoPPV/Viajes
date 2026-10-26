@@ -459,6 +459,34 @@
   .appver{display:block;font-family:"IBM Plex Mono",monospace;font-size:10px;
     letter-spacing:.08em;color:var(--ink-soft);opacity:.75;margin-bottom:6px}
 
+  /* ---------- accesos rápidos dentro de la fila del día ---------- */
+  .rchips{display:flex;align-items:center;gap:7px 10px;flex-wrap:wrap;margin-top:5px}
+  .rchips select.rtypesel{font-family:"IBM Plex Mono",monospace;font-size:11px;padding:5px 7px;
+    border-radius:7px;max-width:120px}
+  .rchips input.rsrcinp{font-size:11.5px;padding:5px 8px;border-radius:7px;width:140px;
+    border:1px dashed var(--line);background:rgba(255,255,255,.4)}
+  .rchips input.rsrcinp:focus{border-style:solid;border-color:var(--jade);background:#fff}
+  .gochip{font-family:"IBM Plex Mono",monospace;font-size:10.5px;border:1px solid var(--line);
+    background:var(--card-2);color:var(--ink-soft);border-radius:7px;padding:5px 9px;cursor:pointer;
+    display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+  .gochip:hover{border-color:var(--jade);color:var(--jade);background:var(--card)}
+  .gochip.warnchip{border-color:var(--seal);color:var(--seal-deep)}
+  .gochip.warnchip:hover{background:#f6e6df}
+
+  /* resaltado al llegar desde otra pestaña */
+  @keyframes destpulse{0%{box-shadow:0 0 0 0 rgba(62,97,82,.55)}
+    70%{box-shadow:0 0 0 10px rgba(62,97,82,0)}100%{box-shadow:0 0 0 0 rgba(62,97,82,0)}}
+  .destacado{animation:destpulse 1.5s ease 2;border-color:var(--jade)!important;
+    background:rgba(62,97,82,.07)!important;border-radius:11px}
+
+  /* totales del día en la barra de días */
+  .daytot{display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+    font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft);
+    padding:7px 11px;margin:0 0 9px;border:1px solid var(--line-soft);border-radius:9px;
+    background:rgba(255,255,255,.4)}
+  .daytot b{color:var(--ink)}
+  .daytot .dtsep{width:1px;height:13px;background:var(--line-soft)}
+
   /* ---------- tramos entre paradas y sus escalas ---------- */
   .xfer input.legmode{width:130px;font-weight:600;color:var(--ink)}
   .xfer input.legdet{flex:1;min-width:170px}
@@ -1015,7 +1043,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v31.19 · 24 oct 2026 · Hoteles: ficha de cada reserva y Xi'an reservado";
+const APP_VERSION="v32 · 26 oct 2026 · Día a día: costos, tipo y saltos a cada ficha";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -8401,6 +8429,30 @@ function renderMap(){
     +`<span class="k"><span class="seg"></span>tren</span><span class="k"><span class="seg air"></span>vuelo</span>`;
 }
 
+/* ===================== Saltos entre pestañas ===================== */
+/* Permite trabajar desde el "Día a día" y llegar de un clic a la ficha que vive
+   en otra pestaña (catálogo, hotel, restaurante), dejándola resaltada. */
+let destacado=null;                 // id a resaltar tras el próximo dibujado
+function irAPestana(bid,tab,destacarId,aviso){
+  const st=state.bases[bid];if(!st)return;
+  st.tab=tab;st.expanded=true;destacado=destacarId||null;
+  limpiarSeleccion();save();renderCards();
+  if(aviso)toast(aviso);
+}
+/* Tras dibujar: lleva a la vista lo resaltado y le da un pulso visual. */
+function aplicarDestacado(){
+  if(!destacado)return;
+  const id=destacado;destacado=null;
+  requestAnimationFrame(()=>{
+    let el=null;
+    try{el=document.querySelector(`[data-destacar="${CSS.escape(id)}"]`);}catch(e){}
+    if(!el)return;
+    el.classList.add("destacado");
+    if(el.scrollIntoView)el.scrollIntoView({behavior:"smooth",block:"center"});
+    setTimeout(()=>el.classList.remove("destacado"),3200);
+  });
+}
+
 /* ===================== Tarjetas ===================== */
 const esc=s=>(s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 
@@ -8501,6 +8553,7 @@ function renderCards(){
   }
   wireCardEvents();
   renderHospedaje();
+  aplicarDestacado();
 }
 function makeRibbon(html){const rib=document.createElement("div");rib.className="leg";
   rib.innerHTML=`<span class="node" style="background:transparent;border-color:transparent;box-shadow:none"></span>`+html;return rib;}
@@ -8656,10 +8709,15 @@ function placeLinkHTML(st,type,it,bid,cur){
   // si el lugar vinculado ya no existe en la lista
   if(it.place&&!linked)opts.push(`<option value="${esc(it.place)}" selected>(lugar eliminado)</option>`);
   const empty=list.length===0;
+  const destino=type==="hotel"?"hotels":"food";
   return `<div class="placelink">
     <span class="pin">📍</span>
     <select class="f placesel" data-bid="${bid}" data-day="${cur}" data-item="${it.id}" ${empty?'disabled':''}>${opts.join("")}</select>
-    ${empty?`<span class="linknote">agrega lugares en la pestaña ${tabIcon}</span>`:(linked&&textoPlano(linked.note)?`<span class="linknote">${esc(textoPlano(linked.note).slice(0,90))}</span>`:'')}
+    ${linked?`<button class="gochip" data-act="verlugar" data-bid="${bid}" data-tabdest="${destino}" data-item="${esc(linked.id)}"
+        title="Abrir su ficha">${tabIcon} abrir ficha</button>`:''}
+    ${empty?`<button class="gochip warnchip" data-act="irpestana" data-bid="${bid}" data-tabdest="${destino}"
+        title="Ir a esa pestaña para agregarlo">${tabIcon} agregar ${type==="hotel"?"hotel":"lugar"}</button>`:''}
+    ${linked&&textoPlano(linked.note)?`<span class="linknote">${esc(textoPlano(linked.note).slice(0,90))}</span>`:''}
   </div>`;
 }
 /* ===================== Notas con formato (mini editor) =====================
@@ -9026,7 +9084,7 @@ function renderPlan(b,st){
     if(r.gap>0)rows+=`<div class="gap">— ${fmtDur(r.gap)} libres —</div>`;
     const c=(TYPES[r.act.type]||TYPES.free).c;
     const marcada=selActiva(b.id,cur)&&seleccion.has(r.it.id);
-    rows+=`<div class="row${marcada?' picked':''}" draggable="false" data-drag="${r.it.id}" data-bid="${b.id}" data-day="${cur}">
+    rows+=`<div class="row${marcada?' picked':''}" draggable="false" data-destacar="${r.it.id}" data-drag="${r.it.id}" data-bid="${b.id}" data-day="${cur}">
       <input type="checkbox" class="rsel" data-item="${r.it.id}" ${marcada?'checked':''}
         title="Seleccionar" aria-label="Seleccionar actividad">
       <span class="dhandle" title="Arrastra para reordenar">⠿</span>
@@ -9041,10 +9099,18 @@ function renderPlan(b,st){
         ${rteHTML(`data-rtekind="cat" data-bid="${b.id}" data-cid="${r.act.cid}"`,r.act.note,
           "✎ Nota de la actividad: qué incluye, horarios, tips, qué llevar…")}
         ${placeLinkHTML(st,r.act.type,r.it,b.id,cur)}
-        <div class="rrow2">
+        <div class="rchips">
           <label class="mini">⏱ <input type="number" class="f durinp" data-bid="${b.id}" data-cid="${r.act.cid}" min="5" max="900" step="5" value="${r.act.dur}"> min</label>
           <label class="mini">fijo <input type="time" class="f fixedinp" data-bid="${b.id}" data-day="${cur}" data-item="${r.it.id}" value="${r.it.fixed||''}"></label>
+          <select class="f rtypesel catfield" data-fld="type" data-bid="${b.id}" data-cid="${r.act.cid}" title="Tipo de actividad">
+            ${Object.keys(TYPES).map(t=>`<option value="${t}" ${r.act.type===t?'selected':''}>${TYPES[t].l}</option>`).join("")}
+          </select>
+          <input class="f rsrcinp catfield" data-fld="src" data-bid="${b.id}" data-cid="${r.act.cid}"
+            value="${esc(r.act.src)}" placeholder="Fuente (GetYourGuide…)" title="De dónde salió esta actividad">
+          <button class="gochip" data-act="vercatalogo" data-bid="${b.id}" data-cid="${r.act.cid}"
+            title="Abrir esta actividad en el catálogo">🗂 catálogo${usageCount(st,r.act.cid)>1?` ×${usageCount(st,r.act.cid)}`:''}</button>
         </div>
+        ${costEditorHTML(b,r.act)}
         ${rteHTML(`data-rtekind="item" data-bid="${b.id}" data-day="${cur}" data-item="${r.it.id}"`,r.it.note,"✎ Nota para este día (reservar, llevar efectivo, confirmar hora…)")}
       </div>
       <div class="rowbtns">
@@ -9063,14 +9129,32 @@ function renderPlan(b,st){
     `<optgroup label="${TYPES[t].l}">`+groups[t].map(a=>
       `<option value="${a.cid}">${esc(a.name)||'(sin nombre)'} · ${fmtDur(a.dur)}</option>`).join("")+`</optgroup>`).join("");
 
+  // resumen del día: cuánto dura, en qué acaba y cuánto cuesta
+  let resumenDia="";
+  if(comp.length){
+    const minutos=comp.reduce((n,r)=>n+(+r.act.dur||0),0);
+    const costo=comp.reduce((n,r)=>n+actEst(r.act),0);
+    const real=comp.reduce((n,r)=>n+actReal(r.act),0);
+    const fijas=comp.filter(r=>r.it.fixed).length;
+    const choques=comp.filter(r=>r.warn).length;
+    resumenDia=`<div class="daytot">
+      <span><b>${comp.length}</b> actividad${comp.length===1?'':'es'}</span><span class="dtsep"></span>
+      <span>ocupan <b>${fmtDur(minutos)}</b></span><span class="dtsep"></span>
+      <span>${toHM(comp[0].s)} → <b>${toHM(comp[comp.length-1].e)}</b></span><span class="dtsep"></span>
+      <span>presup. <b>${fmtMoney(costo)}</b>${real?` · real <b>${fmtMoney(real)}</b>`:''}</span>
+      ${fijas?`<span class="dtsep"></span><span>${fijas} con hora fija</span>`:''}
+      ${choques?`<span class="dtsep"></span><span style="color:var(--seal-deep)">⚠ ${choques} se encima${choques===1?'':'n'}</span>`:''}
+    </div>`;
+  }
+
   const todas=comp.length&&selActiva(b.id,cur)&&comp.every(r=>seleccion.has(r.it.id));
   const selall=comp.length?`<label class="selall">
     <input type="checkbox" data-selall data-bid="${b.id}" data-day="${cur}" ${todas?'checked':''}>
     seleccionar todo el día</label>`:"";
 
   return bar+typekey
-    +`<p class="hint2">Los horarios se encadenan solos desde el inicio del día. «Fijo» ancla una hora (shows, trenes, vuelos); si se encima con lo anterior verás ⚠. Edita el nombre escribiendo sobre él: también cambia en el catálogo. Marca varias con ☐ para moverlas, duplicarlas o quitarlas juntas; con <b>⋮</b> actúas sobre una sola y con <b>▲▼</b> la reordenas.</p>`
-    +selbarHTML(b,st,cur)+selall
+    +`<p class="hint2">Los horarios se encadenan solos desde el inicio del día. «Fijo» ancla una hora (shows, trenes, vuelos); si se encima con lo anterior verás ⚠. Edita el nombre escribiendo sobre él: también cambia en el catálogo. Marca varias con ☐ para moverlas, duplicarlas o quitarlas juntas; con <b>⋮</b> actúas sobre una sola y con <b>▲▼</b> la reordenas. Desde aquí también cambias <b>tipo, fuente y costos</b> sin ir al catálogo, y con <b>🗂</b> o <b>📍 abrir ficha</b> saltas a la ficha completa.</p>`
+    +resumenDia+selbarHTML(b,st,cur)+selall
     +`<div class="rows">${rows}</div>
     <div class="addrow">
       <select class="f" data-addsel="${b.id}">${opts}</select>
@@ -9100,7 +9184,7 @@ function renderCatalog(b,st){
   const rows=st.catalog.map(a=>{
     const c=(TYPES[a.type]||TYPES.free).c,use=usageCount(st,a.cid);
     const topts=Object.keys(TYPES).map(t=>`<option value="${t}" ${a.type===t?'selected':''}>${TYPES[t].l}</option>`).join("");
-    return `<div class="pcard">
+    return `<div class="pcard" data-destacar="${a.cid}">
       <span class="tdot" style="background:${c};margin-top:11px"></span>
       <div class="pbody">
         <div class="rrow2">
@@ -9110,7 +9194,9 @@ function renderCatalog(b,st){
         <div class="rrow2">
           <label class="mini">⏱ <input type="number" class="f durinp" data-bid="${b.id}" data-cid="${a.cid}" min="5" max="900" step="5" value="${a.dur}"> min</label>
           <input class="f pnote edit catfield" style="max-width:170px" data-fld="src" data-bid="${b.id}" data-cid="${a.cid}" value="${esc(a.src)}" placeholder="Fuente (GetYourGuide…)">
-          <span class="usage">${use?('×'+use+' en el plan'):'sin usar'}</span>
+          ${use?`<button class="gochip" data-act="verenplan" data-bid="${b.id}" data-cid="${a.cid}"
+            title="Ver dónde está en el itinerario">🕑 ×${use} en el plan</button>`
+          :'<span class="usage">sin usar</span>'}
         </div>
         ${rteHTML(`data-rtekind="cat" data-bid="${b.id}" data-cid="${a.cid}"`,a.note,"✎ Nota de la actividad: qué incluye, tips, qué llevar…")}
         ${costEditorHTML(b,a)}
@@ -9131,7 +9217,7 @@ function renderHotels(b,st){
   const elegido=hotelElegido(st),dd=withDates().find(o=>o.def.id===b.id);
   const list=st.hotels.map(h=>{
     const p=+h.precio||0, hn=nochesHotel(st,h), tot=p*hn;
-    return `<div class="pcard ${h.chosen?'chosen':''}" data-hid="${h.id}">
+    return `<div class="pcard ${h.chosen?'chosen':''}" data-hid="${h.id}" data-destacar="${h.id}">
       <button class="star" data-act="choosehotel" data-bid="${b.id}" data-item="${h.id}" title="Elegir este hotel">${h.chosen?'★':'☆'}</button>
       <div class="pbody">
         <input class="f rtitle hfield" data-list="hotels" data-fld="name" data-bid="${b.id}" data-item="${h.id}" value="${esc(h.name)}" placeholder="Hotel">
@@ -9163,7 +9249,7 @@ function renderHotels(b,st){
 
 function renderFood(b,st){
   const list=st.food.map(f=>`
-    <div class="pcard ${f.chosen?'chosen':''}">
+    <div class="pcard ${f.chosen?'chosen':''}" data-destacar="${f.id}">
       <button class="star" data-act="choosefood" data-bid="${b.id}" data-item="${f.id}">${f.chosen?'★':'☆'}</button>
       <div class="pbody">
         <div class="rrow2">
@@ -9191,9 +9277,17 @@ function refreshVisibleTimes(bid){
 }
 function refreshCostSummary(bid,cid){
   const act=state.bases[bid].catalog.find(a=>a.cid===cid);if(!act)return;
-  const det=document.querySelector(`details.costs[data-costdet="${cid}"]`);if(!det)return;
-  const bs=det.querySelectorAll("summary b");
-  if(bs.length>=2){bs[0].textContent=fmtMoney(actEst(act));bs[1].textContent=fmtMoney(actReal(act));}
+  const dets=document.querySelectorAll(`details.costs[data-costdet="${cid}"]`);
+  if(!dets.length)return;
+  dets.forEach(d=>{const bs=d.querySelectorAll("summary b");
+    if(bs.length>=2){bs[0].textContent=fmtMoney(actEst(act));bs[1].textContent=fmtMoney(actReal(act));}});
+  const det=dets[0];
+  // la etiqueta de costo que va junto al nombre en el día a día
+  document.querySelectorAll(`.row [data-cid="${cid}"]`).forEach(inp=>{
+    const fila=inp.closest(".row");if(!fila)return;
+    const tag=fila.querySelector(".rnamerow .costtag");
+    if(tag)tag.textContent=fmtMoney(actEst(act));
+  });
   const card=det.closest(".card");
   if(card){const bc=card.querySelector(".basecost");if(bc)bc.textContent="≈ "+fmtMoney(baseTotals(state.bases[bid]).est);}
   refreshBudgetTotals();
@@ -9442,6 +9536,22 @@ function wireCardEvents(){
           },{full:true});
           toast("Escala quitada",{accion:{texto:"Deshacer",fn:undo}});
         },"Sí, quitar");
+        return;}
+      if(a==="vercatalogo"){
+        irAPestana(el.dataset.bid,"catalog",el.dataset.cid,"Ficha de la actividad en el catálogo");return;}
+      if(a==="verlugar"){
+        irAPestana(el.dataset.bid,el.dataset.tabdest,el.dataset.item);return;}
+      if(a==="irpestana"){
+        irAPestana(el.dataset.bid,el.dataset.tabdest);return;}
+      if(a==="verenplan"){
+        const st2=state.bases[el.dataset.bid];if(!st2)return;
+        const cid=el.dataset.cid;
+        let dia=null,itemId=null;
+        Object.keys(st2.schedule||{}).map(Number).sort((x,y)=>x-y).some(d=>{
+          const it=(st2.schedule[d]||[]).find(x=>x.ref===cid);
+          if(it){dia=d;itemId=it.id;return true;}return false;});
+        if(dia===null){toast("Esta actividad todavía no está en ningún día");return;}
+        st2.day=dia;irAPestana(el.dataset.bid,"plan",itemId);
         return;}
       if(a==="dupsel"){duplicarSeleccion(el.dataset.bid,+el.dataset.day);return;}
       if(a==="delsel"){quitarSeleccion(el.dataset.bid,+el.dataset.day);return;}
