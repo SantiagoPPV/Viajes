@@ -1043,7 +1043,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v36 · 2 nov 2026 · La escalera Huangguan ya no puede volver";
+const APP_VERSION="v37 · 2 nov 2026 · Chongqing: Laojundong el viernes y The Ring de opción";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -3869,6 +3869,7 @@ function normalizeTripState(s){
   migrarFichasReserva(s);    // la ficha de reserva de cada hotel
   migrarVouchers(s);         // los comprobantes de Trip.com: Yangshuo, Xi'an y Shanghái
   migrarChongqingV3(s);      // el viernes 14: sin la escalera, con Shibati y Clock Tower Square
+  migrarLaojundong(s);       // ese viernes con Laojundong en vez de Ciqikou, y The Ring de opción el jueves
   purgarRetiradas(s);        // y al final: lo que se quitó a propósito no vuelve nunca
   return s;
 }
@@ -7684,6 +7685,146 @@ function migrarFichasReserva(s){
       {conf:previo.conf||"",reservaNo:previo.reservaNo||""}));
   });
   s.resFichaV1=true;
+}
+/* ---- Chongqing, viernes 14: Laojundong en vez de Ciqikou (v36) ----
+   Laojundong (老君洞), el templo taoísta del risco de Nanshan, queda en la
+   orilla sur, como la plaza del reloj de Nanbin Lu y la estación Shangxinjie
+   del teleférico. Así toda la orilla sur va junta en la mañana, se cruza el
+   río una sola vez (en el teleférico) y la tarde es del lado del hotel:
+   Shibati → comida y callejón Shancheng → maletas. Ciqikou, al otro extremo
+   de la ciudad, sale del día pero se queda en el catálogo.
+   Siembra el viernes donde se ve: el día 1 de Chongqing si «el día de salida es
+   de aquí» (y entonces vacía el día 0 de Zhangjiajie, que queda oculto); si
+   no, el día 0 de Zhangjiajie. */
+const CQ_VIERNES_V3=[
+  {cid:"g-breakfast",fixed:"07:30",dur:45,
+   note:"<b>7:30 · Botanica, piso 42</b>, el restaurante del hotel. No viene en su tarifa: va en el "+
+        "presupuesto. A las 8:15 salen."},
+  {cid:"cqv-ir-laojun",name:"Check-out y taxi a Laojundong (puerta oeste)",type:"transfer",dur:35,fixed:"08:15",
+   costos:[["Taxi (2)",120]],
+   note:"<b>Antes de salir: check-out (es a las 12:00) y maletas en recepción</b>; pasan por ellas a las "+
+        "15:50.<br>"+
+        "<b>8:15 · ~30 min en taxi</b> (~¥40), cruzando el río hacia el monte Nanshan. Al chofer: "+
+        "<b>老君洞西门</b>, la <u>puerta oeste</u>: los deja casi arriba, sin subir el cerro a pie (por la "+
+        "entrada de abajo son cientos de escalones).<br>"+
+        "<i>En metro sería la línea 6 a Shangxinjie y el camión 346 a Chongwen Lukou: no vale la pena, el taxi "+
+        "es directo.</i>"},
+  {cid:"cqv-laojun",name:"Laojundong (老君洞), el templo taoísta del risco",type:"sight",dur:110,fixed:"08:50",
+   costos:[["Incienso y tira de la suerte, opcional (2)",160]],
+   note:"<b>8:50 · Laojundong</b>, colgado del risco de Nanshan, del lado sur del Yangtsé. Entrada <b>gratis y "+
+        "sin reservación</b>; abre de 8:00 a 17:00 (algunas guías dicen de 7:30 a 17:30).<br>"+
+        "<b>Qué es:</b> un templo taoísta de la escuela Quanzhen Longmen, con salones rojos y dorados "+
+        "escalonados contra la roca, faroles, humo de incienso y, desde arriba, Yuzhong y el Yangtsé de "+
+        "frente. Ayer vieron el Luohan, budista y en pleno centro; este es el lado taoísta, en el monte.<br>"+
+        "<b>Recorrido (~1 h 45):</b> de la puerta oeste son ~10 min a pie hasta el templo. Súbanlo de abajo "+
+        "hacia arriba, salón por salón. Lo más alto, <b>Nantianmen (南天门)</b>, es más escalera: opcional. "+
+        "Completo son ~600 escalones, así que zapatos que no resbalen.<br>"+
+        "<b>Incienso:</b> no se puede meter de fuera; adentro se vende desde ¥18, y la tira de la suerte (求签) "+
+        "cuesta ¥10. Hablen bajito y no fotografíen de cerca a quien está rezando. Los letreros están casi "+
+        "todos en chino.<br>"+
+        "<b>Por qué en la mañana:</b> hay menos gente, y es viernes."},
+  {cid:"zjjd0-reloj",name:"Clock Tower Square (Nanbin Lu): los dos ríos de frente",type:"sight",dur:40,fixed:"10:40",
+   note:"<b>10:40 · ~15 min en taxi</b> (~¥20), bajando el monte, a <b>Nanbin Lu (南滨路)</b>, en la orilla "+
+        "sur: la plaza del reloj (钟楼广场).<br>"+
+        "<b>⚠ Cuidado con el nombre: hay dos “Clock Tower Square” en Chongqing.</b> El otro es el reloj del "+
+        "<b>Jiefangbei</b>, el monumento en medio de la zona comercial, y ese sí es nada más un reloj en una "+
+        "plaza llena de gente. El que vale es este, el de Nanbin Lu.<br>"+
+        "<b>Qué es:</b> un mirador <b>gratis</b> en la orilla sur, justo enfrente de donde el Jialing se mete "+
+        "al Yangtsé. De aquí se ve la península de Yuzhong completa, con Chaotianmen y Hongyadong de frente: "+
+        "es la postal de Chongqing, pero del lado de donde nadie la toma y sin el gentío de Hongyadong.<br>"+
+        "<b>Les toca de día.</b> La versión de noche ya la tienen desde el agua, en el barco de anoche.<br>"+
+        "<i>Queda a ~8 min de la estación Shangxinjie del teleférico: de aquí se van derecho a cruzar.</i>"},
+  {cid:"zjjd0-teleferico",name:"Teleférico del Yangtsé · desde la orilla SUR",type:"sight",dur:50,fixed:"11:20",
+   note:"<b>11:20 · ~8 min a pie</b> de Nanbin Lu a la estación <b>Shangxinjie (上新街)</b>, aquí mismo en la "+
+        "orilla sur. <u>No a Xinhua Lu</u>.<br>"+
+        "<b>Por qué desde el sur:</b> Xinhua Lu es la estación turística y ahí se forma la fila (en hora pico "+
+        "pasa de una hora). Shangxinjie es la que usan los locales y suele estar mucho más vacía. Además "+
+        "<b>solo necesitan la ida</b>: cruzan hacia el norte y caen en Xinhua Lu, en el centro, a ~10-15 min "+
+        "a pie de Shibati, que es lo que sigue.<br>"+
+        "<b>El paseo:</b> ~5 min colgados sobre el Yangtsé, con Yuzhong de frente. Horario 8:00-22:00; sencillo "+
+        "¥30 (confirmen la tarifa).<br>"+
+        "<b>Compren antes en la cuenta oficial de WeChat (长江索道):</b> les da número de turno y hora estimada, "+
+        "y ahí mismo se ve la <b>fila en vivo de cada estación</b> — chéquenla ese día, porque la diferencia "+
+        "entre las dos orillas se ha emparejado.<br>"+
+        "<i>Si a las 11:50 no han subido, sáltenlo: taxi por el puente a Jiaochangkou (较场口), ~20 min.</i>"},
+  {cid:"zjjd0-shibati",name:"Shibati (十八梯), de bajada",type:"sight",dur:65,fixed:"12:10",
+   note:"<b>12:10 · ~10-15 min a pie</b> de Xinhua Lu a <b>Jiaochangkou (较场口)</b>, que es la entrada de "+
+        "ARRIBA.<br>"+
+        "<b>Shibati (十八梯)</b>, “los dieciocho tramos”: la escalinata por la que se bajaba de la ciudad alta "+
+        "al río, y por donde vivía el Chongqing de los cargadores antes del boom. Se reconstruyó y volvió a "+
+        "abrir en 2021: casas de madera, patios, callejones que se cruzan y miradores. <b>Entrada libre.</b><br>"+
+        "<b>Entren por arriba y bajen</b> (Jiaochangkou → Shibati): al revés son dieciocho tramos de subida.<br>"+
+        "<i>Las reseñas están partidas: a unos les parece lo más bonito de la ciudad y a otros que quedó "+
+        "demasiada tienda nueva alrededor de la escalinata. Con 45 min les alcanza.</i>"},
+  {cid:"zjjd0-comida",name:"Comida en el callejón Shancheng, con vista al Yangtsé",type:"food",dur:60,fixed:"13:15",
+   note:"<b>13:15 · ~10 min</b> de Shibati (quedan a lado) a la entrada de arriba del callejón Shancheng, "+
+        "por Lingshi Xiang (领事巷).<br>"+
+        "En el callejón hay casas de té, hotpot y cafés colgados del risco sobre el río: escojan uno con "+
+        "terraza al Yangtsé.<br>"+
+        "<i>Comen tarde: en Laojundong o Nanbin Lu cómprense algo a media mañana.</i>"},
+  {cid:"zjjd0-shancheng",name:"Callejón Shancheng (山城巷), de bajada",type:"sight",dur:55,fixed:"14:20",
+   note:"<b>14:20 · todo de bajada.</b> Un callejón de escalones de piedra pegado a un risco de casi 100 m "+
+        "sobre el Yangtsé, de Lingshi Xiang hasta Zhongxing Lu (中兴路): casas viejas, miradores al río, "+
+        "librerías y cafés. Terminan ~15:15.<br>"+
+        "<b>Es el hermano chico de Shibati</b> y se parecen: escalones, casas viejas, cafés. La diferencia es "+
+        "que este es más angosto y más habitado, y va pegado al filo del risco — las terrazas dan al río. "+
+        "Shibati es el grande y reconstruido.<br>"+
+        "<i>Al revés sería todo de subida: por eso entran por arriba.</i>"},
+  {cid:"zjj-arrive",name:"Maletas y taxi a Chongqing East",type:"transfer",dur:102,fixed:"15:50",
+   note:"<b>15:50 · por las maletas al hotel</b> (~10-15 min en taxi de Zhongxing Lu, al pie del callejón; "+
+        "les sobra un margen de ~20 min) y <b>~40 min en taxi</b> (~¥40-50; el hotel se los pide) a "+
+        "<b>Chongqing East (重庆东站)</b>, la estación nueva del lado de Nan'an. <u>No es Chongqing North ni "+
+        "West</u>.<br>"+
+        "<b>Cena:</b> compren algo en la estación para el tren, porque llegan al hotel ~20:50.<br>"+
+        "En la estación: pasaporte, revisión y la pantalla con el número del tren."},
+  {cid:"zjj-tren",fixed:"17:32"},
+  {cid:"zjjd0-wulingyuan"}
+];
+/* Nota del jueves: The Ring, si les sobra tiempo. Se agrega al final de la
+   nota del descanso, sin borrar lo que ya tenga. */
+const CQ_NOTA_RING="<br><b>Si les sobra tiempo: The Ring (重庆光环购物公园).</b> Un centro comercial con un "+
+  "bosque tropical bajo techo: siete pisos y ~45 m de alto, unas 300 especies de plantas y una cascada de "+
+  "25 m. Está en Jinzhou, Yubei (metro Chongguang 重光, líneas 5 y 15), a ~35 min en taxi del hotel.<br>"+
+  "<b>Cómo cabe:</b> en vez del descanso. Check-in rápido, taxi a las 15:45, una hora ahí (16:20-17:20) y de "+
+  "ahí directo en taxi a Liziba (~30 min), que verían ~17:50 en vez de a las 17:00; la cena en el hotel "+
+  "pasa a las ~18:45 y el barco de las 20:00 no se mueve.<br>"+
+  "<i>Horario de centro comercial (suele ser de ~10:00 a ~22:00): confírmenlo antes.</i>";
+function migrarLaojundong(s){
+  if(s.cqLaojunV1)return;
+  const cq=s.bases&&s.bases.chongqing,zj=s.bases&&s.bases.zjj;
+  if(s.bases&&s.bases.hk&&cq&&Array.isArray(cq.catalog)){
+    const enCq=!!cq.diaSalida,base=enCq?cq:zj,dia=enCq?rangoDias(cq,s).fin-1:0;
+    if(base&&Array.isArray(base.catalog)&&base.schedule){
+      // las fichas que llegaron movidas pueden traer sufijo (zjj-tren~zjj): se usa la del día
+      const hoy=(base.schedule[dia]||[]).map(it=>it.ref);
+      const refDe=cid=>hoy.find(r=>r===cid)||hoy.find(r=>r.indexOf(cid+"~")===0)||cid;
+      // en Zhangjiajie el desayuno genérico se usa otros días: ahí no se le cambia la nota
+      const lista=CQ_VIERNES_V3.map(a=>!enCq&&a.cid==="g-breakfast"?{cid:a.cid,fixed:"07:15"}:{...a,cid:refDe(a.cid)});
+      sembrarDia(base,dia,lista,enCq?"07:30":"07:15");
+      const costo=(cid,l)=>{const a=base.catalog.find(x=>x.cid===refDe(cid));
+        if(a)a.costs=l.map(([label,est])=>({id:uid(),label,est,real:0}));};
+      costo("zjjd0-reloj",[["Taxi Laojundong → Nanbin Lu (2)",60]]);
+      costo("zjjd0-teleferico",[["Teleférico sencillo, ¥30 c/u (2)",162]]);
+      costo("zjjd0-comida",[["Comida (2)",450]]);
+      costo("zjjd0-shibati",[]);
+      const cz=base.catalog.find(x=>x.cid===refDe("zjjd0-ciqikou"));   // queda en el catálogo, por si la quieren de vuelta
+      if(cz)cz.dur=85;
+      costo("zjj-arrive",[["Taxi Zhongxing Lu → hotel (2)",45],["Taxi hotel → Chongqing East (2)",130]]);
+    }
+    // con el día de salida en Chongqing, el día 0 de Zhangjiajie no se ve: se vacía, y sus
+    // fichas del viernes que ya no usa nadie salen de su catálogo
+    if(enCq&&zj&&zj.schedule&&Array.isArray(zj.catalog)){
+      zj.schedule[0]=[];
+      const usados=new Set(Object.values(zj.schedule).flat().map(it=>it&&it.ref));
+      const delViernes=new Set(ZJJ_DIA1_V2.concat(CQ_VIERNES_V3).map(a=>a.cid).filter(c=>!/^g-/.test(c)));
+      zj.catalog=zj.catalog.filter(a=>!delViernes.has(a.cid)||usados.has(a.cid));
+    }
+    const d=cq.catalog.find(a=>a.cid==="cq-descanso");
+    if(d&&!/The Ring|光环/.test(d.note||""))d.note=(d.note||"")+CQ_NOTA_RING;
+    const h=(cq.hotels||[]).find(x=>/intercontinental|洲际/i.test(x.name||""));
+    if(h&&h.note)h.note=h.note.replace("el del viernes (7:45) es aparte","el del viernes (7:30) es aparte");
+  }
+  s.cqLaojunV1=true;
 }
 /* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
 function freshBlankTrip(titulo){
