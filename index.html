@@ -1043,7 +1043,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v39 · 2 nov 2026 · Xi’an: la muralla en tándem al atardecer";
+const APP_VERSION="v40 · 2 nov 2026 · Las fechas de arriba ya son las de los días";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -8327,6 +8327,19 @@ function rangoDias(st,s){
 }
 /* «Día 1» es el primer día que se ve de la parada, aunque su índice sea 1. */
 const etiquetaDia=(st,d)=>"Día "+(d-rangoDias(st).ini+1);
+/* Las fechas del encabezado de cada parada salen de los MISMOS días que se ven
+   abajo en las pestañas, no del check-in/check-out del hotel. Antes eran dos
+   cuentas distintas y se desfasaban: Pekín decía «18 may → 21 may» arriba y la
+   primera pestaña decía «Día 1 · 19 may», porque el 18 lo tiene Xi'an, que es
+   de donde sale el tren. Igual al otro lado: Hong Kong decía «→ 9 may» aunque
+   el 9 ya es el día 0 de Yangshuo.
+   El rango de noches del hotel no se pierde: vive en la ficha de reserva, y
+   aquí va como título emergente cuando no coincide. */
+function fechasVisibles(st,dd){
+  if(!dd)return null;
+  const r=rangoDias(st);
+  return{ini:addDays(dd.checkin,r.ini),fin:addDays(dd.checkin,Math.max(r.ini,r.fin-1))};
+}
 /* « · 2 días» junto a las noches, solo cuando no coinciden. */
 const diasTxt=st=>{const r=rangoDias(st),n=r.fin-r.ini;
   return n===Math.max(1,+st.nights||1)?"":" · "+n+" día"+(n===1?"":"s");};
@@ -8870,7 +8883,10 @@ function renderCards(){
               [coinc.actividades.length?coinc.actividades.length+" actividad"+(coinc.actividades.length===1?"":"es"):"",
                coinc.lugares.length?coinc.lugares.length+" lugar"+(coinc.lugares.length===1?"":"es"):""]
               .filter(Boolean).join(" · ")||"coincide el nombre"}</div>`:""}</div>
-          <div class="datecol">${on&&dd?`<div class="dr">${fmt(dd.checkin)} → ${fmt(dd.checkout)}</div><div>${st.nights} noche${st.nights===1?'':'s'}${diasTxt(st)}</div>`:`<div class="dr">— fuera del plan —</div>`}<div class="basecost">≈ ${fmtMoney(baseTotals(st).est)}</div></div>
+          <div class="datecol">${on&&dd?(()=>{const fv=fechasVisibles(st,dd),
+              dist=fmt(fv.ini)!==fmt(dd.checkin)||fmt(fv.fin)!==fmt(dd.checkout);
+              return `<div class="dr"${dist?` title="Hotel: ${esc(fmt(dd.checkin))} → ${esc(fmt(dd.checkout))} (${st.nights} noche${st.nights===1?'':'s'})"`:""}>${fmt(fv.ini)} → ${fmt(fv.fin)}</div><div>${st.nights} noche${st.nights===1?'':'s'}${diasTxt(st)}</div>`;
+            })():`<div class="dr">— fuera del plan —</div>`}<div class="basecost">≈ ${fmtMoney(baseTotals(st).est)}</div></div>
           <div class="chev">${st.expanded?'▲':'▼'}</div>
         </div>
         <div class="card-ctl">
@@ -10304,7 +10320,7 @@ function armarImpresion(){
     const b=o.def,st=o.st;
     h+=`<div class="pv-base">
       <h2><span class="pv-num">${i+1}</span> ${esc(b.name)} <small>${esc(b.region||"")}</small></h2>
-      <div class="pv-dates">${esc(fmtDia(o.checkin))} → ${esc(fmtDia(o.checkout))} · ${st.nights} noche${st.nights===1?"":"s"}${esc(diasTxt(st))}</div>`;
+      <div class="pv-dates">${(fv=>`${esc(fmtDia(fv.ini))} → ${esc(fmtDia(fv.fin))}`)(fechasVisibles(st,o))} · ${st.nights} noche${st.nights===1?"":"s"}${esc(diasTxt(st))}</div>`;
     const hoteles=(st.hotels||[]).filter(x=>x.chosen),comida=(st.food||[]).filter(x=>x.chosen);
     hoteles.forEach(ht=>{h+=`<div class="pv-pick">🛏 <b>${esc(ht.name)}</b>${ht.area?" · "+esc(ht.area):""}${
       +ht.precio>0?" · "+esc(fmtMoney(ht.precio))+"/noche":""}${
