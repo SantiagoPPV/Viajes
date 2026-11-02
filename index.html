@@ -1043,7 +1043,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v44 · 2 nov 2026 · Shanghái: fuera el Buda de Jade, más descanso";
+const APP_VERSION="v45 · 2 nov 2026 · Notas a detalle de Pekín y Shanghái";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -1772,9 +1772,12 @@ const ESSENTIAL_SH_KIX={id:"ess-sh-kix",t:"Shanghái y el vuelo a Japón",
   s:"tour privado por el Shanghái histórico (Civitatis) el domingo 23, recogida 8:30 en el H+ de Pudong "+
     "(潍坊西路90号); confirmen si incluye entradas · Shanghai Tower para el sábado 17:30, en línea con pasaporte · "+
     "crucero del sábado 19:30 desde el muelle de la Perla de Oriente (lado de Pudong) · reservar la cena del "+
-    "sábado 20:40 en Lujiazui y la de despedida del domingo en el Bund · vuelo directo del lunes 24 PVG → Osaka "+
-    "Kansai: Juneyao HO1505 (o Shanghai Airlines FM873) 7:50 → 11:00; si prefieren dormir más, MU225 8:55 → 12:10 · "+
-    "Haruka a Kioto: el boleto en línea sale más barato · Visit Japan Web con su QR antes de aterrizar"};
+    "sábado 20:40 en Lujiazui y la de despedida del domingo en el Bund · VUELO DEL LUNES 24: Spring Airlines "+
+    "9C6575, 8:05 PVG Terminal 2 → 11:20 Kansai Terminal 2 (confirmen la hora, alguna fuente dice 8:10) · "+
+    "al comprarlo: COMPREN EL EQUIPAJE DOCUMENTADO por internet, que en mostrador cuesta mucho más, y revisen "+
+    "los kilos que quedan impresos en el boleto; el equipaje de mano lo pesan (7 kg) · llegan a la T2 de "+
+    "Kansai, que no tiene tren: shuttle gratis a la T1 · Haruka a Kioto desde la T1, el boleto en línea sale "+
+    "más barato (busquen el combo ICOCA &amp; HARUKA) · Visit Japan Web con su QR antes de aterrizar"};
 const ESSENTIAL_KANSAI={id:"ess-kansai",t:"Kioto y la noche en Osaka",
   s:"hotel de Kioto: Mitsui Garden Hotel Kyoto Sanjo PREMIER (desayuno ~¥3,850 c/u si no va incluido) · "+
     "reservar Pontocho el lunes 19:00 (terraza sobre el río) y el kaiseki del martes 11:15 (Kikunoi, junto al "+
@@ -3876,8 +3879,137 @@ function normalizeTripState(s){
   migrarPekinV3(s);          // la Gran Muralla pasa al jueves, con todo el día
   migrarKansaiV6(s);         // el vuelo real a Osaka: 9C6575, y la T2 de Kansai
   migrarShanghaiV5(s);       // fuera el Templo del Buda de Jade: ese tiempo al descanso
+  migrarNotasOro2(s);        // las notas que faltaban de Pekín y Shanghái
   purgarRetiradas(s);        // y al final: lo que se quitó a propósito no vuelve nunca
   return s;
+}
+/* ---- Las notas de Pekín y Shanghái (v45) ----
+   Mismo repaso que se le hizo a Hong Kong-Xi'an en la v41: de las 70
+   actividades del plan en estas dos paradas, 53 ya tenían nota buena, 5
+   estaban vacías y 12 eran una línea. Estas son esas 17.
+   Algunas llevan `m` porque además hay que corregirles el nombre: pk2-vuelta
+   todavía decía «mañana salen a las 7:00», que era la hora de cuando la
+   muralla estaba el viernes. */
+const NOTAS_ORO_2=[
+  {b:"beijing",c:"pk1-a-tiananmen",n:"<b>9:45 · ~15 min</b> del Templo del Cielo hacia el norte. El coche los deja en el Huevo y de ahí entran "+
+          "a pie a la plaza.<br><b>⚠ Confírmenle al guía DOS cosas antes del viaje, con sus números de "+
+          "pasaporte:</b><ul><li><b>La entrada a la Plaza de Tiananmen se reserva por adelantado</b> y es "+
+          "nominativa. Sin reserva no se entra, por mucho guía que lleven.</li><li><b>Los boletos de la Ciudad "+
+          "Prohibida se agotan</b> con días de anticipación, van ligados al pasaporte y tienen hora de entrada. Es "+
+          "el error más caro que se puede cometer hoy.</li></ul><b>Hay revisión de seguridad</b> para entrar a la "+
+          "plaza: escaneo de mochilas, nada de encendedores ni líquidos grandes. Pasaportes en la mano, no en la "+
+          "maleta.<br><i>Una vez dentro se cruza de sur a norte: plaza, Puerta de Tiananmen, y ya la Ciudad "+
+          "Prohibida. No se puede regresar sobre los pasos, así que no dejen nada atrás.</i>"},
+  {b:"beijing",c:"pk1-a-verano",n:"<b>14:15 · ~45 min</b> al noroeste, ~20 km. Con tráfico pueden ser 60: duerman en el coche, que la "+
+          "mañana fue larga.<br><b>Lo que conviene pedirle al guía al llegar:</b> entrar por la <b>Puerta Este "+
+          "(东宫门)</b>, que es donde empieza el recorrido lógico, caminar el <b>Corredor Largo</b> —728 m de galería "+
+          "cubierta con cada viga pintada a mano, ninguna escena repetida— hasta el Barco de Mármol, y si les sobra "+
+          "ánimo, cruzar el lago Kunming en barca en vez de rodearlo a pie.<br><b>Los recintos cierran ~18:00</b> "+
+          "aunque el parque siga abierto: lleguen con el tiempo justo.<br><i>Es el jardín imperial de verano: lo "+
+          "que se ve hoy lo reconstruyó Cixí en 1888 con dinero que era para la marina. Pregúntenle al guía por esa "+
+          "historia.</i>"},
+  {b:"beijing",c:"pk1-regreso",n:"<b>17:15 · ~1 h de regreso</b> al Manxin de Qianmen, ~20 km cruzando la ciudad entera en plena hora "+
+          "pico. Puede estirarse a 70 min.<br><b>Usen el camino para dos cosas:</b> confirmen por teléfono la "+
+          "reserva del pato de las 19:30, y cierren con el guía la hora de mañana (los recoge a las 7:45 para la "+
+          "muralla).<br><i>Aquí termina el tour del día. Si les gustó, la propina se da ahora, no mañana — mañana "+
+          "es otro servicio.</i>"},
+  {b:"beijing",c:"pk1-descanso",n:"<b>18:15 · una hora, y hoy se la ganaron.</b> Templo del Cielo, el Huevo, Tiananmen, la Ciudad Prohibida "+
+          "y el Palacio de Verano en un día: es el día de más caminata de Pekín.<br><b>Báñense y pies en alto.</b> "+
+          "No se acuesten a dormir, que a las 19:30 es el pato y después todavía caminan Qianmen.<br><i>El sol se "+
+          "mete hoy a las 19:24, así que el paseo de Qianmen de las 21:15 va a ser de noche cerrada y con todo "+
+          "iluminado — que es como se ve bien. Queda a la puerta del hotel.</i>"},
+  {b:"beijing",c:"pk2-descanso",n:"<b>17:15 · dos horas y cuarto, después de la muralla.</b> Hoy fueron 4 h 30 arriba, sobre escalones "+
+          "irregulares: las piernas lo van a resentir mañana más que hoy.<br><b>Agua caliente en las piernas</b> y "+
+          "pies en alto media hora. Hace más que cualquier otra cosa.<br><b>Para la cena, ojo con la ropa:</b> el "+
+          "TRB Hutong es de mantel largo, dentro de un patio junto al antiguo templo. <b>Nada de shorts, tenis de "+
+          "montaña ni sandalias</b> — vayan arreglados. Y confirmen la reserva de las 19:30 desde aquí.<br><i>Dejen "+
+          "también la maleta avanzada: mañana hacen check-out antes de salir y el día termina en la estación, no en "+
+          "el hotel.</i>"},
+  {b:"beijing",c:"pk2-vuelta",m:"Regreso al hotel · mañana salen a las 8:15",n:"<b>21:30 · ~20 min</b> del TRB de vuelta a Qianmen.<br><b>Dejen la maleta HECHA esta noche.</b> Mañana "+
+          "hacen check-out a las 8:15 y las maletas se van en la cajuela todo el día: <u>no vuelven al cuarto</u>. "+
+          "Lo que se quede, se quedó.<br><b>Antes de dormir:</b> pasaportes y los códigos QR del tren a Shanghái a "+
+          "la mano, y revisen el cajón de la mesa de noche y el baño, que es donde siempre se olvida "+
+          "algo.<br><i>Mañana es el día más suave de Pekín: desayuno a las 7:30, media jornada y tren.</i>"},
+  {b:"beijing",c:"pk2-a-lama",n:"<b>10:40 · ~15 min</b>, ~2.5 km al este de los hutongs.<br><b>Lo que hay que saber antes de entrar:</b> "+
+          "el Yonghegong no es un museo, es un <b>templo vivo</b>. Hay gente rezando de verdad.<ul><li>En la "+
+          "entrada <b>regalan incienso</b> (tres varitas). Se encienden, se sostienen con las dos manos y se hace "+
+          "una venia hacia los cuatro puntos antes de clavarlas.</li><li><b>Nada de fotos dentro de los "+
+          "salones.</b> Afuera sí.</li><li>No señalen a las estatuas con el dedo ni den la espalda al Buda al salir "+
+          "de un salón.</li></ul><b>Guarden fuerzas para el último salón:</b> ahí está el <b>Maitreya de 18 metros, "+
+          "tallado en un solo tronco de sándalo blanco</b> traído del Tíbet. Hay que echar la cabeza para atrás. Es "+
+          "lo que la gente recuerda de Pekín.<br><i>Era el palacio de un príncipe que llegó a emperador; por eso "+
+          "tiene tejas amarillas, que son de uso imperial, cosa única en un templo.</i>"},
+  {b:"beijing",c:"pk2-a-centro",n:"<b>11:50 · ~15 min</b>, ~4 km al sur. Van bajando hacia la estación: esta es la última parada antes de "+
+          "comer.<br><b>Aprovechen para revisar la cajuela de reojo</b> — las maletas llevan ahí desde las 8:15 y "+
+          "no vuelven a abrirla hasta Pekín Sur.<br><i>Si deciden saltarse Wangfujing (lean su ficha, el callejón "+
+          "de antojitos ya no existe), díganselo al guía ahora y úsenlos en comer con calma.</i>"},
+  {b:"beijing",c:"pk3-vuelta",n:"<b>21:25 · ~10 min en taxi</b> del paseo del río al H+ de Pudong (<b>潍坊西路90号</b>). Enséñenle la "+
+          "dirección en chino al chofer, escrita; no la pronuncien.<br><b>Primera noche en Shanghái y la más fácil "+
+          "del viaje:</b> mañana empiezan hasta las 8:30, que es lo más tarde de las tres semanas.<br><i>DiDi "+
+          "funciona bien en Shanghái y ya con la app en inglés. Si falla, en recepción piden uno.</i>"},
+  {b:"shanghai",c:"sh1m-a-hotel",n:"<b>14:35 · ~15 min</b> de Lujiazui al hotel, en taxi o en la línea 2 del metro hasta Dongfang "+
+          "Road.<br><b>Van desde las 8:30</b> y la noche es larga: Shanghai Tower, crucero y cena hasta las 22:10. "+
+          "Este regreso no es opcional.<br><i>De paso, dejen en el cuarto lo que no necesiten para la noche: abajo "+
+          "van a andar con cámara y poco más.</i>"},
+  {b:"shanghai",c:"sh2-ferry",n:"<b>17:10 · ~10 min</b> a la <b>Shanghai Tower (上海中心大厦)</b>, la más alta de China.<br><b>⚠ Dos cosas que "+
+          "tumban la visita si se descuidan:</b><ul><li><b>Piden el pasaporte</b> para entrar al mirador, el mismo "+
+          "con el que compraron el boleto. Llévenlo, no la copia.</li><li><b>La entrada al mirador está en el "+
+          "B1</b>, el sótano, no en el lobby de la torre. Hay que bajar. Mucha gente se pierde ahí y pierde su "+
+          "horario.</li></ul><b>Las 17:30 están escogidas:</b> el sol se mete hoy a las <b>18:46</b> y a las 19:13 "+
+          "ya es de noche. Suben con luz, ven el atardecer desde el piso 118 y bajan con la ciudad entera prendida. "+
+          "Un solo boleto, tres ciudades distintas.<br><i>El elevador es de los más rápidos del mundo: ~55 segundos "+
+          "al 118. Traguen saliva para los oídos.</i>"},
+  {b:"shanghai",c:"sh1-vuelta",n:"<b>22:10 · ~15 min en taxi</b> de Lujiazui al hotel (<b>潍坊西路90号</b>).<br><b>Mañana el guía los recoge a "+
+          "las 8:30 en el lobby</b>, así que no hay que madrugar pero tampoco desvelarse: el domingo es el día "+
+          "completo con guía y termina con la cena de despedida.<br><i>A esta hora hay taxi de sobra en Lujiazui; "+
+          "si no, DiDi. Lleven la dirección del hotel en chino en el teléfono.</i>"},
+  {b:"shanghai",c:"sh1-a-xtd",n:"<b>13:30 · ~15 min</b>, ~3 km al este, de Wukang a Tianzifang.<br><b>Cambian de concesión francesa "+
+          "elegante a callejón:</b> Tianzifang son casas <i>shikumen</i> de los años 30 —la casa típica de "+
+          "Shanghái, de patio y portón de piedra— convertidas en talleres, cafés y tiendas, en callejones de dos "+
+          "metros de ancho.<br><i>Se recorre sin mapa, perdiéndose a propósito. Si buscan algo concreto, los "+
+          "callejones 210 y 248 son los más bonitos.</i>"},
+  {b:"shanghai",c:"sh2h-a-bund",n:"<b>14:45 · ~20 min</b>, ~4 km al noreste, de Tianzifang al Bund.<br><b>Lo van a ver de día, y es a "+
+          "propósito:</b> esta parada es con el guía, para que les cuente los edificios — son 52 construcciones de "+
+          "los años 20 y 30, cada una de un banco o una casa comercial distinta, y de día se ven las fachadas. "+
+          "<b>De noche lo tienen dos veces más:</b> hoy mismo en la cena y anoche desde el barco.<br><i>Caminen por "+
+          "el lado del malecón, no por la acera de los edificios: desde ahí se ven las fachadas completas y "+
+          "enfrente queda Pudong.</i>"},
+  {b:"shanghai",c:"sh2h-a-hotel",n:"<b>16:05 · ~25 min</b> del Bund al hotel, cruzando el río a Pudong por el túnel.<br><b>Aquí termina el "+
+          "tour y se despiden del guía</b>: es el último servicio contratado de todo China. Si les gustó, la "+
+          "propina va ahora.<br><b>Pídanle una última cosa antes de bajarse:</b> que le deje dicho a recepción el "+
+          "taxi de mañana a las 5:30 al aeropuerto, Terminal 2, o háganlo ustedes al entrar.<br><i>Lo que sigue son "+
+          "dos horas de descanso, y las van a necesitar: mañana suena el despertador a las 4:45.</i>"},
+  {b:"shanghai",c:"sh2h-a-cena",n:"<b>18:40 · ~20 min</b> de regreso al Bund, cruzando el río otra vez.<br><b>Van a cruzar justo cuando "+
+          "prenden todo:</b> el sol se mete a las <b>18:46</b>. Siéntense del lado derecho saliendo del túnel y lo "+
+          "ven salir completo.<br><b>Es la última cena en China</b> — tres semanas, diez ciudades. Confirmen la "+
+          "reserva antes de salir del hotel; en el Bund los restaurantes con vista se llenan los "+
+          "domingos.<br><i>Después de cenar, el jazz del Peace Hotel está a pie: la banda toca ahí desde los años "+
+          "80 y varios de sus músicos pasan de los ochenta años.</i>"},
+  {b:"shanghai",c:"sh2h-vuelta",n:"<b>21:15 · ~25 min</b>, el último taxi en China.<br><b>Mañana suena a las 4:45</b> y el taxi sale a las "+
+          "5:30 a Pudong <b>Terminal 2</b>. Con la maleta ya hecha desde la tarde, esto es solo "+
+          "dormir.<br><b>Gasten o repartan los yuanes que les queden:</b> en Japón no sirven y cambiarlos de vuelta "+
+          "sale pésimo. Los billetes chicos déjenlos de propina.<br><i>Última revisión: pasaporte, el QR del Visit "+
+          "Japan Web, el adaptador japonés fuera de la maleta documentada y lo pesado NO en la mochila de mano — "+
+          "Spring la pesa.</i>"}
+];
+function migrarNotasOro2(s){
+  if(s.notasOroV2)return;
+  NOTAS_ORO_2.forEach(x=>{
+    const st=s.bases&&s.bases[x.b];if(!st||!Array.isArray(st.catalog))return;
+    const a=st.catalog.find(y=>y.cid===x.c);if(!a)return;
+    a.note=x.n;
+    if(x.m)a.name=x.m;
+  });
+  /* El pendiente del vuelo a Japón traía el vuelo viejo (Juneyao HO1505). Las
+     tres migraciones que lo escriben ya están marcadas como hechas, así que
+     cambiar la constante no bastaba: no habría llegado nunca a un viaje ya
+     guardado. Se refresca aquí, con la bandera nueva. */
+  if(Array.isArray(s.esenciales)){
+    const e=s.esenciales.find(x=>x&&x.id===ESSENTIAL_SH_KIX.id);
+    if(e)Object.assign(e,{t:ESSENTIAL_SH_KIX.t,s:ESSENTIAL_SH_KIX.s});
+    else s.esenciales.push({...ESSENTIAL_SH_KIX});
+  }
+  s.notasOroV2=true;
 }
 /* ---- Shanghái, sábado 23 (v44): fuera el Templo del Buda de Jade ----
    Preguntaron si valía la pena. La respuesta corta es que para ellos no, por
