@@ -1043,7 +1043,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v42 · 2 nov 2026 · La Gran Muralla, el jueves y sin prisa";
+const APP_VERSION="v43 · 2 nov 2026 · El vuelo a Osaka: 9C6575 y la T2 de Kansai";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -1069,7 +1069,7 @@ const ROUTE=[
   {id:"xian",      nights:2, sale:"14:40"},  // 16 → 18 may · Tianmen y vuelo de la tarde, a confirmar
   {id:"beijing",   nights:3, sale:"15:30"},  // 18 → 21 may · tren de la tarde, llega ~19:50 (a confirmar)
   {id:"shanghai",  nights:3, sale:"15:00"},  // 21 → 24 may · Muralla en la mañana y G17 15:00, llega ~19:35
-  {id:"kyoto",     nights:2, sale:"07:50"},  // 24 → 26 may · vuelo de las 7:50 PVG → KIX, en Kioto ~13:15
+  {id:"kyoto",     nights:2, sale:"08:05"},  // 24 → 26 may · vuelo 9C6575 8:05 PVG T2 → KIX T2, en Kioto ~13:40
   {id:"tokyo",     nights:3, sale:"12:30"}   // 26 → 29 may · Arashiyama y Kinkaku-ji temprano, Nozomi 12:30, llega 14:45
 ];
 /* Vuelos internacionales de ida y de regreso. La ida trae una escala larga en
@@ -1178,7 +1178,7 @@ const XFER={
   "zjj|xian":{mode:"Vuelo",detail:"Tianmen en la mañana · Zhangjiajie (DYG) → Xi'an (XIY) directo ~1 h 45, vuelo de la tarde A CONFIRMAR (hay pocos) · el tren directo son 9 h 48, no sirve",time:"~3 h 45 de la salida al aterrizaje",dur:225,type:"air"},
   "xian|beijing":{mode:"Tren bala",detail:"De Terracota a Xi'an Norte en el coche, con las maletas · G rápido ~15:30 → Pekín Oeste ~19:50, a confirmar (los rápidos solo paran en Zhengzhou Este y Shijiazhuang)",time:"~4 h 20 de tren",dur:260,type:"rail"},
   "beijing|shanghai":{mode:"Tren bala",detail:"De Mutianyu a Pekín Sur en el coche, con las maletas · G17 15:00 → Shanghái Hongqiao 19:34, a confirmar · Hongqiao → el Bund ~45 min",time:"~4 h 35 de tren",dur:275,type:"rail"},
-  "shanghai|kyoto":{mode:"Vuelo",detail:"Hotel en Pudong → aeropuerto (taxi ~40 min) · directo PVG → Osaka Kansai (KIX), Juneyao HO1505 7:50 → 11:00 hora de Japón (a confirmar) · JR Haruka a Kioto 75 min (Kioto no tiene aeropuerto)",time:"~7 h 30 de puerta a puerta (Japón va 1 h adelante)",dur:190,type:"air"},
+  "shanghai|kyoto":{mode:"Vuelo",detail:"Hotel en Pudong → PVG Terminal 2 (taxi ~40 min) · directo Spring Airlines 9C6575, 8:05 → 11:20 hora de Japón · llega a la Terminal 2 de Kansai, que no tiene tren: shuttle gratis a la T1 (~7 min) · JR Haruka a Kioto 80 min (Kioto no tiene aeropuerto)",time:"~8 h de puerta a puerta (Japón va 1 h adelante)",dur:195,type:"air"},
   "kyoto|tokyo":{mode:"Tren bala",detail:"Arashiyama y Kinkaku-ji temprano · Shinkansen Nozomi Kioto 12:30 → Tokio 14:45 (sale uno cada ~10 min) · asiento E para ver el Fuji",time:"2 h 15",dur:135,type:"rail"},
   /* --- Alternativas, por si reacomodas la ruta --- */
   "yangshuo|zjj":{mode:"Tren bala",detail:"Transbordo Guilin o Huaihua",time:"3.5–4.5 h",dur:255,type:"rail"},
@@ -3874,8 +3874,125 @@ function normalizeTripState(s){
   migrarXianV6(s);           // el lunes 17: la muralla en tándem se va al atardecer
   migrarNotasOro(s);         // las notas que faltaban de Hong Kong a Xi'an
   migrarPekinV3(s);          // la Gran Muralla pasa al jueves, con todo el día
+  migrarKansaiV6(s);         // el vuelo real a Osaka: 9C6575, y la T2 de Kansai
   purgarRetiradas(s);        // y al final: lo que se quitó a propósito no vuelve nunca
   return s;
+}
+/* ---- Shanghái → Osaka → Kioto (v43): el vuelo real ----
+   Ellos encontraron el vuelo: sale 8:05 de Pudong T2 y llega 11:20. Buscado:
+   es el <b>Spring Airlines 9C6575</b>, ~2 h 15, PVG Terminal 2 → KIX. El plan
+   traía el Juneyao HO1505 de las 7:50, que era una suposición.
+   Dos cosas que ese vuelo cambia, y que no son menores:
+     1. Spring llega a la <b>Terminal 2 de Kansai</b>, no a la 1 (lo dice el
+        sitio del aeropuerto: T2 es de Peach, Spring y Jeju). <b>La T2 no tiene
+        estación de tren.</b> Hay que salir de aduana y tomar el shuttle
+        gratuito a la T1, ~7 min, cada 2-10 min, de 5:00 a 23:00. El Haruka
+        sale de la T1. Antes el plan daba 45 min entre aterrizar y el tren:
+        no alcanzaban.
+     2. Spring es aerolínea de bajo costo y la maleta va aparte. Después de 18
+        dias en China con souvenirs, eso importa: se compra por adelantado,
+        que sale mucho más barato que en el mostrador.
+   El resto del día se recorre ~25 min, y aun así Fushimi Inari cae en la mejor
+   luz (el sol se mete a las 18:59 en Kioto ese día) y Gion al anochecer. */
+const KY_DIA0_V6=[
+  {cid:"ky0-salida",name:"Check-out y taxi al aeropuerto de Pudong (PVG) · Terminal 2",type:"transfer",dur:40,fixed:"05:30",
+   costos:[["Taxi al aeropuerto (2)",500]],
+   note:"<b>5:30 · ~40 min</b> del hotel en Pudong a <b>PVG Terminal 2</b> (~¥180-220). Pidan el taxi en "+
+        "recepción la noche anterior: a esa hora no se consigue en la calle.<br>"+
+        "<b>Son 15 min más de sueño que antes</b>, porque el vuelo resultó ser a las 8:05 y no a las 7:50.<br>"+
+        "<b>⚠ Digan «Terminal 2» (第二航站楼).</b> Pudong tiene dos terminales lejos una de otra y Spring "+
+        "sale de la 2.<br>"+
+        "<i>Revisen el cuarto: cargadores y adaptadores. En Japón el enchufe es tipo A, 100 V — el "+
+        "adaptador chino no sirve.</i>"},
+  {cid:"ky0-pvg",name:"Documentar con Spring, migración de China y a la sala",type:"transfer",dur:115,fixed:"06:10",
+   costos:[],
+   note:"<b>6:10 · casi dos horas antes, y con una aerolínea de bajo costo conviene.</b><br>"+
+        "<b>⚠ Lo del equipaje, que es lo que puede salir caro:</b> en Spring la maleta documentada <u>no "+
+        "viene incluida</u> en la tarifa básica, y lo que incluye cambia según la tarifa que compren. "+
+        "<b>Compren el equipaje por internet al reservar</b>, no en el mostrador: en el aeropuerto cuesta "+
+        "bastante más. Revisen los kilos impresos en su boleto, porque las fuentes no concuerdan (van de "+
+        "15 a 25 kg según tarifa y ruta).<br>"+
+        "<b>El equipaje de mano lo pesan de verdad.</b> El límite anda en 7 kg (hay fuentes que dicen 5 en "+
+        "internacional) y también miden el tamaño. No metan los souvenirs pesados en la mochila.<br>"+
+        "<b>El mostrador cierra antes que en una aerolínea normal</b> — en internacional suele ser 60 min "+
+        "antes. Por eso llegan 6:10 y no 7:00.<br>"+
+        "<i>Llenen el <b>Visit Japan Web</b> desde el hotel la noche anterior: genera los códigos QR de "+
+        "migración y aduana de Japón y ahorra media fila al llegar.</i>"},
+  {cid:"ky-arrive",name:"Vuelo 9C6575 · Shanghái (PVG T2) → Osaka Kansai (KIX T2)",type:"transfer",dur:195,fixed:"08:05",
+   costos:[["Vuelo 9C6575, tarifa base (2)",5900],["Equipaje documentado, comprado por adelantado (2)",2000]],
+   note:"<b>8:05 → 11:20 · ~2 h 15 de vuelo.</b> <b>Spring Airlines 9C6575</b>, directo. Japón va <b>una "+
+        "hora adelante</b>, así que en el reloj parecen 3 h 15 pero no lo son.<br>"+
+        "<b>⚠ Confirmen la hora al comprar:</b> la mayoría de las fuentes dicen 8:05, pero alguna lista el "+
+        "mismo vuelo a las 8:10.<br>"+
+        "<b>Llegan a la Terminal 2 de Kansai</b>, que es la de bajo costo — eso importa para lo que sigue, "+
+        "véanlo en la ficha de abajo.<br>"+
+        "<b>Es bajo costo:</b> asientos apretados, sin comida ni bebida incluida, y todo se compra a bordo "+
+        "(acepta efectivo y QR chino; lleven algo de yuanes sueltos). Son 2 h, se aguanta.<br>"+
+        "<i>Los dos precios de aquí son estimados: pongan los reales al comprar, sobre todo el del equipaje, "+
+        "que es el que se dispara.</i>"},
+  {cid:"ky0-kix",name:"Migración de Japón, maletas y shuttle de la T2 a la T1",type:"transfer",dur:55,fixed:"11:20",
+   costos:[],
+   note:"<b>11:20 · esta es la ficha que cambió por el vuelo, y vale oro saberlo antes.</b><br>"+
+        "<b>⚠ La Terminal 2 de Kansai NO tiene estación de tren.</b> Es la terminal de bajo costo (Peach, "+
+        "Spring y Jeju) y está separada de la principal. El Haruka sale de la <b>Terminal 1</b>.<br>"+
+        "<b>Qué hacen, en orden:</b><ul>"+
+        "<li>Migración de Japón con los QR del Visit Japan Web, maletas y aduana. ~35-40 min.</li>"+
+        "<li>Salen de aduana y buscan el <b>shuttle gratuito a la Terminal 1</b>. Va por fuera de "+
+        "seguridad, sale cada 2-10 min de 5:00 a 23:00 y tarda ~7 min.</li>"+
+        "<li>En la T1, bajan a la estación: está en el edificio de enfrente, conectado por un puente "+
+        "techado.</li></ul>"+
+        "<b>Antes el plan daba 45 min para esto y no alcanzaban</b>, porque suponía que aterrizaban en la "+
+        "T1. Ahora son 55 y van justos pero bien.<br>"+
+        "<i>Si van a usar JR Pass o comprar el boleto del Haruka, la taquilla de JR está en la T1, no en la "+
+        "T2: no la busquen antes del shuttle.</i>"},
+  {cid:"ky0-haruka",name:"JR Haruka: Kansai (T1) → estación de Kioto",type:"transfer",dur:80,fixed:"12:20",
+   costos:[["JR Haruka, asiento reservado (2)",700]],
+   note:"<b>12:20 · ~75-80 min directo a Kioto</b>, sin transbordos. Sale cada ~30 min, así que si se "+
+        "atrasan en migración simplemente toman el siguiente.<br>"+
+        "<b>Compren el ICOCA &amp; HARUKA</b> si lo encuentran en la taquilla de la T1: es el combo de la "+
+        "tarjeta de transporte + el Haruka con descuento, y la ICOCA les sirve después para el metro y los "+
+        "buses de Kioto y Osaka.<br>"+
+        "<b>Siéntense del lado derecho</b> saliendo del aeropuerto: se va por el puente sobre la bahía.<br>"+
+        "<i>El Haruka llega al andén 30 de la estación de Kioto, que está apartado al sur: caminen hacia la "+
+        "salida central (Karasuma).</i>"},
+  {cid:"ky0-hotel",name:"Taxi de la estación de Kioto al hotel y dejar las maletas",type:"transfer",dur:30,fixed:"13:40",
+   costos:[["Taxi (2)",200]],
+   note:"<b>13:40 · ~15 min en taxi</b> de la estación al Mitsui Garden Premier de Sanjo (~¥1,500). El "+
+        "check-in es a las 15:00, así que solo dejan maletas y salen.<br>"+
+        "<b>Los taxis de Kioto abren la puerta solos</b> — no la jalen. Y aceptan tarjeta e IC.<br>"+
+        "<i>En metro sería Karasuma hasta Karasuma-Oike y caminar, pero con maletas y a esta hora el taxi "+
+        "gana.</i>"},
+  {cid:"ky0-a-nishiki",fixed:"14:10"},
+  {cid:"ky-nishiki",dur:75,fixed:"14:25"},
+  {cid:"ky0-a-fushimi",fixed:"15:40"},
+  {cid:"ky-fushimi",dur:120,fixed:"16:10",
+   note:"<b>16:10 · y a esta hora es cuando vale.</b> Los autobuses de día ya se fueron y la luz entra de "+
+        "lado entre los torii.<br>"+
+        "<b>El sol se mete a las 18:59</b> y a las 19:27 ya es de noche: les toca la hora dorada completa y "+
+        "las primeras luces.<br>"+
+        "<b>Está abierto 24 h y es gratis.</b> La fila de torii (千本鳥居) sube por el cerro Inari; la "+
+        "vuelta completa a la cima son 2-3 h. <b>No hace falta llegar arriba:</b> suban hasta el mirador "+
+        "del <b>Yotsutsuji</b> (~30-40 min), que es donde se abre la vista sobre Kioto, y de ahí se "+
+        "regresan.<br>"+
+        "<i>Pasando las primeras dos puertas la gente se adelgaza muchísimo. Los primeros 200 m son los "+
+        "llenos.</i>"},
+  {cid:"ky0-a-gion",fixed:"18:10"},
+  {cid:"ky-gion",dur:50,fixed:"18:30"},
+  {cid:"ky-pontocho",fixed:"19:30"},
+  {cid:"ky0-vuelta",fixed:"21:30"}
+];
+function migrarKansaiV6(s){
+  if(s.kyVueloV6)return;
+  const ky=s.bases&&s.bases.kyoto;
+  if(ky&&Array.isArray(ky.catalog)&&ky.schedule){
+    sembrarDia(ky,0,KY_DIA0_V6,"05:30");
+    KY_DIA0_V6.forEach(a=>{
+      if(!a.costos)return;
+      const x=ky.catalog.find(y=>y.cid===a.cid);
+      if(x)x.costs=a.costos.map(([label,est])=>({id:uid(),label,est,real:0}));
+    });
+  }
+  s.kyVueloV6=true;
 }
 /* ---- Pekín, de nuevo (v42): la Gran Muralla pasa al jueves ----
    Pedido de ellos: la muralla el día 2 (jueves 20) y con todo el tiempo que
