@@ -1043,7 +1043,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v35 · 2 nov 2026 · Chongqing: Shibati y Clock Tower Square, sin la escalera";
+const APP_VERSION="v36 · 2 nov 2026 · La escalera Huangguan ya no puede volver";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -3869,6 +3869,31 @@ function normalizeTripState(s){
   migrarFichasReserva(s);    // la ficha de reserva de cada hotel
   migrarVouchers(s);         // los comprobantes de Trip.com: Yangshuo, Xi'an y Shanghái
   migrarChongqingV3(s);      // el viernes 14: sin la escalera, con Shibati y Clock Tower Square
+  purgarRetiradas(s);        // y al final: lo que se quitó a propósito no vuelve nunca
+  return s;
+}
+/* ---- Actividades retiradas a propósito ----
+   Una migración normal corre UNA sola vez y se marca como hecha. Eso sirve para
+   agregar cosas, pero no para quitarlas: si la actividad vuelve a entrar al
+   estado guardado —porque alguien abrió la app en una computadora con la versión
+   vieja en caché, porque se deshizo un cambio, o porque se restauró un respaldo
+   de antes— la migración ya está marcada y nunca la vuelve a borrar. Se queda
+   para siempre.
+   Por eso esta lista se aplica en CADA carga y en cada estado que llega
+   sincronizado, sin bandera que la apague. Es un filtro, así que cuesta nada. */
+const ACTIVIDADES_RETIRADAS=[
+  "zjjd0-escalera",   // Gran Escalera Huangguan, Chongqing — fuera en v35
+  "hk-manmo"          // Man Mo Temple, Hong Kong — fuera desde antes
+];
+function purgarRetiradas(s){
+  const fuera=new Set(ACTIVIDADES_RETIRADAS);
+  Object.values((s&&s.bases)||{}).forEach(st=>{
+    if(!st||typeof st!=="object")return;
+    if(Array.isArray(st.catalog))st.catalog=st.catalog.filter(a=>a&&!fuera.has(a.cid));
+    if(st.schedule&&typeof st.schedule==="object")
+      Object.keys(st.schedule).forEach(d=>{
+        st.schedule[d]=(st.schedule[d]||[]).filter(x=>x&&!fuera.has(x.ref));});
+  });
   return s;
 }
 /* ---- Comprobantes de Trip.com: Yangshuo, Xi'an y Shanghái (v33) ----
@@ -4502,9 +4527,10 @@ const CD_DIA2_2027=[
 
    El viernes es día completo en Chongqing, con lo que ellos propusieron, y se
    van en el tren de la tarde: Ciqikou va en la mañana porque queda al oeste,
-   lejos de Chongqing East y con las maletas en el hotel; luego la escalera
-   Huangguan, comida y bajada por el callejón Shancheng, y el teleférico. Llegan
-   a Wulingyuan ~21:20, así que la cena Tujia pasa al día del parque. */
+   lejos de Chongqing East y con las maletas en el hotel; luego Shibati, comida
+   y bajada por el callejón Shancheng, el mirador de Nanbin Lu y el teleférico.
+   Llegan a Wulingyuan ~21:20, así que la cena Tujia pasa al día del parque.
+   (La escalera Huangguan estuvo aquí hasta v35: la quitaron.) */
 const CQ_DIA1_V2=[
   {cid:"cq-arrive",name:"Check-out y taxi a Chengdu East",type:"transfer",dur:64,fixed:"08:15",
    costos:[["Taxi hotel → Chengdu East (2)",160]],
@@ -4867,8 +4893,8 @@ function migrarChongqingV2(s){
        estación Shangxinjie del teleférico;
      · Ciqikou baja a 85 min y la comida a 60 para que todo quepa antes de las
        15:50, que es cuando pasan por las maletas.
-   Vuelve a sembrar el día desde ZJJ_DIA1_V2 (ya actualizada) y borra la escalera
-   del catálogo, no solo del plan. */
+   Solo vuelve a sembrar el día desde ZJJ_DIA1_V2 (ya actualizada); de borrar la
+   escalera se encarga purgarRetiradas, que corre en cada carga. */
 function migrarChongqingV3(s){
   if(s.cqPlanV6)return;
   const zj=s.bases&&s.bases.zjj;
@@ -4879,9 +4905,6 @@ function migrarChongqingV3(s){
       const x=zj.catalog.find(y=>y.cid===a.cid);
       if(x)x.costs=a.costos.map(([label,est])=>({id:uid(),label,est,real:0}));
     });
-    zj.catalog=zj.catalog.filter(a=>a.cid!=="zjjd0-escalera");
-    Object.keys(zj.schedule).forEach(d=>{
-      zj.schedule[d]=(zj.schedule[d]||[]).filter(x=>x.ref!=="zjjd0-escalera");});
   }
   s.cqPlanV6=true;
 }
