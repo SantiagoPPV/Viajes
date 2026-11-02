@@ -1043,7 +1043,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v40 · 2 nov 2026 · Las fechas de arriba ya son las de los días";
+const APP_VERSION="v41 · 2 nov 2026 · Notas a detalle de Hong Kong a Xi’an";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -3872,8 +3872,152 @@ function normalizeTripState(s){
   migrarNotaRing(s);         // jueves: The Ring de opción, en la nota del descanso
   migrarViernesCQ(s);        // viernes: de vuelta a la versión sin la escalera (sin Laojundong)
   migrarXianV6(s);           // el lunes 17: la muralla en tándem se va al atardecer
+  migrarNotasOro(s);         // las notas que faltaban de Hong Kong a Xi'an
   purgarRetiradas(s);        // y al final: lo que se quitó a propósito no vuelve nunca
   return s;
+}
+/* ---- Las notas que faltaban, de Hong Kong a Xi'an (v41) ----
+   Repaso de las 143 actividades del plan en esas seis paradas: 119 ya tenían
+   una nota que servía y 24 estaban vacías o eran una línea suelta. Estas son
+   esas 24. Van por cid y por parada, al final de la cadena, para no pelearse
+   con la migración que siembra cada día: aquí solo se escribe la nota.
+   Una ficha generica (el desayuno, el descanso) es UNA sola del catalogo y se
+   usa en varios dias, asi que su nota cubre los dos horarios cuando difieren. */
+const NOTAS_ORO=[
+  {b:"hk",c:"g-breakfast",n:"<b>En el Renaissance Harbour View</b>, Wan Chai. Dos horarios distintos esta estancia:<br><b>Viernes 7 · "+
+          "8:00</b>, con calma: el primer plan es el mercado de Bowrington, que abre temprano y a esa hora todavía "+
+          "es de locales.<br><b>Sábado 8 · 6:50</b>, temprano a propósito: el teleférico de Lantau abre a las 9:00 "+
+          "y la fila crece rapidísimo. Si el buffet no abre tan temprano, pidan la noche anterior que les dejen "+
+          "algo para llevar.<br><i>Confirmen si su tarifa incluye desayuno; si no, en Wan Chai hay cha chaan teng a "+
+          "un tercio del precio del hotel.</i>"},
+  {b:"hk",c:"hkd2-ir-ifc",n:"<b>20:25 · ~15 min a pie</b> de la terminal del Peak Tram al Four Seasons, en el IFC: por Garden Road "+
+          "hacia abajo y luego los puentes peatonales elevados de Central, techados y con aire, que los dejan "+
+          "dentro del centro comercial sin cruzar una sola calle.<br><b>El restaurante está en el piso 4</b> del "+
+          "hotel. Lleguen 10 min antes: la reserva es a las 20:45 y en el Lung King Heen no esperan.<br><i>Código "+
+          "de vestir: elegante informal. Nada de shorts ni sandalias.</i>"},
+  {b:"hk",c:"hkd3-ir-cena",n:"<b>19:15 · 10-15 min a pie</b> del hotel. Wan Chai de noche tiene de todo a esa distancia: dai pai dong "+
+          "en Tai Yuen Street, cantonés de barrio por Johnston Road y la zona de bares de Ship Street.<br><b>Última "+
+          "noche en Hong Kong y mañana se levantan a las 5:30</b> para el tren a Yangshuo: cena cerca, sin "+
+          "aventuras largas, y a dormir.<br><i>Dejen las maletas hechas antes de salir.</i>"},
+  {b:"hk",c:"hkd3-vuelta-hotel",n:"<b>21:15 · 10-15 min a pie</b> de vuelta al hotel.<br><b>Antes de dormir, tres cosas:</b> pidan en "+
+          "recepción el taxi para las 6:20 (a esa hora no se consigue en la calle), dejen a la mano pasaportes y "+
+          "los códigos QR de los trenes, y carguen la Octopus o déjenla junta con lo demás.<br><i>Mañana: check-out "+
+          "6:20, West Kowloon, y el cruce de frontera a Shenzhen es el paso lento del día.</i>"},
+  {b:"yangshuo",c:"ys-xg-vuelta",n:"<b>6:45 · ~45 min</b> de Xianggong de regreso al Sugar House, con el mismo coche que los "+
+          "subió.<br><b>Van a llegar con hambre y con frío:</b> el amanecer en el mirador es a 400 m de altura y en "+
+          "mayo amanece fresco. El desayuno del hotel los espera a las 8:00, así que hay tiempo de "+
+          "bañarse.<br><i>Es el único madrugón de Yangshuo; el resto del día es plano.</i>"},
+  {b:"yangshuo",c:"ys-ir-retreat",n:"<b>9:30 · ~20 min en taxi</b> (~¥60) del Sugar House al <b>Yangshuo Mountain Retreat</b>, río Yulong "+
+          "arriba. Ahí rentan las bicis eléctricas y ahí mismo comen a mediodía.<br><b>Pidan el taxi en recepción "+
+          "la noche anterior:</b> el Sugar House está en Xingping, fuera del pueblo, y DiDi a veces no entra hasta "+
+          "la puerta.<br><i>Lleven protector solar y agua: los arrozales no tienen sombra.</i>"},
+  {b:"yangshuo",c:"ys-ir-balsa",n:"<b>14:00 · ~20 min en taxi</b> del Mountain Retreat al embarcadero de <b>Jinlong Bridge (金龙桥)</b>, donde "+
+          "arrancan las balsas del Yulong.<br><b>Ojo: no es el río Li.</b> El Yulong es el chico, de aguas quietas, "+
+          "sin lanchas de motor y con los picos encima — es el bonito. Dos personas por balsa, con el balsero "+
+          "empujando con la pértiga.<br><b>Se van a mojar los pies</b> en los pequeños saltos de agua: sandalias o "+
+          "zapatos que no importen, y el teléfono en bolsa de plástico. Hay sombrilla en la balsa, pero el sol de "+
+          "las 14:30 pega de lado.<br><i>Terminan en Jiuxian, río abajo: de ahí los recogen. No hay que regresar al "+
+          "embarcadero.</i>"},
+  {b:"chengdu",c:"cd-regreso",n:"<b>20:30 · ~20 min</b> del Mi Xun Teahouse al hotel, en taxi o DiDi (~¥20). En metro es la línea 2 de "+
+          "Chunxi Road, pero a esta hora el taxi sale igual de rápido.<br><b>Mañana es el día más largo de "+
+          "Chengdu:</b> el chofer pasa a las <b>6:55</b> y los pandas son a primera hora porque a media mañana se "+
+          "meten a dormir. Pidan que les suban algo de desayuno o déjenlo comprado.<br><i>Dejen lista la ropa: a "+
+          "las 7:30 en la base de pandas hace fresco y luego el día calienta.</i>"},
+  {b:"chongqing",c:"cq-fin",n:"<b>20:45 · ~15 min a pie</b> del muelle 9 de Chaotianmen al InterContinental, que está ahí mismo, en el "+
+          "Raffles City (长江滨江路2号). El lobby es el <b>piso 42</b>.<br><b>Antes de dormir:</b> dejen la maleta lista, "+
+          "porque mañana hacen check-out a las 8:45 y las dejan en recepción hasta las 15:50.<br><i>Si todavía les "+
+          "quedan ganas: el piso 43 tiene la alberca infinita con vista a los dos ríos y suele estar abierta hasta "+
+          "tarde. Confirmen el horario al entrar.</i>"},
+  {b:"chongqing",c:"g-breakfast",n:"<b>7:45 · en el InterContinental</b>, piso 42 (Botanica). Hoy es día de salida y el desayuno es el único "+
+          "rato tranquilo que van a tener.<br><b>Hagan el check-out en el mismo movimiento</b> y dejen las maletas "+
+          "en recepción: no vuelven al cuarto, pasan por ellas a las 15:50 camino a Chongqing East.<br><i>Prueben "+
+          "el xiaomian (小面) si lo tienen en el buffet: es el desayuno de Chongqing, fideos con chile y "+
+          "cacahuate.</i>"},
+  {b:"zjj",c:"zjj-t1-comida",n:"<b>13:30 · arriba, al bajar de Tianzi.</b> En la montaña solo hay comedores del parque y puestos: no "+
+          "esperen gran cosa y no se alejen buscando algo mejor, porque a las 14:15 los recogen para el puente de "+
+          "cristal.<br><b>Lo que sí vale:</b> el maíz hervido, las brochetas y los fideos de arroz (米粉) que venden "+
+          "los puestos de las plataformas. Caliente, rápido y barato.<br><i>Lleven efectivo chico por si algún "+
+          "puesto no tiene QR, y agua: arriba se vende al triple.</i>"},
+  {b:"zjj",c:"zjj-t1-regreso",n:"<b>16:45 · ~1 h de regreso</b> del Gran Cañón al hotel, en Guanliping. El camino de montaña es de "+
+          "curvas: si alguno se marea, adelante y mirando al frente.<br><b>Llegan ~17:45 reventados</b> — hoy "+
+          "caminaron Yuanjiajie, Tianzi y el puente de cristal. Por eso la cena es hasta las 19:15.<br><i>Confirmen "+
+          "con el chofer la hora de mañana: el tour de Tianmen los recoge a las 7:55.</i>"},
+  {b:"zjj",c:"g-rest",n:"<b>17:45 · hora y media en el hotel, y hace falta.</b> Hoy fueron el elevador Bailong, Yuanjiajie, "+
+          "Tianzi y el puente de cristal: es el día de más piernas de todo el viaje.<br><b>Aprovechen para lo "+
+          "práctico:</b> cargar baterías y el power bank (mañana en Tianmen no hay dónde), bajar las fotos, y dejar "+
+          "lista la mochila chica — mañana hacen check-out con todo y las maletas van al aeropuerto.<br><i>Un baño "+
+          "de agua caliente en las piernas hace más por mañana que cualquier otra cosa.</i>"},
+  {b:"zjj",c:"zjj-tujia",n:"<b>19:15 · cocina tujia, que es la razón de cenar aquí y no en el hotel.</b> Los tujia son el pueblo de "+
+          "estas montañas y su comida no se parece a nada de lo que van a comer en el resto del viaje: ahumado, "+
+          "agrio y picante de Hunan.<br><b>Qué pedir, en orden de importancia:</b><ul><li><b>三下锅 (sānxiàguō)</b> — "+
+          "el plato de Zhangjiajie. Una olla seca que se cocina en la mesa, con carne, tofu y verduras. Pídanla "+
+          "<b>seca</b> (干锅), que es como la comen aquí, no en caldo.</li><li><b>土家腊肉 (làròu)</b> — tocino curado y "+
+          "ahumado al fuego de leña, salado y hondo. Con arroz blanco.</li><li><b>岩耳炖鸡</b> — caldo de pollo con el "+
+          "hongo de roca que crece en estos acantilados. Suave, para equilibrar el picante.</li><li><b>合渣 "+
+          "(hézhā)</b> — soya molida con verduras verdes. Es el plato de diario tujia y calma la "+
+          "boca.</li></ul><b>El picante va en serio.</b> Esto es Hunan, no Sichuan: no adormece, quema. Digan "+
+          "<b>«微辣» (wēi là)</b> = poco picante, o <b>«不辣» (bú là)</b> = sin picante. Aun así va a picar.<br><i>De "+
+          "postre o de botana, 葛根粉 (gégēnfěn): una gelatina de raíz de kudzu, dulce, muy de aquí.</i>"},
+  {b:"zjj",c:"g-breakfast",n:"<b>7:00 · en su hotel de Guanliping</b>, antes de que los recojan para Tianmen a las "+
+          "7:55.<br><b>Desayunen de verdad hoy:</b> Tianmen son cinco horas de teleférico, escaleras y los 999 "+
+          "escalones de la Puerta del Cielo, y arriba la comida es cara y mala. Si hay 米粉 (fideos de arroz en "+
+          "caldo), ese es el desayuno local y llena bien.<br><i>Hoy es check-out: bajen con todo y dejen las "+
+          "maletas en recepción. Pasan por ellas a las 14:15, rumbo al aeropuerto.</i>"},
+  {b:"zjj",c:"xa0-comida",n:"<b>13:15 · abajo, ya en la ciudad de Zhangjiajie</b>, al bajar de Tianmen y antes del "+
+          "aeropuerto.<br><b>Última comida en Hunan:</b> si no alcanzaron a probar el 三下锅 anoche, este es el "+
+          "momento. También 米粉 (fideos de arroz), que es lo rápido y seguro.<br><b>Que no se alargue.</b> A las "+
+          "14:15 pasan por las maletas y el vuelo a Xi'an no espera; el aeropuerto está a 10 min pero el check-in "+
+          "de equipaje cierra con tiempo.<br><i>Pidan al guía que los deje en algo cerca del hotel, no en la zona "+
+          "turística del teleférico.</i>"},
+  {b:"zjj",c:"xa0-maletas",n:"<b>14:15 · 25 min</b> para pasar al hotel, recoger las maletas de recepción y salir al "+
+          "aeropuerto.<br><b>Revisen el cuarto aunque ya hayan hecho check-out</b> — cargadores y adaptadores son "+
+          "lo que siempre se queda.<br><b>El aeropuerto de Zhangjiajie (DYG) es chico</b> y está a ~10 min, pero el "+
+          "vuelo a Xi'an todavía está <u>a confirmar</u> y hay pocos al día: lleven el número de vuelo a la mano y "+
+          "revisen el estatus antes de salir del hotel.<br><i>Pasaportes fuera: en China los piden en el check-in y "+
+          "otra vez en seguridad.</i>"},
+  {b:"xian",c:"xa1-hotel",n:"<b>14:05 · ~7 km, 25-40 min</b> del Barrio Musulmán a Qujiang, según el tráfico. Aquí se despiden del "+
+          "guía hasta mañana.<br><b>Antes de bajarse, cierren dos cosas con él:</b> la hora exacta de mañana (pasa "+
+          "a las 7:30, con las maletas en la cajuela) y que confirme la hora de la función de fuentes de esta "+
+          "noche, que puede ser a las 20:00 o a las 21:00.<br><i>La dirección del hotel para el DiDi de la tarde, "+
+          "por si acaso: 雁引路40号 (No. 40 Yanyin Road).</i>"},
+  {b:"xian",c:"xa1-a-cena",n:"<b>16:35 · ~10 min a pie</b> del HUALUXE a la Plaza Sur de la Gran Pagoda, donde está el restaurante "+
+          "(dentro del Joy City, 中粮大悦城).<br><b>Van a cenar a las 16:45, que parece absurdo, y es a propósito:</b> a "+
+          "las 18:00 la fila del Chang'an Da Pai Dang es de 30 a 60 minutos, y a esa hora ustedes van a estar "+
+          "pedaleando la muralla.<br><i>Salgan ya con todo lo de la noche: no vuelven al hotel hasta las 22:20.</i>"},
+  {b:"xian",c:"xa1-vuelta",n:"<b>22:10 · 7-10 min a pie</b> del bulevar al HUALUXE.<br><b>Mañana arrancan a las 6:50</b> y el guía "+
+          "pasa a las 7:30 con las maletas: dejen la maleta hecha esta noche y pidan en recepción que les dejen "+
+          "pasar al buffet a las 6:30, o una caja para llevar.<br><i>Mañana no regresan al hotel: el coche los deja "+
+          "directo en la estación Xi'an Norte.</i>"},
+  {b:"xian",c:"xa-lintong-comida",n:"<b>13:20 · y aquí tienen una ventaja que casi nadie tiene: coche y chofer.</b><br><b>No coman en la "+
+          "explanada del museo.</b> Es la zona más atrapaturistas de Xi'an: precios dobles y comida mediocre. "+
+          "<b>Pídanle al chofer que los lleve al centro de Lintong (临潼)</b>, a ~10 min, donde comen los de "+
+          "aquí.<br><b>Qué pedir:</b> <b>biangbiang miàn</b> (biáng biáng 面), los fideos anchos como cinturones con "+
+          "chile, ajo y vinagre negro — el plato de Shaanxi; o <b>羊肉泡馍</b> (paomo de cordero), el pan que ustedes "+
+          "mismos desmigajan en el caldo. La cadena <b>老孙家 (Lao Sun Jia)</b> tiene sucursales en Lintong y es "+
+          "apuesta segura para el paomo.<br><b>Lintong es tierra de granada y de caqui de cristal (火晶柿子)</b>: si "+
+          "hay puestos, compren fruta suelta, no cajas de regalo, y comparen precio entre dos puestos "+
+          "antes.<br><i>45 min y ya: a las 14:05 salen a la estación y el tren es a las 15:30.</i>"},
+  {b:"xian",c:"xa2-estacion",n:"<b>14:05 · ~45 min</b> de Lintong a la estación <b>Xi'an Norte (西安北站)</b>, que está al otro lado de la "+
+          "ciudad, al norte. <u>No es Xi'an (西安站), la vieja del centro</u>: díganselo claro al chofer.<br><b>Las "+
+          "maletas vienen en la cajuela desde la mañana</b>, así que no hay que pasar al hotel. Aquí se despiden "+
+          "del guía: es el último servicio de los dos días.<br><i>Xi'an Norte es enorme. Lleguen con los códigos QR "+
+          "y los pasaportes en la mano; la revisión y el andén se llevan los 40 min que siguen.</i>"},
+  {b:"xian",c:"xa2-cena",n:"<b>20:45 · ya en Pekín</b>, cerca del Manxin de Qianmen (大江胡同120号), en los callejones de "+
+          "Dashilan.<br><b>El problema de hoy es la hora:</b> llegaron a Pekín Oeste a las 19:50 y muchas cocinas "+
+          "de Qianmen cierran entre 21:00 y 21:30. <b>Pídanle al hotel por WhatsApp o al llegar que les reserve o "+
+          "les recomiende algo abierto</b>, en vez de salir a buscar a las 20:45.<br><b>A pie tienen:</b> la calle "+
+          "peatonal de <b>Qianmen Dajie</b> a 5 min, con locales que cierran tarde, y los callejones de <b>Dashilan "+
+          "(大栅栏)</b>, de comida de siempre. El pato laqueado déjenlo para una cena con calma, no para "+
+          "hoy.<br><i>Cena ligera y a dormir: mañana es el primer día completo de Pekín.</i>"}
+];
+function migrarNotasOro(s){
+  if(s.notasOroV1)return;
+  NOTAS_ORO.forEach(x=>{
+    const st=s.bases&&s.bases[x.b];if(!st||!Array.isArray(st.catalog))return;
+    const a=st.catalog.find(y=>y.cid===x.c);if(!a)return;
+    a.note=x.n;
+  });
+  s.notasOroV1=true;
 }
 /* ---- Actividades retiradas a propósito ----
    Una migración normal corre UNA sola vez y se marca como hecha. Eso sirve para
