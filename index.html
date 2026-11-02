@@ -1043,7 +1043,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v45 · 2 nov 2026 · Notas a detalle de Pekín y Shanghái";
+const APP_VERSION="v46 · 2 nov 2026 · Shanghái: 3 noches reservadas, se cerró el hueco";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -3880,8 +3880,92 @@ function normalizeTripState(s){
   migrarKansaiV6(s);         // el vuelo real a Osaka: 9C6575, y la T2 de Kansai
   migrarShanghaiV5(s);       // fuera el Templo del Buda de Jade: ese tiempo al descanso
   migrarNotasOro2(s);        // las notas que faltaban de Pekín y Shanghái
+  migrarVoucherShanghaiV2(s);// el comprobante nuevo del H+: 3 noches, ya sin el hueco
   purgarRetiradas(s);        // y al final: lo que se quitó a propósito no vuelve nunca
   return s;
+}
+/* ---- Shanghái: comprobante nuevo (v46) ----
+   Mandaron el comprobante nuevo de Trip.com y es OTRA reserva, no la misma
+   corregida: cambian el número de confirmación y el de reserva. Y resuelve
+   el hueco que llevábamos arrastrando.
+     · Antes: 22 → 24 may, 2 noches, y la noche del VIERNES 21 sin reservar,
+       aunque llegan de Pekín ese viernes ~20:35. El presupuesto avisaba
+       «2 de 3 noches».
+     · Ahora: 21 → 24 may, 3 noches. El hueco se cerró y el aviso se va.
+   Lo demás que cambió:
+     · CNY 3,033 (IVA 171.69) en vez de CNY 2,022. Al tipo de cambio que usa
+       todo el viaje (¥1 = 2.70 MXN) son MXN 8,189.10 por las 3 noches, o
+       sea 2,729.70 por noche. La preautorización ahora viene en euros
+       (EUR 408.03), que al cambio cuadra con esa cifra.
+     · El desayuno para 2 ahora cubre el 22, el 23 Y el 24. Los dos que sí
+       pueden usar dejan de costar: el desayuno de Shanghái pasa a $0.
+     · Cancelación gratis hasta el 20 de mayo 23:59, un día antes que la
+       anterior.
+     · Habitación Premium con cama extragrande (ventanal de piso a techo,
+       amenidades Oulong y control inteligente), 1 cama doble grande.
+   El PIN del comprobante NO se guarda, igual que con los otros tres: el
+   propio documento lo marca como confidencial y sirve para cambiar o
+   cancelar la reserva. Lo tienen en el PDF. */
+const SH_VOUCHER_V2={
+  estado:"reservado",via:"Trip.com",
+  entrada:"2027-05-21",horaEntrada:"15:00",salida:"2027-05-24",horaSalida:"12:00",
+  habitacion:"Premium con cama extragrande · 1 cama doble grande · hasta 2 adultos · ventanal de piso a techo",
+  moneda:"CNY",monto:"3033",desglose:"IVA CNY 171.69 incluido",
+  pago:"Se paga en el hotel. Trip.com preautorizó EUR 408.03 en la tarjeta (~MXN 8,189 al cambio que usa el viaje).",
+  desayuno:"Incluido para 2 el 22, el 23 y el 24. El lunes 24 salen a las 5:30 al aeropuerto: pídanlo para llevar la noche anterior.",
+  extras:"Control inteligente del cuarto, amenidades Oulong, albornoces, agua caliente 24 h, baño completo con regadera y shattaf",
+  cancelacion:"Gratis hasta el 20 may 2027, 23:59 (hora de China). Después es no reembolsable y, si no llegan, se cobra.",
+  cancelLimite:"2027-05-20T23:59",zona:"+08:00",
+  direccion:"No. 90 Weifang West Road, China (Shanghai) Pilot Free Trade Zone, Pudong New Area, Shanghai, China",
+  direccionLocal:"上海H+酒店（浦东潍坊店）· 浦东新区潍坊西路90号",
+  tel:"+86-21-68888696",conf:"[SHLJZHG]P26110210003360",reservaNo:"1453606926157473"};
+function migrarVoucherShanghaiV2(s){
+  if(s.shVoucherV2)return;
+  const sh=s.bases&&s.bases.shanghai;
+  if(sh&&Array.isArray(sh.hotels)){
+    const h=sh.hotels.find(x=>/h\+ hotel|潍坊西路|weifang/i.test((x.name||"")+" "+(x.area||"")));
+    if(h){
+      h.reserva=limpiarReserva(Object.assign({},h.reserva||{},SH_VOUCHER_V2));
+      h.precio=2729.70;            // CNY 3,033 / 3 noches, a 2.70 MXN por yuan
+      h.noches=3;                  // ya cubre la del viernes 21: se acabó el hueco
+      h.chosen=true;
+      h.note="<b>★ RESERVADO en Trip.com · viernes 21 al lunes 24 de mayo, 3 noches.</b> Check-in desde las "+
+        "15:00 y check-out antes de las 12:00.<br>"+
+        "<b>✔ Ya cubre la noche del viernes 21</b>, que era la que faltaba: llegan de Pekín ese viernes "+
+        "~20:35 y el comprobante anterior empezaba hasta el sábado. Con este, las tres noches del "+
+        "itinerario están pagadas y el presupuesto deja de avisar.<br>"+
+        "<b>Habitación:</b> Premium con cama extragrande, 1 cama doble grande, para 2 adultos. Ventanal de "+
+        "piso a techo, control inteligente y amenidades Oulong.<br>"+
+        "<b>Precio:</b> <b>CNY 3,033</b> en total, con IVA (CNY 171.69) incluido, y <b>se paga en el "+
+        "hotel</b>. Trip.com preautorizó <b>EUR 408.03</b> en la tarjeta. En el presupuesto van ~MXN 8,189 "+
+        "(2,729.70 por noche) al tipo de cambio que usa todo el viaje.<br>"+
+        "<b>Incluye desayuno para 2 el 22, el 23 y el 24.</b> El lunes 24 salen a las <b>5:30</b> al "+
+        "aeropuerto, así que ese no lo alcanzan: pídanlo para llevar la noche anterior. Los otros dos ya "+
+        "no cuentan en el presupuesto.<br>"+
+        "<b>⚠ Cancelación:</b> gratis hasta el <b>miércoles 20 de mayo de 2027 a las 23:59</b> (hora de "+
+        "China) — un día antes que en la reserva anterior. Después es no reembolsable.<br>"+
+        "<b>El PIN del comprobante no se guarda aquí</b> (el documento lo marca como confidencial y sirve "+
+        "para cambiar o cancelar): ténganlo en el PDF.<br>"+
+        "Hotel nuevo (abrió en 2026) en <b>Pudong</b>, zona de Lujiazui: la Shanghai Tower y el muelle del "+
+        "crucero quedan cerca y el Bund se ve desde su orilla. Puxi (Jing'an, Ciudad Vieja, Concesión "+
+        "Francesa) a 15-25 min en taxi; el aeropuerto de Pudong a ~40 min.<br>"+
+        "Para taxis y tours: <b>"+SH_HOTEL_DIR+"</b>.";
+    }
+    // el desayuno de Shanghái viene incluido: deja de costar
+    const g=Array.isArray(sh.catalog)&&sh.catalog.find(x=>x.cid==="g-breakfast");
+    if(g){
+      g.costs=[];
+      g.note="<b>En el H+ de Pudong, y viene incluido en la reserva</b> para 2 personas: sábado 22, domingo "+
+        "23 y lunes 24.<br>"+
+        "<b>Sábado 8:30</b> — el arranque más tarde de las tres semanas. El día es por su cuenta y "+
+        "empieza a 10 min de aquí.<br>"+
+        "<b>Domingo 7:30</b> — el guía los recoge a las 8:30 en el lobby.<br>"+
+        "<b>El del lunes no lo alcanzan:</b> salen a las 5:30 al aeropuerto. <b>Pidan la caja para llevar "+
+        "la noche anterior</b>, que ya está pagada, y se la comen en el taxi o en la sala.<br>"+
+        "<i>Por eso este desayuno ya no cuenta en el presupuesto.</i>";
+    }
+  }
+  s.shVoucherV2=true;
 }
 /* ---- Las notas de Pekín y Shanghái (v45) ----
    Mismo repaso que se le hizo a Hong Kong-Xi'an en la v41: de las 70
