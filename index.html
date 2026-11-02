@@ -1043,7 +1043,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v32 · 26 oct 2026 · Día a día: costos, tipo y saltos a cada ficha";
+const APP_VERSION="v33 · 2 nov 2026 · Vouchers de Trip.com + sincronización ligera";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -3867,7 +3867,92 @@ function normalizeTripState(s){
   migrarChongqingHotel(s);   // la reserva del InterContinental Raffles City en Trip.com
   migrarXianHotel(s);        // la reserva del HUALUXE en Trip.com
   migrarFichasReserva(s);    // la ficha de reserva de cada hotel
+  migrarVouchers(s);         // los comprobantes de Trip.com: Yangshuo, Xi'an y Shanghái
   return s;
+}
+/* ---- Comprobantes de Trip.com: Yangshuo, Xi'an y Shanghái (v33) ----
+   Datos tomados de los tres check-in vouchers. Se guarda el nº de confirmación
+   y el de reserva, que son los que piden en el mostrador; el PIN NO se guarda:
+   el propio comprobante dice «do not disclose» y sirve para cambiar o cancelar.
+   Ojo con Shanghái: el comprobante cubre 2 noches (22→24) pero esa parada tiene
+   3 en el itinerario, así que la noche del viernes 21 queda sin reservar. Se
+   deja h.noches=2 para que el presupuesto no cobre de más y la app avise sola. */
+const VOUCHERS_V1=[
+  {base:"yangshuo",buscar:/sugar house|糖舍/i,
+   reserva:{estado:"reservado",via:"Trip.com",
+     entrada:"2027-05-09",horaEntrada:"15:00",salida:"2027-05-11",horaSalida:"12:00",
+     habitacion:"Sugar House Deluxe Retreat King · 1 cama king · hasta 2 adultos",
+     moneda:"CNY",monto:"5130",desglose:"IVA CNY 290.38 incluido",
+     pago:"Se paga en el hotel. Trip.com preautorizó MXN 14,351.18 en la tarjeta; el cargo final depende del tipo de cambio del día.",
+     desayuno:"Incluido para 2 el lunes 10 y el martes 11. El martes salen a las 7:00: pídanlo para llevar.",
+     extras:"Fruta de bienvenida · refrescos del minibar a diario · snack de cobertura · tai chi o yoga cada mañana · recorrido de arte por la fábrica · sesión de fotos de viaje · 2 vales de spa de CNY 300 · «Childhood memories in a hanging basket»",
+     cancelacion:"Gratis hasta el 25 oct 2026, 06:59 (hora de China). Después es no reembolsable y, si no llegan, se cobra.",
+     cancelLimite:"2026-10-25T06:59",zona:"+08:00",
+     direccion:"No. 102 Dongling Road (Former Sugar Factory), Yangshuo, Guangxi, China",
+     direccionLocal:"阳朔糖舍度假酒店 · 广西阳朔县东岭路102号（原糖厂）",
+     tel:"+86-773-8883999",conf:"1453606804230236",reservaNo:"1453606804230182"}},
+
+  {base:"xian",buscar:/hualuxe|tanghua|唐华/i,
+   reserva:{estado:"reservado",via:"Trip.com",
+     entrada:"2027-05-16",horaEntrada:"15:00",salida:"2027-05-18",horaSalida:"14:00",
+     habitacion:"1 King Standard Walk-in Shower · 1 cama king · hasta 2 adultos",
+     moneda:"CNY",monto:"2245.72",desglose:"IVA CNY 127.12 y cargo por servicio CNY 192.60 incluidos",
+     pago:"Se paga en el hotel. Trip.com preautorizó MXN 6,282.40 en la tarjeta.",
+     desayuno:"Incluido para 2 el lunes 17 y el martes 18. El martes salen a las 7:30: pidan caja para llevar.",
+     extras:"Late check-out hasta las 14:00, de cortesía (IHG)",
+     cancelacion:"Gratis hasta el 25 oct 2026, 07:58 (hora de China). Después es no reembolsable y, si no llegan, se cobra.",
+     cancelLimite:"2026-10-25T07:58",zona:"+08:00",
+     direccion:"No. 40 Yanyin Road, Qujiang New District, Yanta District, Xi'an, Shaanxi 710061, China",
+     direccionLocal:"西安唐华华邑酒店 · 西安市雁塔区曲江新区雁引路40号",
+     tel:"+86-29-87990000",conf:"24424208",reservaNo:"1453606804257309"}},
+
+  {base:"shanghai",buscar:/h\+ hotel|潍坊西路|weifang/i,precio:2828.82,noches:2,
+   reserva:{estado:"reservado",via:"Trip.com",
+     entrada:"2027-05-22",horaEntrada:"15:00",salida:"2027-05-24",horaSalida:"12:00",
+     habitacion:"Premium King Room · 1 cama queen · hasta 2 adultos",
+     moneda:"CNY",monto:"2022",desglose:"IVA CNY 114.46 incluido",
+     pago:"Se paga en el hotel. Trip.com preautorizó MXN 5,657.64 en la tarjeta.",
+     desayuno:"Incluido para 2 el domingo 23 y el lunes 24. El lunes salen a las 6:00 al aeropuerto: pídanlo para llevar.",
+     extras:"Cuarto con baño completo, regadera y bidet; agua caliente 24 h",
+     cancelacion:"Gratis hasta el 21 may 2027, 23:59 (hora de China). Después es no reembolsable y, si no llegan, se cobra.",
+     cancelLimite:"2027-05-21T23:59",zona:"+08:00",
+     direccion:"No. 90 Weifang West Road, China (Shanghai) Pilot Free Trade Zone, Pudong New Area, Shanghai, China",
+     direccionLocal:"上海H+酒店（浦东潍坊店）· 浦东新区潍坊西路90号",
+     tel:"+86-21-68888696",conf:"[SHLJZHG]P26102507002985",reservaNo:"1453606804259490"}}
+];
+function migrarVouchers(s){
+  if(s.vouchersV1)return;
+  if(!s.bases||!s.bases.hk){s.vouchersV1=true;return;}      // solo el viaje de China
+  VOUCHERS_V1.forEach(v=>{
+    const st=s.bases[v.base];if(!st||!Array.isArray(st.hotels))return;
+    const h=st.hotels.find(x=>v.buscar.test((x.name||"")+" "+(x.area||"")));if(!h)return;
+    // se guarda ya normalizada, para que un segundo paso no la reordene
+    h.reserva=limpiarReserva(Object.assign({},h.reserva||{},v.reserva));
+    if(v.precio!=null)h.precio=v.precio;
+    if(v.noches!=null)h.noches=v.noches;
+    if(v.precio!=null)h.chosen=true;
+  });
+  // Shanghái: el comprobante no cubre la primera noche del itinerario
+  const sh=s.bases.shanghai;
+  if(sh&&Array.isArray(sh.hotels)){
+    const h=sh.hotels.find(x=>/h\+ hotel|潍坊西路|weifang/i.test((x.name||"")+" "+(x.area||"")));
+    if(h)h.note="<b>★ RESERVADO en Trip.com · sábado 22 al lunes 24 de mayo, 2 noches.</b> Check-in desde las 15:00 "+
+      "y check-out antes de las 12:00 (el lunes salen a las 6:00 al aeropuerto).<br>"+
+      "<b>Habitación:</b> Premium King Room, 1 cama queen, para 2 adultos.<br>"+
+      "<b>Precio:</b> CNY 2,022 en total, con IVA (CNY 114.46) incluido, y <b>se paga en el hotel</b>. Trip.com "+
+      "preautorizó <b>MXN 5,657.64</b>: es lo que cuenta en el presupuesto (~$2,829 por noche).<br>"+
+      "<b>Incluye desayuno</b> para 2 el domingo 23 y el lunes 24; el lunes pídanlo para llevar.<br>"+
+      "<b>⚠ Falta la noche del viernes 21.</b> Llegan de Pekín ese viernes ~20:35, pero la reserva empieza el "+
+      "sábado 22: esa primera noche <b>no está cubierta</b>. Hay que reservarla (en este mismo hotel, si tiene "+
+      "lugar, o en otro) o recorrer la llegada al sábado. Por eso el presupuesto marca «2 de 3 noches».<br>"+
+      "<b>⚠ Cancelación:</b> gratis hasta el viernes 21 de mayo de 2027 a las 23:59 (hora de China). Después es "+
+      "no reembolsable.<br>"+
+      "Hotel nuevo (abrió en 2026) en <b>Pudong</b>, zona de Lujiazui: la Shanghai Tower y el muelle del crucero "+
+      "quedan cerca y el Bund se ve desde su orilla. Puxi (Jing'an, Ciudad Vieja, Concesión Francesa) a 15-25 min "+
+      "en taxi; el aeropuerto de Pudong a ~40 min.<br>"+
+      "Para taxis y tours: <b>"+SH_HOTEL_DIR+"</b>.";
+  }
+  s.vouchersV1=true;
 }
 /* ---- Llegada a Yangshuo: domingo 9 de mayo de 2027, paso a paso ----
    Versión 2. La primera versión transbordaba en Cantón Sur (9:08 → 13:25) y
@@ -7705,9 +7790,11 @@ async function save(){
   try{
     state._rev=Date.now();state._by=CLIENT_ID;lastRev=state._rev;lastLocalEdit=Date.now();
     const titulo=(state.meta&&state.meta.titulo)||"Viaje sin título";
+    const marca=new Date().toISOString();
     const {error}=await Auth.sb.from("viajes")
-      .update({datos:state,titulo,actualizado:new Date().toISOString()}).eq("id",currentTripId);
+      .update({datos:state,titulo,actualizado:marca}).eq("id",currentTripId);
     if(error)throw error;
+    ultimaMarca=marca;        // lo que acabamos de escribir ya lo tenemos
     flashSaved();setSync("saved");
   }catch(e){setSync("offline");}
 }
@@ -7730,13 +7817,29 @@ function applyRemote(remote){
   undoStack=[];redoStack=[];actualizarUndoUI();
   renderAll();setSync("updated");
 }
+/* Sondeo en dos pasos. El viaje completo pesa cientos de KB, así que traerlo
+   cada pocos segundos tumbaba la base (el pool se llenaba y PostgREST ya no
+   podía ni leer su schema cache: error PGRST002). Ahora se pregunta solo por la
+   marca de tiempo —unos bytes— y el viaje se descarga únicamente si cambió. */
+let ultimaMarca=null;
 async function poll(){
   if(!currentTripId)return;
+  let marca=null;
+  try{
+    const {data,error}=await Auth.sb.from("viajes")
+      .select("actualizado").eq("id",currentTripId).maybeSingle();
+    if(error)throw error;marca=data?data.actualizado:null;
+  }catch(e){setSync("offline");return;}
+  if(marca&&ultimaMarca&&marca===ultimaMarca){      // nadie tocó nada: no se descarga
+    if(!pendingRemote)setSync("live");
+    return;
+  }
   let remote=null;
   try{
     const {data,error}=await Auth.sb.from("viajes").select("datos").eq("id",currentTripId).maybeSingle();
     if(error)throw error;remote=data?data.datos:null;
   }catch(e){setSync("offline");return;}
+  if(marca)ultimaMarca=marca;
   if(!remote){setSync("live");return;}
   const rrev=remote._rev||0;
   if(rrev>lastRev && remote._by!==CLIENT_ID && remote.bases){
@@ -7744,7 +7847,12 @@ async function poll(){
     else applyRemote(remote);
   }else if(!pendingRemote){setSync("live");}
 }
-function startCollab(){if(pollTimer)clearInterval(pollTimer);pollTimer=setInterval(poll,4000);}
+function startCollab(){
+  if(pollTimer)clearInterval(pollTimer);
+  // cada 12 s y solo con la pestaña a la vista; al volver a ella se sondea al
+  // instante desde el listener de visibilitychange.
+  pollTimer=setInterval(()=>{if(!document.hidden)poll();},12000);
+}
 function stopCollab(){if(pollTimer){clearInterval(pollTimer);pollTimer=null;}}
 
 /* ---- Lista de viajes (propios + compartidos) ---- */
@@ -7808,6 +7916,7 @@ async function openTrip(id){
   try{const {data,error}=await Auth.sb.from("viajes").select("*").eq("id",id).single();if(error)throw error;row=data;}
   catch(e){toast("No se pudo abrir el viaje.",{tipo:"err"});return;}
   currentTripId=row.id;currentTripOwn=(row.propietario===UID);
+  ultimaMarca=row.actualizado||null;        // ya tenemos esta versión
   undoStack=[];redoStack=[];actualizarUndoUI();   // historial propio de cada viaje
   filtro="";const fi=document.getElementById("findInput");if(fi)fi.value="";
   state=normalizeTripState(row.datos||{});
