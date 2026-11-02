@@ -1043,7 +1043,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v43 · 2 nov 2026 · El vuelo a Osaka: 9C6575 y la T2 de Kansai";
+const APP_VERSION="v44 · 2 nov 2026 · Shanghái: fuera el Buda de Jade, más descanso";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -3875,8 +3875,90 @@ function normalizeTripState(s){
   migrarNotasOro(s);         // las notas que faltaban de Hong Kong a Xi'an
   migrarPekinV3(s);          // la Gran Muralla pasa al jueves, con todo el día
   migrarKansaiV6(s);         // el vuelo real a Osaka: 9C6575, y la T2 de Kansai
+  migrarShanghaiV5(s);       // fuera el Templo del Buda de Jade: ese tiempo al descanso
   purgarRetiradas(s);        // y al final: lo que se quitó a propósito no vuelve nunca
   return s;
+}
+/* ---- Shanghái, sábado 23 (v44): fuera el Templo del Buda de Jade ----
+   Preguntaron si valía la pena. La respuesta corta es que para ellos no, por
+   tres razones que se suman:
+     1. Las propias guías lo rematan con «sáltenselo si ya vieron varios
+        templos». Para el 23 de mayo llevan el Gran Buda y Po Lin, Wong Tai Sin
+        y Chi Lin en Hong Kong, Qingcheng, Luohan, Da Ci'en, la Gran Mezquita,
+        el Templo del Cielo y el de los Lamas. Y en tres días más, Fushimi
+        Inari, Kiyomizu-dera, Ginkaku-ji y Nanzen-ji.
+     2. Esa MISMA mañana ven el Templo del Dios de la Ciudad, en la Ciudad
+        Vieja. Es el segundo templo del día.
+     3. Geográficamente es un desvío caro: queda al noroeste, mientras que la
+        Ciudad Vieja y la Concesión Francesa están juntas. Eran 25 min de ida,
+        50 adentro y 20 de vuelta, para un trayecto directo de 20.
+   Son 75 minutos, y van todos al descanso, que es donde hacían falta: ese
+   bloque tenía 55 minutos y al día siguiente se levantan a las 4:45 para el
+   vuelo a Osaka. Ahora tiene 2 h 10.
+   La ficha NO se borra: se queda en el catálogo con la explicación, por si lo
+   quieren de vuelta. */
+const SH_DIA2_V5=[
+  {cid:"g-breakfast",fixed:"07:30"},
+  {cid:"sh2h-guia",fixed:"08:30"},
+  {cid:"sh-yu",fixed:"08:50"},
+  {cid:"sh1-bazar",fixed:"10:20"},
+  {cid:"sh2h-a-fcc",name:"Coche de la Ciudad Vieja a la Concesión Francesa",type:"transfer",dur:20,fixed:"11:10",
+   costos:[],
+   note:"<b>11:10 · ~20 min</b>, derecho al suroeste. <b>Antes este tramo daba la vuelta por el Templo del "+
+        "Buda de Jade</b>, que queda al noroeste: eran 25 min para allá, 50 adentro y 20 para acá. Ahora "+
+        "van directo y esos 75 minutos están en el descanso de la tarde.<br>"+
+        "<i>Cambian de siglo: salen de la Ciudad Vieja, de callejón y templo, y entran a las calles "+
+        "arboladas de la vieja concesión francesa, de casas art déco.</i>"},
+  {cid:"sh1-comida",fixed:"11:30"},
+  {cid:"sh1-wukang",fixed:"12:45"},
+  {cid:"sh1-a-xtd",fixed:"13:30"},
+  {cid:"sh-fcc",fixed:"13:45"},
+  {cid:"sh2h-a-bund",fixed:"14:45"},
+  {cid:"sh-bund",fixed:"15:05"},
+  {cid:"sh2h-a-hotel",fixed:"16:05"},
+  {cid:"sh2h-descanso",name:"Descanso largo y maletas · mañana se levantan a las 4:45",type:"rest",dur:130,fixed:"16:30",
+   costos:[],
+   note:"<b>16:30 · dos horas y diez, y no sobran.</b> Antes este bloque tenía 55 minutos: los 75 que se "+
+        "ganaron al quitar el Templo del Buda de Jade se vinieron todos aquí.<br>"+
+        "<b>Mañana el taxi al aeropuerto sale a las 5:30</b>, o sea que se levantan ~4:45. Hoy terminan a "+
+        "las 21:40 con la cena y el jazz. Esto es lo único que hay entre una cosa y la otra.<br>"+
+        "<b>Dejen la maleta HECHA ahora</b>, no al volver de cenar:<ul>"+
+        "<li>Spring pesa el equipaje de mano de verdad: lo pesado, a la documentada.</li>"+
+        "<li>Saquen el adaptador japonés (tipo A, 100 V): el chino no sirve.</li>"+
+        "<li>Pasaportes y el código QR del Visit Japan Web, a la mano.</li>"+
+        "<li>Pidan el taxi en recepción para las 5:30, hoy mismo.</li></ul>"+
+        "<i>Duerman un rato si pueden. Mañana es día de vuelo y termina caminando Gion de noche.</i>"},
+  {cid:"sh2h-a-cena",fixed:"18:40"},
+  {cid:"sh-farewell",fixed:"19:00"},
+  {cid:"sh2h-jazz",fixed:"20:45"},
+  {cid:"sh2h-vuelta",fixed:"21:15"}
+];
+function migrarShanghaiV5(s){
+  if(s.shJadeV1)return;
+  const sh=s.bases&&s.bases.shanghai;
+  if(sh&&Array.isArray(sh.catalog)&&sh.schedule){
+    const rg=rangoDias(sh,s),dia=rg.fin-1;         // el último día que se ve de Shanghái
+    sembrarDia(sh,dia,SH_DIA2_V5,"07:30");
+    SH_DIA2_V5.forEach(a=>{
+      if(!a.costos)return;
+      const x=sh.catalog.find(y=>y.cid===a.cid);
+      if(x)x.costs=a.costos.map(([label,est])=>({id:uid(),label,est,real:0}));
+    });
+    // el templo sale del plan pero se queda en el catálogo, con el porqué
+    const j=sh.catalog.find(x=>x.cid==="sh-jade");
+    if(j&&!/Fuera del plan/.test(j.note||""))
+      j.note="<b>Fuera del plan desde la v44.</b> No es que sea malo: es que para cuando llegan aquí ya "+
+        "vieron el Gran Buda de Lantau, Wong Tai Sin, Chi Lin, Qingcheng, Luohan, Da Ci'en, la Gran "+
+        "Mezquita, el Templo del Cielo y el de los Lamas — y esa misma mañana el Templo del Dios de la "+
+        "Ciudad. Las guías mismas lo rematan con «si ya vieron varios templos, sáltenselo».<br>"+
+        "Además queda al noroeste, lejos de todo lo demás del día: eran 95 min entre ir, estar y volver.<br>"+
+        "<b>Si lo quieren de vuelta</b>, cabe entre la Ciudad Vieja y la Concesión Francesa, y se le quitan "+
+        "75 min al descanso de la tarde.<br>"+(j.note||"");
+    // el traslado que lo servía ya no lo usa nadie
+    const usados=new Set(Object.values(sh.schedule||{}).flat().map(x=>x&&x.ref));
+    sh.catalog=sh.catalog.filter(a=>a.cid!=="sh2h-a-jade"||usados.has(a.cid));
+  }
+  s.shJadeV1=true;
 }
 /* ---- Shanghái → Osaka → Kioto (v43): el vuelo real ----
    Ellos encontraron el vuelo: sale 8:05 de Pudong T2 y llega 11:20. Buscado:
@@ -7400,12 +7482,13 @@ function migrarKansai(s){
     sembrarDia(ky,1,KY_DIA1_V3,"07:15");
     sembrarDia(tk,0,TK_DIA0_V2,"07:00");
     costos(ky,KY_DIA0_V3);costos(ky,KY_DIA1_V3);costos(tk,TK_DIA0_V2);
-    // domingo en Shanghái: el lunes salen a las 5:15, la noche termina antes
-    ficha(sh,"sh2h-descanso",{note:"Mañana salen a las 5:15: dejen las maletas casi listas. En la recepción pidan "+
-      "la caja de desayuno y el taxi de las 5:15 al aeropuerto de Pudong."});
+    // domingo en Shanghái: el lunes salen a las 5:30, la noche termina antes
+    // (migrarShanghaiV5 reescribe esta nota al final de la cadena, con el descanso largo)
+    ficha(sh,"sh2h-descanso",{note:"Mañana salen a las 5:30: dejen las maletas casi listas. En la recepción pidan "+
+      "la caja de desayuno y el taxi de las 5:30 al aeropuerto de Pudong (Terminal 2)."});
     ficha(sh,"sh-farewell",{dur:105});
     ficha(sh,"sh2h-jazz",{dur:30});
-    ficha(sh,"sh2h-vuelta",{name:"Taxi de regreso al hotel: mañana salen a las 5:15",
+    ficha(sh,"sh2h-vuelta",{name:"Taxi de regreso al hotel: mañana salen a las 5:30",
       note:"~20 min a Pudong. El despertador del lunes suena a las 4:45."});
   }
   if(Array.isArray(s.esenciales)){
