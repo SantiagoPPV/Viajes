@@ -1043,7 +1043,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v41 · 2 nov 2026 · Notas a detalle de Hong Kong a Xi’an";
+const APP_VERSION="v42 · 2 nov 2026 · La Gran Muralla, el jueves y sin prisa";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -3873,8 +3873,199 @@ function normalizeTripState(s){
   migrarViernesCQ(s);        // viernes: de vuelta a la versión sin la escalera (sin Laojundong)
   migrarXianV6(s);           // el lunes 17: la muralla en tándem se va al atardecer
   migrarNotasOro(s);         // las notas que faltaban de Hong Kong a Xi'an
+  migrarPekinV3(s);          // la Gran Muralla pasa al jueves, con todo el día
   purgarRetiradas(s);        // y al final: lo que se quitó a propósito no vuelve nunca
   return s;
+}
+/* ---- Pekín, de nuevo (v42): la Gran Muralla pasa al jueves ----
+   Pedido de ellos: la muralla el día 2 (jueves 20) y con todo el tiempo que
+   haga falta. Estaba metida en la mañana del viernes, el día de salida, con
+   las maletas en la cajuela y el tren de las 15:00 encima: eran 3 h de
+   muralla y a correr. Ahora son ~4 h 30 arriba y nadie mira el reloj.
+   Lo que eso obliga:
+     · El jueves entero se va a Mutianyu, así que el tour «Contrastes» se parte.
+     · Lo que valía de ese tour (Torre del Tambor, hutongs, Templo de los Lamas
+       y Wangfujing) se pasa al viernes, que ahora es una media jornada de
+       norte a sur y termina en la estación. Cuadra bien porque es justo esa
+       línea: Tambor → hutongs → Lamas → Wangfujing → Pekín Sur.
+     · Fuera la Villa Olímpica (pedido de ellos) y fuera Guomao, que era lo
+       mismo —Pekín moderno— y además era una comida cara con vista. Guomao se
+       queda en el catálogo por si la quieren de vuelta.
+     · El Huevo se separa de Wangfujing y se va al miércoles, pegado a
+       Tiananmen: está cruzando la calle del Gran Palacio del Pueblo, así que
+       son 20 minutos, no una parada aparte. Eso contestó su pregunta.
+     · El viernes el desayuno pasa de 6:15 a 7:30: ya no hay que salir
+       corriendo a la muralla. */
+const PK_DIA1_V3=[
+  {cid:"g-breakfast",fixed:"07:15"},
+  {cid:"pk1-guia",fixed:"08:00"},
+  {cid:"bj-temple",fixed:"08:15"},
+  {cid:"pk1-a-tiananmen",fixed:"09:45"},
+  {cid:"pk2-teatro",name:"El «Huevo»: Teatro Nacional (国家大剧院)",type:"sight",dur:20,fixed:"10:00",
+   costos:[],
+   note:"<b>10:00 · 20 minutos, y es todo lo que necesita.</b> Está cruzando la calle del Gran Palacio del "+
+        "Pueblo, en la esquina suroeste de Tiananmen: el coche los deja ahí y de ahí entran a la plaza.<br>"+
+        "<b>Qué es:</b> una cúpula de titanio y cristal de Paul Andreu, abierta en 2007, plantada en medio de "+
+        "un estanque. El estanque es el truco — la cúpula se refleja completa y cierra un óvalo, que es de "+
+        "donde le viene el apodo. Se entra por un túnel de cristal por debajo del agua.<br>"+
+        "<b>Lo de ver es el exterior</b>, y es gratis: den la vuelta al estanque buscando el ángulo donde el "+
+        "reflejo cierra el huevo. Entrar es boleto aparte (~¥40) y no vale la pena si no van a una "+
+        "función.<br>"+
+        "<i>Contraste a propósito: de aquí pasan derecho a Tiananmen y a la Ciudad Prohibida, que son de "+
+        "1420. Seiscientos años en cien metros.</i>"},
+  {cid:"bj-forbidden",fixed:"10:20"},
+  {cid:"pk1-comida",fixed:"13:20"},
+  {cid:"pk1-a-verano",fixed:"14:15"},
+  {cid:"pk1-verano",fixed:"15:00"},
+  {cid:"pk1-regreso",fixed:"17:15"},
+  {cid:"pk1-descanso",dur:60,fixed:"18:15"},
+  {cid:"bj-duck",fixed:"19:30"},
+  {cid:"bj-qianmen",fixed:"21:15"}
+];
+const PK_DIA2_V3=[
+  {cid:"g-breakfast",fixed:"07:00"},
+  {cid:"pk2-guia",name:"Los recoge el guía · coche a Mutianyu",type:"transfer",dur:85,fixed:"07:45",
+   costos:[["Guía y coche privado, día completo (2)",2700]],
+   note:"<b>7:45 · ~1 h 25</b> del hotel a <b>Mutianyu (慕田峪)</b>, ~70 km al noreste.<br>"+
+        "<b>Por qué Mutianyu y no Badaling:</b> Badaling es la que sale en las fotos y la que llenan los "+
+        "autobuses; Mutianyu está restaurada igual de bien, tiene bosque alrededor, teleférico, tobogán y "+
+        "bastante menos gente.<br>"+
+        "<b>Salen temprano a propósito:</b> los autobuses de Pekín llegan entre 10:00 y 11:00. La primera "+
+        "hora arriba es la buena.<br>"+
+        "<b>⚠ El precio es el del coche que estaba cotizado para la mañana del viernes.</b> Ahora es día "+
+        "completo con guía: pidan la cotización nueva.<br>"+
+        "<i>Hoy no hay maletas: duermen otra vez en el mismo hotel.</i>"},
+  {cid:"pk2-subida",name:"Entradas, shuttle y teleférico de subida",type:"transfer",dur:25,fixed:"09:10",
+   costos:[],
+   note:"<b>9:10 · del estacionamiento se sube en shuttle</b> hasta el pie de la muralla, y de ahí el "+
+        "teleférico.<br>"+
+        "<b>⚠ El de arriba y el de abajo son empresas distintas:</b> el teleférico cerrado sube a la "+
+        "<b>torre 14</b> y el tobogán baja desde la <b>torre 6</b>. Son dos boletos separados — compren "+
+        "<u>teleférico sencillo de subida + tobogán de bajada</u>, no el redondo.<br>"+
+        "<b>Precios de referencia (confírmenlos, las fuentes no concuerdan):</b> entrada ~¥45, teleférico "+
+        "~¥100 sencillo o ~¥140 redondo, tobogán ~¥100. El teleférico abre ~8:00 y el tobogán cierra "+
+        "~16:50 entre semana.<br>"+
+        "<i>El guía compra todo; ustedes solo decidan subida sencilla, no redonda.</i>"},
+  {cid:"bj-wall",name:"Gran Muralla de Mutianyu, sin prisa",type:"sight",dur:270,fixed:"09:35",
+   costos:[["Entradas, teleférico y tobogán (2)",1300]],
+   note:"<b>9:35 a 14:05 · cuatro horas y media arriba.</b> Antes eran tres y con el tren encima; hoy no "+
+        "hay nada después, así que bajen cuando quieran bajar.<br>"+
+        "<b>La ruta que aprovecha el tiempo:</b><ul>"+
+        "<li>El teleférico los deja en la <b>torre 14</b>. Primero vayan hacia el <b>este</b>, hacia las "+
+        "<b>torres 19-20</b>: es el tramo empinado, el de las vistas largas, y es donde se vacía de gente. "+
+        "Pasando la 20 suele estar cerrado.</li>"+
+        "<li>Regresen a la 14 y sigan hacia el <b>oeste</b> hasta la <b>torre 6</b>, que es tramo llano y "+
+        "ancho, el de caminar conversando.</li>"+
+        "<li>De la torre 6 sale el <b>tobogán</b>.</li></ul>"+
+        "<b>Lo que hay que saber:</b> los escalones son irregulares y de alturas distintas —de eso se "+
+        "tropieza la gente, no de lo empinado—. Lleven tenis de verdad, agua (arriba se vende al triple), "+
+        "gorra y protector: en mayo pega el sol y no hay sombra en la muralla.<br>"+
+        "<i>Si a las 13:00 ya tuvieron, bajen: el tobogán opera hasta ~16:50 y la comida los espera abajo. "+
+        "El tiempo es suyo, por eso se movió el día.</i>"},
+  {cid:"pk2-tobogan",name:"Tobogán de bajada desde la torre 6",type:"transfer",dur:20,fixed:"14:05",
+   costos:[],
+   note:"<b>14:05 · un trineo de un asiento sobre un canal de metal</b>, ~1.5 km serpenteando el cerro. Se "+
+        "frena con la palanca: adelante acelera, atrás frena.<br>"+
+        "<b>Van en fila india y el de adelante marca el ritmo</b>, así que si les tocó alguien lento no hay "+
+        "manera de rebasar. Dejen espacio y disfrútenlo.<br>"+
+        "<i>No se puede ir con la cámara en la mano: hay personal que lo prohíbe y con razón. Si quieren "+
+        "video, correa al cuerpo.</i>"},
+  {cid:"pk3-comida",dur:75,fixed:"14:30"},
+  {cid:"pk2-a-hotel",name:"Coche de regreso a Pekín · fin del día",type:"transfer",dur:90,fixed:"15:45",
+   costos:[],
+   note:"<b>15:45 · ~1 h 30 de regreso</b>, antes de que agarre el tráfico de la tarde. Duerman en el "+
+        "coche: se lo ganaron.<br>"+
+        "<i>El guía los deja en el hotel. Mañana es media jornada y los recoge a las 8:15, ya con "+
+        "check-out.</i>"},
+  {cid:"pk2-descanso",dur:135,fixed:"17:15"},
+  {cid:"pk2-cena",fixed:"19:30"},
+  {cid:"pk2-vuelta",fixed:"21:30"}
+];
+const PK_DIA3_V3=[
+  {cid:"g-breakfast",fixed:"07:30"},
+  {cid:"pk3-salida",name:"Check-out, maletas al coche y los recoge el guía",type:"transfer",dur:20,fixed:"08:15",
+   costos:[["Guía y coche privado, media jornada (2)",3400]],
+   note:"<b>8:15 · check-out y las maletas a la cajuela</b>, donde se quedan todo el día: no vuelven al "+
+        "hotel, el coche los deja directo en la estación.<br>"+
+        "<b>Antes eran las 6:15 y a correr a la muralla.</b> Hoy se puede desayunar como gente.<br>"+
+        "<b>El día va de norte a sur, en línea recta:</b> Torre del Tambor → hutongs → Templo de los Lamas "+
+        "→ Wangfujing → Pekín Sur. Nada de regresar sobre los pasos.<br>"+
+        "<b>⚠ El precio es estimado.</b> Este tour era «Contrastes de Pekín», de día completo con seis "+
+        "paradas; ahora son cuatro y media jornada. Pidan la cotización nueva.<br>"+
+        "<i>Pasaportes y los códigos QR del tren, a la mano desde ya.</i>"},
+  {cid:"pk2-tambor",dur:55,fixed:"08:35"},
+  {cid:"bj-hutong",dur:70,fixed:"09:30"},
+  {cid:"pk2-a-lama",fixed:"10:40"},
+  {cid:"pk2-lama",dur:55,fixed:"10:55"},
+  {cid:"pk2-a-centro",name:"Coche del Templo de los Lamas a Wangfujing",type:"transfer",dur:15,fixed:"11:50",
+   costos:[],
+   note:"<b>11:50 · ~15 min</b>, ~4 km al sur. Van bajando hacia la estación: esta es la última parada "+
+        "antes de comer."},
+  {cid:"pk3-wangfujing",name:"La calle Wangfujing (王府井)",type:"sight",dur:30,fixed:"12:05",
+   costos:[],
+   note:"<b>12:05 · media hora, y les debo una advertencia.</b><br>"+
+        "<b>El callejón de antojitos ya no existe.</b> El famoso 王府井小吃街 —el de los escorpiones en "+
+        "palito y las fotos— <b>cerró en marzo de 2020</b> y no volvió. Lo que queda hoy es una calle "+
+        "peatonal de centros comerciales, tiendas de marca y souvenirs. Si lo que les contaron era lo de "+
+        "los puestos, eso ya no está.<br>"+
+        "<b>Lo que sí vale media hora:</b> es la calle comercial histórica de Pekín, arranca a un costado "+
+        "de la Ciudad Prohibida y tiene la librería de idiomas extranjeros y la tienda de té Wuyutai. Para "+
+        "comprar lo último antes del tren, sirve.<br>"+
+        "<i>Si prefieren saltársela y darle esos 30 min al Templo de los Lamas o a comer con calma, díganle "+
+        "al guía. Lo de los puestos de comida, hoy está en Guijie (簋街) y en Xianyukou, no aquí.</i>"},
+  {cid:"pk3-comida-wf",name:"Comida en Wangfujing, antes del tren",type:"food",dur:55,fixed:"12:35",
+   costos:[["Comida (2)",600]],
+   note:"<b>12:35 · última comida en Pekín.</b> Aquí sí hay de dónde escoger: los pisos de restaurantes de "+
+        "los centros comerciales de Wangfujing (APM, Wangfu Central) son sólidos, con aire y con baños "+
+        "limpios, que a estas alturas del día importa.<br>"+
+        "<b>Que no se alargue:</b> a las 13:30 salen a la estación. El tren a Shanghái es a las 15:00 y en "+
+        "China el andén cierra unos minutos antes de la salida — no es como un avión, no esperan a "+
+        "nadie.<br>"+
+        "<i>Compren agua y algo de picar para el tren: son 4 h 35 hasta Hongqiao.</i>"},
+  {cid:"pk3-estacion",name:"Coche a la estación Pekín Sur (北京南)",type:"transfer",dur:40,fixed:"13:30",
+   costos:[],
+   note:"<b>13:30 · ~35-40 min</b> de Wangfujing a <b>Pekín Sur (北京南站)</b>, al sur de la ciudad. "+
+        "<u>No es Pekín (北京站) ni Pekín Oeste (北京西), que es donde llegaron</u>: dígaselo claro al "+
+        "chofer.<br>"+
+        "<b>Aquí se despiden del guía</b>: es el último servicio de los tres días.<br>"+
+        "<i>Bajen todo del coche antes de que arranque. Revisen la cajuela dos veces.</i>"},
+  {cid:"pk3-anden",dur:50,fixed:"14:10"},
+  {cid:"sh-arrive",fixed:"15:00"},
+  {cid:"sh0-hotel"},
+  {cid:"pk3-bund"},
+  {cid:"pk3-vuelta"}
+];
+function migrarPekinV3(s){
+  if(s.pkPlanV3)return;
+  const bj=s.bases&&s.bases.beijing;
+  if(bj&&Array.isArray(bj.catalog)&&bj.schedule){
+    sembrarDia(bj,1,PK_DIA1_V3,"07:15");
+    sembrarDia(bj,2,PK_DIA2_V3,"07:00");
+    sembrarDia(bj,3,PK_DIA3_V3,"07:30");
+    [PK_DIA1_V3,PK_DIA2_V3,PK_DIA3_V3].forEach(L=>L.forEach(a=>{
+      if(!a.costos)return;
+      const x=bj.catalog.find(y=>y.cid===a.cid);
+      if(x)x.costs=a.costos.map(([label,est])=>({id:uid(),label,est,real:0}));
+    }));
+    // el desayuno es UNA ficha y se usa los tres días, a horas distintas
+    const g=bj.catalog.find(x=>x.cid==="g-breakfast");
+    if(g)g.note="<b>En el Manxin de Qianmen</b> (大江胡同120号), hotel de patio. Tres horarios distintos, "+
+      "y cada uno por una razón:<br>"+
+      "<b>Miércoles 7:15</b> — el día imperial es largo: Templo del Cielo, el Huevo, Tiananmen, la Ciudad "+
+      "Prohibida y el Palacio de Verano.<br>"+
+      "<b>Jueves 7:00</b> — el más temprano, porque los autobuses llegan a Mutianyu entre 10:00 y 11:00 y "+
+      "la primera hora en la muralla es la buena. Desayunen fuerte: arriba la comida es cara y mala.<br>"+
+      "<b>Viernes 7:30</b> — el más tranquilo de los tres, y antes era a las 6:15. Al bajar ya hacen "+
+      "check-out: las maletas se van en la cajuela y no vuelven al hotel.<br>"+
+      "<i>El hotel es de patio, chico: confirmen a qué hora abre el desayuno, no es buffet de cadena.</i>";
+    // Guomao sale del plan pero se queda en el catálogo, por si la quieren de vuelta
+    const gm=bj.catalog.find(x=>x.cid==="pk2-guomao");
+    if(gm&&!/Fuera del plan/.test(gm.note||""))
+      gm.note="<b>Fuera del plan desde la v42.</b> Salió junto con la Villa Olímpica: era lo mismo —Pekín "+
+        "moderno y de cristal— y además era la comida cara del día. Si la quieren de vuelta, cabe el "+
+        "viernes en lugar de Wangfujing.<br>"+(gm.note||"");
+  }
+  s.pkPlanV3=true;
 }
 /* ---- Las notas que faltaban, de Hong Kong a Xi'an (v41) ----
    Repaso de las 143 actividades del plan en esas seis paradas: 119 ya tenían
@@ -4030,6 +4221,8 @@ function migrarNotasOro(s){
    sincronizado, sin bandera que la apague. Es un filtro, así que cuesta nada. */
 const ACTIVIDADES_RETIRADAS=[
   "zjjd0-escalera",   // Gran Escalera Huangguan, Chongqing — fuera en v35
+  "pk2-olimpica",     // Villa Olímpica (Nido de Pájaro y Cubo de Agua) — fuera en v42
+  "pk2-a-olimpica",
   "cqv-ir-laojun",    // Laojundong, Chongqing — probado en v37, fuera en v38
   "cqv-laojun",
   "hk-manmo"          // Man Mo Temple, Hong Kong — fuera desde antes
