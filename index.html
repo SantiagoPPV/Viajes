@@ -1043,7 +1043,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v34 · 2 nov 2026 · Teleférico desde la orilla sur (menos fila)";
+const APP_VERSION="v35 · 2 nov 2026 · Chongqing: Shibati y Clock Tower Square, sin la escalera";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -3868,6 +3868,7 @@ function normalizeTripState(s){
   migrarXianHotel(s);        // la reserva del HUALUXE en Trip.com
   migrarFichasReserva(s);    // la ficha de reserva de cada hotel
   migrarVouchers(s);         // los comprobantes de Trip.com: Yangshuo, Xi'an y Shanghái
+  migrarChongqingV3(s);      // el viernes 14: sin la escalera, con Shibati y Clock Tower Square
   return s;
 }
 /* ---- Comprobantes de Trip.com: Yangshuo, Xi'an y Shanghái (v33) ----
@@ -4619,46 +4620,67 @@ const ZJJ_DIA1_V2=[
         "15:50.<br>"+
         "<b>8:45 · ~35 min en taxi</b> (~¥40) a Ciqikou, al oeste. En metro es la línea 1 directa de "+
         "Chaotianmen a Ciqikou, ~45 min."},
-  {cid:"zjjd0-ciqikou",name:"Ciqikou, el pueblo antiguo",type:"sight",dur:100,fixed:"09:20",
+  {cid:"zjjd0-ciqikou",name:"Ciqikou, el pueblo antiguo",type:"sight",dur:85,fixed:"09:20",
    costos:[["Té y antojitos (2)",300]],
    note:"<b>9:20 · Ciqikou (磁器口)</b>, el pueblo antiguo junto al río Jialing: callejones empedrados, casas "+
         "de té, <i>mahua</i> (la trenza frita) y tofu picante.<br>"+
         "<b>Por qué en la mañana y no en la tarde:</b> en la tarde se llena, y además queda al oeste, lejos de "+
         "Chongqing East, de donde sale su tren; con las maletas en el hotel, el centro tiene que ser lo último."},
-  {cid:"zjjd0-escalera",name:"La Gran Escalera Eléctrica Huangguan",type:"sight",dur:30,fixed:"11:30",
-   costos:[["Taxi y escalera (2)",120]],
-   note:"<b>11:00 · ~30 min en taxi</b> a Lianglukou (两路口).<br>"+
-        "<b>11:30 · Huangguan (皇冠大扶梯)</b>: 112 m de largo y 52 m de desnivel, 2 min y medio de bajada "+
-        "por dentro del cerro, entre Lianglukou y Caiyuanba. Es la segunda más larga de Asia, y los de aquí "+
-        "la usan para ir a trabajar.<br>"+
-        "<i>Metro línea 1 o 3, estación Lianglukou, salida 4. Bajen y vuelvan a subir.</i>"},
-  {cid:"zjjd0-comida",name:"Comida en el callejón Shancheng, con vista al Yangtsé",type:"food",dur:70,fixed:"12:15",
+  {cid:"zjjd0-shibati",name:"Shibati (十八梯), de bajada",type:"sight",dur:90,fixed:"10:45",
+   costos:[["Taxi Ciqikou → Jiaochangkou (2)",120]],
+   note:"<b>10:45 · ~30 min en taxi</b> (~¥35) de Ciqikou a <b>Jiaochangkou (较场口)</b>, que es la entrada "+
+        "de ARRIBA.<br>"+
+        "<b>11:15 · Shibati (十八梯)</b>, “los dieciocho tramos”: la escalinata por la que se bajaba de la "+
+        "ciudad alta al río, y por donde vivía el Chongqing de los cargadores antes del boom. Se reconstruyó "+
+        "y volvió a abrir en 2021: casas de madera, patios, callejones que se cruzan y miradores. "+
+        "<b>Entrada libre.</b><br>"+
+        "<b>Entren por arriba y bajen</b> (Jiaochangkou → Shibati): al revés son dieciocho tramos de subida. "+
+        "Metro línea 1 o 2 a Jiaochangkou.<br>"+
+        "<i>Las reseñas están partidas: a unos les parece lo más bonito de la ciudad y a otros que quedó "+
+        "demasiada tienda nueva alrededor de la escalinata. Una hora alcanza de sobra.</i>"},
+  {cid:"zjjd0-comida",name:"Comida en el callejón Shancheng, con vista al Yangtsé",type:"food",dur:60,fixed:"12:15",
    costos:[["Comida (2)",450]],
-   note:"<b>12:15 · ~15 min</b> (una estación de metro a Qixinggang, o taxi) hasta la entrada de arriba del "+
-        "callejón Shancheng, por Lingshi Xiang (领事巷).<br>"+
+   note:"<b>12:15 · ~10 min</b> de Shibati (quedan a lado) a la entrada de arriba del callejón Shancheng, "+
+        "por Lingshi Xiang (领事巷).<br>"+
         "En el callejón hay casas de té, hotpot y cafés colgados del risco sobre el río: escojan uno con "+
         "terraza al Yangtsé."},
-  {cid:"zjjd0-shancheng",name:"Callejón Shancheng (山城巷), de bajada",type:"sight",dur:60,fixed:"13:25",
+  {cid:"zjjd0-shancheng",name:"Callejón Shancheng (山城巷), de bajada",type:"sight",dur:55,fixed:"13:15",
    costos:[],
-   note:"<b>13:25 · todo de bajada.</b> Un callejón de escalones de piedra pegado a un risco de casi 100 m "+
+   note:"<b>13:15 · todo de bajada.</b> Un callejón de escalones de piedra pegado a un risco de casi 100 m "+
         "sobre el Yangtsé, de Lingshi Xiang hasta Zhongxing Lu (中兴路): casas viejas, miradores al río, "+
         "librerías y cafés.<br>"+
+        "<b>Es el hermano chico de Shibati</b> y se parecen: escalones, casas viejas, cafés. La diferencia es "+
+        "que este es más angosto y más habitado, y va pegado al filo del risco — las terrazas dan al río. "+
+        "Shibati es el grande y reconstruido.<br>"+
         "<i>Al revés sería todo de subida: por eso entran por arriba.</i>"},
-  {cid:"zjjd0-teleferico",name:"Teleférico del Yangtsé · desde la orilla SUR",type:"sight",dur:70,fixed:"14:35",
+  {cid:"zjjd0-reloj",name:"Clock Tower Square (Nanbin Lu): los dos ríos de frente",type:"sight",dur:40,fixed:"14:10",
+   costos:[["Taxi Zhongxing Lu → Nanbin Lu (2)",130]],
+   note:"<b>14:10 · ~20 min en taxi</b> de Zhongxing Lu, cruzando el puente, a <b>Nanbin Lu (南滨路)</b>, "+
+        "en la orilla sur: la plaza del reloj (钟楼广场).<br>"+
+        "<b>⚠ Cuidado con el nombre: hay dos “Clock Tower Square” en Chongqing.</b> El otro es el reloj del "+
+        "<b>Jiefangbei</b>, el monumento en medio de la zona comercial, y ese sí es nada más un reloj en una "+
+        "plaza llena de gente. El que vale es este, el de Nanbin Lu.<br>"+
+        "<b>Qué es:</b> un mirador <b>gratis</b> en la orilla sur, justo enfrente de donde el Jialing se mete "+
+        "al Yangtsé. De aquí se ve la península de Yuzhong completa, con Chaotianmen y Hongyadong de frente: "+
+        "es la postal de Chongqing, pero del lado de donde nadie la toma y sin el gentío de Hongyadong.<br>"+
+        "<b>Les toca de día.</b> La hora buena es de 17:00 a 20:00, cuando prenden la ciudad, y a esa hora ya "+
+        "van en el tren. La versión de noche ya la tienen desde el agua, en el barco de anoche.<br>"+
+        "<i>Queda a ~8 min de la estación Shangxinjie del teleférico: de aquí se van derecho a cruzar.</i>"},
+  {cid:"zjjd0-teleferico",name:"Teleférico del Yangtsé · desde la orilla SUR",type:"sight",dur:55,fixed:"14:50",
    costos:[["Teleférico sencillo, ¥30 c/u (2)",162]],
-   note:"<b>14:35 · ~15 min en taxi</b> de Zhongxing Lu, cruzando el puente, a la estación <b>Shangxinjie "+
-        "(上新街)</b>, en la orilla sur. <u>No a Xinhua Lu</u>.<br>"+
+   note:"<b>14:50 · ~8 min</b> de Nanbin Lu a la estación <b>Shangxinjie (上新街)</b>, aquí mismo en la "+
+        "orilla sur. <u>No a Xinhua Lu</u>.<br>"+
         "<b>Por qué desde el sur:</b> Xinhua Lu es la estación turística y ahí se forma la fila (en hora pico "+
         "pasa de una hora). Shangxinjie es la que usan los locales y suele estar mucho más vacía. Además "+
         "<b>solo necesitan la ida</b>: cruzan hacia el norte y <b>caen en Xinhua Lu, a ~10 min de su hotel</b>, "+
-        "justo donde tienen que estar a las 15:50 por las maletas. Antes el plan los hacía ir y volver (¥50 el "+
-        "redondo) solo para regresar al mismo lado.<br>"+
+        "justo donde tienen que estar a las 15:50 por las maletas.<br>"+
         "<b>El paseo:</b> ~5 min colgados sobre el Yangtsé, con Yuzhong de frente. Horario 8:00-22:00; sencillo "+
         "¥30 (confirmen la tarifa).<br>"+
         "<b>Compren antes en la cuenta oficial de WeChat (长江索道):</b> les da número de turno y hora estimada, "+
         "y ahí mismo se ve la <b>fila en vivo de cada estación</b> — chéquenla ese día, porque la diferencia "+
         "entre las dos orillas se ha emparejado.<br>"+
-        "<i>Si a las 15:25 no han subido, sáltenlo: a las 15:50 pasan por las maletas.</i>"},
+        "<i>⚠ Es lo último del día y va justo: si a las 15:30 no han subido, sáltenlo y pidan taxi al hotel "+
+        "desde Nanbin Lu (~15 min). A las 15:50 pasan por las maletas y el tren sale 17:32.</i>"},
   {cid:"zjj-arrive",name:"Maletas y taxi a Chongqing East",type:"transfer",dur:102,fixed:"15:50",
    costos:[["Taxi hotel → Chongqing East (2)",130]],
    note:"<b>15:50 · por las maletas al hotel</b> (~10 min del teleférico) y <b>~40 min en taxi</b> (~¥40-50; el "+
@@ -4835,6 +4857,33 @@ function migrarChongqingV2(s){
     });
   }
   s.cqPlanV5=true;
+}
+/* La mañana del viernes 14 en Chongqing, segunda vuelta:
+     · fuera la escalera Huangguan (pedido de ellos: el taxi a Lianglukou costaba
+       más que la escalera y los sacaba del rumbo);
+     · entra Shibati (十八梯) en ese hueco, que queda a diez minutos del callejón
+       Shancheng y se camina de bajada desde Jiaochangkou;
+     · entra Clock Tower Square de Nanbin Lu, en la orilla sur, de paso a la
+       estación Shangxinjie del teleférico;
+     · Ciqikou baja a 85 min y la comida a 60 para que todo quepa antes de las
+       15:50, que es cuando pasan por las maletas.
+   Vuelve a sembrar el día desde ZJJ_DIA1_V2 (ya actualizada) y borra la escalera
+   del catálogo, no solo del plan. */
+function migrarChongqingV3(s){
+  if(s.cqPlanV6)return;
+  const zj=s.bases&&s.bases.zjj;
+  if(zj&&Array.isArray(zj.catalog)&&zj.schedule){
+    sembrarDia(zj,0,ZJJ_DIA1_V2,"08:45");
+    ZJJ_DIA1_V2.forEach(a=>{                      // sembrarDia no toca costos ya existentes
+      if(!a.costos)return;
+      const x=zj.catalog.find(y=>y.cid===a.cid);
+      if(x)x.costs=a.costos.map(([label,est])=>({id:uid(),label,est,real:0}));
+    });
+    zj.catalog=zj.catalog.filter(a=>a.cid!=="zjjd0-escalera");
+    Object.keys(zj.schedule).forEach(d=>{
+      zj.schedule[d]=(zj.schedule[d]||[]).filter(x=>x.ref!=="zjjd0-escalera");});
+  }
+  s.cqPlanV6=true;
 }
 /* ---- Zhangjiajie con 2 noches y Xi'an con 3 (v31) ----
    Pedido de ellos: llegar el viernes 14 y dormir, el sábado 15 el parque
