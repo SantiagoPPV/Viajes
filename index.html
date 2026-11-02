@@ -1043,7 +1043,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v33 · 2 nov 2026 · Vouchers de Trip.com + sincronización ligera";
+const APP_VERSION="v34 · 2 nov 2026 · Teleférico desde la orilla sur (menos fila)";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -4644,13 +4644,21 @@ const ZJJ_DIA1_V2=[
         "sobre el Yangtsé, de Lingshi Xiang hasta Zhongxing Lu (中兴路): casas viejas, miradores al río, "+
         "librerías y cafés.<br>"+
         "<i>Al revés sería todo de subida: por eso entran por arriba.</i>"},
-  {cid:"zjjd0-teleferico",name:"Teleférico del Yangtsé",type:"sight",dur:70,fixed:"14:35",
-   costos:[["Teleférico redondo, ¥50 c/u (2)",270]],
-   note:"<b>14:35 · ~10 min en taxi</b> de Zhongxing Lu a la estación Xinhua Lu (新华路151号).<br>"+
-        "Cruza el Yangtsé colgado sobre el agua, ~5 min por tramo. Vayan y regresen (¥50 el redondo) para "+
-        "volver al mismo lado. 8:00-22:00, en taquilla o en la cuenta oficial de WeChat.<br>"+
-        "<i>A veces la fila es larga: si a las 15:20 no han subido, sáltenlo, porque a las 15:50 pasan por "+
-        "las maletas.</i>"},
+  {cid:"zjjd0-teleferico",name:"Teleférico del Yangtsé · desde la orilla SUR",type:"sight",dur:70,fixed:"14:35",
+   costos:[["Teleférico sencillo, ¥30 c/u (2)",162]],
+   note:"<b>14:35 · ~15 min en taxi</b> de Zhongxing Lu, cruzando el puente, a la estación <b>Shangxinjie "+
+        "(上新街)</b>, en la orilla sur. <u>No a Xinhua Lu</u>.<br>"+
+        "<b>Por qué desde el sur:</b> Xinhua Lu es la estación turística y ahí se forma la fila (en hora pico "+
+        "pasa de una hora). Shangxinjie es la que usan los locales y suele estar mucho más vacía. Además "+
+        "<b>solo necesitan la ida</b>: cruzan hacia el norte y <b>caen en Xinhua Lu, a ~10 min de su hotel</b>, "+
+        "justo donde tienen que estar a las 15:50 por las maletas. Antes el plan los hacía ir y volver (¥50 el "+
+        "redondo) solo para regresar al mismo lado.<br>"+
+        "<b>El paseo:</b> ~5 min colgados sobre el Yangtsé, con Yuzhong de frente. Horario 8:00-22:00; sencillo "+
+        "¥30 (confirmen la tarifa).<br>"+
+        "<b>Compren antes en la cuenta oficial de WeChat (长江索道):</b> les da número de turno y hora estimada, "+
+        "y ahí mismo se ve la <b>fila en vivo de cada estación</b> — chéquenla ese día, porque la diferencia "+
+        "entre las dos orillas se ha emparejado.<br>"+
+        "<i>Si a las 15:25 no han subido, sáltenlo: a las 15:50 pasan por las maletas.</i>"},
   {cid:"zjj-arrive",name:"Maletas y taxi a Chongqing East",type:"transfer",dur:102,fixed:"15:50",
    costos:[["Taxi hotel → Chongqing East (2)",130]],
    note:"<b>15:50 · por las maletas al hotel</b> (~10 min del teleférico) y <b>~40 min en taxi</b> (~¥40-50; el "+
