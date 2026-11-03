@@ -198,6 +198,9 @@
   .pcard{display:flex;gap:11px;align-items:flex-start;border:1px solid var(--line-soft);
     background:rgba(255,255,255,.4);border-radius:10px;padding:10px 12px}
   .pcard.chosen{border-color:var(--jade);background:rgba(62,97,82,.07)}
+  .hweb{display:flex;gap:6px;align-items:center;margin-top:5px}
+  .hweb input{flex:1;min-width:120px}
+  .hweb a{text-decoration:none;white-space:nowrap}
   .star{border:0;background:transparent;cursor:pointer;font-size:17px;color:var(--line);flex:none;line-height:1;margin-top:1px}
   .pcard.chosen .star{color:var(--jade)}
   .pbody{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
@@ -1043,7 +1046,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v47 · 3 nov 2026 · Kioto reservado: Hyatt Place, en Marutamachi";
+const APP_VERSION="v48 · 3 nov 2026 · Tokio reservado y enlace en cada hotel";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -3812,6 +3815,7 @@ function normalizeTripState(s){
     });
     [st.hotels,st.food].forEach(arr=>(arr||[]).forEach(x=>{
       if(x.note&&pareceHTML(x.note))x.note=limpiarHTML(x.note);
+      if(x.web!=null)x.web=urlSegura(x.web);          // lo que llega sincronizado, también
     }));
     (st.hotels||[]).forEach(h=>{             // ficha de la reserva: solo campos conocidos, como texto
       if(h.reserva===undefined)return;
@@ -3883,8 +3887,122 @@ function normalizeTripState(s){
   migrarNotasOro2(s);        // las notas que faltaban de Pekín y Shanghái
   migrarVoucherShanghaiV2(s);// el comprobante nuevo del H+: 3 noches, ya sin el hueco
   migrarKiotoHotelV2(s);     // Kioto reservado: Hyatt Place, en Marutamachi
+  migrarHotelesJapon(s);     // Tokio reservado (Celestine Ginza) y los enlaces de cada hotel
   purgarRetiradas(s);        // y al final: lo que se quitó a propósito no vuelve nunca
   return s;
+}
+/* ---- Tokio reservado y los enlaces de cada hotel (v48) ----
+   Mandaron el comprobante de Tokio y, igual que en Kioto, NO es el hotel que
+   traía el plan: reservaron el <b>Hotel The Celestine Ginza</b>, no el Mitsui
+   Garden Ginza Premier. Aquí sí da lo mismo para la logística: el Mitsui está
+   en Ginza 8-13-1 y el Celestine en Ginza 8-4-22, los dos a 3-4 min de
+   Shimbashi. Los traslados de Tokio no se mueven ni un minuto.
+   Lo que sí trae este comprobante y los otros no: la preautorización en
+   PESOS (MXN 16,752.97 por ¥142,400), o sea el tipo de cambio real que usó
+   Trip.com: 1 JPY = 0.117647 MXN. Con eso se corrige también el precio de
+   Kioto, que estaba calculado con un cambio estimado de 0.1234 sacado del
+   costo del desayuno: pasa de MXN 7,525 a 7,174.60 por las dos noches.
+   Y se llenan los enlaces de los hoteles cuyo sitio oficial se pudo
+   verificar. Los que no, se quedan vacíos a propósito: mandarlos al hotel
+   equivocado sería peor que no poner nada. */
+const HOTEL_WEBS=[
+  {base:"hk",        re:/renaissance/i,
+   web:"https://www.marriott.com/en-us/hotels/hkghv-renaissance-hong-kong-harbour-view-hotel/overview/"},
+  {base:"chongqing", re:/intercontinental|洲际/i,
+   web:"https://www.ihg.com/intercontinental/hotels/us/en/chongqing/chghb/hoteldetail"},
+  {base:"kyoto",     re:/hyatt place/i,
+   web:"https://www.hyatt.com/hyatt-place/en-US/kyozk-hyatt-place-kyoto"},
+  {base:"tokyo",     re:/celestine/i,
+   web:"https://www.celestinehotels.jp/en/ginza/"}
+];
+const TK_VOUCHER={
+  estado:"reservado",via:"Trip.com",
+  entrada:"2027-05-26",horaEntrada:"15:00",salida:"2027-05-29",horaSalida:"12:00",
+  habitacion:"Superior, 1 cama queen · hasta 2 adultos",
+  moneda:"JPY",monto:"142400",desglose:"IVA JPY 12,945 incluido",
+  pago:"Se paga en el hotel. Trip.com preautorizó MXN 16,752.97 en la tarjeta.",
+  desayuno:"NO incluye (素泊まり).",
+  extras:"Check-in ampliado de 15:00 a 02:00 · baño privado, albornoces, pantuflas, secadora",
+  cancelacion:"El comprobante solo dice que se cobra cargo por cancelación si no se presentan; no trae fecha límite de cancelación gratis. Revísenla en Trip.com.",
+  zona:"+09:00",
+  direccion:"8 Chome-4-22 Ginza, Chuo Ward, Tokyo, Japan",
+  direccionLocal:"ホテル ザ セレスティン銀座 · 東京都中央区銀座8-4-22",
+  tel:"+81-3-3572-3111",conf:"6222944882",reservaNo:"1453606953667041"};
+const TK_DIR="東京都中央区銀座8-4-22 ホテルザセレスティン銀座";
+function migrarHotelesJapon(s){
+  if(s.hotelesJpV1)return;
+  const tk=s.bases&&s.bases.tokyo,ky=s.bases&&s.bases.kyoto;
+  // ── Tokio: Hotel The Celestine Ginza ──
+  if(tk&&Array.isArray(tk.hotels)){
+    let h=tk.hotels.find(x=>/celestine/i.test(x.name||""));
+    tk.hotels.forEach(x=>{x.chosen=false;});
+    if(h)tk.hotels.splice(tk.hotels.indexOf(h),1);
+    else h={id:uid()};
+    Object.assign(h,{
+      name:"Hotel The Celestine Ginza (ホテル ザ セレスティン銀座)",
+      area:"Ginza 8-4-22, Chuo · a ~3 min a pie de Shimbashi (JR Yamanote y metro línea Ginza)",
+      noches:3,precio:5584.32,chosen:true,
+      reserva:limpiarReserva(Object.assign({},h.reserva||{},TK_VOUCHER)),
+      note:"<b>★ RESERVADO en Trip.com · miércoles 26 al sábado 29 de mayo, 3 noches</b> (check-out antes "+
+        "de las 12:00).<br>"+
+        "<b>Check-in de 15:00 a 02:00</b> — ese margen hasta las 2 de la mañana es cómodo: llegan del "+
+        "Nozomi a las 14:45 y la última noche salen tarde de Shibuya.<br>"+
+        "<b>Habitación:</b> Superior, 1 cama queen, para 2 adultos.<br>"+
+        "<b>Precio:</b> <b>JPY 142,400</b> por las tres noches, con IVA (¥12,945) incluido, y <b>se paga en "+
+        "el hotel</b>. Trip.com preautorizó <b>MXN 16,752.97</b>: eso es lo que entra al presupuesto "+
+        "(5,584.32 por noche).<br>"+
+        "<b>⚠ No incluye desayuno</b> (素泊まり).<br>"+
+        "<b>⚠ El impuesto de hospedaje de Tokio va aparte</b> y se paga al llegar: son ¥100 o ¥200 por "+
+        "persona y noche según la tarifa. A la suya le toca el tramo de ¥200, o sea <b>~¥1,200 los dos por "+
+        "las tres noches</b>. El comprobante no lo menciona: confírmenlo en el check-in.<br>"+
+        "<b>⚠ Cancelación:</b> el comprobante solo dice que cobran cargo si no se presentan — <u>no trae "+
+        "fecha límite de cancelación gratis</u>. Revísenla en su cuenta de Trip.com.<br>"+
+        "<b>Dónde está:</b> Ginza 8-chome, el extremo sur del barrio. A <b>~3 min a pie de Shimbashi</b> "+
+        "(JR Yamanote por la salida Ginza, y metro línea Ginza por la salida 5) y ~7 min de la estación "+
+        "Ginza por la C2. Es prácticamente la misma esquina donde estaba el hotel anterior del plan, así "+
+        "que <b>ningún traslado de Tokio cambia</b>.<br>"+
+        "<b>⚠ Ojo con el código postal:</b> el comprobante imprime 〒105-0013, pero Ginza 8-chome es "+
+        "<b>〒104-0061</b>. Para un taxi, usen la dirección y el teléfono, no el código postal.<br>"+
+        "<b>El PIN del comprobante no se guarda aquí</b> (dice «do not disclose»): ténganlo en el PDF.<br>"+
+        "Para taxis: <b>"+TK_DIR+"</b> · Tel. +81-3-3572-3111."
+    });
+    tk.hotels.unshift(h);
+    const m=tk.hotels.find(x=>/mitsui garden.*ginza/i.test(x.name||""));
+    if(m&&!/Ya no está en el plan/.test(m.note||"")){
+      delete m.noches;m.chosen=false;
+      m.note="<b>Ya no está en el plan:</b> reservaron el Hotel The Celestine Ginza, a dos cuadras de "+
+        "aquí. Los dos están en Ginza 8-chome y a 3-4 min de Shimbashi.<br>"+(m.note||"");
+    }
+    // la única tarjeta de Tokio que nombraba el hotel viejo
+    const t0=Array.isArray(tk.catalog)&&tk.catalog.find(x=>x.cid==="tk0-hotel");
+    if(t0)t0.note="<b>14:45 · ~15 min en taxi</b> de la estación de Tokio al <b>Hotel The Celestine "+
+      "Ginza</b> (銀座8-4-22), ~¥2,000. En metro sería la línea Marunouchi a Ginza y caminar, pero con "+
+      "maletas el taxi gana.<br>"+
+      "<b>Check-in desde las 15:00</b> y llegan 14:45: si el cuarto no está, dejen maletas y bajen a "+
+      "Ginza, que está a la puerta.<br>"+
+      "<i>Dirección para el taxista: <b>"+TK_DIR+"</b>. Están a 3 min a pie de Shimbashi, que es de donde "+
+      "sale casi todo el resto del viaje.</i>";
+  }
+  // ── Kioto: el precio, con el tipo de cambio real del comprobante de Tokio ──
+  if(ky&&Array.isArray(ky.hotels)){
+    const h=ky.hotels.find(x=>/hyatt place/i.test(x.name||""));
+    if(h){
+      h.precio=3587.30;                               // ¥60,984 × 0.117647, dos noches
+      if(h.note)h.note=h.note
+        .replace("~MXN 7,525 (3,762.70 por noche)","~MXN 7,175 (3,587.30 por noche)")
+        .replace("(~MXN 200)","(~MXN 188)");
+      if(h.reserva)h.reserva.pago="Se paga en el hotel (~MXN 7,175, al cambio real de Trip.com: "+
+        "1 JPY = 0.117647 MXN). APARTE se cobra al llegar el impuesto de hospedaje de Kioto: "+
+        "~¥1,600 los dos por las dos noches.";
+    }
+  }
+  // ── los enlaces que se pudieron verificar ──
+  HOTEL_WEBS.forEach(w=>{
+    const st=s.bases&&s.bases[w.base];if(!st||!Array.isArray(st.hotels))return;
+    const h=st.hotels.find(x=>w.re.test(x.name||""));
+    if(h&&!urlSegura(h.web))h.web=w.web;
+  });
+  s.hotelesJpV1=true;
 }
 /* ---- Kioto: hotel reservado (v47) · Hyatt Place Kyoto ----
    Mandaron el comprobante y NO es el hotel que traía el plan: reservaron el
@@ -10077,6 +10195,17 @@ function limpiarHTML(html){
   })(origen,limpio);
   return limpio.innerHTML;
 }
+/* Enlace de un hotel. Se valida SIEMPRE antes de pintarlo en un href: estos
+   datos llegan sincronizados de la otra persona, y un «javascript:» metido en
+   un enlace sería ejecución de código ajeno dentro de la app. Solo http(s).
+   Devuelve la cadena tal cual (no la normaliza) para no provocar guardados
+   fantasma cada vez que se vuelve a normalizar el viaje. */
+function urlSegura(u){
+  u=String(u==null?"":u).trim();
+  if(!/^https?:\/\//i.test(u))return "";
+  try{new URL(u);}catch(e){return "";}
+  return u;
+}
 /* ¿La nota guardada ya trae formato, o es texto plano de antes? */
 const pareceHTML=s=>/<(b|strong|i|em|u|s|strike|ul|ol|li|br|div|p|blockquote)\b[^>]*>/i.test(s||"");
 /* Texto guardado → HTML listo para mostrar/editar (respeta las notas antiguas). */
@@ -10552,6 +10681,12 @@ function renderHotels(b,st){
       <div class="pbody">
         <input class="f rtitle hfield" data-list="hotels" data-fld="name" data-bid="${b.id}" data-item="${h.id}" value="${esc(h.name)}" placeholder="Hotel">
         <input class="f pnote edit hfield" data-list="hotels" data-fld="area" data-bid="${b.id}" data-item="${h.id}" value="${esc(h.area)}" placeholder="Zona">
+        <div class="hweb">
+          <input class="f pnote edit hfield" data-list="hotels" data-fld="web" data-bid="${b.id}" data-item="${h.id}"
+            value="${esc(h.web||'')}" placeholder="Sitio del hotel (https://…)">
+          ${urlSegura(h.web)?`<a class="gochip" href="${esc(urlSegura(h.web))}" target="_blank" rel="noopener noreferrer"
+            title="Abrir el sitio del hotel">↗ Abrir</a>`:''}
+        </div>
         <div class="hprice">
           <label class="mini">💵 <input type="number" class="f hpinp hfield" data-list="hotels" data-fld="precio"
             data-bid="${b.id}" data-item="${h.id}" min="0" step="100" value="${p||''}" placeholder="0"> por noche</label>
