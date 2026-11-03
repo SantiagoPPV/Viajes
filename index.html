@@ -1043,7 +1043,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v46 · 2 nov 2026 · Shanghái: 3 noches reservadas, se cerró el hueco";
+const APP_VERSION="v47 · 3 nov 2026 · Kioto reservado: Hyatt Place, en Marutamachi";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -1779,7 +1779,8 @@ const ESSENTIAL_SH_KIX={id:"ess-sh-kix",t:"Shanghái y el vuelo a Japón",
     "Kansai, que no tiene tren: shuttle gratis a la T1 · Haruka a Kioto desde la T1, el boleto en línea sale "+
     "más barato (busquen el combo ICOCA &amp; HARUKA) · Visit Japan Web con su QR antes de aterrizar"};
 const ESSENTIAL_KANSAI={id:"ess-kansai",t:"Kioto y la noche en Osaka",
-  s:"hotel de Kioto: Mitsui Garden Hotel Kyoto Sanjo PREMIER (desayuno ~¥3,850 c/u si no va incluido) · "+
+  s:"hotel de Kioto RESERVADO: Hyatt Place Kyoto, en Marutamachi (conf. 3619240) — NO incluye desayuno, "+
+    "y el impuesto de hospedaje de Kioto (~¥1,600 los dos) se paga al llegar · "+
     "reservar Pontocho el lunes 19:00 (terraza sobre el río) y el kaiseki del martes 11:15 (Kikunoi, junto al "+
     "parque Maruyama, o Gion Karyo) · Shinkansen Nozomi del miércoles 12:30 a Tokio, asiento E para ver el Fuji · "+
     "Suica o ICOCA en el celular para trenes y metro · Kioto cobra impuesto de hospedaje por persona y noche "+
@@ -3881,8 +3882,180 @@ function normalizeTripState(s){
   migrarShanghaiV5(s);       // fuera el Templo del Buda de Jade: ese tiempo al descanso
   migrarNotasOro2(s);        // las notas que faltaban de Pekín y Shanghái
   migrarVoucherShanghaiV2(s);// el comprobante nuevo del H+: 3 noches, ya sin el hueco
+  migrarKiotoHotelV2(s);     // Kioto reservado: Hyatt Place, en Marutamachi
   purgarRetiradas(s);        // y al final: lo que se quitó a propósito no vuelve nunca
   return s;
+}
+/* ---- Kioto: hotel reservado (v47) · Hyatt Place Kyoto ----
+   Mandaron el comprobante y NO es el hotel que traía el plan: reservaron el
+   <b>Hyatt Place Kyoto</b>, no el Mitsui Garden Premier de Sanjo. Fechas y
+   noches sí cuadran con el itinerario: 24 → 26 may, 2 noches.
+   El cambio importa porque se mueve de barrio: el Mitsui estaba en Sanjo, en
+   pleno centro; el Hyatt está en <b>Marutamachi</b>, ~1.4 km más al norte,
+   justo encima de la estación del metro (línea Karasuma, salida 6) y a un
+   lado del Palacio Imperial. Eso cambia media docena de traslados:
+     · Nishiki ya no son 10 min a pie: son 2 paradas de metro, o ~20 a pie.
+     · La estación de Kioto, en cambio, MEJORA: la línea Karasuma va directa
+       desde abajo del hotel, 4 paradas.
+     · Pontocho, Gion y el Hankyu a Osaka quedan todos 2 paradas al sur.
+   Dos cosas del comprobante que hay que tener presentes:
+     · <b>No incluye desayuno</b> (素泊まり). El del plan se queda cotizado
+       aparte.
+     · El <b>impuesto de hospedaje de Kioto se cobra al llegar</b> y no viene
+       en los ¥60,984. Subió el 1 de marzo de 2026 y ahora es por persona y
+       por noche, según la tarifa por persona: la de ellos sale ~¥12,600, que
+       cae en el tramo de ¥400. Son ~¥1,600 los dos, las dos noches.
+   El PIN no se guarda: el comprobante lo marca como «do not disclose». */
+const KY_VOUCHER={
+  estado:"reservado",via:"Trip.com",
+  entrada:"2027-05-24",horaEntrada:"15:00",salida:"2027-05-26",horaSalida:"12:00",
+  habitacion:"Standard Room, 1 King Bed, Garden View · 1 cama king · hasta 2 adultos",
+  moneda:"JPY",monto:"60984",desglose:"Incluye IVA JPY 5,040, impuesto sobre ventas JPY 5,040 y servicio JPY 504",
+  pago:"Se paga en el hotel (~MXN 7,525). APARTE se cobra al llegar el impuesto de hospedaje de Kioto: ~¥1,600 los dos por las dos noches.",
+  desayuno:"NO incluye (素泊まり). El desayuno del plan va cotizado por separado.",
+  extras:"Vista al jardín, baño privado con regadera de lluvia y shattaf, inodoro inteligente, agua caliente 24 h",
+  cancelacion:"El comprobante solo dice que se cobra cargo por cancelación si no se presentan; no trae fecha límite de cancelación gratis. Revísenla en Trip.com.",
+  zona:"+09:00",
+  direccion:"240 Shoshoicho, Nakagyo Ward, Kyoto City, Kyoto Prefecture, 604-0862, Japan",
+  direccionLocal:"ハイアット プレイス 京都 · 〒604-0862 京都府京都市中京区少将井町240",
+  tel:"+81-75-2511234",conf:"3619240",reservaNo:"1453606953614302"};
+const KY_DIR="〒604-0862 京都府京都市中京区少将井町240 ハイアットプレイス京都";
+const KY_NOTAS_HOTEL=[
+  ["ky0-hotel",null,
+   "<b>13:40 · ~15 min en taxi</b> de la estación al <b>Hyatt Place Kyoto</b>, en Marutamachi (~¥1,800). "+
+   "Con maletas es lo más simple.<br>"+
+   "<b>Pero apunten esto para el resto de la estancia:</b> el hotel está <u>encima de la estación "+
+   "Marutamachi</u> (metro línea Karasuma, salida 6), y de la estación de Kioto son <b>4 paradas directas, "+
+   "~8 min</b>, sin transbordo. Para el miércoles, cuando regresen por las maletas, eso les sirve.<br>"+
+   "<b>Check-in es a las 15:00</b> y llegan antes: dejen maletas en recepción y salgan: tienen Nishiki, "+
+   "Fushimi, Gion y Pontocho por delante.<br>"+
+   "<i>Dirección para el taxista, enséñenla escrita: <b>"+KY_DIR+"</b>.</i>"],
+  ["ky0-a-nishiki","Metro a Shijo y a pie al mercado Nishiki",
+   "<b>14:10 · esto cambió con el hotel.</b> Desde el Hyatt, Nishiki ya no queda a diez minutos a pie: "+
+   "son ~1.6 km.<br>"+
+   "<b>Lo más rápido:</b> metro línea Karasuma desde abajo del hotel (Marutamachi), <b>2 paradas hasta "+
+   "Shijo</b>, ~4 min, y 3-4 min a pie al norte hasta la calle Nishikikoji. Se paga con la ICOCA del "+
+   "celular.<br>"+
+   "<b>Si prefieren caminar</b>, son ~20 min derecho al sur por Karasuma-dori, y de paso ven la ciudad.<br>"+
+   "<i>Entren al mercado por el lado oeste y crúcenlo hacia el este: termina en el santuario Nishiki "+
+   "Tenmangu, en Teramachi.</i>"],
+  ["ky0-vuelta","Taxi de Pontocho al hotel",
+   "<b>21:30 · ~10 min en taxi</b> (~¥1,200) de Pontocho a Marutamachi. Caminando serían ~25 min hacia el "+
+   "norte, y hoy llevan desde las 5:30 de la mañana en Shanghái.<br>"+
+   "<b>En metro también se puede:</b> de Pontocho, ~8 min a pie a Karasuma-Oike o a Shijo, y 1-2 paradas "+
+   "de la línea Karasuma hasta Marutamachi.<br>"+
+   "<i>Mañana arrancan a las 7:15 con Kiyomizu-dera temprano, que es cuando está vacío.</i>"],
+  ["ky1-a-kiyomizu",null,
+   "<b>8:00 · ~20 min en taxi</b> de Marutamachi a Kiyomizu-dera, ~¥2,000-2,500. Desde el hotel nuevo "+
+   "queda un poco más lejos que desde Sanjo, pero a esta hora no hay tráfico.<br>"+
+   "<b>Pidan que los dejen arriba de Kiyomizu-zaka</b>, lo más cerca de la puerta, para no subir la "+
+   "cuesta a pie. Vale los ~¥500 extra.<br>"+
+   "<i>Van temprano a propósito: el templo abre a las 6:00 y antes de las 9:00 está casi vacío. A "+
+   "mediodía es otra cosa.</i>"],
+  ["ky1-a-hotel",null,
+   "<b>15:15 · ~15 min en taxi</b> de Nanzen-ji al hotel, ~¥1,800. Van de este a oeste cruzando el centro.<br>"+
+   "<b>Es parada técnica:</b> dejar compras, cambiarse y salir otra vez. A las 16:45 toman el tren a "+
+   "Osaka y no vuelven hasta pasada la medianoche.<br>"+
+   "<i>Lleven ropa cómoda para Osaka y algo de abrigo: Dotonbori de noche y junto al canal refresca.</i>"],
+  ["ky1-a-osaka",null,
+   "<b>16:45 · esto también cambió con el hotel.</b> Antes eran 10 min a pie al Hankyu; ahora el Hankyu "+
+   "queda 2 paradas al sur.<br>"+
+   "<b>La ruta:</b> metro línea Karasuma desde abajo del hotel, <b>2 paradas a Shijo</b> (~4 min); ahí "+
+   "mismo, sin salir a la calle, se conecta con la estación <b>Karasuma del Hankyu</b>. Hankyu línea "+
+   "Kioto, <b>Limited Express a Osaka-Umeda</b>, ~45 min sin transbordo; de ahí metro Midosuji a Namba, "+
+   "8 min. Todo con la ICOCA del celular.<br>"+
+   "<b>Alternativa:</b> metro a la estación de Kioto (4 paradas directas desde el hotel) y JR Special "+
+   "Rapid a Osaka, ~30 min. Con el hotel nuevo esta opción quedó más cómoda que antes.<br>"+
+   "<i>El Limited Express del Hankyu no cobra extra: es el mismo boleto que el local, solo que para "+
+   "en menos estaciones.</i>"],
+  ["ky1-vuelta",null,
+   "<b>21:45 · ~1 h de regreso.</b> Metro Midosuji a Umeda, Hankyu a Karasuma (~45 min) y <b>2 paradas "+
+   "de la línea Karasuma hasta Marutamachi</b>, que deja abajo del hotel.<br>"+
+   "<b>⚠ Revisen el último tren</b> en Google Maps antes de la última copa: el último Hankyu sale de "+
+   "Umeda cerca de medianoche, y <b>el metro de Kioto cierra antes que el tren</b> — si se les pasa, "+
+   "del Hankyu a Marutamachi son ~20 min a pie o un taxi corto.<br>"+
+   "<i>Un taxi de Osaka a Kioto cuesta ~¥20,000: no es plan B, es castigo.</i>"],
+  ["tk0-a-arashiyama",null,
+   "<b>7:00 · ~30 min en taxi</b> de Marutamachi a Arashiyama, ~¥4,000-4,500, hacia el oeste.<br>"+
+   "<b>Pidan que los dejen en la entrada del bosque de bambú</b> (竹林の小径, Chikurin no Komichi).<br>"+
+   "<i>A las 7:30 el bosque está prácticamente vacío; a las 10:00 no se puede ni caminar. Por eso el "+
+   "madrugón.</i>"],
+  ["tk0-regreso",null,
+   "<b>10:50 · y aquí el hotel nuevo les ahorra tiempo.</b> Taxi de Kinkaku-ji al hotel (~20-25 min), "+
+   "recogen las maletas en recepción y <b>bajan a la estación Marutamachi, que está debajo del hotel</b>: "+
+   "línea Karasuma, <b>4 paradas directas a la estación de Kioto, ~8 min</b>, sin transbordo y sin "+
+   "tráfico. En taxi serían ~15 min y ~¥1,800.<br>"+
+   "<b>Compren un ekiben</b> (el bento de estación) para comer en el Nozomi, y lleguen al andén 15 min "+
+   "antes.<br>"+
+   "<i>El Nozomi sale 12:30. Con las maletas, salgan del hotel a más tardar a las 11:45.</i>"],
+  ["g-breakfast","Desayuno (no viene incluido)",
+   "<b>⚠ El comprobante dice «sin comidas» (素泊まり):</b> el desayuno NO está incluido en la tarifa, "+
+   "así que se paga aparte — por eso sigue cotizado en el presupuesto.<br>"+
+   "<b>En el hotel</b> hay desayuno de pago, y alrededor de Marutamachi hay cafés que abren temprano. "+
+   "También hay un konbini a pie: en Japón eso no es resignarse, el onigiri y el sando de huevo del "+
+   "7-Eleven son de verdad buenos.<br>"+
+   "<i>Hoy es el día largo: Kioto de día y Osaka de noche, de vuelta pasada la medianoche. Desayunen "+
+   "bien.</i>"]
+];
+function migrarKiotoHotelV2(s){
+  if(s.kyHotelV2)return;
+  const ky=s.bases&&s.bases.kyoto,tk=s.bases&&s.bases.tokyo;
+  if(ky&&Array.isArray(ky.hotels)){
+    let h=ky.hotels.find(x=>/hyatt place/i.test(x.name||""));
+    ky.hotels.forEach(x=>{x.chosen=false;});
+    if(h)ky.hotels.splice(ky.hotels.indexOf(h),1);
+    else h={id:uid()};
+    Object.assign(h,{
+      name:"Hyatt Place Kyoto",
+      area:"240 Shoshoicho, Nakagyo · encima de la estación Marutamachi (línea Karasuma, salida 6)",
+      noches:2,precio:3762.70,chosen:true,
+      reserva:limpiarReserva(Object.assign({},h.reserva||{},KY_VOUCHER)),
+      note:"<b>★ RESERVADO en Trip.com · lunes 24 y martes 25 de mayo, 2 noches</b> (check-out el miércoles "+
+        "26 antes de las 12:00). Check-in desde las 15:00.<br>"+
+        "<b>Habitación:</b> Standard Room, 1 cama king, con vista al jardín. Para 2 adultos.<br>"+
+        "<b>Precio:</b> <b>JPY 60,984</b> por las dos noches, <b>se paga en el hotel</b>. Incluye IVA ¥5,040, "+
+        "impuesto sobre ventas ¥5,040 y servicio ¥504. En el presupuesto van ~MXN 7,525 (3,762.70 por "+
+        "noche).<br>"+
+        "<b>⚠ Aparte se cobra el impuesto de hospedaje de Kioto</b>, al llegar y según el número de "+
+        "huéspedes. Subió el 1 de marzo de 2026: ahora es por persona y por noche según la tarifa por "+
+        "persona. La de ustedes sale ~¥12,600, que cae en el tramo de <b>¥400</b>: <b>~¥1,600 los dos por "+
+        "las dos noches</b> (~MXN 200). Confírmenlo al hacer check-in.<br>"+
+        "<b>⚠ No incluye desayuno</b> (素泊まり).<br>"+
+        "<b>⚠ Cancelación:</b> el comprobante solo dice que cobran cargo si no se presentan — <u>no trae "+
+        "fecha límite de cancelación gratis</u>. Revísenla en su cuenta de Trip.com.<br>"+
+        "<b>Dónde está, que cambió respecto al plan anterior:</b> está en <b>Marutamachi</b>, ~1.4 km al "+
+        "norte de Sanjo, <b>literalmente encima de la estación del metro</b> (línea Karasuma, salida 6) y "+
+        "a un costado del <b>Palacio Imperial</b>, cuyo parque es gratis y se cruza a pie.<br>"+
+        "A la estación de Kioto, <b>4 paradas directas (~8 min)</b>, que es mejor que desde Sanjo. Nishiki, "+
+        "Pontocho, Gion y el Hankyu a Osaka quedan <b>2 paradas al sur</b> (Shijo), ~4 min.<br>"+
+        "<b>El PIN del comprobante no se guarda aquí</b> (dice «do not disclose»): ténganlo en el PDF.<br>"+
+        "Para taxis: <b>"+KY_DIR+"</b> · Tel. +81-75-2511234."
+    });
+    ky.hotels.unshift(h);
+    // el Mitsui sale del plan, con el porqué
+    const m=ky.hotels.find(x=>/mitsui garden.*sanjo/i.test(x.name||""));
+    if(m&&!/Ya no está en el plan/.test(m.note||"")){
+      delete m.noches;m.chosen=false;
+      m.note="<b>Ya no está en el plan:</b> reservaron el Hyatt Place Kyoto, en Marutamachi. Este estaba en "+
+        "Sanjo, más al centro (Nishiki a 10 min a pie), pero el Hyatt gana en metro: está encima de la "+
+        "estación y llega directo a la de Kioto.<br>"+(m.note||"");
+    }
+  }
+  // los traslados que dependían de dónde dormían
+  KY_NOTAS_HOTEL.forEach(([cid,nombre,nota])=>{
+    [ky,tk].forEach(b=>{
+      const a=b&&Array.isArray(b.catalog)&&b.catalog.find(x=>x.cid===cid);
+      if(!a)return;
+      if(cid==="g-breakfast"&&b!==ky)return;      // el desayuno genérico, solo el de Kioto
+      a.note=nota;if(nombre)a.name=nombre;
+    });
+  });
+  // el pendiente del checklist nombraba el hotel viejo
+  if(Array.isArray(s.esenciales)){
+    const e=s.esenciales.find(x=>x&&x.id===ESSENTIAL_KANSAI.id);
+    if(e)Object.assign(e,{t:ESSENTIAL_KANSAI.t,s:ESSENTIAL_KANSAI.s});
+  }
+  s.kyHotelV2=true;
 }
 /* ---- Shanghái: comprobante nuevo (v46) ----
    Mandaron el comprobante nuevo de Trip.com y es OTRA reserva, no la misma
