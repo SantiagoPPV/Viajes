@@ -1046,7 +1046,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v48 · 3 nov 2026 · Tokio reservado y enlace en cada hotel";
+const APP_VERSION="v49 · 7 nov 2026 · Pekín y Zhangjiajie reservados";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -1751,26 +1751,30 @@ const ESSENTIAL_PICKUP_CQ={id:"ess-pickup-cq",t:"Pick-up en Shapingba (Chongqing
     "Klook (\"Chongqing railway station transfer\") o con el hotel, +86 23 8988 8888 · ~¥150-250"};
 const ESSENTIAL_TREN_ZJJ={id:"ess-tren-zjj",t:"Boleto de tren Chongqing → Zhangjiajie",
   s:"viernes 14, G2437 17:32 de Chongqing EAST (重庆东) → Zhangjiajie West 20:15 · la venta abre ~15 días "+
-    "antes (29 abr) · confirmen la hora en Chongqing East · respaldo: G2435 15:07 · pidan al hotel de "+
-    "Wulingyuan que los recoja a las 20:15"};
+    "antes (29 abr) · confirmen la hora en Chongqing East · respaldo: G2435 15:07 · pídanle al Hilton "+
+    "Garden Inn (traslado gratis desde la estación, según su ficha) que los recoja a las 20:15 en Zhangjiajie West"};
 const ESSENTIAL_ZJJ_TOURS={id:"ess-zjj-tours",t:"Zhangjiajie: vuelo a Xi'an y tours",
   s:"PRIMERO el vuelo DYG → XIY del domingo 16 en la tarde (hay pocos) · tour del sábado 15: parque "+
-    "(Bailong + Yuanjiajie + Tianzi) y puente de cristal, recogida 6:30 en su hotel de Guanliping (el "+
+    "(Bailong + Yuanjiajie + Tianzi) y puente de cristal, recogida 6:30 en el Hilton Garden Inn Tianmen Mountain, 机场路32号 (el "+
     "parque está a ~1 h) · tour del domingo 16: Tianmen, recogida 7:55, y después al hotel por las maletas "+
     "y al aeropuerto · boletos con pasaporte: parque ¥239, puente de cristal en línea"};
 const ESSENTIAL_XIAN={id:"ess-xian",t:"Xi'an: guía, coche y tren a Pekín",
-  s:"guía privado con coche: lunes 17 de 8:25 a ~15:30, empieza a pie desde el hotel (Gran Pagoda, muralla, "+
-    "torres, Barrio Musulmán) y martes 18 desde las 7:30 (Terracota y Lishan Yuan; los deja en Xi'an Norte con "+
-    "las maletas en la cajuela) · Terracota: reserva con pasaporte 7 días antes (mar 11 may), franja 8:30-9:30 · "+
+  s:"guía privado con coche: lunes 17 de 8:25 a ~14:40, empieza a pie desde el hotel (Gran Pagoda, Gran "+
+    "Mezquita, Barrio Musulmán, torres) — la muralla NO va con el guía: la hacen ustedes al atardecer, en "+
+    "tándem desde la Puerta Sur (la renta cierra a las 20:00) — y martes 18 desde las 7:30 (Terracota y Lishan "+
+    "Yuan; los deja en Xi'an Norte con las maletas en la cajuela) · Terracota: reserva con pasaporte 7 días antes (mar 11 may), franja 8:30-9:30 · "+
     "tren G Xi'an Norte → Pekín Oeste ~15:30: la venta abre ~15 días antes (lun 3 may) · hotel: HUALUXE "+
     "Tanghua, 40 Yanyin Rd, Qujiang"};
 const ESSENTIAL_BJ_SH={id:"ess-bj-sh",t:"Pekín y Shanghái: tours y reservas",
-  s:"Civitatis: «Top 3 de Pekín» el miércoles 19 (recogida 8:00) y «Contrastes de Pekín» el jueves 20 (9:00), "+
-    "privados en español · Ciudad Prohibida: boleto con pasaporte, la venta abre a las 20:00 (Pekín) siete días "+
-    "antes = miércoles 12 de mayo; que lo saque el guía · coche privado a Mutianyu el viernes 21 a las 7:00, con "+
-    "las maletas, que los deje en Pekín Sur · tren G17 15:00 Pekín Sur → Shanghái Hongqiao: la venta abre ~15 días "+
-    "antes (jue 6 may) · reservar el pato y TRB Hutong · hotel de Pekín: Manxin Qianmen (大江胡同120号); denle "+
-    "la dirección a Civitatis y al chofer · hotel de Shanghái: H+ Hotel, Pudong (潍坊西路90号)"};
+  s:"Civitatis: «Top 3 de Pekín» el miércoles 19, privado en español, recogida 8:00 · jueves 20: GRAN "+
+    "MURALLA de Mutianyu, día completo con guía y coche, recogida 7:45 · viernes 21: media jornada con guía y "+
+    "coche (Torre del Tambor, hutongs, Templo de los Lamas, Wangfujing), recogida 8:15 con las maletas, que los "+
+    "deje en Pekín Sur — RECOTICEN estos dos, cambiaron de forma · Ciudad Prohibida y Plaza de Tiananmen: "+
+    "boleto y reserva con pasaporte; la venta de la Ciudad Prohibida abre a las 20:00 (Pekín) siete días antes = "+
+    "miércoles 12 de mayo; que lo saque el guía · tren G17 15:00 Pekín Sur → Shanghái Hongqiao: la venta abre "+
+    "~15 días antes (jue 6 may) · reservar el pato y TRB Hutong · hotel de Pekín RESERVADO: Happy Dragon "+
+    "Imperial Garden Courtyard (东城区演乐胡同50号, metro Dongsi), cancelación gratis hasta el check-in; "+
+    "denle la dirección a Civitatis y a los choferes · hotel de Shanghái: H+ Hotel, Pudong (潍坊西路90号)"};
 const ESSENTIAL_SH_KIX={id:"ess-sh-kix",t:"Shanghái y el vuelo a Japón",
   s:"tour privado por el Shanghái histórico (Civitatis) el domingo 23, recogida 8:30 en el H+ de Pudong "+
     "(潍坊西路90号); confirmen si incluye entradas · Shanghai Tower para el sábado 17:30, en línea con pasaporte · "+
@@ -3888,8 +3892,313 @@ function normalizeTripState(s){
   migrarVoucherShanghaiV2(s);// el comprobante nuevo del H+: 3 noches, ya sin el hueco
   migrarKiotoHotelV2(s);     // Kioto reservado: Hyatt Place, en Marutamachi
   migrarHotelesJapon(s);     // Tokio reservado (Celestine Ginza) y los enlaces de cada hotel
+  migrarPekinZjjHoteles(s);  // Pekín (Happy Dragon, Dongsi) y Zhangjiajie (Hilton Garden Inn) reservados
   purgarRetiradas(s);        // y al final: lo que se quitó a propósito no vuelve nunca
   return s;
+}
+/* ---- Pekín y Zhangjiajie reservados (v49) ----
+   Los dos comprobantes son, otra vez, hoteles distintos a los del plan.
+   ZHANGJIAJIE · Hilton Garden Inn Zhangjiajie Tianmen Mountain, en vez del
+   WuYun de Guanliping. Mismo lado de la ciudad (los dos en Yongding, cerca de
+   Tianmen y del aeropuerto), así que la logística apenas cambia. Lo que sí
+   trae de nuevo, y vale:
+     · desayuno incluido el 15 y el 16 — pero el sábado el tour sale 6:30,
+       antes del comedor: hay que pedir la caja la noche anterior;
+     · entrada desde las 10:00 y salida hasta las 14:00;
+     · traslado gratis a la estación y al aeropuerto (según su ficha en
+       Hilton), que resuelve la llegada del viernes a las 20:15 y el vuelo
+       del domingo;
+     · la preautorización (MXN 2,174.66) es UNA noche: es la misma cifra que
+       el cargo por cancelación tardía. Da el cambio real de Trip.com para el
+       yuan: 2.792. El primer comprobante de Shanghái daba 2.798, así que no es
+       casualidad.
+   PEKÍN · Happy Dragon Imperial Garden Courtyard, en vez del Manxin de
+   Qianmen. Aquí SÍ cambia de barrio: de Qianmen (al sur de Tiananmen) a
+   Yanle Hutong, en Dongsi (al este de Wangfujing). Lo que se mueve:
+     · la noche del miércoles era «Qianmen está a la vuelta»: ahora es una
+       salida en taxi, ida y vuelta;
+     · el Templo del Cielo queda a ~6 km en vez de 2: el templo empieza 8:25;
+     · la cena de llegada del martes a las 20:45 MEJORA: Guijie, la calle de
+       comida nocturna que abre hasta la madrugada, queda a ~1.5 km.
+   SHANGHÁI · de paso, su hotel se recalcula con ese mismo cambio real de
+   Trip.com (2.792 en vez del 2.70 que se usó en la v46). */
+const CNY_TRIP=2.792;   // pesos por yuan que cobra Trip.com (comprobantes de Zhangjiajie y Shanghái)
+const ZJJ_DIR="张家界市永定区机场路32号 张家界天门山希尔顿花园酒店";
+const BJ_DIR2="北京市东城区朝阳门街道演乐胡同50号";
+const ZJJ_VOUCHER={
+  estado:"reservado",via:"Trip.com",
+  entrada:"2027-05-14",horaEntrada:"10:00",salida:"2027-05-16",horaSalida:"14:00",
+  habitacion:"Deluxe con cama queen · vista a la montaña Tianmen · ventanal panorámico · hasta 2 adultos",
+  moneda:"CNY",monto:"1557.78",desglose:"Incluye servicio CNY 133.60 e IVA CNY 88.18",
+  pago:"Se paga en el hotel. Trip.com preautorizó MXN 2,174.66, que es una noche (la misma cifra que el cargo por cancelación tardía).",
+  desayuno:"Incluido para 2 el sábado 15 y el domingo 16. El sábado el tour sale 6:30: pidan la caja para llevar la noche anterior.",
+  extras:"Entrada temprana desde las 10:00, salida tardía hasta las 14:00 y fruta de bienvenida · colchón Sealy, sistema de aire fresco",
+  cancelacion:"Gratis hasta el 13 may 2027, 23:59 (hora de China). Después se cobra MXN 2,174.66; si no llegan, también.",
+  cancelLimite:"2027-05-13T23:59",zona:"+08:00",
+  direccion:"No. 32 Jichang Road (Airport Road), Yongding District, Zhangjiajie, Hunan, China",
+  direccionLocal:"张家界天门山希尔顿花园酒店 · 张家界市永定区机场路32号",
+  tel:"+86-744-2267777",conf:"3119736612",reservaNo:"1453607050098999"};
+const BJ_VOUCHER={
+  estado:"reservado",via:"Trip.com",
+  entrada:"2027-05-18",horaEntrada:"14:00",salida:"2027-05-21",horaSalida:"12:00",
+  habitacion:"Loft Zhumen Xiuhu (朱门绣户): una recámara y una sala, cama queen, patio privado · hasta 2 adultos",
+  moneda:"CNY",monto:"3921",desglose:"IVA CNY 221.94 incluido",
+  pago:"Se paga en el hotel (~MXN 10,947 al cambio real de Trip.com, ~2.79 pesos por yuan). El comprobante no trae preautorización.",
+  desayuno:"NO incluye.",
+  extras:"Patio privado · fruta de bienvenida · baño privado con shattaf, albornoces, agua caliente 24 h",
+  cancelacion:"Gratis hasta el check-in. El comprobante no trae número de confirmación: en el hotel usen el de reserva.",
+  cancelLimite:"2027-05-18T14:00",zona:"+08:00",
+  direccion:"No. 50 Yanle Hutong, Chaoyangmen Subdistrict, Dongcheng District, Beijing, China",
+  direccionLocal:"北京东方京邸入画江南隐奢度假院子（王府井天安门店） · "+BJ_DIR2,
+  tel:"+86-18501084521",reservaNo:"1453607050064755"};
+/* Fichas que cambian enteras (cid → [nombre o null, nota, dur o null]), por parada. */
+const BJZJJ_FICHAS={
+  zjj:{
+    "g-breakfast":[null,
+      "<b>Viene incluido</b> en la reserva del Hilton Garden Inn, para 2, el sábado 15 y el domingo 16.<br>"+
+      "<b>Sábado:</b> el tour los recoge a las <b>6:30</b>, antes de que abra el comedor. <b>Pidan la caja para "+
+      "llevar la noche del viernes</b>, al hacer check-in: ya está pagada.<br>"+
+      "<b>Domingo 7:00</b>, aquí sí sentados, antes de que los recojan para Tianmen a las 7:55. Desayunen "+
+      "fuerte: Tianmen son cinco horas de teleférico, escaleras y los 999 escalones, y arriba la comida es cara "+
+      "y mala.<br><i>Por eso este desayuno ya no cuenta en el presupuesto.</i>",null],
+    "zjj-t1-pickup":[null,
+      "<b>6:30 · recogida en el Hilton Garden Inn</b> (机场路32号) — <b>denle esta dirección al tour</b>, que "+
+      "tenía la del hotel anterior. De la ciudad a la puerta del parque en Wulingyuan es ~1 h, para la apertura "+
+      "de las 7:30.<br>"+
+      "<b>Lleven la caja del desayuno</b> que pidieron anoche: el comedor todavía no abre y ya está pagado.<br>"+
+      "<b>Es sábado:</b> en fin de semana la fila del elevador Bailong llega a 1-3 horas. Los primeros en entrar "+
+      "casi no la hacen, por eso tan temprano.<br>"+
+      "<i>Boletos con pasaporte y reservados en línea: el parque, ¥239, vale 4 días.</i>",null],
+    "xa0-tianmen-ir":[null,
+      "<b>7:55 · los recoge el tour</b>: el teleférico de Tianmen sale de la misma ciudad, a <b>~2.3 km del "+
+      "hotel</b> (5-10 min).<br>"+
+      "<b>Antes de salir: check-out y maletas en recepción.</b> La tarifa trae salida tardía hasta las 14:00, "+
+      "pero ustedes regresan por las maletas a las 14:15: no les alcanza, así que entreguen el cuarto ahora.<br>"+
+      "<i>Si quieren bañarse después de los 999 escalones, pregunten la noche anterior si les extienden la "+
+      "salida a las 14:30: con eso regresan, se bañan y se van al aeropuerto.</i>",null],
+    "xa0-maletas":[null,
+      "<b>14:15 · 25 min</b> para pasar al hotel, recoger las maletas de recepción y salir al aeropuerto.<br>"+
+      "<b>Pídanle al hotel el traslado gratis al aeropuerto</b> (lo ofrece según su ficha en Hilton): con la "+
+      "hora del vuelo, que los lleve a las 14:40. El hotel está sobre la avenida del aeropuerto, a ~10 min.<br>"+
+      "<b>Revisen el cuarto aunque ya hayan hecho check-out</b> — cargadores y adaptadores son lo que siempre se "+
+      "queda.<br>"+
+      "<b>El vuelo a Xi'an todavía está <u>a confirmar</u></b> y hay pocos al día: lleven el número a la mano y "+
+      "revisen el estatus antes de salir del hotel.<br>"+
+      "<i>Pasaportes fuera: en China los piden en el check-in y otra vez en seguridad.</i>",null]
+  },
+  beijing:{
+    "g-breakfast":[null,
+      "<b>⚠ El hotel no incluye desayuno</b> (el comprobante dice «sin comidas»), así que sigue cotizado "+
+      "aparte. Pregunten al llegar si lo sirven de pago.<br>"+
+      "<b>Alrededor de Dongsi</b> hay desayuno pekinés de barrio desde temprano: 包子 (bollos al vapor), "+
+      "煎饼果子 (la crepa de la calle, con huevo y salsa) y 豆浆 (leche de soya caliente). Y cafés hacia "+
+      "Wangfujing.<br>"+
+      "<b>Tres horarios, cada uno por algo:</b><br>"+
+      "<b>Miércoles 7:15</b> — el día imperial es largo: Templo del Cielo, el Huevo, Tiananmen, la Ciudad "+
+      "Prohibida y el Palacio de Verano.<br>"+
+      "<b>Jueves 7:00</b> — el más temprano: los autobuses llegan a Mutianyu entre 10:00 y 11:00 y la primera "+
+      "hora en la muralla es la buena. Desayunen fuerte.<br>"+
+      "<b>Viernes 7:30</b> — al bajar ya hacen check-out: las maletas se van en la cajuela y no vuelven al "+
+      "hotel.",null],
+    "pk1-guia":[null,
+      "<b>Tour privado de Civitatis</b>, ~8 h, con guía en español, coche y chofer: Templo del Cielo → el "+
+      "Huevo, Plaza de Tiananmen y Ciudad Prohibida → Palacio de Verano → de regreso al hotel.<br>"+
+      "<b>Antes de pagar, confirmen:</b> (1) si incluye las entradas; (2) que el guía saque los boletos de la "+
+      "Ciudad Prohibida con sus pasaportes: la venta abre el miércoles 12 de mayo a las 20:00 (hora de Pekín) "+
+      "y se agota; (3) la hora de recogida, y <b>denles la dirección del hotel nuevo</b>: <b>"+BJ_DIR2+"</b>. "+
+      "Si el coche no puede entrar al hutong, que los espere en la boca del callejón.<br>"+
+      "<b>El Templo del Cielo ahora queda a ~6 km al sur</b> (desde Qianmen eran 2): ~25 min a esta hora. Por "+
+      "eso el templo empieza a las 8:25 y no a las 8:15.",25],
+    "pk1-descanso":[null,
+      "<b>18:15 · cincuenta minutos, y hoy se los ganaron.</b> Templo del Cielo, el Huevo, Tiananmen, la Ciudad "+
+      "Prohibida y el Palacio de Verano en un día: es el día de más caminata de Pekín.<br>"+
+      "<b>Báñense y pies en alto.</b> No se acuesten: <b>a las 19:05 salen en taxi a Qianmen</b> (~20 min) para "+
+      "el pato de las 19:30.<br>"+
+      "<i>Qianmen ya no está a la puerta del hotel — el nuevo está en Dongsi —, así que la noche es una "+
+      "salida: pato, paseo iluminado y taxi de regreso. El sol se mete a las 19:24, así que a las 21:15 el "+
+      "paseo es de noche cerrada, que es como se ve bien.</i>",50],
+    "bj-duck":[null,
+      "<b>La cena que hay que hacer en Pekín:</b> el pato se asa colgado en horno de leña de árboles frutales, se "+
+      "corta en la mesa y se come en crepas delgadas con cebollín, pepino y salsa hoisin; la piel sola se moja "+
+      "en azúcar.<br>"+
+      "<b>19:05 · ~20 min en taxi</b> del hotel a Qianmen (~¥30). Con el hotel nuevo ya no es a pie.<br>"+
+      "<b>En Qianmen:</b><ul>"+
+      "<li><b>Siji Minfu (四季民福)</b>, la de Qianmen: de los más queridos por los pekineses. No reserva y "+
+      "hay fila: saquen número desde la tarde (desde su mini-programa o pasando a pedirlo).</li>"+
+      "<li><b>Quanjude (全聚德)</b>, la casa original de Qianmen, abierta desde 1864: la historia del pato; "+
+      "más turística.</li></ul>"+
+      "<b>Si están muy cansados para cruzar la ciudad:</b> Siji Minfu tiene sucursal en <b>Dongsi Shitiao "+
+      "(东四十条25号)</b>, a ~5-10 min en taxi del hotel, abierta hasta las 21:30. En ese caso cambien el paseo "+
+      "de Qianmen por los hutongs de alrededor del hotel.<br>"+
+      "<i>Si prefieren reservar y algo más fino: Da Dong (大董), en taxi. Pidan el pato entero.</i>",null],
+    "bj-qianmen":["Paseo de noche por Qianmen y Dashilar, y taxi al hotel",
+      "<b>21:15 · la calle peatonal de Qianmen (前门大街)</b>, con sus fachadas restauradas y el tranvía "+
+      "antiguo, iluminada de noche, con la puerta Zhengyang al fondo. Al lado, <b>Dashilar (大栅栏)</b>, la "+
+      "calle comercial de hace 600 años: farmacia Tongrentang, sedas Ruifuxiang, zapatos Neiliansheng.<br>"+
+      "<b>~22:00 · taxi de regreso al hotel</b>, ~20 min (~¥30). Ya no está «a la vuelta»: el hotel nuevo está "+
+      "en Dongsi. Lleven la dirección escrita: <b>"+BJ_DIR2+"</b>.<br>"+
+      "<i>Mañana el guía los recoge a las 7:45 para la Gran Muralla: no se desvelen.</i>",60]
+  },
+  xian:{
+    "xa2-pekin-hotel":[null,
+      "<b>19:50 · fila de taxis oficial</b> a la salida de Pekín Oeste (o DiDi): ~12 km, <b>30-40 min</b> al "+
+      "hotel, en Dongsi (~¥50).<br>"+
+      "<b>Para el chofer:</b> <b>"+BJ_DIR2+"</b>. Es un hotel de patio dentro de un hutong: si el coche no entra, "+
+      "los deja en la boca del callejón y son unos minutos a pie con las maletas. Llamen al hotel para que salga "+
+      "alguien: <b>+86-18501084521</b>.<br>"+
+      "<b>Check-in desde las 14:00</b>, así que a esta hora el cuarto ya está listo.<br>"+
+      "<i>Desde el tren, mándenle un mensaje al hotel con la hora a la que llegan.</i>",null],
+    "xa2-cena":[null,
+      "<b>20:45 · ya en Pekín</b>, en el hotel nuevo de Dongsi.<br>"+
+      "<b>El problema de la hora se resolvió con el cambio de hotel:</b> a ~1.5 km al norte está <b>Guijie "+
+      "(簋街)</b>, la calle de comida nocturna de Pekín, sobre Dongzhimen Nei Dajie, con faroles rojos y "+
+      "restaurantes que abren hasta las 2-4 de la mañana. A las 20:45 apenas está despertando. ~10 min en taxi "+
+      "(~¥15).<br>"+
+      "<b>Qué comer ahí:</b> la especialidad es el <b>cangrejo de río picante (麻辣小龙虾)</b>, y la casa más "+
+      "famosa es <b>Hu Da (胡大饭馆)</b>, con varias sucursales en la misma calle. Hay fila, pero avanza. Si "+
+      "no quieren picante, hay hot pot, brochetas y cocina de casa en toda la calle.<br>"+
+      "<i>Que no se alargue: mañana es el primer día completo de Pekín y el guía pasa a las 8:00.</i>",null]
+  }
+};
+function migrarPekinZjjHoteles(s){
+  if(s.bjZjjHotelV1)return;
+  const B=s.bases||{};
+  const ponHotel=(st,re,datos,viejoRe,viejoNota)=>{
+    if(!st||!Array.isArray(st.hotels))return;
+    let h=st.hotels.find(x=>re.test(x.name||""));
+    st.hotels.forEach(x=>{x.chosen=false;});
+    if(h)st.hotels.splice(st.hotels.indexOf(h),1);
+    else h={id:uid()};
+    const res=datos.reserva;delete datos.reserva;
+    Object.assign(h,datos,{chosen:true});
+    h.reserva=limpiarReserva(Object.assign({},h.reserva||{},res));
+    st.hotels.unshift(h);
+    const v=st.hotels.find(x=>x!==h&&viejoRe.test((x.name||"")+" "+(x.area||"")));
+    if(v&&!/Ya no está en el plan/.test(v.note||"")){
+      delete v.noches;v.chosen=false;v.note="<b>Ya no está en el plan:</b> "+viejoNota+"<br>"+(v.note||"");}
+  };
+  // ── Zhangjiajie ──
+  ponHotel(B.zjj,/hilton garden/i,{
+    name:"Hilton Garden Inn Zhangjiajie Tianmen Mountain (张家界天门山希尔顿花园酒店)",
+    area:"No. 32 Jichang Road (avenida del aeropuerto), Yongding · a ~2.3 km del teleférico de Tianmen",
+    noches:2,precio:2174.66,
+    web:"https://www.hilton.com/en/hotels/dygtmgi-hilton-garden-inn-zhangjiajie-tianmen-mountain/",
+    reserva:Object.assign({},ZJJ_VOUCHER),
+    note:"<b>★ RESERVADO en Trip.com · viernes 14 al domingo 16 de mayo, 2 noches.</b><br>"+
+      "<b>Check-in desde las 10:00 y check-out hasta las 14:00</b>: la tarifa trae entrada temprana y salida "+
+      "tardía, además de fruta de bienvenida.<br>"+
+      "<b>Habitación:</b> Deluxe con cama queen y <b>vista a la montaña Tianmen</b>, ventanal panorámico de piso "+
+      "a techo, colchón Sealy y sistema de aire fresco. Para 2 adultos.<br>"+
+      "<b>Precio:</b> <b>CNY 1,557.78</b> por las dos noches (incluye servicio CNY 133.60 e IVA CNY 88.18), "+
+      "<b>se paga en el hotel</b>. Trip.com preautorizó <b>MXN 2,174.66</b>, que es <u>una noche</u> —la misma "+
+      "cifra que cobran si cancelan tarde—. En el presupuesto van MXN 4,349.32 (2,174.66 por noche).<br>"+
+      "<b>✔ Incluye desayuno para 2 el sábado 15 y el domingo 16.</b> Ojo: el sábado el tour los recoge a las "+
+      "6:30, antes de que abra el comedor — pidan la caja para llevar la noche anterior.<br>"+
+      "<b>⚠ Cancelación:</b> gratis hasta el <b>jueves 13 de mayo a las 23:59</b> (hora de China). Después "+
+      "cobran MXN 2,174.66.<br>"+
+      "<b>Dónde está:</b> sobre la avenida del aeropuerto (机场路32号), en Yongding, la ciudad de "+
+      "Zhangjiajie, <b>a ~2.3 km del teleférico de Tianmen</b> (5-10 min) y a minutos del aeropuerto. Como el "+
+      "hotel anterior del plan, está en la ciudad y no en Wulingyuan: el parque de los pilares queda a ~1 h.<br>"+
+      "<b>Traslados gratis:</b> según su ficha en Hilton, el hotel ofrece traslado al aeropuerto y a la estación. "+
+      "Escríbanles antes para que los recojan el viernes a las 20:15 en Zhangjiajie West y los lleven el domingo "+
+      "al aeropuerto.<br>"+
+      "<b>El PIN del comprobante no se guarda aquí</b> (dice «do not disclose»): ténganlo en el PDF.<br>"+
+      "Para taxis: <b>"+ZJJ_DIR+"</b> · Tel. +86-744-2267777 (también +86-19974442828 y +86-18897448777)."
+  },/guanliping|ganzi|官黎坪|wuyun|五韵/i,
+    "reservaron el Hilton Garden Inn Tianmen Mountain, sobre la avenida del aeropuerto. Los dos están del lado "+
+    "de Tianmen, así que la logística casi no cambia.");
+  // ── Pekín ──
+  ponHotel(B.beijing,/happy dragon/i,{
+    name:"Happy Dragon Imperial Garden Courtyard Beijing Forbidden City (hotel de patio)",
+    area:"No. 50 Yanle Hutong, Dongsi, Dongcheng · ~10 min a pie del metro Dongsi (líneas 5 y 6)",
+    noches:3,precio:3649.14,
+    reserva:Object.assign({},BJ_VOUCHER),
+    note:"<b>★ RESERVADO en Trip.com · martes 18 al viernes 21 de mayo, 3 noches.</b> Check-in desde las 14:00 "+
+      "y check-out antes de las 12:00.<br>"+
+      "<b>Habitación:</b> loft «Zhumen Xiuhu» (朱门绣户) de una recámara y una sala, con cama queen y "+
+      "<b>patio privado</b>. Para 2 adultos. Fruta de bienvenida.<br>"+
+      "<b>Precio:</b> <b>CNY 3,921</b> por las tres noches, con IVA (CNY 221.94) incluido, y <b>se paga en el "+
+      "hotel</b>. En el presupuesto van ~MXN 10,947 (3,649.14 por noche), al cambio real que usa Trip.com para "+
+      "el yuan (~2.79 pesos, sacado de los comprobantes de Zhangjiajie y del primero de Shanghái).<br>"+
+      "<b>⚠ No incluye desayuno.</b><br>"+
+      "<b>✔ Cancelación gratis hasta el check-in</b> — la más flexible de todo el viaje.<br>"+
+      "<b>⚠ El comprobante no trae número de confirmación</b>, solo el de reserva (1453607050064755). Si en el "+
+      "hotel lo piden, enséñenles ese y el PDF.<br>"+
+      "<b>Dónde está, y esto sí cambió respecto al plan:</b> el hotel anterior estaba en Qianmen, al sur de "+
+      "Tiananmen. Este está en <b>Yanle Hutong, en Dongsi</b>, al este de Wangfujing: ~10 min a pie del metro "+
+      "<b>Dongsi</b> (líneas 5 y 6) y de <b>Dengshikou</b> (línea 5), y 10-15 min de Chaoyangmen (líneas 2 y "+
+      "6). Wangfujing queda a ~1.5 km, el Templo de los Lamas a ~3 km y la calle de comida nocturna Guijie a ~1.5 "+
+      "km al norte. Qianmen y el Templo del Cielo quedaron más lejos: 15-25 min en taxi.<br>"+
+      "<b>Es un hotel de patio dentro de un hutong:</b> el coche puede no entrar hasta la puerta. Si el chofer los "+
+      "deja en la boca del callejón, son unos minutos a pie; con maletas, llamen al hotel para que salga alguien "+
+      "(el teléfono es un celular: +86-18501084521).<br>"+
+      "<b>El PIN del comprobante no se guarda aquí</b> (dice «do not disclose»): ténganlo en el PDF.<br>"+
+      "Para taxis: <b>"+BJ_DIR2+"</b>."
+  },/manxin|漫心|dajiang|大江胡同/i,
+    "reservaron el Happy Dragon Imperial Garden Courtyard, en Yanle Hutong (Dongsi), al este de Wangfujing. Este "+
+    "estaba en Qianmen, al sur de Tiananmen.");
+  // ── fichas que cambian enteras ──
+  Object.entries(BJZJJ_FICHAS).forEach(([bid,fichas])=>{
+    Object.entries(fichas).forEach(([cid,[nombre,nota,dur]])=>{
+      // las fichas que vienen de un día movido pueden vivir en otra parada (p. ej. el viernes de Zhangjiajie en Chongqing)
+      Object.values(B).forEach(st=>{
+        if(!st||!Array.isArray(st.catalog))return;
+        if(cid==="g-breakfast"&&st!==B[bid])return;       // el desayuno genérico, solo el de esa parada
+        if(cid!=="g-breakfast"&&st!==B[bid]&&!(bid==="zjj"&&st===B.chongqing))return;
+        const a=st.catalog.find(x=>x.cid===cid);if(!a)return;
+        a.note=nota;if(nombre)a.name=nombre;if(dur)a.dur=dur;
+      });
+    });
+  });
+  // la llegada del viernes a Zhangjiajie vive donde esté el viernes (Chongqing o Zhangjiajie)
+  [B.chongqing,B.zjj].forEach(st=>{
+    const a=st&&Array.isArray(st.catalog)&&st.catalog.find(x=>x.cid==="zjjd0-wulingyuan");
+    if(!a)return;
+    a.name="Zhangjiajie West → Hilton Garden Inn y check-in";
+    a.note="<b>20:15 · llegan a Zhangjiajie West</b> y de ahí al <b>Hilton Garden Inn Tianmen Mountain</b>, en la "+
+      "ciudad (机场路32号).<br>"+
+      "<b>Lo mejor: que el hotel los recoja.</b> Según su ficha en Hilton, ofrece traslado gratis desde la "+
+      "estación. Escríbanles con el número del tren (G2437) y la hora: así no buscan taxi de noche y con "+
+      "maletas.<br>"+
+      "<b>Si no:</b> taxi oficial a la salida, ~20-30 min (~¥40-60). Enséñenle la dirección escrita: <b>"+ZJJ_DIR+
+      "</b>.<br>"+
+      "<b>Al hacer check-in pidan dos cosas:</b> la <b>caja de desayuno</b> para mañana (el tour sale 6:30, antes "+
+      "del comedor; el desayuno ya está pagado) y confirmen que el tour los recoja aquí.<br>"+
+      "<i>El hotel está en la ciudad, no en Wulingyuan: Tianmen queda a ~2.3 km y el parque de los pilares a ~1 h. "+
+      "Mañana se levantan temprano: directo a dormir.</i>";
+  });
+  // el desayuno de Zhangjiajie viene incluido
+  const gz=B.zjj&&Array.isArray(B.zjj.catalog)&&B.zjj.catalog.find(x=>x.cid==="g-breakfast");
+  if(gz)gz.costs=[];
+  // reemplazos puntuales dentro de notas que solo cambian en una frase
+  const cambia=(st,cid,de,a)=>{const x=st&&Array.isArray(st.catalog)&&st.catalog.find(y=>y.cid===cid);
+    if(x&&x.note)x.note=x.note.replace(de,a);};
+  cambia(B.zjj,"zjj-t1-regreso","al hotel, en Guanliping.","al Hilton Garden Inn, en la ciudad.");
+  cambia(B.zjj,"xa-arrive","~15-20 min del hotel al aeropuerto de Zhangjiajie (DYG)",
+    "~10 min del hotel —que está sobre la avenida del aeropuerto— a Zhangjiajie (DYG)");
+  cambia(B.beijing,"pk1-regreso","al Manxin de Qianmen,","al hotel, en los hutongs de Dongsi,");
+  cambia(B.beijing,"pk2-cena","~15 min en taxi desde Qianmen.","~10 min en taxi desde el hotel, en Dongsi.");
+  cambia(B.beijing,"pk2-vuelta","~20 min</b> del TRB de vuelta a Qianmen.","~10 min</b> del TRB de vuelta al hotel, en Dongsi.");
+  // Pekín, miércoles: el Templo del Cielo queda más lejos, empieza 8:25 (y dura 80 en vez de 90)
+  const bj=B.beijing;
+  if(bj&&Array.isArray(bj.catalog)&&bj.schedule){
+    const t=bj.catalog.find(x=>x.cid==="bj-temple");if(t)t.dur=80;
+    Object.values(bj.schedule).forEach(l=>(l||[]).forEach(it=>{if(it&&it.ref==="bj-temple")it.fixed="08:25";}));
+  }
+  // Shanghái: el mismo cambio real de Trip.com (2.792 en vez de 2.70)
+  const sh=B.shanghai&&Array.isArray(B.shanghai.hotels)&&B.shanghai.hotels.find(x=>/h\+ hotel|潍坊西路|weifang/i.test((x.name||"")+" "+(x.area||"")));
+  if(sh){
+    sh.precio=2822.71;                                  // CNY 3,033 × 2.792 / 3 noches
+    if(sh.note)sh.note=sh.note.replace("En el presupuesto van ~MXN 8,189 (2,729.70 por noche) al tipo de cambio que usa todo el viaje.",
+      "En el presupuesto van ~MXN 8,468 (2,822.71 por noche), al cambio real que usa Trip.com para el yuan (~2.79 pesos).");
+    if(sh.reserva&&sh.reserva.pago)sh.reserva.pago=sh.reserva.pago.replace("(~MXN 8,189 al cambio que usa el viaje)",
+      "(~MXN 8,468 al cambio real de Trip.com, ~2.79 pesos por yuan)");
+  }
+  // los pendientes del checklist: las migraciones que los escriben ya están marcadas como hechas
+  if(Array.isArray(s.esenciales))
+    [ESSENTIAL_TREN_ZJJ,ESSENTIAL_ZJJ_TOURS,ESSENTIAL_XIAN,ESSENTIAL_BJ_SH].forEach(E=>{
+      const e=s.esenciales.find(x=>x&&x.id===E.id);if(e)Object.assign(e,{t:E.t,s:E.s});});
+  s.bjZjjHotelV1=true;
 }
 /* ---- Tokio reservado y los enlaces de cada hotel (v48) ----
    Mandaron el comprobante de Tokio y, igual que en Kioto, NO es el hotel que
