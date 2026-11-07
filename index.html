@@ -1006,6 +1006,7 @@
     <button class="btn" id="redoBtn" title="Rehacer" disabled>↷ Rehacer</button>
     <button class="btn" id="printBtn" title="Mejor calidad: texto seleccionable y ~0.5 MB. Pasa por el diálogo del navegador, donde eliges Guardar como PDF">⬇ Descargar PDF</button>
     <button class="btn" id="pdf1Btn" title="Se baja solo, sin diálogo. El PDF va como imagen: pesa varios MB y el texto no se puede seleccionar ni buscar">⚡ PDF de un clic</button>
+    <button class="btn" id="kitBtn" title="Un archivo que se abre sin internet: tarjetas para el taxi, frases para recepción y el itinerario completo">📥 Kit sin internet</button>
     <button class="btn" id="exportBtn" title="Descargar una copia de seguridad del viaje">⬇ Exportar</button>
     <button class="btn" id="importBtn" title="Reemplazar este viaje con un archivo exportado">⬆ Importar</button>
     <button class="btn" id="syncBtn">Sincronizar ahora</button>
@@ -1046,7 +1047,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v49 · 7 nov 2026 · Pekín y Zhangjiajie reservados";
+const APP_VERSION="v50 · 7 nov 2026 · Kit sin internet: tarjetas de taxi y recepción";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -3893,6 +3894,7 @@ function normalizeTripState(s){
   migrarKiotoHotelV2(s);     // Kioto reservado: Hyatt Place, en Marutamachi
   migrarHotelesJapon(s);     // Tokio reservado (Celestine Ginza) y los enlaces de cada hotel
   migrarPekinZjjHoteles(s);  // Pekín (Happy Dragon, Dongsi) y Zhangjiajie (Hilton Garden Inn) reservados
+  migrarKitDirecciones(s);   // nombres en chino validados (Shanghái tenía otro)
   purgarRetiradas(s);        // y al final: lo que se quitó a propósito no vuelve nunca
   return s;
 }
@@ -4517,7 +4519,7 @@ const SH_VOUCHER_V2={
   cancelacion:"Gratis hasta el 20 may 2027, 23:59 (hora de China). Después es no reembolsable y, si no llegan, se cobra.",
   cancelLimite:"2027-05-20T23:59",zona:"+08:00",
   direccion:"No. 90 Weifang West Road, China (Shanghai) Pilot Free Trade Zone, Pudong New Area, Shanghai, China",
-  direccionLocal:"上海H+酒店（浦东潍坊店）· 浦东新区潍坊西路90号",
+  direccionLocal:"上海陆家嘴H+酒店 · 上海市浦东新区潍坊西路90号",
   tel:"+86-21-68888696",conf:"[SHLJZHG]P26110210003360",reservaNo:"1453606926157473"};
 function migrarVoucherShanghaiV2(s){
   if(s.shVoucherV2)return;
@@ -9237,6 +9239,406 @@ function migrarViernesCQ(s){
   }
   s.cqViernesV4=true;
 }
+/* ==================== Kit sin internet (v50) ====================
+   Para no perderse sin datos: por hotel, una TARJETA PARA EL TAXISTA (la
+   dirección en el idioma local, grande, con el español abajo), las FRASES
+   PARA RECEPCIÓN de esa estancia, y los botones de mapas (Amap en China
+   continental, Google y Apple en Hong Kong y Japón).
+   Y un archivo descargable —un .html que no carga nada de internet— con todo
+   eso más el itinerario completo. Se guarda en Archivos/Descargas y se abre
+   sin conexión, sin sesión y sin que el navegador lo borre: a diferencia de
+   una pestaña abierta, que iOS recarga cuando quiere, y de los datos de un
+   sitio, que Safari borra tras 7 días sin uso.
+   Direcciones validadas (nov 2026) contra el comprobante de cada reserva, la
+   ficha del hotel en Ctrip/Trip.com o su sitio oficial:
+     · En China continental van en chino SIMPLIFICADO, que es lo que leen los
+       taxistas (tres comprobantes venían en tradicional). Hong Kong, en
+       tradicional. Japón, en japonés.
+     · Shanghái: el nombre correcto es 上海陆家嘴H+酒店; la app traía otro.
+     · Tokio: Ginza 8-chome es 〒104-0061 (el comprobante imprime 105-0013).
+   Cada ficha se liga al hotel por nombre (re): si cambian de hotel, la
+   tarjeta deja de aparecer en vez de mandarlos al hotel equivocado. */
+const KIT_HUESPED="Santiago Padilla";
+const KIT_LANG={
+  "zh-Hans":{pide:"师傅您好，请送我们到这个地址：",tel:"电话",tarjeta:["可以给我们一张酒店的名片吗？我们给出租车司机看。",
+    "¿Nos da una tarjeta del hotel? Es para enseñársela a los taxistas."]},
+  "zh-Hant":{pide:"司機你好，請送我們到這個地址：",tel:"電話",tarjeta:["可以給我們一張酒店的名片嗎？我們給的士司機看。",
+    "¿Nos da una tarjeta del hotel? Es para enseñársela a los taxistas."]},
+  "ja":{pide:"運転手さん、この住所までお願いします。",tel:"電話",tarjeta:["ホテルのカードを一枚いただけますか。タクシーで見せたいので。",
+    "¿Nos da una tarjeta del hotel? Es para enseñársela a los taxistas."]}
+};
+const KIT_MAPA_NOTA={
+  china:"En China continental usen Amap (高德地图) o Apple Maps, que ahí usa los mapas de Amap. Google Maps no es confiable en China: sin VPN no carga y aun con VPN el mapa sale desfasado.",
+  hk:"En Hong Kong, Google Maps y Apple Maps funcionan bien.",
+  jp:"En Japón, Google Maps funciona perfecto. Y en el taxi basta con el teléfono del hotel: los taxistas lo meten en su navegador."
+};
+const KIT_HOTELES={
+  hk:{re:/renaissance/i,lang:"zh-Hant",zona:"hk",
+    nombre:"香港萬麗海景酒店",dir:"香港灣仔港灣道1號",extra:"（灣仔會展中心旁邊）",tel:"2802 8888",telIntl:"+852 2802 8888",
+    es:{nombre:"Renaissance Hong Kong Harbour View Hotel",dir:"1 Harbour Road, Wan Chai",extra:"junto al Centro de Convenciones de Wan Chai"},
+    apple:"Renaissance Hong Kong Harbour View Hotel",google:"Renaissance Hong Kong Harbour View Hotel, 1 Harbour Road, Wan Chai",
+    nota:"En Hong Kong la recepción habla inglés: estas frases son por si acaso. Los taxis rojos van a cualquier parte de la ciudad.",
+    recepcion:[
+      ["5月8日（星期六）我們早上要去大嶼山，請問早餐最早幾點開始？可以準備外賣早餐嗎？",
+       "El sábado 8 salimos temprano a Lantau: ¿a qué hora abre el desayuno? ¿Nos pueden preparar algo para llevar?"],
+      ["5月9日（星期日）早上6:20我們退房，請幫我們預約的士去西九龍高鐵站。",
+       "El domingo 9 salimos a las 6:20: ¿nos reservan un taxi a la estación de tren de alta velocidad West Kowloon?"]]},
+  yangshuo:{re:/sugar house|糖舍/i,lang:"zh-Hans",zona:"china",
+    nombre:"阳朔糖舍度假酒店",dir:"广西桂林市阳朔县东岭路102号",extra:"（原糖厂）",tel:"0773-888 3999",telIntl:"+86 773 888 3999",
+    es:{nombre:"Yangshuo Sugar House",dir:"102 Dongling Road, Yangshuo",extra:"la antigua fábrica de azúcar"},
+    amap:"阳朔糖舍度假酒店",apple:"阳朔糖舍度假酒店",google:"Yangshuo Sugar House, 102 Dongling Road, Yangshuo",
+    recepcion:[
+      ["5月10日（周一）早上4:45，请帮我们约一辆车去相公山看日出，在山下等我们，看完再送我们回酒店。",
+       "El lunes 10 a las 4:45: ¿nos consiguen un coche al mirador de Xianggong para el amanecer, que nos espere abajo y nos regrese al hotel?"],
+      ["5月10日早上9:30，请帮我们叫一辆出租车，去遇龙河边的 Yangshuo Mountain Retreat 酒店。",
+       "El lunes 10 a las 9:30, ¿nos piden un taxi al hotel Yangshuo Mountain Retreat, junto al río Yulong?"],
+      ["5月11日（周二）早上7:00我们退房，请帮我们叫一辆出租车去阳朔站（高铁站）。",
+       "El martes 11 salimos a las 7:00: ¿nos piden un taxi a la estación de alta velocidad de Yangshuo?"],
+      ["如果房价含早餐，5月11日可以帮我们准备两份打包早餐吗？",
+       "Si la tarifa incluye desayuno, ¿nos preparan dos para llevar el martes 11?"]]},
+  chengdu:{re:/chuanxing|川行/i,lang:"zh-Hans",zona:"china",
+    nombre:"川行隐里酒店（成都宽窄巷子店）",dir:"四川省成都市金牛区十二桥路19号1栋",extra:"（宽窄巷子附近）",tel:"028-8910 9888",telIntl:"+86 28 8910 9888",
+    es:{nombre:"Chuanxing Yinli Hotel (Kuanzhai Alley)",dir:"Edificio 1, No. 19 Shierqiao Road, Jinniu",extra:"cerca de Kuanzhai Alley"},
+    amap:"川行隐里酒店(成都宽窄巷子店)",apple:"川行隐里酒店",google:"Chuanxing Yinli Hotel, 19 Shierqiao Road, Chengdu",
+    recepcion:[
+      ["5月12日（周三）早上6:55，我们的司机来酒店接我们。如果房价含早餐，可以帮我们准备两份打包早餐吗？",
+       "El miércoles 12 a las 6:55 nos recoge nuestro chofer. Si la tarifa incluye desayuno, ¿nos preparan dos para llevar?"],
+      ["5月13日（周四）早上8:15我们退房，请帮我们叫一辆出租车去成都东站。",
+       "El jueves 13 salimos a las 8:15: ¿nos piden un taxi a la estación Chengdu Este?"],
+      ["附近有什么好吃的川菜馆吗？我们怕太辣。",
+       "¿Nos recomienda un buen restaurante de comida de Sichuan cerca? No aguantamos mucho picante."]]},
+  chongqing:{re:/intercontinental|洲际/i,lang:"zh-Hans",zona:"china",
+    nombre:"重庆来福士洲际酒店",dir:"重庆市渝中区长江滨江路2号",extra:"（来福士 · 酒店大堂在42楼）",tel:"023-8988 8888",telIntl:"+86 23 8988 8888",
+    es:{nombre:"InterContinental Chongqing Raffles City",dir:"No. 2 Changjiang Binjiang Road, Yuzhong",extra:"dentro de Raffles City; la recepción está en el piso 42"},
+    amap:"重庆来福士洲际酒店",apple:"重庆来福士洲际酒店",google:"InterContinental Chongqing Raffles City",
+    nota:"Raffles City es enorme: que el taxi los deje en la entrada del hotel, no en la del centro comercial.",
+    recepcion:[
+      ["5月14日（周五）早上我们退房，可以把行李寄存到下午3:50吗？",
+       "El viernes 14 hacemos check-out en la mañana: ¿nos guardan el equipaje hasta las 15:50?"],
+      ["早上8:45，请帮我们叫一辆出租车去磁器口。",
+       "A las 8:45, ¿nos piden un taxi a Ciqikou?"],
+      ["下午3:50请帮我们叫一辆出租车去重庆东站。是重庆东站，不是重庆北站，也不是重庆西站。",
+       "A las 15:50, ¿nos piden un taxi a la estación Chongqing ESTE? Es Chongqing Este: no Chongqing Norte ni Chongqing Oeste."]]},
+  zjj:{re:/hilton garden/i,lang:"zh-Hans",zona:"china",
+    nombre:"张家界天门山希尔顿花园酒店",dir:"湖南省张家界市永定区机场路32号",extra:"（天门山附近）",tel:"0744-226 7777",telIntl:"+86 744 226 7777",
+    es:{nombre:"Hilton Garden Inn Zhangjiajie Tianmen Mountain",dir:"No. 32 Jichang Road (avenida del aeropuerto), Yongding",extra:"cerca de la montaña Tianmen"},
+    amap:"张家界天门山希尔顿花园酒店",apple:"张家界天门山希尔顿花园酒店",google:"Hilton Garden Inn Zhangjiajie Tianmen Mountain",
+    recepcion:[
+      ["（出发前发给酒店）我们5月14日（周五）晚上8:15坐G2437次高铁到张家界西站，两位客人，请安排免费接站，谢谢！",
+       "(Para mandarlo ANTES de llegar, por mensaje o correo.) Llegamos el viernes 14 a las 20:15 a Zhangjiajie West en el tren G2437, dos personas: ¿nos mandan el traslado gratis desde la estación?"],
+      ["5月15日（周六）早上6:30旅游团来酒店接我们，那时餐厅还没开门，可以帮我们准备两份打包早餐吗？",
+       "El sábado 15 a las 6:30 nos recoge el tour, antes de que abra el comedor: ¿nos preparan dos desayunos para llevar?"],
+      ["5月16日（周日）早上我们退房，请把行李寄存到下午2:15。",
+       "El domingo 16 hacemos check-out en la mañana: ¿nos guardan el equipaje hasta las 14:15?"],
+      ["下午2:40请安排免费送机，去张家界荷花机场。",
+       "A las 14:40, ¿nos llevan al aeropuerto de Zhangjiajie (Hehua) en el traslado gratis?"]]},
+  xian:{re:/hualuxe|华邑/i,lang:"zh-Hans",zona:"china",
+    nombre:"西安唐华华邑酒店",dir:"陕西省西安市雁塔区曲江新区雁引路40号",extra:"（大雁塔附近）",tel:"029-8799 0000",telIntl:"+86 29 8799 0000",
+    es:{nombre:"HUALUXE Xi'an Tanghua",dir:"No. 40 Yanyin Road, Qujiang",extra:"cerca de la Gran Pagoda del Ganso Salvaje"},
+    amap:"西安唐华华邑酒店",apple:"西安唐华华邑酒店",google:"HUALUXE Xi'an Tanghua, 40 Yanyin Road",
+    recepcion:[
+      ["5月17日（周一）下午5:45，请帮我们叫一辆出租车去城墙南门（永宁门）。",
+       "El lunes 17 a las 17:45, ¿nos piden un taxi a la Puerta Sur de la muralla (Yongningmen)?"],
+      ["请问今天晚上大雁塔北广场的音乐喷泉几点开始？",
+       "¿A qué hora empieza hoy la fuente musical de la Plaza Norte de la Gran Pagoda? (Así salen de la duda entre las 20:00 y las 21:00.)"],
+      ["5月18日（周二）早上7:30导游来接我们，我们会退房带走行李。可以6:30进餐厅吃早餐吗？如果不行，能准备两份打包早餐吗？",
+       "El martes 18 a las 7:30 nos recoge el guía y nos llevamos las maletas. ¿Podemos desayunar a las 6:30? Si no, ¿nos preparan dos desayunos para llevar?"]]},
+  beijing:{re:/happy dragon/i,lang:"zh-Hans",zona:"china",
+    nombre:"北京东方京邸入画江南隐奢度假院子（王府井天安门店）",dir:"北京市东城区朝阳门街道演乐胡同50号",extra:"（在胡同里，车进不去的话停在胡同口）",tel:"185 0108 4521",telIntl:"+86 185 0108 4521",
+    es:{nombre:"Happy Dragon Imperial Garden Courtyard",dir:"No. 50 Yanle Hutong, Dongcheng",extra:"dentro del hutong: si el coche no entra, déjenos en la entrada del callejón"},
+    amap:"北京市东城区演乐胡同50号",apple:"北京市东城区演乐胡同50号",google:"50 Yanle Hutong, Dongcheng, Beijing",
+    nota:"El nombre del hotel en chino es larguísimo: lo que vale para el taxi es la dirección (演乐胡同50号). El teléfono es un celular: si se pierden en el hutong, llamen.",
+    recepcion:[
+      ["（出发前发给酒店）我们5月18日（周二）晚上大约8:30从北京西站打车过来。如果车进不了胡同，麻烦派人到胡同口接我们，谢谢！",
+       "(Para mandarlo ANTES de llegar.) Llegamos el martes 18 hacia las 20:30, en taxi desde Pekín Oeste. Si el coche no puede entrar al hutong, ¿podrían mandar a alguien a la entrada del callejón?"],
+      ["5月19日（周三）早上8:00和20日（周四）早上7:45，导游的车来酒店接我们。车可以停在哪里？",
+       "El miércoles 19 a las 8:00 y el jueves 20 a las 7:45 nos recoge el coche del guía: ¿dónde se puede parar?"],
+      ["5月19日晚上7:05，请帮我们叫一辆出租车去前门大街。",
+       "El miércoles 19 a las 19:05, ¿nos piden un taxi a la calle peatonal de Qianmen?"],
+      ["附近有好的早餐店吗？",
+       "¿Hay un buen lugar para desayunar cerca?"]]},
+  shanghai:{re:/h\+ hotel|潍坊西路|weifang/i,lang:"zh-Hans",zona:"china",
+    nombre:"上海陆家嘴H+酒店",dir:"上海市浦东新区潍坊西路90号",extra:"（陆家嘴）",tel:"021-6888 8696",telIntl:"+86 21 6888 8696",
+    es:{nombre:"H+ Hotel Shanghai Pudong",dir:"No. 90 Weifang West Road, Pudong",extra:"zona de Lujiazui"},
+    amap:"上海陆家嘴H+酒店",apple:"上海陆家嘴H+酒店",google:"H+ Hotel Shanghai Pudong, 90 Weifang West Road",
+    recepcion:[
+      ["请问早餐几点开始？",
+       "¿A qué hora empieza el desayuno?"],
+      ["5月24日（周一）早上5:30我们去浦东机场2号航站楼，请帮我们预约出租车。",
+       "El lunes 24 a las 5:30 vamos al aeropuerto de Pudong, Terminal 2: ¿nos reservan un taxi?"],
+      ["那天我们来不及吃早餐，可以帮我们准备两份打包早餐吗？房价含早餐。",
+       "Ese día no alcanzamos a desayunar: ¿nos preparan dos desayunos para llevar? La tarifa incluye desayuno."],
+      ["5月24日我们很早就走，可以今天先结账吗？",
+       "El 24 salimos muy temprano: ¿podemos pagar la cuenta hoy? (La reserva se paga en el hotel.)"]]},
+  kyoto:{re:/hyatt place/i,lang:"ja",zona:"jp",
+    nombre:"ハイアット プレイス 京都",dir:"〒604-0862 京都府京都市中京区少将井町240",extra:"（地下鉄 丸太町駅 6番出口）",tel:"075-251-1234",telIntl:"+81 75-251-1234",
+    es:{nombre:"Hyatt Place Kyoto",dir:"240 Shoshoi-cho, Nakagyo-ku",extra:"en la salida 6 del metro Marutamachi"},
+    apple:"Hyatt Place Kyoto",google:"Hyatt Place Kyoto, 240 Shoshoicho, Nakagyo Ward",
+    recepcion:[
+      ["チェックインの時間まで、荷物を預かっていただけますか。",
+       "¿Nos guardan el equipaje hasta la hora del check-in?"],
+      ["京都市の宿泊税はいくらですか。",
+       "¿Cuánto es el impuesto de hospedaje de Kioto?"],
+      ["25日（火）の朝8時に、清水寺までタクシーを呼んでいただけますか。",
+       "¿Nos piden un taxi a Kiyomizu-dera el martes 25 a las 8:00?"],
+      ["26日（水）は朝7時にチェックアウトします。11時45分ごろまで荷物を預かっていただけますか。",
+       "El miércoles 26 hacemos check-out a las 7:00: ¿nos guardan el equipaje hasta cerca de las 11:45?"],
+      ["26日（水）の朝7時に、嵐山までタクシーを呼んでいただけますか。",
+       "¿Nos piden un taxi a Arashiyama el miércoles 26 a las 7:00?"]]},
+  tokyo:{re:/celestine/i,lang:"ja",zona:"jp",
+    nombre:"ホテル ザ セレスティン銀座",dir:"〒104-0061 東京都中央区銀座8-4-22",extra:"（新橋駅から徒歩3分）",tel:"03-3572-3111",telIntl:"+81 3-3572-3111",
+    es:{nombre:"Hotel The Celestine Ginza",dir:"8-4-22 Ginza, Chuo-ku",extra:"a 3 min a pie de la estación Shimbashi"},
+    apple:"Hotel The Celestine Ginza",google:"Hotel The Celestine Ginza, 8-4-22 Ginza, Chuo City, Tokyo",
+    recepcion:[
+      ["東京都の宿泊税はいくらですか。",
+       "¿Cuánto es el impuesto de hospedaje de Tokio?"],
+      ["29日（土）の朝5時30分に、成田空港まで定額タクシーを予約していただけますか。",
+       "¿Nos reservan para el sábado 29 a las 5:30 un taxi de tarifa fija al aeropuerto de Narita? (Si su vuelo sale de Haneda, enseñen 羽田空港 en vez de 成田空港; pueden salir a las 6:30.)"],
+      ["29日は朝早く出発するので、今日のうちに精算できますか。",
+       "El 29 salimos muy temprano: ¿podemos pagar la cuenta hoy? (La reserva se paga en el hotel.)"]]}
+};
+function kitDe(bid,h){const k=KIT_HOTELES[bid];return k&&h&&k.re.test(h.name||"")?k:null;}
+function kitMapLinks(k){
+  const enc=encodeURIComponent,l=[];
+  if(k.amap)l.push(["高德 Amap","https://uri.amap.com/search?keyword="+enc(k.amap)+"&view=map&src=viajes&callnative=1"]);
+  l.push(["Apple Maps","https://maps.apple.com/?q="+enc(k.apple)]);
+  l.push(["Google Maps","https://www.google.com/maps/search/?api=1&query="+enc(k.google)]);
+  return l;
+}
+function kitTaxiHTML(k){
+  const L=KIT_LANG[k.lang];
+  return `<div class="kit-taxi"><div lang="${k.lang}">
+      <div class="kt-pide">${esc(L.pide)}</div>
+      <div class="kt-nombre">${esc(k.nombre)}</div>
+      <div class="kt-dir">${esc(k.dir)}</div>
+      ${k.extra?`<div class="kt-extra">${esc(k.extra)}</div>`:""}
+      <div class="kt-tel">${esc(L.tel)}：${esc(k.tel)}</div></div>
+    <div class="kt-es"><b>Por favor, llévenos a esta dirección:</b><br>${esc(k.es.nombre)}<br>${esc(k.es.dir)}${
+      k.es.extra?`<br><i>${esc(k.es.extra)}</i>`:""}<br>Tel. ${esc(k.telIntl)}</div></div>`;
+}
+function kitSaludo(k,h){
+  const r=(h&&h.reserva)||{},via=r.via||"Trip.com",conf=r.conf||"",res=r.reservaNo||"";
+  const es="Hola. Reservamos en "+via+"."+(conf?" Confirmación: "+conf+".":"")+(res?" Número de reserva: "+res+".":"")+
+    " A nombre de "+KIT_HUESPED+".";
+  if(k.lang==="ja")
+    return ["こんにちは。"+via+"で予約しました。"+(conf?"確認番号："+conf+"。":"")+(res?"予約番号："+res+"。":"")+
+      "予約者名："+KIT_HUESPED+"。",es];
+  const t=k.lang==="zh-Hant";
+  const sitio=via==="Trip.com"?(t?"攜程（Trip.com）":"携程（Trip.com）"):via;
+  return [(t?"您好！我們在":"您好！我们在")+sitio+(t?"預訂了房間。":"预订了房间。")+
+    (conf?(t?"確認號：":"确认号：")+conf+"。":"")+(res?(t?"訂單號：":"订单号：")+res+"。":"")+
+    (t?"訂房人：":"预订人：")+KIT_HUESPED+"。",es];
+}
+function kitRecepcionHTML(k,h){
+  const frases=[kitSaludo(k,h)].concat(k.recepcion||[],[KIT_LANG[k.lang].tarjeta]);
+  return `<div class="kit-rec"><p class="kr-intro">Enséñenle esto al recepcionista. Cada frase lleva el español abajo.${
+      k.nota?" "+esc(k.nota):""}</p><ol>${frases.map(([l,e])=>
+      `<li><div class="kr-local" lang="${k.lang}">${esc(l)}</div><div class="kr-es">${esc(e)}</div></li>`).join("")}</ol></div>`;
+}
+function kitMapasHTML(k){
+  return `<div class="kit-mapas">${kitMapLinks(k).map(([t,u])=>
+    `<a href="${esc(u)}" target="_blank" rel="noopener noreferrer">🗺 ${esc(t)}</a>`).join("")}
+    <div>${esc(KIT_MAPA_NOTA[k.zona]||"")} Los mapas necesitan internet; sin datos, enseñen la tarjeta.</div></div>`;
+}
+function kitBotonesHTML(bid,k){
+  return `<div class="kit-btns">
+    <button class="gochip" data-act="taxicard" data-bid="${bid}" title="Pantalla completa para enseñársela al taxista">🚕 Tarjeta para el taxi</button>
+    <button class="gochip" data-act="recepcion" data-bid="${bid}" title="Frases para el recepcionista, con el español abajo">🛎 Para recepción</button>
+    ${kitMapLinks(k).map(([t,u])=>`<a class="gochip" href="${esc(u)}" target="_blank" rel="noopener noreferrer">🗺 ${esc(t)}</a>`).join("")}
+  </div>`;
+}
+function cerrarTarjetaHotel(){
+  const ov=document.getElementById("kitOverlay");if(ov)ov.remove();
+  document.removeEventListener("keydown",kitEsc);
+}
+function kitEsc(e){if(e.key==="Escape")cerrarTarjetaHotel();}
+function abrirTarjetaHotel(bid,modo){
+  const st=state.bases[bid],h=st&&(st.hotels||[]).find(x=>x.chosen),k=kitDe(bid,h);
+  if(!k){toast("Este hotel no tiene tarjeta todavía",{tipo:"err"});return;}
+  cerrarTarjetaHotel();
+  const ov=document.createElement("div");ov.id="kitOverlay";ov.className="kit-ov";
+  ov.innerHTML=`<div class="kit-ov-bar"><span>${modo==="taxi"?"🚕 Para el taxista":"🛎 Para recepción"} · ${esc(st.name||"")}</span>
+      <button class="kit-ov-x" aria-label="Cerrar">✕</button></div>
+    <div class="kit-ov-body">${modo==="taxi"
+      ?kitTaxiHTML(k)+`<div class="kit-copiar">
+          <button data-copiar="${esc(k.nombre)}">Copiar el nombre en ${k.lang==="ja"?"japonés":"chino"}</button>
+          <button data-copiar="${esc(k.dir)}">Copiar la dirección</button></div>
+        <p class="kr-intro">Para pegarlo en DiDi, Amap o el traductor. Con el teléfono en horizontal se lee mejor.</p>`+kitMapasHTML(k)
+      :kitRecepcionHTML(k,h)}</div>`;
+  document.body.appendChild(ov);
+  ov.querySelector(".kit-ov-x").addEventListener("click",cerrarTarjetaHotel);
+  ov.querySelectorAll("[data-copiar]").forEach(b=>b.addEventListener("click",()=>{
+    const t=b.dataset.copiar;
+    if(navigator.clipboard&&navigator.clipboard.writeText)
+      navigator.clipboard.writeText(t).then(()=>toast("Copiado: péguenlo en DiDi o Amap"),
+        ()=>toast("No se pudo copiar; manténganlo presionado y copien a mano",{tipo:"err"}));
+    else toast("Este navegador no deja copiar; manténganlo presionado",{tipo:"err"});
+  }));
+  document.addEventListener("keydown",kitEsc);
+}
+/* El CSS de las tarjetas vive en una sola cadena: lo usan la app y el archivo
+   descargado, así se ven idénticas. Las fuentes CJK se piden por idioma para
+   que el japonés no salga con glifos chinos (son los mismos códigos). */
+const KIT_CSS=`
+.kit-btns{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}
+.kit-btns a,.kit-btns button{text-decoration:none;cursor:pointer}
+.kit-ov{position:fixed;inset:0;z-index:9999;background:#fff;color:#111;overflow:auto;-webkit-overflow-scrolling:touch}
+.kit-ov-bar{position:sticky;top:0;z-index:1;display:flex;justify-content:space-between;align-items:center;gap:10px;
+  padding:10px 14px;background:#26251f;color:#fff;font:600 14px/1.3 Inter,system-ui,sans-serif}
+.kit-ov-x{background:#fff;color:#26251f;border:0;border-radius:8px;font-size:18px;width:42px;height:42px;cursor:pointer;flex:none}
+.kit-ov-body{padding:18px 16px 48px;max-width:860px;margin:0 auto}
+[lang="zh-Hans"]{font-family:"PingFang SC","Hiragino Sans GB","Noto Sans CJK SC","Noto Sans SC","Microsoft YaHei",sans-serif}
+[lang="zh-Hant"]{font-family:"PingFang HK","PingFang TC","Noto Sans CJK TC","Noto Sans TC","Microsoft JhengHei",sans-serif}
+[lang="ja"]{font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans CJK JP","Noto Sans JP","Yu Gothic",sans-serif}
+.kit-taxi{border:3px solid #111;border-radius:14px;padding:18px 18px 14px;background:#fff;color:#111;
+  break-inside:avoid;page-break-inside:avoid}
+.kit-taxi .kt-pide{font-size:22px;line-height:1.35;margin-bottom:10px}
+.kit-taxi .kt-nombre{font-size:34px;font-weight:700;line-height:1.25;margin-bottom:8px}
+.kit-taxi .kt-dir{font-size:30px;font-weight:600;line-height:1.3}
+.kit-taxi .kt-extra{font-size:22px;line-height:1.35;margin-top:6px}
+.kit-taxi .kt-tel{font-size:24px;margin-top:10px}
+.kit-taxi .kt-es{margin-top:14px;padding-top:10px;border-top:1px dashed #999;font:15px/1.45 system-ui,sans-serif;color:#333}
+.kit-taxi .kt-es b{color:#111}
+.kit-copiar{margin-top:12px;display:flex;flex-wrap:wrap;gap:8px}
+.kit-copiar button{padding:10px 14px;border-radius:10px;border:1px solid #26251f;background:#f4efe3;color:#26251f;
+  font:600 14px system-ui,sans-serif;cursor:pointer}
+.kit-rec .kr-intro,.kit-ov .kr-intro{font:14px/1.45 system-ui,sans-serif;color:#555;margin:10px 0}
+.kit-rec ol{list-style:none;margin:0;padding:0;counter-reset:kr}
+.kit-rec li{counter-increment:kr;border:1px solid #d9d0bd;border-radius:10px;padding:12px 14px;margin:0 0 10px;
+  background:#fff;break-inside:avoid;page-break-inside:avoid}
+.kit-rec .kr-local{font-size:21px;line-height:1.5;color:#111}
+.kit-rec .kr-local::before{content:counter(kr) ".  ";font:600 14px system-ui,sans-serif;color:#b73e3e}
+.kit-rec .kr-es{font:14px/1.45 system-ui,sans-serif;color:#555;margin-top:6px}
+.kit-mapas{font:14px/1.5 system-ui,sans-serif;color:#333;margin-top:14px}
+.kit-mapas a{display:inline-block;margin:0 6px 8px 0;padding:8px 12px;border:1px solid #26251f;border-radius:999px;
+  color:#26251f;text-decoration:none;font-weight:600}
+`;
+(function(){try{const st=document.createElement("style");st.id="kitCss";st.textContent=KIT_CSS;
+  document.head.appendChild(st);}catch(e){}})();
+/* Las reglas del itinerario imprimible (#printview) se copian del documento,
+   para que el itinerario del kit se vea igual que el PDF. Solo reglas sueltas:
+   la de @media print esconde todo lo que no sea #printview, y en el kit
+   escondería las tarjetas. */
+function kitCssItinerario(){
+  let out="";
+  Array.from(document.styleSheets).forEach(sh=>{
+    let reglas;try{reglas=sh.cssRules;}catch(e){return;}         // hojas de otro dominio (fuentes): se saltan
+    Array.from(reglas||[]).forEach(r=>{if(r.type===1&&/#printview/.test(r.selectorText||""))out+=r.cssText+"\n";});
+  });
+  return out;
+}
+function armarKit(){
+  const m=state.meta||{},dated=withDates();
+  const hoy=new Date(),genera=hoy.getDate()+" "+MESES[hoy.getMonth()]+" "+hoy.getFullYear();
+  const items=dated.map(o=>{const h=(o.st.hotels||[]).find(x=>x.chosen),k=kitDe(o.def.id,h);
+    return k?{o,h,k}:null;}).filter(Boolean);
+  const fdia=iso=>{if(!iso)return"?";const d=new Date(iso+"T00:00:00");return isNaN(d)?iso:fmtDia(d);};
+  let itin="";try{itin=armarImpresion();}catch(e){itin="<p>No se pudo armar el itinerario: "+esc(e.message||e)+"</p>";}
+  const hoteles=items.map(({o,h,k},i)=>{const r=h.reserva||{};
+    return `<section class="kd-hotel" id="h-${esc(o.def.id)}">
+      <div class="kd-eyebrow">${i+1} · ${esc(o.def.name)}</div>
+      <h2>${esc(h.name||k.es.nombre)}</h2>
+      <p class="kd-datos"><b>${esc(fdia(r.entrada))}</b>${r.horaEntrada?" desde las "+esc(r.horaEntrada):""} →
+        <b>${esc(fdia(r.salida))}</b>${r.horaSalida?" antes de las "+esc(r.horaSalida):""}
+        ${r.via?" · reservado en "+esc(r.via):""}${r.conf?" · confirmación <b>"+esc(r.conf)+"</b>":""}${
+        r.reservaNo?" · reserva <b>"+esc(r.reservaNo)+"</b>":""} · tel. ${esc(k.telIntl)}${
+        r.desayuno?"<br>Desayuno: "+esc(r.desayuno):""}${r.cancelacion?"<br>Cancelación: "+esc(r.cancelacion):""}</p>
+      <div class="kd-h3">🚕 Para el taxista</div>${kitTaxiHTML(k)}
+      <div class="kd-noprint">${kitMapasHTML(k)}</div>
+      <div class="kd-h3">🛎 Para recepción</div>${kitRecepcionHTML(k,h)}
+    </section>`;}).join("");
+  const indice=items.map(({o})=>`<a href="#h-${esc(o.def.id)}">${esc(o.def.name)}</a>`).join("");
+  const titulo="Kit sin internet · "+(m.titulo||"Viaje");
+  return `<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>${esc(titulo)}</title>
+<style>
+:root{color-scheme:light}
+body{margin:0;background:#f6f2e9;color:#26251f;font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.kd{max-width:860px;margin:0 auto;padding:16px}
+.kd-head h1{font-size:26px;line-height:1.2;margin:4px 0 2px}
+.kd-eyebrow{font:600 11px/1.4 ui-monospace,Menlo,monospace;letter-spacing:.12em;text-transform:uppercase;color:#7a7263}
+.kd-sub{color:#5c5648;font-size:14px}
+.kd-box{background:#fff;border:1px solid #d9d0bd;border-radius:12px;padding:12px 16px;margin:14px 0}
+.kd-box h2{font-size:17px;margin:0 0 6px}
+.kd-box ol,.kd-box ul{margin:4px 0;padding-left:20px}
+.kd-box li{margin:3px 0}
+.kd-btn{display:inline-block;margin:6px 6px 0 0;padding:10px 14px;border-radius:10px;border:1px solid #26251f;
+  background:#26251f;color:#fff;font:600 14px system-ui,sans-serif;cursor:pointer}
+.kd-indice{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.kd-indice a{padding:6px 10px;border:1px solid #d9d0bd;border-radius:999px;background:#fff;color:#26251f;
+  text-decoration:none;font-size:13px}
+.kd-hotel{background:#fff;border:1px solid #d9d0bd;border-radius:14px;padding:16px;margin:18px 0}
+.kd-hotel h2{font-size:22px;line-height:1.25;margin:2px 0 6px}
+.kd-datos{font-size:14px;color:#5c5648;margin:0 0 6px}
+.kd-datos b{color:#26251f}
+.kd-h3{font:600 12px/1.4 system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#7a7263;margin:16px 0 8px}
+.kd-itin{margin-top:24px}
+${KIT_CSS}
+${kitCssItinerario()}
+#printview{display:block!important;background:#fff;border:1px solid #d9d0bd;border-radius:14px;padding:16px}
+@page{size:A4;margin:12mm}
+@media print{
+  body{background:#fff}
+  .kd{max-width:none;padding:0}
+  .kd-noprint{display:none!important}
+  .kd-hotel{border:0;padding:0;margin:0;break-before:page;page-break-before:always}
+  .kd-itin{break-before:page;page-break-before:always;margin:0}
+  #printview{border:0;padding:0}
+}
+</style></head><body><div class="kd">
+<header class="kd-head">
+  <div class="kd-eyebrow">Kit sin internet · generado el ${esc(genera)} · ${esc(APP_VERSION)}</div>
+  <h1>${esc(m.titulo||"Viaje")}</h1>
+  <div class="kd-sub">${esc(m.subtitulo||"")}</div>
+</header>
+<div class="kd-box kd-noprint">
+  <h2>Cómo usar este archivo</h2>
+  <ol>
+    <li><b>Guárdenlo en el teléfono.</b> En iPhone: Compartir → <i>Guardar en Archivos</i>. En Android queda en Descargas.
+      Ábranlo desde ahí: <b>funciona sin internet</b>, no pide sesión y no se borra ni se actualiza solo.</li>
+    <li><b>PDF:</b> <button class="kd-btn" onclick="window.print()">🖨 Guardar como PDF</button>
+      (en iPhone: Compartir → Imprimir → Compartir → Guardar en Archivos).</li>
+    <li><b>Saquen captura de pantalla</b> de cada tarjeta de taxi: en Fotos se abre más rápido que cualquier archivo.</li>
+    <li><b>Es una foto del viaje de hoy.</b> Si cambian algo en la app, vuelvan a bajar el kit.</li>
+    <li><b>Sin datos, para no perderse:</b> descarguen antes los mapas de China, Hong Kong y Japón en <b>Organic Maps</b>
+      (funciona 100% sin internet) y los de Japón en Google Maps. Con datos, en China usen <b>Amap</b> o Apple Maps.</li>
+  </ol>
+  ${indice?`<div class="kd-indice">${indice}<a href="#itinerario">Itinerario</a></div>`:""}
+</div>
+${hoteles}
+<section class="kd-itin" id="itinerario"><div id="printview">${itin}</div></section>
+</div></body></html>`;
+}
+/* Nombre del archivo, solo con caracteres seguros. Chrome descarta el nombre
+   entero si trae algo como «·» y lo guarda como «download», SIN extensión: en
+   Android eso ya no se abre como página. Por eso se quitan acentos y signos. */
+function nombreKit(){
+  const t=String((state.meta||{}).titulo||"Viaje").normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .replace(/[^A-Za-z0-9 ()_-]+/g," ").replace(/\s+/g," ").trim()||"Viaje";
+  return "Kit sin internet - "+t+".html";
+}
+function descargarKit(){
+  let html;
+  try{html=armarKit();}catch(e){toast("No se pudo armar el kit: "+(e.message||e),{tipo:"err"});return;}
+  const url=URL.createObjectURL(new Blob([html],{type:"text/html;charset=utf-8"}));
+  const a=document.createElement("a");a.href=url;a.download=nombreKit();
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),60000);
+  toast("Kit descargado. Guárdenlo en Archivos o Descargas: se abre sin internet.",{ms:9000});
+}
+/* Los nombres en chino que estaban mal o incompletos en las fichas de reserva. */
+function migrarKitDirecciones(s){
+  if(s.kitDirV1)return;
+  const fija=(bid,re,local)=>{const st=s.bases&&s.bases[bid];
+    const h=st&&(st.hotels||[]).find(x=>re.test((x.name||"")+" "+(x.area||"")));
+    if(h&&h.reserva)h.reserva.direccionLocal=local;};
+  fija("shanghai",/h\+ hotel|潍坊西路|weifang/i,"上海陆家嘴H+酒店 · 上海市浦东新区潍坊西路90号");
+  fija("chengdu",/chuanxing|川行/i,"川行隐里酒店（成都宽窄巷子店） · 四川省成都市金牛区十二桥路19号1栋");
+  s.kitDirV1=true;
+}
 /* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
 function freshBlankTrip(titulo){
   const b=seedCustomBase("Primera parada",0);
@@ -11005,6 +11407,7 @@ function renderHotels(b,st){
           <span class="htotal">${p?`× ${hn} noche${hn===1?'':'s'} = <b>${fmtMoney(tot)}</b>`:'<span class="hsin">sin precio</span>'}</span>
           ${h.chosen&&p?'<span class="hbadge">cuenta en el presupuesto</span>':''}
         </div>
+        ${h.chosen&&kitDe(b.id,h)?kitBotonesHTML(b.id,kitDe(b.id,h)):''}
         ${h.chosen||h.reserva?`<div class="rf-view" data-rfv="${h.id}">${fichaReservaHTML(b.id,st,h,dd)}</div>
         ${editorReservaHTML(b.id,h)}`:''}
         ${rteHTML(`data-rtekind="hotel" data-bid="${b.id}" data-item="${h.id}"`,h.note,"✎ Notas: qué incluye, comparativa, cancelación, qué pedir al reservar…")}
@@ -11181,6 +11584,7 @@ function wireCardEvents(){
       const a=el.dataset.act,bid=el.dataset.bid,st=state.bases[bid];
       if(a==="expand"){st.expanded=!st.expanded;save();renderCards();return;}
       e.stopPropagation();
+      if(a==="taxicard"||a==="recepcion"){abrirTarjetaHotel(bid,a==="taxicard"?"taxi":"recepcion");return;}
       if(a==="inc"){editar("añadir noche",()=>{st.nights=Math.min(60,st.nights+1);},{full:true});return;}
       if(a==="dec"){
         const nuevas=Math.max(1,st.nights-1);
@@ -12075,6 +12479,7 @@ document.getElementById("backToList").addEventListener("click",showList);
 document.getElementById("undoBtn").addEventListener("click",undo);
 document.getElementById("redoBtn").addEventListener("click",redo);
 document.getElementById("exportBtn").addEventListener("click",exportarViaje);
+document.getElementById("kitBtn").addEventListener("click",descargarKit);
 document.getElementById("importBtn").addEventListener("click",importarViaje);
 document.addEventListener("visibilitychange",()=>{if(!document.hidden&&currentTripId)poll();});
 /* Atajos: Ctrl/Cmd+Z deshacer · Ctrl/Cmd+Shift+Z (o Ctrl+Y) rehacer */
