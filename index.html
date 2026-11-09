@@ -1047,7 +1047,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v51 · 9 nov 2026 · Zhangjiajie y Pekín, acomodados a los hoteles nuevos";
+const APP_VERSION="v52 · 9 nov 2026 · Yangshuo: chofer todo el lunes";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -1794,8 +1794,11 @@ const ESSENTIAL_KANSAI={id:"ess-kansai",t:"Kioto y la noche en Osaka",
     "Suica o ICOCA en el celular para trenes y metro · Kioto cobra impuesto de hospedaje por persona y noche "+
     "(hasta ¥10,000 en hoteles de lujo)"};
 const ESSENTIAL_YS_HOTEL={id:"ess-ys-hotel",t:"Pedirle al Sugar House (Yangshuo)",
-  s:"traslado desde la estación el domingo 9 · auto con chofer el lunes 10 a las 4:45 a Xianggong · "+
-    "reserva de la balsa del Yulong para el lunes 14:30 · desayuno para llevar el martes 11 a las 7:00"};
+  s:"traslado desde la estación el domingo 9 · chofer todo el lunes 10, de 4:45 a ~16:30, a precio cerrado "+
+    "(Xianggong, Mountain Retreat, Jinlong Bridge y recogida en Jiuxian) · reserva de la balsa del Yulong para el "+
+    "lunes 14:30, Jinlong Bridge → Jiuxian (la venta abre el domingo a las 20:00 y se agota en minutos) · "+
+    "desayuno para llevar el martes 11 a las 7:00 · que registren la placa de cada taxi o DiDi para que entre por "+
+    "la reja"};
 const ESSENTIAL_TOKIO={id:"ess-tokio",t:"Tokio: reservas, compras y el regreso",
   s:"Shibuya Sky para el miércoles 26 a las 18:00 (el horario del atardecer se agota; sale a la venta ~2-4 "+
     "semanas antes) · teamLab Planets el jueves 27 a las 14:30 (las fechas salen ~2 meses antes) · cena de "+
@@ -3896,6 +3899,7 @@ function normalizeTripState(s){
   migrarPekinZjjHoteles(s);  // Pekín (Happy Dragon, Dongsi) y Zhangjiajie (Hilton Garden Inn) reservados
   migrarKitDirecciones(s);   // nombres en chino validados (Shanghái tenía otro)
   migrarItinerarioHotelesV51(s); // Zhangjiajie y Pekín, acomodados a los hoteles nuevos
+  migrarYangshuoChoferV1(s);    // Yangshuo: chofer todo el lunes
   purgarRetiradas(s);        // y al final: lo que se quitó a propósito no vuelve nunca
   return s;
 }
@@ -9289,14 +9293,18 @@ const KIT_HOTELES={
     es:{nombre:"Yangshuo Sugar House",dir:"102 Dongling Road, Yangshuo",extra:"la antigua fábrica de azúcar"},
     amap:"阳朔糖舍度假酒店",apple:"阳朔糖舍度假酒店",google:"Yangshuo Sugar House, 102 Dongling Road, Yangshuo",
     recepcion:[
-      ["5月10日（周一）早上4:45，请帮我们约一辆车去相公山看日出，在山下等我们，看完再送我们回酒店。",
-       "El lunes 10 a las 4:45: ¿nos consiguen un coche al mirador de Xianggong para el amanecer, que nos espere abajo y nos regrese al hotel?"],
-      ["5月10日早上9:30，请帮我们叫一辆出租车，去遇龙河边的 Yangshuo Mountain Retreat 酒店。",
-       "El lunes 10 a las 9:30, ¿nos piden un taxi al hotel Yangshuo Mountain Retreat, junto al río Yulong?"],
+      ["请帮我们预订5月10日（周一）全天包车，一口价（含油费、过路费、停车费）：凌晨4:45 从酒店出发 → 相公山看日出（在山下等我们）→ 7:30 回酒店 → 9:30 从酒店出发 → 遇龙河边的 Yangshuo Mountain Retreat（高田镇凤楼村）→ 14:00 从 Mountain Retreat 出发去金龙桥码头（坐竹筏）→ 16:00 在旧县码头接我们 → 回酒店。谢谢！",
+       "¿Nos reservan un chofer todo el lunes 10, a precio cerrado (gasolina, casetas y estacionamientos incluidos)? 4:45 salida al amanecer en Xianggong, que nos espere abajo → 7:30 regreso al hotel → 9:30 al Yangshuo Mountain Retreat, en el río Yulong → 14:00 al embarcadero de Jinlong Bridge para la balsa → 16:00 que nos recoja en el embarcadero de Jiuxian → regreso al hotel."],
+      ["可以帮我们预订5月10日（周一）下午2:30的遇龙河竹筏吗？金龙桥码头到旧县码头，两个人。（每天晚上8点开放第二天的票）",
+       "¿Nos reservan la balsa del Yulong del lunes 10 a las 14:30, de Jinlong Bridge a Jiuxian, para dos? (La venta de cada día abre a las 20:00 de la noche anterior.)"],
+      ["5月9日（周日）晚上6:30，请帮我们叫一辆出租车去《印象·刘三姐》剧场。演出大约9:10结束，可以派车来接我们吗？",
+       "El domingo 9 a las 18:30, ¿nos piden un taxi al teatro de Impression Liu Sanjie? La función termina ~21:10: ¿pueden mandar un coche por nosotros?"],
+      ["我们叫的车车牌号是 ________，请让它进大门。",
+       "La placa del coche que pedimos es ________: ¿lo dejan pasar por la reja?"],
       ["5月11日（周二）早上7:00我们退房，请帮我们叫一辆出租车去阳朔站（高铁站）。",
        "El martes 11 salimos a las 7:00: ¿nos piden un taxi a la estación de alta velocidad de Yangshuo?"],
-      ["如果房价含早餐，5月11日可以帮我们准备两份打包早餐吗？",
-       "Si la tarifa incluye desayuno, ¿nos preparan dos para llevar el martes 11?"]]},
+      ["我们的房价含早餐。5月11日（周二）早上7:00我们就要去车站，可以帮我们准备两份打包早餐吗？",
+       "Nuestra tarifa incluye desayuno. El martes 11 salimos a las 7:00 a la estación: ¿nos preparan dos para llevar?"]]},
   chengdu:{re:/chuanxing|川行/i,lang:"zh-Hans",zona:"china",
     nombre:"川行隐里酒店（成都宽窄巷子店）",dir:"四川省成都市金牛区十二桥路19号1栋",extra:"（宽窄巷子附近）",tel:"028-8910 9888",telIntl:"+86 28 8910 9888",
     es:{nombre:"Chuanxing Yinli Hotel (Kuanzhai Alley)",dir:"Edificio 1, No. 19 Shierqiao Road, Jinniu",extra:"cerca de Kuanzhai Alley"},
@@ -10062,6 +10070,173 @@ function migrarItinerarioHotelesV51(s){
     "el Templo de los Lamas a ~4 km al norte (derecho por la avenida Dongsi) y la calle de comida nocturna "+
     "Guijie a ~2.5 km al norte.");
   s.itinHotelV51=true;
+}
+/* ---- Yangshuo: chofer todo el lunes (v52) ----
+   Comparadas las opciones (taxis, coche rentado, chofer, tours con transporte),
+   escogieron chofer para el lunes 10. Es el día de cinco traslados, y en dos no
+   pasan coches: Xianggong de madrugada y Jiuxian, donde termina la balsa (que es
+   de ida). En el campo casi no hay DiDi y muchos taxis no usan taxímetro.
+   Un día con chofer en Yangshuo anda en ¥600-800 por el coche; se presupuesta
+   ¥800 (empezar a las 4:45 puede subirlo) y sustituye al coche de Xianggong
+   (~¥300) y a los tres taxis del día. Los horarios no cambian.
+   De paso se corrige lo que salió en la revisión:
+   · una nota decía que el Sugar House «está en Xingping». No: está en el pueblo
+     de Yangshuo (东岭路102号), a ~6 km de West Street. Lo que está en Xingping
+     es la estación.
+   · el hotel solo deja pasar la reja a coches registrados: hay que mandarle la
+     placa del taxi o DiDi (si no, los dejan en la entrada).
+   · faltaba el costo del regreso del show.
+   · la balsa también se compra en el mini-programa «i游阳朔»; Jinlong Bridge se
+     agota en minutos cuando abre la venta, a las 20:00 de la noche anterior. */
+const YS_CHOFER_PLAN="5月10日（周一）阳朔包车一天，一口价（含油费、过路费、停车费）：凌晨4:45 从阳朔糖舍出发 → "+
+  "相公山看日出（在山下等我们）→ 7:30 回糖舍 → 9:30 从糖舍出发 → 遇龙河边的 Yangshuo Mountain Retreat"+
+  "（高田镇凤楼村）→ 14:00 从 Mountain Retreat 出发去金龙桥码头（坐竹筏）→ 16:00 在旧县码头接我们 → 回糖舍。";
+const YS_CHOFER_COSTO="Chofer y coche todo el lunes (4:45-16:30), ~¥600-800 a precio cerrado (2)";
+const YS_CHOFER_FICHAS={
+  "ys-xg-ida":["El chofer del día los recoge · salida a Xianggong",
+    "<b>4:45 · el chofer del día los recoge en el Sugar House.</b> Es el mismo coche y la misma persona hasta "+
+    "las 16:30: Xianggong, el regreso al hotel, el Mountain Retreat, el embarcadero de Jinlong Bridge y la "+
+    "recogida en Jiuxian al final de la balsa.<br>"+
+    "<b>Por qué chofer y no taxis:</b> hoy son cinco traslados y en dos no pasan coches: Xianggong de madrugada "+
+    "(hay reseñas de gente que no consiguió cómo regresar) y Jiuxian, donde termina la balsa, lejos de donde "+
+    "empieza. En el campo casi no hay DiDi y muchos taxis no usan taxímetro. Con chofer no se regatea nada y "+
+    "nadie los deja esperando.<br>"+
+    "<b>Cuánto:</b> un día con chofer en Yangshuo anda en <b>¥600-800</b> por el coche; empezar a las 4:45 "+
+    "puede subirlo. Pidan <b>precio cerrado</b> por todo el día, con gasolina, casetas y estacionamientos "+
+    "incluidos. Aquí va presupuestado en ¥800, y sustituye al coche de Xianggong (~¥300) y a los tres taxis del "+
+    "día.<br>"+
+    "<b>Cómo conseguirlo:</b> lo más fácil es pedírselo al Sugar House al reservar (la frase está en «Para "+
+    "recepción»). También hay choferes en Trip.com y Klook, con reserva en inglés. Lo más probable es que no "+
+    "hable inglés: agréguenlo en WeChat y escríbanle con el traductor.<br>"+
+    "<b>El plan para el chofer, en chino</b> (mándenselo por WeChat al apartarlo):<br><b>"+YS_CHOFER_PLAN+
+    "</b><br>"+
+    "<b>La reja del hotel:</b> denle a recepción la placa del coche la noche anterior, para que lo dejen pasar a "+
+    "las 4:45.<br>"+
+    "<b>⚠ 4:45 y no 5:15:</b> el sol sale a las <b>5:57</b>. Saliendo a las 5:15 llegarían arriba hacia las "+
+    "6:20, con el sol ya fuera; las guías recomiendan estar en el mirador antes de las 5:30 en estas fechas, "+
+    "porque se llena de fotógrafos.<br>"+
+    "<i>~26 km, ~45 min. El parque abre a las 5:00 de mayo a octubre.</i>",null],
+  "ys-xianggong":[null,
+    "<b>5:30 al pie del cerro y 15-20 min de escalera hasta el mirador.</b> Entrada ~¥60-80 por persona.<br>"+
+    "Es el mirador clásico sobre la curva del Río Li: con suerte, niebla entre los picos y la primera luz encima. "+
+    "<b>El sol sale a las 5:57</b>; quédense un rato después, porque la niebla se levanta poco a poco y es lo "+
+    "mejor.<br>"+
+    "<b>El chofer los espera abajo, en el estacionamiento:</b> no hay prisa por bajar. Antes de subir, tómenle "+
+    "foto a la placa del coche.<br>"+
+    "<i>Lleven algo de abrigo y la linterna del celular para los escalones a oscuras.</i>",null],
+  "ys-xg-vuelta":[null,
+    "<b>6:45 · ~45 min</b> de Xianggong de regreso al Sugar House, con el chofer.<br>"+
+    "Van a llegar con hambre y con frío: el amanecer en el mirador es a 400 m de altura y en mayo amanece "+
+    "fresco. El desayuno del hotel los espera a las 8:00, así que hay tiempo de bañarse.<br>"+
+    "<b>Con el chofer quedan a las 9:30 en la puerta del hotel.</b><br>"+
+    "<i>Es el único madrugón de Yangshuo; el resto del día es plano.</i>",null],
+  "ys-ir-retreat":["El chofer los lleva al Yangshuo Mountain Retreat",
+    "<b>9:30 · ~20 min</b> con el chofer, río Yulong arriba, al <b>Yangshuo Mountain Retreat</b> (高田镇凤楼村, "+
+    "al pie del cerro Wanggong). Ahí rentan las bicis eléctricas y ahí mismo comen a mediodía.<br>"+
+    "<b>Dejen en el coche lo de la balsa de la tarde:</b> sandalias o zapatos que se puedan mojar, una bolsa de "+
+    "plástico para los teléfonos y una toalla chica. Así andan en bici ligeros.<br>"+
+    "<b>Mientras andan en bici y comen, el chofer queda libre:</b> quedan a las <b>13:55 en la entrada del "+
+    "Retreat</b>.<br>"+
+    "<i>Lleven protector solar y agua: los arrozales no tienen sombra.</i>",null],
+  "ys-bike":[null,
+    "<b>⚠ 10:00-12:30.</b> En su plan la bici iba en la tarde y la balsa en la mañana; los invertí porque el 10 "+
+    "de mayo de 2027 es <b>LUNES</b> y las balsas del Yulong no operan los lunes de 9:00 a 12:00 "+
+    "(mantenimiento). La balsa de las 10:00 se habría encontrado el río cerrado.<br>"+
+    "<b>Dónde rentar:</b> Yangshuo Mountain Retreat renta bicis eléctricas por día y está sobre el camino de "+
+    "bici del Yulong. Confirmen al reservar la comida si se las rentan a quien no está hospedado. Si no, el "+
+    "chofer los lleva a una renta del camino del Yulong (~¥60-100 por bici al día) y después al Retreat a comer: "+
+    "díganselo desde la mañana.<br>"+
+    "<b>La ruta:</b> los caminos entre arrozales a lo largo del Yulong, con los picos alrededor, y de regreso al "+
+    "Retreat para comer.",null],
+  "ys-comida-rio":[null,
+    "<b>12:30 · a la orilla del Yulong</b>, en el jardín frente a los picos. El restaurante recibe a quien no está "+
+    "hospedado, para comer y para cenar.<br>"+
+    "<b>Reservar:</b> +86-773-8777091 · reservations@yangshuomountainretreat.com. <i>Aprovechen la misma llamada "+
+    "para lo de las bicis.</i><br>"+
+    "<b>13:55 · el chofer los espera en la entrada.</b>",null],
+  "ys-ir-balsa":["El chofer los lleva al embarcadero de Jinlong Bridge",
+    "<b>14:00 · ~20 min</b> con el chofer al embarcadero de <b>Jinlong Bridge (金龙桥码头)</b>, donde arrancan "+
+    "las balsas del Yulong.<br>"+
+    "Ojo: no es el río Li. El Yulong es el chico, de aguas quietas, sin lanchas de motor y con los picos encima "+
+    "— es el bonito. Dos personas por balsa, con el balsero empujando con la pértiga.<br>"+
+    "<b>Se van a mojar los pies</b> en los pequeños saltos de agua: cámbiense aquí a las sandalias que dejaron en "+
+    "el coche, y el teléfono en bolsa de plástico. Hay sombrilla en la balsa, pero el sol de las 14:30 pega de "+
+    "lado.<br>"+
+    "<b>Antes de bajarse, quedan con el chofer:</b> que los espere a las <b>16:00 en el embarcadero de Jiuxian "+
+    "(旧县码头)</b>, donde termina la balsa. Él maneja hasta allá mientras ustedes van por el río; mándenle la "+
+    "ubicación por WeChat si hace falta.",null],
+  "ys-yulong":[null,
+    "<b>14:30-16:00 · 6 km, ~90 min</b> y nueve pequeñas presas que la balsa baja deslizándose. Es el tramo más "+
+    "completo del río: pasa por Jinlong Bridge, Yulong Bridge y Xiangui Bridge. ¥320 por balsa de dos.<br>"+
+    "<b>⚠ Lunes:</b> no operan de 9:00 a 12:00; en la tarde, normal (horario 8:00-17:30).<br>"+
+    "<b>⚠ Cómo se compra:</b> en la cuenta oficial de WeChat «遇龙河景区» o en el mini-programa «i游阳朔», y la "+
+    "venta de cada día abre a las <b>20:00 de la noche anterior</b>. Eso es el domingo, justo a la hora del show, "+
+    "y Jinlong Bridge se agota en minutos. Lo práctico: pedirle al Sugar House que la reserve. Se entra con "+
+    "identificación: para ustedes, el pasaporte.<br>"+
+    "<i>Termina en Jiuxian, no donde empieza: ahí los espera el chofer.</i>",null],
+  "ys-regreso-jiuxian":["El chofer los regresa al Sugar House",
+    "<b>16:00 · ~30 min</b> de Jiuxian al Sugar House con el chofer. Llegan como a las 16:30, antes de las 17:00 "+
+    "de su plan, y aquí termina su día.<br>"+
+    "<b>Antes de despedirlo:</b> revisen el coche (teléfonos, sandalias, lentes) y paguen lo acordado. En China "+
+    "la propina no es costumbre.<br>"+
+    "<b>La noche queda libre</b>, como la dejaron. Si quieren cenar en West Street —el <b>pescado a la cerveza "+
+    "(啤酒鱼)</b>, que salió del domingo—: son ~6 km, ~10 min en taxi o DiDi (~¥20-30 por vuelta; manden la "+
+    "placa a recepción para que entre por la reja). O pregúntenle al chofer si se queda para la noche, a precio "+
+    "aparte.<br>"+
+    "<i>⚠ Mañana salen a las 7:00 a la estación para el tren a Chengdu: empaquen hoy y pidan el desayuno para "+
+    "llevar.</i>",null]
+};
+function migrarYangshuoChoferV1(s){
+  if(s.ysChoferV1)return;
+  const B=s.bases||{};
+  const ys=B.yangshuo;
+  if(ys&&Array.isArray(ys.catalog)){
+    const ficha=cid=>ys.catalog.find(x=>x.cid===cid);
+    Object.entries(YS_CHOFER_FICHAS).forEach(([cid,[nombre,nota,dur]])=>{
+      const a=ficha(cid);if(!a)return;
+      if(nombre)a.name=nombre;if(nota)a.note=nota;if(dur)a.dur=dur;
+    });
+    // el chofer sustituye al coche de Xianggong y a los tres taxis del día
+    const xg=ficha("ys-xg-ida");
+    if(xg){
+      xg.costs=Array.isArray(xg.costs)?xg.costs:[];
+      const viejo=xg.costs.find(c=>c&&/^Auto con chofer, ida y vuelta/.test(c.label||""));
+      if(viejo){viejo.label=YS_CHOFER_COSTO;viejo.est=2160;}
+      else if(!xg.costs.some(c=>c&&c.label===YS_CHOFER_COSTO))
+        xg.costs.push({id:uid(),label:YS_CHOFER_COSTO,est:2160,real:0});
+    }
+    ["ys-ir-retreat","ys-ir-balsa","ys-regreso-jiuxian"].forEach(cid=>{
+      const a=ficha(cid);if(!a||!Array.isArray(a.costs))return;
+      a.costs=a.costs.filter(c=>!(c&&c.label==="Taxi (2)"&&!(+c.real)));     // lo que ya pagaron, se queda
+    });
+    // domingo: la reja del hotel y el regreso del show
+    const llega=ficha("ys-aYangshuo");
+    if(llega&&llega.note)llega.note+="<br><b>La reja del hotel:</b> el Sugar House solo deja pasar a los coches "+
+      "que tiene registrados. En cuanto tengan la placa del taxi o DiDi, mándensela al hotel (0773-888 3999); "+
+      "si no, el coche los deja en la entrada.";
+    const sale=ficha("ys-ir-cena");
+    if(sale&&sale.note)sale.note+="<br><i>Pidan el taxi en recepción: ellos lo registran para que entre por la "+
+      "reja.</i>";
+    const vuelve=ficha("ys-regreso");
+    if(vuelve){
+      if(vuelve.note)vuelve.note=vuelve.note.replace("con el auto ya apartado en recepción.",
+        "con el chofer del lunes ya confirmado y su placa registrada en recepción.")+
+        "<br><i>Si piden DiDi, manden la placa al hotel para que los dejen pasar la reja.</i>";
+      vuelve.costs=Array.isArray(vuelve.costs)?vuelve.costs:[];
+      const L="Taxi o DiDi, teatro → hotel (2)";
+      if(!vuelve.costs.some(c=>c&&c.label===L))vuelve.costs.push({id:uid(),label:L,est:80,real:0});
+    }
+  }
+  // martes: la salida a la estación vive en el primer día de Chengdu
+  const cd=B.chengdu&&Array.isArray(B.chengdu.catalog)&&B.chengdu.catalog.find(x=>x.cid==="cd-arrive");
+  if(cd&&cd.note)cd.note+="<br><i>Pidan el taxi o el coche del hotel en recepción la noche anterior: así ya entra "+
+    "registrado por la reja a las 7:00.</i>";
+  // el pendiente del checklist
+  if(Array.isArray(s.esenciales)){
+    const e=s.esenciales.find(x=>x&&x.id===ESSENTIAL_YS_HOTEL.id);
+    if(e)Object.assign(e,{t:ESSENTIAL_YS_HOTEL.t,s:ESSENTIAL_YS_HOTEL.s});
+  }
+  s.ysChoferV1=true;
 }
 /* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
 function freshBlankTrip(titulo){
