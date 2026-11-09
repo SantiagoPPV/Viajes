@@ -125,6 +125,30 @@ tarjeta); solo se borran de verdad las que pongas en `ROUTE_DROP`. Si una parada
 baja de noches, las actividades del día sobrante quedan ocultas y la app ofrece
 traerlas al último día o descartarlas.
 
+## Transportes
+
+Arriba de «Hoteles» está la sección **Transportes**: todo lo que hay que comprar
+o reservar con tiempo (vuelos, trenes, choferes, renta de auto, traslados,
+autobuses, barcos y pases). Taxis, DiDi y metro no van ahí.
+
+- Cada transporte tiene sus **tramos** (dos trenes con transbordo, un vuelo con
+  escala, dos días del mismo chofer) con huso horario de cada lado, así que la
+  duración y las conexiones salen bien aunque cambie la hora entre países.
+- La ficha de la compra: estado, dónde se compró, clase, equipaje, punto de
+  encuentro, la dirección para el chofer en chino o japonés (con «Mostrar al
+  chofer»), contacto, precio local, **cuándo abre la venta**, cancelación,
+  plan B, enlace y los números de confirmación (se capturan en la app, nunca
+  en el código).
+- **Costos sin duplicar:** un boleto que ya está en una actividad del
+  itinerario se *liga* y se edita ahí mismo; solo los costos propios se suman
+  en «Transportes comprados aparte» del presupuesto.
+- Se ve también en el itinerario (en cada listón entre paradas y en la cabecera
+  de la parada), en «Reservas», en el PDF y en el kit sin internet.
+
+Los datos viven en `state.transportes`. El viaje de China se siembra una vez
+desde `TX_SEMILLA_2027` (migración `migrarTransportesV1`); un viaje nuevo puede
+crear uno por tramo con «🧭 Agregar los tramos del itinerario».
+
 ## Estructura del repo
 
 | Archivo | Qué es |

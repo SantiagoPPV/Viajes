@@ -69,7 +69,7 @@
   .datestrip b{color:var(--ink);font-weight:600}
   .countdown{color:var(--seal-deep)}
 
-  .summary{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin:16px 0 6px}
+  .summary{display:grid;grid-template-columns:repeat(7,1fr);gap:12px;margin:16px 0 6px}
   .chip{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;box-shadow:var(--shadow)}
   .chip .n{font-family:"Cormorant Garamond",serif;font-size:30px;font-weight:600;line-height:1}
   .chip .l{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;
@@ -667,6 +667,86 @@
   }
   #printview .pv-res{font-size:8.5pt;color:#5c5648;margin:0 0 3px 16px}
 
+  /* ---------- sección «Transportes»: vuelos, trenes, choferes y traslados ----------
+     Mismas piezas que «Hoteles» (.hrow, .rf-*, .resedit) más el viaje tramo por tramo. */
+  .tx-view{display:flex;flex-direction:column;gap:8px;margin:4px 0 2px}
+  .tx-filtros{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+  .tx-fchip{font-family:"IBM Plex Mono",monospace;font-size:11px;border:1px solid var(--line);background:var(--card);
+    color:var(--ink-soft);border-radius:20px;padding:5px 11px;cursor:pointer;min-height:30px;line-height:1.2}
+  .tx-fchip b{color:var(--ink);font-weight:600;margin-left:2px}
+  .tx-fchip:hover{border-color:var(--jade);color:var(--ink)}
+  .tx-fchip.on{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+  .tx-fchip.on b{color:var(--paper)}
+  .txrow>summary{grid-template-columns:132px minmax(0,1fr) auto}
+  .hrow.alerta{border-left-color:var(--seal)}
+  .hrow.pasado{opacity:.62}
+  .hrow.pasado[open]{opacity:1}
+  .hr-f small{display:block;font-weight:400;font-size:11px;color:var(--ink-soft);margin-top:1px}
+  .tx-ic{font-size:15px;margin-right:1px}
+  .tx-viaje{background:var(--card-2);border:1px solid var(--line-soft);border-radius:10px;padding:2px 12px}
+  .tx-seg{display:grid;grid-template-columns:minmax(0,1fr) minmax(92px,auto) minmax(0,1fr);align-items:center;
+    gap:10px;padding:9px 0}
+  .tx-con{font-family:"IBM Plex Mono",monospace;font-size:11px;color:#8a6420;text-align:center;padding:4px 0;
+    border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);min-height:1px}
+  .tx-con:empty{padding:0;border-bottom:0}
+  .tx-con.mal{color:var(--seal-deep)}
+  .tx-end{display:flex;flex-direction:column;line-height:1.25;min-width:0}
+  .tx-end.r{text-align:right}
+  .tx-end small{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink-soft)}
+  .tx-end b{font-family:"Cormorant Garamond",serif;font-size:23px;font-weight:600;line-height:1.1}
+  .tx-end span{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft)}
+  .tx-end em{font-style:normal;font-size:12.5px;color:var(--ink);margin-top:2px;overflow-wrap:anywhere}
+  .tx-end em i{font-style:normal;color:var(--ink-soft)}
+  .tx-mid{display:flex;flex-direction:column;align-items:center;gap:3px;font-family:"IBM Plex Mono",monospace;
+    font-size:10.5px;color:var(--ink-soft);text-align:center;min-width:0}
+  .tx-mid .tx-num{font-size:12px;font-weight:600;color:var(--ink)}
+  .tx-mid .tx-ln{position:relative;display:block;width:100%;min-width:70px;height:1px;background:var(--jade)}
+  .tx-mid .tx-ln::after{content:"";position:absolute;right:-1px;top:-3px;border-top:3.5px solid transparent;
+    border-bottom:3.5px solid transparent;border-left:6px solid var(--jade)}
+  .tx-mid .tx-dur{color:var(--jade)}
+  .tx-add{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .tx-add .addbtn{flex:1 1 150px}
+  .tx-esub{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--seal-deep);margin:12px 0 6px}
+  .tx-segedit{border:1px solid var(--line-soft);border-radius:9px;background:rgba(255,255,255,.4);padding:6px 10px 2px;
+    margin-bottom:8px}
+  .tx-segh{display:flex;align-items:center;gap:6px;font-size:12.5px;padding:2px 0 6px}
+  .tx-segh b{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+  .tx-segh .tx-segres{flex:1;min-width:0;color:var(--ink-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tx-segh .updn{height:22px}
+  .tx-dtz{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.9fr) minmax(0,1.35fr);gap:8px}
+  .tx-lig{display:flex;flex-direction:column;font-size:12.5px;line-height:1.3}
+  .tx-lig small{font-size:11px;color:var(--ink-soft)}
+  select.txlig{width:100%;margin-top:8px;font-size:12px}
+  .resedit .addbtn{margin-top:4px}
+  .tx-help{font-size:11.5px;color:var(--ink-soft);font-style:italic;margin:8px 0 2px}
+  .rf-btn.tx-del{color:var(--seal-deep)}
+  .rf-btn.tx-del:hover{border-color:var(--seal);background:#f6e6df}
+  .tx-avisos>div{display:flex;flex-direction:column;gap:4px}
+  .xfer.edit .txline{font-family:"Inter",sans-serif;margin-top:0}
+  .txline .txl-i:hover{color:var(--jade);text-decoration:underline}
+  .hline.txline:hover{text-decoration:none}
+  .leg.txflash .xfer.edit{box-shadow:0 0 0 2px var(--jade),var(--shadow)}
+  @container (max-width:460px){
+    .tx-seg{grid-template-columns:1fr 1fr;row-gap:4px}
+    .tx-mid{grid-column:1/-1;order:-1;flex-direction:row;flex-wrap:wrap;justify-content:center;gap:2px 10px}
+    .tx-mid .tx-ln{display:none}
+    .tx-end b{font-size:20px}
+    .tx-dtz{grid-template-columns:1fr 1fr}
+    .tx-dtz>.rgf:last-child{grid-column:1/-1}
+  }
+  @media (max-width:560px){
+    .txrow>summary{grid-template-columns:1fr auto}
+    .hr-f small{display:inline;margin:0 0 0 6px}
+    .tx-add .addbtn{flex:1 1 44%}
+  }
+  /* en el PDF y en el kit sin internet */
+  #printview .pv-txt{width:100%;border-collapse:collapse}
+  #printview .pv-txt td{vertical-align:top;padding:4px 0;border-bottom:1px solid #efe9dc}
+  #printview .pv-txt td.pv-t{width:74px;padding-right:8px}
+  #printview .pv-txt .pv-act b{font-size:9.5pt}
+
   /* ---------- buscador ---------- */
   .findbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:12px}
   .findbar input{flex:1;min-width:180px;font-size:13.5px;padding:10px 12px;border-radius:10px;
@@ -688,9 +768,9 @@
   .empty .ebig{font-size:30px;margin-bottom:6px;opacity:.6}
   .empty p{margin:0 0 12px;font-size:13.5px}
 
-  @media (max-width:820px){.summary{grid-template-columns:repeat(3,1fr)}.grid2{grid-template-columns:1fr}
+  @media (max-width:820px){.summary{grid-template-columns:repeat(4,1fr)}.grid2{grid-template-columns:1fr}
     .datecol{text-align:left;min-width:0}}
-  @media (max-width:520px){.summary{grid-template-columns:repeat(2,1fr)}.wrap{padding:18px 12px 60px}
+  @media (max-width:520px){.summary{grid-template-columns:repeat(2,1fr)}.summary .chip:last-child:nth-child(odd){grid-column:1/-1}.wrap{padding:18px 12px 60px}
     .trange{width:82px;font-size:10.5px}.startwrap{margin-left:0}}
 
   /* ---------- móvil: áreas táctiles y filas legibles ---------- */
@@ -965,6 +1045,14 @@
 
   <div class="summary" id="summary"></div>
 
+  <section class="sec" id="transportSection">
+    <div class="sec-head"><h2>Transportes</h2><span class="rule"></span>
+      <span class="hint" id="txHint"></span></div>
+    <p class="hint2">Lo que hay que comprar o reservar con tiempo: vuelos, trenes, choferes, renta de auto y traslados.
+      Taxis, DiDi y metro se pagan en el momento y no van aquí.</p>
+    <div id="txList"></div>
+  </section>
+
   <section class="sec" id="hotelsSection">
     <div class="sec-head"><h2>Hoteles</h2><span class="rule"></span>
       <span class="hint" id="hotelsHint"></span></div>
@@ -994,7 +1082,7 @@
 
   <section class="sec">
     <div class="sec-head"><h2>Reservas</h2><span class="rule"></span>
-      <span class="hint">trenes: reservar ~30 días antes</span></div>
+      <span class="hint">cuándo abre la venta de cada boleto: en Transportes</span></div>
     <div class="grid2">
       <div class="checkcard" id="transportCard"></div>
       <div class="checkcard" id="essentialsCard"></div>
@@ -1047,7 +1135,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v52 · 9 nov 2026 · Yangshuo: chofer todo el lunes";
+const APP_VERSION="v53 · 9 nov 2026 · Transportes: vuelos, trenes, choferes y traslados por comprar";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -3799,6 +3887,8 @@ function normalizeTripState(s){
     });
   });
   if(!s.currency)s.currency="MXN";
+  // transportes: solo campos conocidos, como texto (lo que llega sincronizado también)
+  s.transportes=(Array.isArray(s.transportes)?s.transportes:[]).map(limpiarTx).filter(Boolean);
   if(!s.budget)s.budget={flightsEst:0,flightsReal:0};
   if(!s.meta||typeof s.meta!=="object")s.meta={};
   const m=s.meta;
@@ -3900,6 +3990,7 @@ function normalizeTripState(s){
   migrarKitDirecciones(s);   // nombres en chino validados (Shanghái tenía otro)
   migrarItinerarioHotelesV51(s); // Zhangjiajie y Pekín, acomodados a los hoteles nuevos
   migrarYangshuoChoferV1(s);    // Yangshuo: chofer todo el lunes
+  migrarTransportesV1(s);       // Transportes: lo que hay que comprar, con sus costos ligados (después del chofer)
   purgarRetiradas(s);        // y al final: lo que se quitó a propósito no vuelve nunca
   return s;
 }
@@ -9564,7 +9655,8 @@ function armarKit(){
       <div class="kd-noprint">${kitMapasHTML(k)}</div>
       <div class="kd-h3">🛎 Para recepción</div>${kitRecepcionHTML(k,h)}
     </section>`;}).join("");
-  const indice=items.map(({o})=>`<a href="#h-${esc(o.def.id)}">${esc(o.def.name)}</a>`).join("");
+  const indice=items.map(({o})=>`<a href="#h-${esc(o.def.id)}">${esc(o.def.name)}</a>`).join("")+
+    ((state.transportes||[]).length?'<a href="#pv-transportes">Transportes</a>':"");
   const titulo="Kit sin internet · "+(m.titulo||"Viaje");
   return `<!doctype html>
 <html lang="es"><head><meta charset="utf-8">
@@ -11030,6 +11122,1142 @@ setInterval(()=>{
   const cerca=activeBases().some(o=>hotelesDeParada(o.st).some(h=>{const ec=estadoCancel(h.reserva||{});return ec&&ec.urgente;}));
   if(cerca&&!document.querySelector("#hotelsList :focus"))renderHospedaje();
 },60000);
+/* ===================== Transportes: lo que se compra antes de salir =====================
+   Vuelos, trenes, choferes, renta de auto, traslados reservados, autobuses,
+   barcos y pases. Taxis, DiDi, metro y lo que se paga en el momento no van
+   aquí: esto es lo que hay que comprar o reservar con tiempo.
+   Cada transporte (state.transportes) guarda:
+     · tipo, título y, si aplica, el tramo del itinerario al que pertenece
+       (la misma clave de state.legs: "hk|yangshuo", "_arrive", "_depart") y
+       la parada donde ocurre (para choferes y traslados locales);
+     · segs: los tramos de verdad, en orden — dos trenes con transbordo, un
+       vuelo con escala, dos días del mismo chofer —, cada uno con número,
+       origen y destino con su terminal, fecha y hora de cada lado con su
+       huso horario (así la duración y la conexión salen bien aunque cambie
+       la hora entre países) y asientos;
+     · r: lo de la compra — estado, dónde se compró, clase, equipaje, qué
+       incluye, punto de encuentro, la dirección para el chofer en el idioma
+       local, contacto, precio en la moneda local, pago, cuándo abre la
+       venta, cancelación, plan B, enlace y los números de confirmación (se
+       capturan en la app: viven en el viaje, nunca en el código);
+     · ligas: costos que YA están en una actividad del itinerario (el boleto
+       del G3886 vive en la actividad «Tren G3886…»). Se leen y se escriben
+       ahí mismo, así que el presupuesto no los cuenta dos veces;
+     · costs: costos propios, para lo que no está en ninguna actividad. Esos
+       sí se suman, en «Transportes comprados aparte» del presupuesto;
+     · note: nota con formato. */
+const TX_TIPOS={
+  vuelo:{ic:"✈️",l:"Vuelo",pl:"Vuelos",prov:"Aerolínea",seg:"Vuelo",num:"Nº de vuelo",numPh:"9C6575",
+    de:"Sale de",dePh:"ciudad · aeropuerto (PVG)",a:"Llega a",aPh:"ciudad · aeropuerto (KIX)",term:"Terminal",termPh:"T2",
+    asi:"Asientos",asiPh:"12A · 12B",asiIc:"💺",ini:"Sale",fin:"Llega",otro:"＋ Añadir escala o conexión",
+    hecho:"Comprado",falta:"Por comprar",venta:true},
+  tren:{ic:"🚄",l:"Tren",pl:"Trenes",prov:"Operador",seg:"Tren",num:"Nº de tren",numPh:"G5626",
+    de:"Estación de salida",dePh:"West Kowloon",a:"Estación de llegada",aPh:"Shenzhen Norte",term:"Sala / andén",
+    termPh:"B3, puerta 12…",asi:"Coche y asientos",asiPh:"coche 5 · 8A 8B",asiIc:"💺",ini:"Sale",fin:"Llega",
+    otro:"＋ Añadir transbordo",hecho:"Comprado",falta:"Por comprar",venta:true},
+  chofer:{ic:"🚘",l:"Chofer / coche privado",pl:"Choferes",prov:"Empresa o chofer",seg:"Servicio",num:"Servicio / vehículo",
+    numPh:"sedán, van de 7, con guía…",de:"Los recoge en",dePh:"lobby del hotel",a:"Ruta y destino final",aPh:"a dónde los lleva",
+    term:"Punto exacto",termPh:"lobby, puerta norte…",asi:"Chofer / guía",asiPh:"nombre, idioma",asiIc:"👤",ini:"Desde",
+    fin:"Hasta",otro:"＋ Añadir otro día",hecho:"Reservado",falta:"Por reservar"},
+  auto:{ic:"🔑",l:"Renta de auto",pl:"Renta de autos",prov:"Arrendadora",seg:"Renta",num:"Auto / categoría",
+    numPh:"compacto automático…",de:"Recoger en",dePh:"aeropuerto, oficina…",a:"Devolver en",aPh:"el mismo lugar u otro",
+    term:"Mostrador",termPh:"T1, nivel 1…",asi:"Placas / auto asignado",asiPh:"",asiIc:"🚗",ini:"Recoge",fin:"Devuelve",
+    otro:"",hecho:"Reservado",falta:"Por reservar"},
+  traslado:{ic:"🚐",l:"Traslado reservado",pl:"Traslados",prov:"Empresa",seg:"Traslado",num:"Vehículo",numPh:"sedán, van…",
+    de:"Los recoge en",dePh:"estación, aeropuerto…",a:"Los lleva a",aPh:"hotel",term:"Punto exacto",
+    termPh:"salida B, con letrero…",asi:"Chofer",asiPh:"nombre, placas",asiIc:"👤",ini:"Recoge",fin:"Llega",
+    otro:"＋ Añadir otro traslado",hecho:"Reservado",falta:"Por reservar"},
+  bus:{ic:"🚌",l:"Autobús",pl:"Autobuses",prov:"Línea",seg:"Autobús",num:"Corrida",numPh:"",de:"Sale de",dePh:"terminal",
+    a:"Llega a",aPh:"terminal",term:"Andén",termPh:"",asi:"Asientos",asiPh:"",asiIc:"💺",ini:"Sale",fin:"Llega",
+    otro:"＋ Añadir conexión",hecho:"Comprado",falta:"Por comprar",venta:true},
+  ferry:{ic:"⛴️",l:"Barco / ferry",pl:"Barcos",prov:"Naviera",seg:"Barco",num:"Salida",numPh:"",de:"Sale de",dePh:"muelle",
+    a:"Llega a",aPh:"muelle",term:"Muelle",termPh:"",asi:"Asientos / cabina",asiPh:"",asiIc:"💺",ini:"Sale",fin:"Llega",
+    otro:"＋ Añadir conexión",hecho:"Comprado",falta:"Por comprar",venta:true},
+  pase:{ic:"🎟️",l:"Pase o tarjeta",pl:"Pases",prov:"Emisor",seg:"Vigencia",num:"Pase",numPh:"JR Pass 7 días…",
+    de:"Se recoge en",dePh:"taquilla, app…",a:"Sirve en",aPh:"región, líneas",term:"",termPh:"",asi:"",asiPh:"",asiIc:"",
+    ini:"Desde",fin:"Hasta",otro:"",hecho:"Comprado",falta:"Por comprar"},
+  otro:{ic:"🧭",l:"Otro transporte",pl:"Otros",prov:"Proveedor",seg:"Tramo",num:"Referencia",numPh:"",de:"Sale de",dePh:"",
+    a:"Llega a",aPh:"",term:"Punto",termPh:"",asi:"Asientos",asiPh:"",asiIc:"💺",ini:"Sale",fin:"Llega",
+    otro:"＋ Añadir tramo",hecho:"Reservado",falta:"Por reservar"}
+};
+const TX_ADD=["vuelo","tren","chofer","auto","traslado","otro"];
+const txTipo=t=>TX_TIPOS[t&&t.tipo]||TX_TIPOS.otro;
+const TX_SEG_K=["num","de","termDe","fecha","sale","zDe","a","termA","fechaLlega","llega","zA","asiento"];
+const TX_INCLUYE_PH={chofer:"horas y km, gasolina, peajes, estacionamiento, espera",
+  auto:"seguro, km libres, GPS, segundo conductor, sillas",traslado:"espera, letrero con su nombre, maletas",
+  pase:"qué líneas y trenes entran, asientos reservados"};
+/* Campos de la compra. "solo"/"no": a qué tipos aplica; "venta": solo a los
+   que tienen ventana de venta (trenes, vuelos, autobuses y barcos). */
+const TX_CAMPOS=[
+  {k:"estado",l:"Estado",tipo:"estado"},
+  {k:"confirmar",l:"Horario",tipo:"confirmar"},
+  {k:"via",l:"Comprado en",ph:"Trip.com, 12306, Klook, la aerolínea…"},
+  {k:"proveedor",l:"$prov",ph:"quién da el servicio"},
+  {k:"pasajeros",l:"Pasajeros",ph:"nombres como en el pasaporte",ancho:1},
+  {k:"clase",l:"Clase / tarifa",ph:"2a clase, turista, Light…",solo:["vuelo","tren","bus","ferry","pase","otro"]},
+  {k:"ventaAbre",l:"La venta abre el",tipo:"date",venta:1},
+  {k:"equipaje",l:"Equipaje",ph:"documentado 20 kg, de mano 7 kg…",ancho:1,no:["pase"]},
+  {k:"incluye",l:"Incluye",ph:"$inc",ancho:1},
+  {k:"requisitos",l:"Para abordar / avisos",ph:"pasaporte, llegar 90 min antes, licencia internacional…",ancho:1},
+  {k:"encuentro",l:"Punto de encuentro",ph:"salida B con letrero, lobby del hotel…",ancho:1,solo:["chofer","traslado","auto","otro"]},
+  {k:"direccionLocal",l:"Para el chofer (en chino o japonés)",ph:"nombre · dirección en el idioma local",ancho:1,
+    solo:["chofer","traslado","auto","otro"]},
+  {k:"contacto",l:"Contacto",ph:"chofer, agencia, mostrador…"},
+  {k:"tel",l:"Teléfono / WhatsApp / WeChat",tipo:"tel"},
+  {k:"moneda",l:"Moneda",ph:"CNY, JPY, MXN…"},
+  {k:"monto",l:"Total en esa moneda",tipo:"number"},
+  {k:"desglose",l:"El precio incluye",ph:"por persona, impuestos, cargos…",ancho:1},
+  {k:"pago",l:"Pago",ph:"prepagado, al chofer en efectivo, depósito…",ancho:1},
+  {k:"cancelacion",l:"Cambios y cancelación",ph:"condiciones y cargos",ancho:1},
+  {k:"cancelLimite",l:"Cancelación gratis hasta",tipo:"datetime-local"},
+  {k:"zona",l:"…en la hora de",tipo:"zona"},
+  {k:"respaldo",l:"Plan B",ph:"otro horario si se agota o se cancela",ancho:1},
+  {k:"web",l:"Enlace",ph:"https://… reserva, app, check-in en línea",ancho:1,tipo:"url"},
+  {k:"conf",l:"Nº de confirmación / localizador",ph:"se guarda solo en su viaje"},
+  {k:"reservaNo",l:"Nº de pedido / reserva",ph:"el de Trip.com, Klook…"},
+  {k:"boleto",l:"Nº de boleto (e-ticket)",ph:"uno por pasajero, separados por coma",ancho:1,solo:["vuelo","tren","bus","ferry"]}
+];
+const TX_ZONAS_BASE=[["-06:00","México (UTC−6)"],["+08:00","China y Hong Kong (UTC+8)"],["+09:00","Japón (UTC+9)"],
+  ["-08:00","UTC−8"],["-07:00","UTC−7"],["-05:00","UTC−5"],["-04:00","UTC−4"],["-03:00","UTC−3"],["+00:00","UTC+0"],
+  ["+01:00","UTC+1"],["+02:00","UTC+2"],["+03:00","UTC+3"],["+04:00","UTC+4"],["+05:30","UTC+5:30"],["+07:00","UTC+7"],
+  ["+10:00","UTC+10"],["+12:00","UTC+12"]];
+const TX_ZONAS_SEG=[["","—"]].concat(TX_ZONAS_BASE);
+const TX_ZONAS_CANCEL=[["","este dispositivo"]].concat(TX_ZONAS_BASE);
+
+/* ---- Limpieza: lo que llega sincronizado se queda solo con campos conocidos, como texto ---- */
+const txUid=p=>(p||"tx")+"_"+uid();
+function limpiarTx(t){
+  if(!t||typeof t!=="object"||Array.isArray(t))return null;
+  const s=(v,n)=>v==null?"":String(v).slice(0,n||800);
+  const o={id:s(t.id,80)||txUid("tx"),tipo:TX_TIPOS[t.tipo]?t.tipo:"otro",titulo:s(t.titulo,200),
+    tramo:s(t.tramo,120),bid:s(t.bid,80),note:""};
+  if(t.note)o.note=pareceHTML(t.note)?limpiarHTML(String(t.note)):s(t.note,6000);
+  o.segs=(Array.isArray(t.segs)?t.segs:[]).slice(0,12).map(g=>{
+    if(!g||typeof g!=="object")return null;
+    const x={id:s(g.id,80)||txUid("sg")};
+    TX_SEG_K.forEach(k=>{if(g[k]!=null&&g[k]!=="")x[k]=s(g[k],300);});
+    return x;
+  }).filter(Boolean);
+  if(!o.segs.length)o.segs=[{id:txUid("sg")}];
+  const r={};
+  TX_CAMPOS.forEach(c=>{const v=t.r&&t.r[c.k];if(v!=null&&v!=="")r[c.k]=s(v);});
+  if(r.estado!=="reservado")r.estado="pendiente";
+  if(r.confirmar&&r.confirmar!=="1")delete r.confirmar;
+  o.r=r;
+  o.ligas=(Array.isArray(t.ligas)?t.ligas:[]).slice(0,12).map(l=>l&&typeof l==="object"
+    ?{bid:s(l.bid,80),cid:s(l.cid,160),ccid:s(l.ccid,80),label:s(l.label,200)}:null).filter(l=>l&&l.bid&&l.cid);
+  o.costs=(Array.isArray(t.costs)?t.costs:[]).slice(0,30).map(c=>c&&typeof c==="object"
+    ?{id:s(c.id,80)||uid(),label:s(c.label,200),est:+c.est||0,real:+c.real||0}:null).filter(Boolean);
+  return o;
+}
+const txPorId=id=>(state&&state.transportes||[]).find(t=>t.id===id)||null;
+
+/* ---- Tiempos ---- */
+const horaTxt=h=>h?String(h).replace(/^0(\d)/,"$1"):"";
+function txMs(fecha,hora,zona){
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(fecha||"")||!/^\d{2}:\d{2}$/.test(hora||""))return null;
+  const t=zona?Date.parse(fecha+"T"+hora+":00"+zona):new Date(fecha+"T"+hora+":00").getTime();
+  return isNaN(t)?null:t;
+}
+/* Salida y llegada de un tramo en milisegundos. Si solo se puso un huso, vale
+   para los dos lados; si llega "antes" de salir y no hay fecha de llegada, es
+   que llega pasada la medianoche. */
+function txSegTiempos(g,zPrev){
+  const zS=g.zDe||g.zA||zPrev||"",zE=g.zA||g.zDe||zPrev||"";
+  const a=txMs(g.fecha,g.sale,zS);
+  let b=txMs(g.fechaLlega||g.fecha,g.llega,zE);
+  if(a!=null&&b!=null&&!g.fechaLlega&&b<a)b+=864e5;
+  return{a,b,zS,zE};
+}
+/* "+08:00" → "UTC+8", "-06:00" → "UTC−6", "+05:30" → "UTC+5:30". */
+function zonaTxt(z){
+  const m=/^([+-])(\d{2}):(\d{2})$/.exec(z||"");if(!m)return z||"";
+  return "UTC"+(m[1]==="-"?"−":"+")+(+m[2])+(m[3]!=="00"?":"+m[3]:"");
+}
+function txDurTxt(ms){
+  const m=Math.round(ms/6e4);if(!(m>0)||m>96*60)return "";
+  const h=Math.floor(m/60),mm=m%60;
+  return h?h+" h"+(mm?" "+String(mm).padStart(2,"0"):""):mm+" min";
+}
+/* Primer y último día del transporte. */
+function txRango(t){
+  const fs=[];
+  (t.segs||[]).forEach(g=>[g.fecha,g.fechaLlega].forEach(f=>{const d=resFecha(f);if(d)fs.push(d);}));
+  if(!fs.length)return null;
+  fs.sort((x,y)=>x-y);
+  return{ini:fs[0],fin:fs[fs.length-1]};
+}
+function txOrdenMs(t){
+  const g=(t.segs||[]).find(x=>resFecha(x.fecha));if(!g)return Infinity;
+  const m=toMin(g.sale||"");
+  return resFecha(g.fecha).getTime()+(m==null?0:m*6e4);
+}
+const txOrdenados=()=>(state.transportes||[]).map((t,i)=>({t,i}))
+  .sort((x,y)=>{const a=txOrdenMs(x.t),b=txOrdenMs(y.t);return a===b?x.i-y.i:(a<b?-1:1);}).map(x=>x.t);
+const hoyCero=()=>{const h=new Date();h.setHours(0,0,0,0);return h;};
+function txPasado(t){const r=txRango(t);return !!r&&r.fin<hoyCero();}
+function txHoy(t){
+  const r=txRango(t);if(!r)return "";
+  const h=hoyCero();
+  if(h>=r.ini&&h<=r.fin)return "hoy";
+  return isoDia(addDays(h,1))===isoDia(r.ini)?"manana":"";
+}
+
+/* ---- Nombres ---- */
+function tramoNombre(key){
+  if(key==="_arrive")return "Viaje de ida";
+  if(key==="_depart")return "Viaje de regreso";
+  const p=String(key||"").split("|"),n=id=>((state.bases||{})[id]||{}).name||id;
+  return p.length===2?n(p[0])+" → "+n(p[1]):String(key||"");
+}
+/* Los tramos del itinerario, en orden: ida, entre paradas y regreso. */
+function tramosDelViaje(){
+  const act=activeBases(),out=[];
+  if(!act.length)return out;
+  out.push({key:"_arrive",nombre:"Viaje de ida · → "+act[0].def.name});
+  for(let i=0;i<act.length-1;i++)
+    out.push({key:act[i].def.id+"|"+act[i+1].def.id,nombre:act[i].def.name+" → "+act[i+1].def.name});
+  out.push({key:"_depart",nombre:"Viaje de regreso · "+act[act.length-1].def.name+" →"});
+  return out;
+}
+function txTitulo(t){
+  if(t.titulo)return t.titulo;
+  const sg=t.segs||[],a=sg[0]&&sg[0].de,b=sg.length?sg[sg.length-1].a:"";
+  if(a&&b)return a+" → "+b;
+  if(a||b)return a?a+" →":"→ "+b;
+  if(t.tramo)return tramoNombre(t.tramo);
+  return txTipo(t).l;
+}
+const txNums=t=>(t.segs||[]).map(g=>g.num).filter(Boolean).join(" + ");
+function txSegResumen(g){
+  const d=resFecha(g.fecha);
+  return [g.num,[g.de,g.a].filter(Boolean).join(" → "),d?fmt(d)+(g.sale?" "+horaTxt(g.sale):""):""]
+    .filter(Boolean).join(" · ");
+}
+
+/* ---- Estado de la compra ---- */
+const txHecho=t=>(t.r||{}).estado==="reservado";
+/* ¿Cuándo abre la venta? Solo importa si falta comprar. */
+function txVenta(t){
+  const r=t.r||{};if(txHecho(t)||!r.ventaAbre)return null;
+  const f=resFecha(r.ventaAbre);if(!f)return null;
+  const dias=Math.round((f-hoyCero())/864e5);
+  return{dias,f,abierta:dias<=0};
+}
+function txVentaPill(v,corto){
+  if(v.abierta)return `<span class="rf-pill urg">🟢 ${v.dias===0?(corto?"Hoy abre la venta":"Hoy abre la venta: cómprenlo")
+    :(corto?"Ya a la venta":"Ya está a la venta: cómprenlo")}</span>`;
+  if(v.dias<=14)return `<span class="rf-pill warn">🔔 ${corto?"Venta en "+v.dias+" d":
+    "La venta abre en "+v.dias+" día"+(v.dias===1?"":"s")+" · "+fmtDia(v.f)}</span>`;
+  return `<span class="rf-pill gris">🗓 ${corto?"Venta: "+fmt(v.f):"La venta abre el "+fmtDia(v.f)}</span>`;
+}
+/* Requiere atención: ya se puede comprar y no se ha comprado. */
+const txAlerta=t=>{if(txPasado(t))return false;const v=txVenta(t);return !!(v&&v.abierta);};
+
+/* ---- Costos: los que viven en el itinerario y los propios ---- */
+function txLiga(l){
+  const st=state.bases&&state.bases[l.bid];
+  const a=st&&(st.catalog||[]).find(x=>x.cid===l.cid);if(!a)return null;
+  const cs=a.costs||[];
+  const c=(l.ccid&&cs.find(z=>z.id===l.ccid))||cs.find(z=>(z.label||"")===l.label);
+  return c?{st,a,c}:null;
+}
+/* Cuántas veces está una actividad en los días que se ven: así la cuenta el presupuesto. */
+function usosEnPlan(st,cid){
+  if(!st||!st.included)return 0;
+  const r=rangoDias(st);let n=0;
+  for(let d=r.ini;d<r.fin;d++)(st.schedule[d]||[]).forEach(it=>{if(it.ref===cid)n++;});
+  return n;
+}
+function diaDeActividad(bid,cid){
+  const o=withDates().find(x=>x.def.id===bid);if(!o)return null;
+  const r=rangoDias(o.st);
+  for(let d=r.ini;d<r.fin;d++)if((o.st.schedule[d]||[]).some(it=>it.ref===cid))return addDays(o.checkin,d);
+  return null;
+}
+function txPresupuesto(t){
+  let le=0,lr=0;const filas=[];
+  (t.ligas||[]).forEach((l,i)=>{
+    const x=txLiga(l);
+    if(!x){filas.push({i,l,roto:true});return;}
+    const u=usosEnPlan(x.st,x.a.cid);
+    le+=(+x.c.est||0)*u;lr+=(+x.c.real||0)*u;
+    filas.push({i,l,x,u});
+  });
+  const pe=sumaCostos(t.costs,"est"),pr=sumaCostos(t.costs,"real");
+  return{le,lr,pe,pr,est:le+pe,real:lr+pr,filas};
+}
+/* Costos propios de todos los transportes: lo único que la sección suma al presupuesto. */
+function txTotales(){
+  let est=0,real=0;
+  (state.transportes||[]).forEach(t=>{est+=sumaCostos(t.costs,"est");real+=sumaCostos(t.costs,"real");});
+  return{est,real};
+}
+/* Costos del itinerario que se pueden ligar: los de traslados y tours (o que
+   suenan a transporte) en las fechas del transporte, o en todo el viaje si
+   todavía no tiene fecha. */
+const TX_RE_COSTO=/tren|vuelo|chofer|coche|auto|traslado|pick|haruka|shinkansen|nozomi|boleto|equipaje|autob|bus\b|barco|ferry|renta|taxi|didi|transfer/i;
+function txCostosLigables(t){
+  const ya=new Set();
+  (state.transportes||[]).forEach(x=>(x.ligas||[]).forEach(l=>{const y=txLiga(l);if(y)ya.add(y.c);}));
+  const rg=txRango(t),out=[];
+  withDates().forEach(o=>{
+    const r=rangoDias(o.st);
+    for(let d=r.ini;d<r.fin;d++){
+      const f=addDays(o.checkin,d);
+      if(rg&&(f<rg.ini||f>rg.fin))continue;
+      (o.st.schedule[d]||[]).forEach(it=>{
+        const a=(o.st.catalog||[]).find(x=>x.cid===it.ref);if(!a)return;
+        const deTransporte=a.type==="transfer"||a.type==="tour";
+        (a.costs||[]).forEach(c=>{
+          if(ya.has(c)||(!c.label&&!(+c.est)))return;
+          if(!deTransporte&&!TX_RE_COSTO.test(c.label||""))return;
+          ya.add(c);
+          out.push({v:o.def.id+"::"+a.cid+"::"+(c.id||c.label||""),
+            txt:fmtDia(f)+" · "+a.name+" — "+(c.label||"costo")+" ("+fmtMoney(c.est)+")"});
+        });
+      });
+    }
+  });
+  return out;
+}
+
+/* ---- La ficha que se lee ---- */
+function txViajeHTML(t){
+  const T=txTipo(t);
+  const sg=(t.segs||[]).filter(g=>["num","de","a","fecha","sale","llega"].some(k=>g[k]));
+  if(!sg.length)return `<div class="rf-sub">Aún sin horarios: pónganlos en «✎ Datos de la compra».</div>`;
+  let h="",prev=null;
+  sg.forEach((g,i)=>{
+    const tm=txSegTiempos(g,prev&&prev.zE);
+    if(i>0){
+      if(prev&&prev.b!=null&&tm.a!=null){
+        const d=tm.a-prev.b;
+        h+=d<0?`<div class="tx-con mal">⚠ Este tramo sale antes de que llegue el anterior: revisen fechas y horas</div>`
+          :`<div class="tx-con">⏱ ${t.tipo==="chofer"||t.tipo==="auto"?"Entre un servicio y otro: "+(txDurTxt(d)||"—")
+            :"Conexión de "+(txDurTxt(d)||"menos de 1 min")+(g.de?" en "+esc(g.de):"")}</div>`;
+      }else h+=`<div class="tx-con"></div>`;
+    }
+    const dS=resFecha(g.fecha),dL=resFecha(g.fechaLlega)||dS;
+    const otroDia=dS&&dL&&isoDia(dS)!==isoDia(dL);
+    const lado=(lbl,hora,fecha,verFecha,lugar,term,cls)=>`<div class="tx-end${cls}"><small>${esc(lbl)}</small>
+        <b>${hora?esc(horaTxt(hora)):(fecha?esc(fmtDia(fecha)):"—")}</b>
+        <span>${hora&&fecha&&verFecha?esc(fmtDia(fecha)):"&nbsp;"}</span>
+        ${lugar||term?`<em>${esc(lugar||"")}${term?` <i>· ${esc(term)}</i>`:""}</em>`:""}</div>`;
+    const dur=tm.a!=null&&tm.b!=null?txDurTxt(tm.b-tm.a):"";
+    const husos=tm.zS&&tm.zE&&tm.zS!==tm.zE?zonaTxt(tm.zS)+" → "+zonaTxt(tm.zE):"";
+    h+=`<div class="tx-seg">
+      ${lado(T.ini,g.sale,dS,true,g.de,g.termDe,"")}
+      <div class="tx-mid">${g.num?`<span class="tx-num">${esc(g.num)}</span>`:""}<span class="tx-ln"></span>${
+        dur?`<span class="tx-dur">${esc(dur)}</span>`:""}${husos?`<span>🕐 ${esc(husos)}</span>`:""}${
+        g.asiento?`<span>${T.asiIc||"💺"} ${esc(g.asiento)}</span>`:""}</div>
+      ${lado(T.fin,g.llega,dL,otroDia,g.a,g.termA," r")}
+    </div>`;
+    prev=tm;
+  });
+  return `<div class="tx-viaje">${h}</div>`;
+}
+function txFichaHTML(t){
+  const T=txTipo(t),r=t.r||{},hecho=txHecho(t),ec=estadoCancel(r),v=txVenta(t),pas=txPasado(t);
+  const p=txPresupuesto(t);
+  const pills=[hecho?`<span class="rf-pill ok">✅ ${T.hecho}${r.via?" · "+esc(r.via):""}</span>`
+                    :`<span class="rf-pill pend">⏳ ${T.falta}</span>`];
+  if(v&&!pas)pills.push(txVentaPill(v,false));
+  if(r.confirmar&&!pas)pills.push(`<span class="rf-pill warn">⚠ Horario a confirmar</span>`);
+  if(ec)pills.push(ec.vencida?`<span class="rf-pill gris">↩ Ya no se cancela gratis</span>`
+    :`<span class="rf-pill ${ec.urgente?"urg":ec.pronto?"warn":"ok2"}">↩ Cancelación gratis: ${
+      ec.urgente||ec.pronto?"quedan "+plazoTxt(ec.diff):"hasta el "+fmt(ec.dia)}</span>`);
+  if(!p.est&&!r.monto)pills.push(`<span class="rf-pill pend">💵 Falta el precio</span>`);
+  let html=`<div class="rf-pills">${pills.join("")}</div>`+txViajeHTML(t);
+  const filas=[];
+  const fila=(ic,et,val)=>{if(val)filas.push(`<div class="rf-row"><div class="rf-l">${ic} ${esc(et)}</div><div class="rf-v">${val}</div></div>`);};
+  fila("🏢",T.prov,esc(r.proveedor||""));
+  fila("🛒",hecho?"Comprado en":"Se compra en",esc(r.via||""));
+  fila("👥","Pasajeros",esc(r.pasajeros||""));
+  fila("🎫","Clase",esc(r.clase||""));
+  fila("🧳","Equipaje",esc(r.equipaje||""));
+  fila("✨","Incluye",esc(r.incluye||""));
+  fila("🛂","Para abordar",esc(r.requisitos||""));
+  if(r.encuentro){
+    const q=encodeURIComponent(r.encuentro);
+    fila("📍","Encuentro",esc(r.encuentro)+`<div class="rf-acts">${btnCopiar(r.encuentro)}
+      <a class="rf-btn" href="https://www.google.com/maps/search/?api=1&amp;query=${q}" target="_blank" rel="noopener">🗺 Google Maps</a>
+      <a class="rf-btn" href="https://maps.apple.com/?q=${q}" target="_blank" rel="noopener">🗺 Apple Maps</a></div>`);
+  }
+  if(r.direccionLocal)fila("🀄","Para el chofer",`<span class="rf-local">${esc(r.direccionLocal)}</span><div class="rf-acts">
+      <button type="button" class="rf-btn fuerte" data-txa="chofer" data-tx="${esc(t.id)}">🀄 Mostrar al chofer</button>${btnCopiar(r.direccionLocal)}</div>`);
+  if(r.contacto||r.tel)fila("📞","Contacto",[esc(r.contacto||""),
+    r.tel?`<a class="rf-tel" href="tel:${esc(r.tel.replace(/[^\d+]/g,""))}">${esc(r.tel)}</a> ${btnCopiar(r.tel)}`:""]
+    .filter(Boolean).join(" · "));
+  // precio: lo del comprobante y lo que cuenta en el presupuesto
+  const m=+r.monto,local=r.monto?(r.moneda?esc(r.moneda)+" ":"")+
+    (isNaN(m)?esc(r.monto):m.toLocaleString("es-MX",{maximumFractionDigits:2})):"";
+  const pl=[local?`<b>${local}</b> en total`:"",esc(r.desglose||"")];
+  p.filas.forEach(f=>{
+    if(f.roto){pl.push(`<span class="rf-falta">⚠ «${esc(f.l.label||"costo")}» ya no está en el itinerario</span>`);return;}
+    pl.push(`🔗 ${esc(f.x.c.label||f.x.a.name)}: <b>${fmtMoney(f.x.c.est)}</b>${+f.x.c.real?" · real "+fmtMoney(f.x.c.real):""}${
+      f.u>1?" (×"+f.u+")":""}${f.u?"":` <span class="rf-falta">— la actividad no está en el plan: no cuenta</span>`}`);
+  });
+  (t.costs||[]).forEach(c=>{if(c.label||+c.est||+c.real)
+    pl.push(`${esc(c.label||"Costo")}: <b>${fmtMoney(c.est)}</b>${+c.real?" · real "+fmtMoney(c.real):""}`);});
+  if(p.est||p.real)pl.push(`<span class="rf-sub">≈ <b>${fmtMoney(p.est)}</b> en el presupuesto${
+    p.real?" · real "+fmtMoney(p.real):""}${p.le&&!p.pe?" (ya contado en el itinerario)":""}</span>`);
+  if((t.tramo==="_arrive"||t.tramo==="_depart")&&t.tipo==="vuelo"&&+((state.budget||{}).flightsEst))
+    pl.push(`<span class="rf-sub">Los vuelos principales del presupuesto llevan ${fmtMoney(state.budget.flightsEst)}: si este
+      boleto ya va ahí, no lo repitan aquí.</span>`);
+  fila("💴","Precio",pl.filter(Boolean).join("<br>"));
+  fila("💳","Pago",esc(r.pago||""));
+  if(r.ventaAbre){const f=resFecha(r.ventaAbre);
+    if(f)fila("🗓","Venta",(hecho?"Abrió el ":v&&v.abierta?"Abrió el ":"Abre el ")+esc(fmtDia(f)+" "+f.getFullYear())+
+      (v&&!v.abierta?` · en ${v.dias} día${v.dias===1?"":"s"}`:""));}
+  if(r.cancelacion||ec)fila("↩","Cancelación",esc(r.cancelacion||"")+
+    (ec?`<div class="rf-sub">Límite: ${ec.hotel}${r.zona?" (hora local)":""}${ec.suya?" · en su hora: "+ec.suya:""}</div>`:""));
+  fila("🛟","Plan B",esc(r.respaldo||""));
+  const web=urlSegura(r.web);
+  if(web)fila("🔗","Enlace",`<a class="rf-btn" href="${esc(web)}" target="_blank" rel="noopener noreferrer">↗ Abrir</a>
+    <span class="rf-sub" style="display:inline">${esc(web.replace(/^https?:\/\/(www\.)?/i,"").slice(0,48))}</span>`);
+  if(hecho||r.conf||r.reservaNo||r.boleto)fila("🔖","Confirmación",(r.conf||r.reservaNo||r.boleto)
+    ?[r.conf?`<span class="rf-num">${esc(r.conf)}</span> ${btnCopiar(r.conf)}`:"",
+      r.reservaNo?`Pedido <span class="rf-num">${esc(r.reservaNo)}</span> ${btnCopiar(r.reservaNo)}`:"",
+      r.boleto?`Boleto <span class="rf-num">${esc(r.boleto)}</span> ${btnCopiar(r.boleto)}`:""].filter(Boolean).join("<br>")
+    :`<span class="rf-falta">Sin capturar: pónganlo en «✎ Datos de la compra» (se guarda solo en su viaje).</span>`);
+  const donde=[t.tramo?esc(tramoNombre(t.tramo)):"",t.bid&&state.bases[t.bid]?"en "+esc(state.bases[t.bid].name):""]
+    .filter(Boolean).join(" · ");
+  if(donde)fila("🧭","Itinerario",donde+`<div class="rf-acts"><button type="button" class="rf-btn" data-txa="itin"
+    data-tx="${esc(t.id)}">Ver en el itinerario</button></div>`);
+  return html+(filas.length?`<div class="rf-grid">${filas.join("")}</div>`:"");
+}
+
+/* ---- El formulario ---- */
+const txEditAbierto=new Set(),txAbierto=new Set(),txCerrado=new Set();
+let txFiltro="";
+/* El formulario solo se arma cuando se abre: cerrado, es un renglón. */
+function txEditorHTML(t){
+  const ab=txEditAbierto.has(t.id);
+  return `<details class="resedit" data-txe="${esc(t.id)}" ${ab?"open":""}>
+    <summary>✎ Datos de la compra</summary><div class="tx-edbody">${ab?txEditorCuerpoHTML(t):""}</div></details>`;
+}
+function txEditorCuerpoHTML(t){
+  const T=txTipo(t),r=t.r||{},dis=puedeEditar()?"":" disabled";
+  const at=(s,k,extra)=>`data-tx="${esc(t.id)}" data-ts="${s}" data-tk="${k}"${extra||""}${dis}`;
+  const inp=(s,k,v,ph,ty,extra)=>`<input class="f txf" type="${ty||"text"}" ${at(s,k,extra)} value="${esc(v||"")}"
+    placeholder="${esc(ph||"")}"${ty==="number"?' min="0" step="0.01" inputmode="decimal"':""}${
+    /^(conf|reservaNo|boleto)$/.test(k)?' autocomplete="off"':""}>`;
+  const sel=(s,k,v,opts,extra)=>{
+    v=v==null?"":String(v);
+    if(!opts.some(o=>o[0]===v))opts=opts.concat([[v,v]]);
+    return `<select class="f txf" ${at(s,k,extra)}>${opts.map(([val,l])=>
+      `<option value="${esc(val)}"${v===val?" selected":""}>${esc(l)}</option>`).join("")}</select>`;
+  };
+  const lab=(l,h,ancho)=>`<label class="rgf${ancho?" ancho":""}"><span>${esc(l)}</span>${h}</label>`;
+  const tipos=Object.keys(TX_TIPOS).map(k=>[k,TX_TIPOS[k].ic+" "+TX_TIPOS[k].l]);
+  const tramos=[["","— ninguno —"]].concat(tramosDelViaje().map(x=>[x.key,x.nombre]));
+  if(t.tramo&&!tramos.some(x=>x[0]===t.tramo))tramos.push([t.tramo,tramoNombre(t.tramo)+" (ya no está en la ruta)"]);
+  const paradas=[["","— ninguna —"]].concat(orderedBases().map(o=>[o.def.id,o.def.name+(o.st.included?"":" (fuera del plan)")]));
+  const segs=(t.segs||[]).map((g,i,arr)=>{
+    const eg=` data-sg="${esc(g.id)}"`;
+    const bt=(a,txt,tt,off,cls)=>`<button type="button" class="${cls||"updn"}" data-txa="${a}" data-tx="${esc(t.id)}"${eg}
+      title="${tt}" aria-label="${tt}"${off||dis?" disabled":""}>${txt}</button>`;
+    return `<div class="tx-segedit">
+      <div class="tx-segh"><b>${esc(T.seg)} ${i+1}</b><span class="tx-segres" data-sgres="${esc(g.id)}">${esc(txSegResumen(g))}</span>
+        ${arr.length>1?bt("upseg","▲","Subir",i===0)+bt("downseg","▼","Bajar",i===arr.length-1):""}
+        ${bt("delseg","×",arr.length>1?"Quitar este tramo":"Vaciar este tramo",false,"del")}</div>
+      <div class="rgrid">
+        ${lab(T.num,inp("seg","num",g.num,T.numPh,"text",eg))}
+        ${T.asi?lab(T.asi,inp("seg","asiento",g.asiento,T.asiPh,"text",eg)):""}
+        ${lab(T.de,inp("seg","de",g.de,T.dePh,"text",eg),!T.term)}
+        ${T.term?lab(T.term+" · salida",inp("seg","termDe",g.termDe,T.termPh,"text",eg)):""}
+        <div class="rgf ancho tx-dtz">${lab(T.ini+" · fecha",inp("seg","fecha",g.fecha,"","date",eg))}${
+          lab("hora",inp("seg","sale",g.sale,"","time",eg))}${lab("huso horario",sel("seg","zDe",g.zDe,TX_ZONAS_SEG,eg))}</div>
+        ${lab(T.a,inp("seg","a",g.a,T.aPh,"text",eg),!T.term)}
+        ${T.term?lab(T.term+" · llegada",inp("seg","termA",g.termA,T.termPh,"text",eg)):""}
+        <div class="rgf ancho tx-dtz">${lab(T.fin+" · fecha (si es otro día)",inp("seg","fechaLlega",g.fechaLlega,"","date",eg))}${
+          lab("hora",inp("seg","llega",g.llega,"","time",eg))}${lab("huso horario",sel("seg","zA",g.zA,TX_ZONAS_SEG,eg))}</div>
+      </div></div>`;
+  }).join("");
+  const campos=TX_CAMPOS.filter(c=>(!c.solo||c.solo.includes(t.tipo))&&(!c.no||!c.no.includes(t.tipo))&&(!c.venta||T.venta))
+    .map(c=>{
+      const v=r[c.k]||"",l=c.l==="$prov"?T.prov:c.l,ph=c.ph==="$inc"?(TX_INCLUYE_PH[t.tipo]||"lo que trae la tarifa"):c.ph;
+      let h;
+      if(c.tipo==="estado")h=sel("r","estado",v==="reservado"?"reservado":"pendiente",
+        [["pendiente","⏳ "+T.falta],["reservado","✅ "+T.hecho]]);
+      else if(c.tipo==="confirmar")h=sel("r","confirmar",v,[["","Confirmado"],["1","⚠ A confirmar"]]);
+      else if(c.tipo==="zona")h=sel("r","zona",v,TX_ZONAS_CANCEL);
+      else h=inp("r",c.k,v,ph,{number:"number",date:"date","datetime-local":"datetime-local",tel:"tel",url:"url"}[c.tipo]||"text");
+      return lab(l,h,c.ancho);
+    }).join("");
+  const filasLiga=(t.ligas||[]).map((l,i)=>{
+    const x=txLiga(l),d=x&&diaDeActividad(l.bid,l.cid),li=` data-li="${i}"`;
+    const quitar=`<button type="button" class="del" data-txa="desligar" data-tx="${esc(t.id)}"${li}
+      title="Desligar (el costo se queda en su actividad)" aria-label="Desligar"${dis}>×</button>`;
+    if(!x)return `<div class="costrow"><span class="clabel tx-lig rf-falta">⚠ «${esc(l.label||"costo")}» ya no está en el itinerario</span>${quitar}</div>`;
+    return `<div class="costrow">
+      <span class="clabel tx-lig" title="Vive en la actividad del itinerario">🔗 ${esc(x.c.label||x.a.name)}
+        <small>${esc(x.a.name)}${d?" · "+esc(fmtDia(d)):""}</small></span>
+      <input type="number" class="f camt txf" ${at("liga","est",li)} min="0" step="100" value="${x.c.est||""}" placeholder="0">
+      <input type="number" class="f camt txf" ${at("liga","real",li)} min="0" step="100" value="${x.c.real||""}" placeholder="0">
+      ${quitar}</div>`;
+  }).join("");
+  const filasProp=(t.costs||[]).map(c=>{const cc=` data-cc="${esc(c.id)}"`;
+    return `<div class="costrow">
+      <input class="f clabel txf" ${at("cost","label",cc)} value="${esc(c.label)}" placeholder="Concepto (boletos, equipaje, seguro, depósito…)">
+      <input type="number" class="f camt txf" ${at("cost","est",cc)} min="0" step="100" value="${c.est||""}" placeholder="0">
+      <input type="number" class="f camt txf" ${at("cost","real",cc)} min="0" step="100" value="${c.real||""}" placeholder="0">
+      <button type="button" class="del" data-txa="delcost" data-tx="${esc(t.id)}"${cc} title="Quitar" aria-label="Quitar"${dis}>×</button></div>`;}).join("");
+  const ligables=puedeEditar()?txCostosLigables(t):[];
+  return `<div class="rgrid">
+      ${lab("Tipo",sel("top","tipo",t.tipo,tipos))}
+      ${lab("Título",inp("top","titulo",t.titulo,txTitulo(Object.assign({},t,{titulo:""}))))}
+      ${lab("Tramo del itinerario",sel("top","tramo",t.tramo,tramos))}
+      ${lab("Parada",sel("top","bid",t.bid,paradas))}
+    </div>
+    <div class="tx-esub">${t.segs&&t.segs.length>1?"Tramos":"Horario"}</div>
+    ${segs}
+    ${T.otro&&puedeEditar()?`<button type="button" class="addbtn" data-txa="addseg" data-tx="${esc(t.id)}">${esc(T.otro)}</button>`:""}
+    <div class="tx-esub">La compra</div>
+    <div class="rgrid">${campos}</div>
+    <div class="tx-esub">Costos en el presupuesto</div>
+    ${filasLiga||filasProp?`<div class="costhead"><span style="flex:1">concepto</span><span class="cxlbl">presupuesto</span>
+      <span class="cxlbl">real</span><span style="width:24px"></span></div>`:""}
+    <div class="costgrid">${filasLiga}${filasProp}</div>
+    ${puedeEditar()?`<button type="button" class="addbtn" data-txa="addcost" data-tx="${esc(t.id)}">＋ Añadir costo propio</button>`:""}
+    ${ligables.length?`<select class="f txlig" data-tx="${esc(t.id)}" aria-label="Ligar un costo del itinerario">
+      <option value="">🔗 Ligar un costo que ya está en el itinerario…</option>
+      ${ligables.map(o=>`<option value="${esc(o.v)}">${esc(o.txt)}</option>`).join("")}</select>`:""}
+    <p class="tx-help">🔗 Los costos ligados ya cuentan en su actividad del itinerario: aquí se ven y se editan, pero no se
+      suman dos veces. Los propios se suman en «Transportes comprados aparte».</p>
+    <p class="rf-sub">Los números de confirmación, de pedido y de boleto se guardan solo en este viaje, en su cuenta.</p>`;
+}
+
+/* ---- Una fila de la lista ---- */
+function txResumenHTML(t){
+  const T=txTipo(t),r=t.r||{},sg=t.segs||[],g0=sg[0]||{},gN=sg[sg.length-1]||{};
+  const rg=txRango(t),v=txVenta(t),ec=estadoCancel(r),hoy=txHoy(t),pas=txPasado(t);
+  const horas=[horaTxt(g0.sale),horaTxt(gN.llega)].filter(Boolean).join(" → ");
+  const otro=rg&&isoDia(rg.fin)!==isoDia(rg.ini)?(horas?" · ":"")+"hasta "+fmtDia(rg.fin):"";
+  const sub=[T.l,txNums(t),r.proveedor].filter(Boolean).join(" · ");
+  const pills=[];
+  if(hoy==="hoy")pills.push('<span class="rf-pill hoy">🧭 Hoy</span>');
+  else if(hoy==="manana")pills.push('<span class="rf-pill hoy">Mañana</span>');
+  pills.push(txHecho(t)?`<span class="rf-pill ok">✅ ${T.hecho}</span>`:`<span class="rf-pill pend">⏳ ${T.falta}</span>`);
+  if(v&&!pas)pills.push(txVentaPill(v,true));
+  if(r.confirmar&&!pas)pills.push('<span class="rf-pill warn">⚠ A confirmar</span>');
+  if(ec&&ec.urgente)pills.push(`<span class="rf-pill urg">↩ ${plazoTxt(ec.diff)}</span>`);
+  return `<span class="hr-f">${rg?esc(fmtDia(rg.ini)):"sin fecha"}${horas||otro?`<small>${esc(horas+otro)}</small>`:""}</span>
+    <span class="hr-c"><b><span class="tx-ic" aria-hidden="true">${T.ic}</span> ${esc(txTitulo(t))}</b><span>${esc(sub)}</span></span>
+    <span class="hr-p">${pills.join("")}</span>`;
+}
+const txClaseFila=t=>"hrow txrow"+(txHecho(t)?" res":"")+(txAlerta(t)?" alerta":"")+
+  (txHoy(t)==="hoy"?" hoy":"")+(txPasado(t)?" pasado":"");
+/* El cuerpo de la fila (ficha, notas y formulario) se arma al abrirla: con
+   veintitantos transportes, dibujarlos todos cerrados pesaba miles de nodos. */
+function txFilaHTML(t){
+  const abierto=txAbierto.has(t.id)||(txHoy(t)==="hoy"&&!txCerrado.has(t.id));
+  return `<details class="${txClaseFila(t)}" data-txrow="${esc(t.id)}" ${abierto?"open":""}>
+    <summary>${txResumenHTML(t)}</summary>
+    <div class="hr-body" data-txbody="${esc(t.id)}">${abierto?txCuerpoHTML(t):""}</div>
+  </details>`;
+}
+function txCuerpoHTML(t){
+  const ed=puedeEditar(),id=esc(t.id);
+  return `<div class="tx-view" data-txv="${id}">${txFichaHTML(t)}</div>
+      ${rteHTML(`data-rtekind="tx" data-item="${id}"`,t.note,"✎ Notas: qué hacer al llegar, qué llevar impreso, a quién avisar…")}
+      ${txEditorHTML(t)}
+      ${ed?`<div class="rf-acts">
+        <button type="button" class="rf-btn" data-txa="dup" data-tx="${id}">⧉ Duplicar</button>
+        <button type="button" class="rf-btn tx-del" data-txa="del" data-tx="${id}">🗑 Quitar</button></div>`:""}`;
+}
+/* Los avisos de arriba: venta abierta sin comprar, venta en ≤3 días y cancelaciones por vencer. */
+function txAvisosHTML(lista){
+  const out=[];
+  lista.forEach(t=>{
+    if(txPasado(t))return;
+    const v=txVenta(t),r=t.r||{},ec=estadoCancel(r),n=txNums(t);
+    const nm=`<b>${esc(txTitulo(t))}</b>${n?" ("+esc(n)+")":""}`;
+    if(v&&v.abierta)out.push({p:0,h:`🟢 ${nm}: la venta ${v.dias===0?"abre hoy":"abrió el "+esc(fmtDia(v.f))} y sigue sin comprarse.`});
+    else if(v&&v.dias<=3)out.push({p:1,h:`🔔 ${nm}: la venta abre en ${v.dias} día${v.dias===1?"":"s"} (${esc(fmtDia(v.f))}).`});
+    if(ec&&!ec.vencida&&ec.pronto)out.push({p:2,h:`${ec.urgente?"⚠":"↩"} ${nm}: la cancelación gratis vence en ${
+      plazoTxt(ec.diff)} (${ec.hotel}${ec.suya?"; en su hora: "+ec.suya:""}).`});
+  });
+  if(!out.length)return "";
+  out.sort((a,b)=>a.p-b.p);
+  const MAX=5;
+  return `<div class="inlinewarn tx-avisos"><div>${out.slice(0,MAX).map(x=>`<div>${x.h}</div>`).join("")}${
+    out.length>MAX?`<div>…y ${out.length-MAX} más.</div>`:""}</div></div>`;
+}
+const txTramosSinTransporte=()=>tramosDelViaje().filter(x=>!(state.transportes||[]).some(t=>t.tramo===x.key));
+function txAgregarHTML(){
+  if(!puedeEditar())return "";
+  const faltan=txTramosSinTransporte().length;
+  return `<div class="tx-add">${TX_ADD.map(k=>`<button type="button" class="addbtn" data-txa="add" data-tipo="${k}">＋ ${
+    TX_TIPOS[k].ic} ${esc(k==="otro"?"Otro (bus, barco, pase…)":TX_TIPOS[k].l)}</button>`).join("")}</div>`+
+    (faltan?`<button type="button" class="addbtn block" data-txa="desdeitin">🧭 Agregar ${faltan===1?"el tramo":"los "+faltan+" tramos"}
+      del itinerario que no ${faltan===1?"tiene":"tienen"} transporte</button>`:"");
+}
+function txHintTxt(lista){
+  if(!lista.length)return "";
+  const h=lista.filter(txHecho).length;
+  const prox=lista.map(txVenta).filter(v=>v&&!v.abierta).sort((a,b)=>a.f-b.f)[0];
+  const ya=lista.filter(txAlerta).length;
+  return `${h} de ${lista.length} listo${lista.length===1?"":"s"}`+
+    (ya?` · ${ya} ya a la venta`:"")+(prox?` · próxima venta: ${fmt(prox.f)}`:"");
+}
+/* Para no perder lo que se estaba escribiendo cuando la lista se vuelve a dibujar. */
+function txFoco(){
+  const a=document.activeElement;
+  if(!a||!a.closest||!a.closest("#txList")||!a.dataset||!a.dataset.tx)return null;
+  const d=a.dataset,q=v=>`"${CSS.escape(v)}"`;
+  let sel=`[data-tx=${q(d.tx)}]`;
+  ["ts","tk","sg","cc","li"].forEach(k=>{if(d[k]!=null)sel+=`[data-${k}=${q(d[k])}]`;});
+  if(a.classList.contains("txlig"))sel+=".txlig";
+  let ss=null,se=null;try{ss=a.selectionStart;se=a.selectionEnd;}catch(e){}
+  return{sel,ss,se};
+}
+function txRestaurarFoco(f){
+  if(!f)return;
+  const el=document.querySelector("#txList "+f.sel);if(!el)return;
+  try{el.focus({preventScroll:true});if(f.ss!=null&&el.setSelectionRange)el.setSelectionRange(f.ss,f.se);}catch(e){}
+}
+function renderTransportes(){
+  const el=document.getElementById("txList"),hint=document.getElementById("txHint");
+  if(!el||!state)return;
+  if(!Array.isArray(state.transportes))state.transportes=[];
+  const foco=txFoco(),lista=txOrdenados();
+  const cuenta={};lista.forEach(t=>{cuenta[t.tipo]=(cuenta[t.tipo]||0)+1;});
+  const pend=lista.filter(t=>!txHecho(t)).length;
+  if(txFiltro&&txFiltro!=="pend"&&!cuenta[txFiltro])txFiltro="";
+  if(txFiltro==="pend"&&!pend)txFiltro="";
+  const chips=[["","Todos",lista.length]].concat(Object.keys(TX_TIPOS).filter(k=>cuenta[k])
+    .map(k=>[k,TX_TIPOS[k].ic+" "+TX_TIPOS[k].pl,cuenta[k]]));
+  if(pend&&pend<lista.length)chips.push(["pend","⏳ Pendientes",pend]);
+  const filtros=lista.length>3?`<div class="tx-filtros" role="group" aria-label="Filtrar transportes">${chips.map(([k,l,n])=>
+    `<button type="button" class="tx-fchip${txFiltro===k?" on":""}" data-txa="filtro" data-f="${k}" aria-pressed="${txFiltro===k}">${
+      esc(l)} <b>${n}</b></button>`).join("")}</div>`:"";
+  const vis=lista.filter(t=>!txFiltro||(txFiltro==="pend"?!txHecho(t):t.tipo===txFiltro));
+  el.innerHTML=`<div data-txavisos>${txAvisosHTML(lista)}</div>`+filtros+
+    (vis.length?`<div class="hlist">${vis.map(txFilaHTML).join("")}</div>`
+      :lista.length?'<div class="empty"><p>Nada con este filtro.</p></div>'
+      :`<div class="empty"><div class="ebig">🎫</div><p>Aún no hay transportes. Agreguen los vuelos, trenes, choferes,
+        rentas de auto y traslados que hay que comprar o reservar.</p></div>`)+txAgregarHTML();
+  if(hint)hint.textContent=txHintTxt(lista);
+  wireRTE(el);
+  txRestaurarFoco(foco);
+}
+/* Refresca la ficha, la fila y los avisos de un transporte sin tocar el formulario. */
+function txRefrescar(t){
+  const el=document.getElementById("txList");if(!el||!t)return;
+  const q=CSS.escape(t.id);
+  const v=el.querySelector(`.tx-view[data-txv="${q}"]`);if(v)v.innerHTML=txFichaHTML(t);
+  const row=el.querySelector(`details[data-txrow="${q}"]`);
+  if(row){row.className=txClaseFila(t);const s=row.querySelector(":scope>summary");if(s)s.innerHTML=txResumenHTML(t);}
+  (t.segs||[]).forEach(g=>{const x=el.querySelector(`[data-sgres="${CSS.escape(g.id)}"]`);if(x)x.textContent=txSegResumen(g);});
+  const lista=txOrdenados();
+  const av=el.querySelector("[data-txavisos]");if(av)av.innerHTML=txAvisosHTML(lista);
+  const hint=document.getElementById("txHint");if(hint)hint.textContent=txHintTxt(lista);
+}
+/* Las líneas de transporte en el itinerario (listones entre paradas y cabeceras). */
+function txLineaTxt(ts){
+  return ts.map(t=>{
+    const rg=txRango(t),n=txNums(t)||txTitulo(t);
+    return `<span class="txl-i" data-txid="${esc(t.id)}">${txTipo(t).ic} ${esc(n)}${rg&&!t.tramo?" · "+esc(fmtDia(rg.ini)):""} ${
+      txHecho(t)?"✅":"⏳"}${txAlerta(t)?" 🟢":""}${(t.r||{}).confirmar&&!txPasado(t)?" ⚠":""}</span>`;
+  }).join(" · ");
+}
+const txDeTramo=key=>txOrdenados().filter(t=>t.tramo===key);
+const txDeParada=bid=>txOrdenados().filter(t=>t.bid===bid&&!t.tramo);
+function txLineaHTML(key){
+  const ts=txDeTramo(key);if(!ts.length)return "";
+  return `<div class="hline txline" data-act="vertx" data-item="${esc(ts[0].id)}" data-txtramo="${esc(key)}"
+    title="Ver en Transportes">${txLineaTxt(ts)}</div>`;
+}
+function txParadaLineaHTML(bid){
+  const ts=txDeParada(bid);if(!ts.length)return "";
+  return `<div class="hline txline" data-act="vertx" data-bid="${esc(bid)}" data-item="${esc(ts[0].id)}" data-txbid="${esc(bid)}"
+    title="Ver en Transportes">${txLineaTxt(ts)}</div>`;
+}
+function txActualizarLineas(){
+  document.querySelectorAll("#cards [data-txtramo]").forEach(el=>{el.innerHTML=txLineaTxt(txDeTramo(el.dataset.txtramo));});
+  document.querySelectorAll("#cards [data-txbid]").forEach(el=>{el.innerHTML=txLineaTxt(txDeParada(el.dataset.txbid));});
+}
+/* Abre la ficha de un transporte en la sección y la trae a la vista. */
+function irATransporte(id,editar){
+  const t=txPorId(id);if(!t)return;
+  txAbierto.add(id);txCerrado.delete(id);if(editar)txEditAbierto.add(id);
+  if(txFiltro&&!(txFiltro==="pend"?!txHecho(t):t.tipo===txFiltro))txFiltro="";
+  renderTransportes();
+  setTimeout(()=>{const el=document.querySelector(`#txList [data-txrow="${CSS.escape(id)}"]`);
+    if(el&&el.scrollIntoView)el.scrollIntoView({behavior:"smooth",block:"start"});},40);
+}
+/* Del transporte al itinerario: al listón del tramo o a la parada. */
+function txIrAlItinerario(t){
+  if(t.tramo){
+    const d=document.querySelector(`#cards [data-legdet="${CSS.escape(t.tramo)}"]`);
+    const leg=d&&d.closest(".leg");
+    if(leg){leg.scrollIntoView({behavior:"smooth",block:"center"});leg.classList.add("txflash");
+      setTimeout(()=>leg.classList.remove("txflash"),1600);return;}
+  }
+  const bid=t.bid||(t.tramo&&t.tramo.indexOf("|")>0?t.tramo.split("|")[1]:"");
+  const st=bid&&state.bases[bid];
+  if(!st){toast("Ese tramo ya no está en el itinerario");return;}
+  st.expanded=true;save();renderCards();
+  setTimeout(()=>{const h=document.querySelector(`.card-head[data-bid="${CSS.escape(bid)}"]`);
+    if(h&&h.scrollIntoView)h.scrollIntoView({behavior:"smooth",block:"start"});},60);
+}
+/* Pantalla completa con la dirección en grande, para enseñársela al chofer. */
+function mostrarAlChofer(id){
+  const t=txPorId(id),r=t&&t.r;if(!r||!r.direccionLocal)return;
+  const jp=/[぀-ヿ]/.test(r.direccionLocal)||(t.segs||[]).some(g=>g.zDe==="+09:00");
+  const ov=document.createElement("div");ov.className="taxiov";ov.setAttribute("role","dialog");
+  ov.setAttribute("aria-label","Dirección para el chofer");
+  ov.innerHTML=`<div class="taxibox">
+      <div class="tx-frase">${jp?"こちらまでお願いします":"请带我们去这里"}</div>
+      <div class="tx-dir">${r.direccionLocal.split(/\s*·\s*/).map(esc).join("<br>")}</div>
+      ${r.tel?`<div class="tx-tel">☎ ${esc(r.tel)}</div>`:""}
+      <div class="tx-es">«Por favor, llévenos a esta dirección» · toquen para cerrar</div></div>`;
+  document.body.appendChild(ov);
+  const cerrar=()=>{ov.remove();document.removeEventListener("keydown",onKey);};
+  const onKey=e=>{if(e.key==="Escape")cerrar();};
+  document.addEventListener("keydown",onKey);ov.addEventListener("click",cerrar);
+}
+/* Crea un transporte por cada tramo del itinerario que no tenga uno. */
+function txDesdeItinerario(){
+  const dated=withDates();if(!dated.length)return 0;
+  let n=0;
+  txTramosSinTransporte().forEach(x=>{
+    const L=(state.legs||{})[x.key]||{};
+    const t={id:txUid("tx"),tipo:"tren",titulo:"",tramo:x.key,bid:"",r:{estado:"pendiente"},ligas:[],costs:[],note:""};
+    const g={id:txUid("sg"),fecha:L.fecha||"",sale:L.dep||"",fechaLlega:L.fechaFin||"",llega:L.arr||""};
+    if(x.key==="_arrive"){t.tipo="vuelo";g.a=dated[0].def.name;if(!g.fecha&&state.meta&&state.meta.hasMap)g.fecha=isoDia(vueloIdaSale());}
+    else if(x.key==="_depart"){const u=dated[dated.length-1];t.tipo="vuelo";g.de=u.def.name;if(!g.fecha)g.fecha=isoDia(u.checkout);}
+    else{
+      const [a,b]=x.key.split("|"),A=dated.find(o=>o.def.id===a),B=dated.find(o=>o.def.id===b),xf=getXfer(a,b);
+      t.tipo=xf.type==="air"?"vuelo":xf.type==="road"?"traslado":"tren";
+      g.de=A?A.def.name:"";g.a=B?B.def.name:"";
+      if(!g.fecha&&A)g.fecha=isoDia(A.checkout);
+      const det=L.detalle||xf.detail;
+      if(det&&det!=="Verificar conexión")t.note=esc(det);
+    }
+    Object.keys(g).forEach(k=>{if(g[k]==="")delete g[k];});
+    t.segs=[g];
+    state.transportes.push(t);n++;
+  });
+  return n;
+}
+/* Todo lo que depende de los transportes, después de un cambio de estructura. */
+function txRenderTodo(){renderCards();renderSummary();renderBudget();renderChecklists();}
+
+/* ---- Eventos (la lista se dibuja de nuevo, los oyentes se quedan en el contenedor) ---- */
+(function(){
+  const el=document.getElementById("txList");if(!el)return;
+  const deUnGolpe=x=>x.tagName==="SELECT"||/^(date|time|datetime-local|checkbox)$/.test(x.type);
+  const aplicar=x=>{
+    if(!puedeEditar())return null;
+    const t=txPorId(x.dataset.tx);if(!t)return null;
+    const k=x.dataset.tk,s=x.dataset.ts,v=x.value;
+    if(s==="r"){
+      t.r=t.r||{estado:"pendiente"};
+      if(v==="")delete t.r[k];else t.r[k]=String(v).slice(0,800);
+      if(t.r.estado!=="reservado")t.r.estado="pendiente";
+    }else if(s==="top"){
+      if(k==="tipo")t.tipo=TX_TIPOS[v]?v:"otro";
+      else if(k==="titulo"||k==="tramo"||k==="bid")t[k]=String(v).slice(0,200);
+      else return null;
+    }else if(s==="seg"){
+      const g=(t.segs||[]).find(y=>y.id===x.dataset.sg);if(!g)return null;
+      if(v==="")delete g[k];else g[k]=String(v).slice(0,300);
+    }else if(s==="cost"){
+      const c=(t.costs||[]).find(y=>y.id===x.dataset.cc);if(!c)return null;
+      c[k]=k==="label"?String(v).slice(0,200):(+v||0);
+    }else if(s==="liga"){
+      const l=(t.ligas||[])[+x.dataset.li],y=l&&txLiga(l);if(!y)return null;
+      y.c[k]=+v||0;
+    }else return null;
+    return t;
+  };
+  el.addEventListener("input",e=>{
+    const x=e.target;if(!x.classList||!x.classList.contains("txf")||deUnGolpe(x))return;
+    const t=aplicar(x);if(!t)return;
+    saveDebounced();txRefrescar(t);
+    if(x.dataset.ts==="cost"||x.dataset.ts==="liga")refreshBudgetTotals();
+  });
+  el.addEventListener("change",e=>{
+    const x=e.target;
+    if(x.classList&&x.classList.contains("txlig")){      // ligar un costo del itinerario
+      const t=txPorId(x.dataset.tx),[bid,cid,key]=(x.value||"").split("::");
+      if(!t||!bid||!cid)return;
+      const st=state.bases[bid],a=st&&(st.catalog||[]).find(y=>y.cid===cid);
+      const c=a&&(a.costs||[]).find(z=>(z.id&&z.id===key)||(z.label||"")===key);
+      if(!c){x.value="";return;}
+      editar("ligar un costo",()=>{t.ligas.push({bid,cid,ccid:c.id||"",label:c.label||""});},{render:false});
+      txEditAbierto.add(t.id);txRenderTodo();return;
+    }
+    if(!x.classList||!x.classList.contains("txf"))return;
+    if(!deUnGolpe(x)){                                   // texto: ya se guardó al escribir
+      if(x.dataset.ts==="cost"||x.dataset.ts==="liga")renderBudget();
+      if(x.dataset.ts==="top"&&x.dataset.tk==="titulo")txActualizarLineas();
+      return;
+    }
+    const t=aplicar(x);if(!t)return;
+    save();
+    const k=x.dataset.tk,s=x.dataset.ts;
+    if(s==="top"){txRenderTodo();return;}                // tipo, tramo o parada: cambia el formulario y el itinerario
+    txRefrescar(t);txActualizarLineas();
+    if(s==="r"&&k==="estado"){renderSummary();renderChecklists();}
+    if(s==="seg"&&(k==="fecha"||k==="sale"||k==="fechaLlega"))reordenar=true;   // la lista se reacomoda al salir del campo
+  });
+  /* Reacomodar la lista mientras se elige una fecha cerraría el selector: se espera a que el foco salga de las fechas. */
+  let reordenar=false;
+  el.addEventListener("focusout",()=>{
+    if(!reordenar)return;
+    setTimeout(()=>{
+      const a=document.activeElement;
+      if(a&&a.closest&&a.closest("#txList")&&/^(date|time)$/.test(a.type||""))return;
+      if(!reordenar)return;
+      reordenar=false;renderTransportes();renderChecklists();
+    },0);
+  });
+  el.addEventListener("toggle",e=>{
+    const d=e.target;if(!d||d.tagName!=="DETAILS")return;
+    if(d.dataset.txrow){const id=d.dataset.txrow;
+      if(d.open){txAbierto.add(id);txCerrado.delete(id);}else{txAbierto.delete(id);txCerrado.add(id);}
+      const b=d.querySelector(":scope>[data-txbody]"),t=txPorId(id);
+      if(d.open&&b&&!b.childElementCount&&t){b.innerHTML=txCuerpoHTML(t);wireRTE(b);}}
+    else if(d.dataset.txe){const id=d.dataset.txe;
+      if(d.open)txEditAbierto.add(id);else txEditAbierto.delete(id);
+      const b=d.querySelector(":scope>.tx-edbody"),t=txPorId(id);
+      if(d.open&&b&&!b.childElementCount&&t)b.innerHTML=txEditorCuerpoHTML(t);}
+  },true);
+  el.addEventListener("click",e=>{
+    const b=e.target.closest("[data-txa]");if(!b||!el.contains(b))return;
+    e.preventDefault();
+    const a=b.dataset.txa,t=b.dataset.tx?txPorId(b.dataset.tx):null;
+    if(a==="filtro"){txFiltro=b.dataset.f||"";renderTransportes();return;}
+    if(a==="chofer"){if(t)mostrarAlChofer(t.id);return;}
+    if(a==="itin"){if(t)txIrAlItinerario(t);return;}
+    if(a==="add"){
+      const tipo=TX_TIPOS[b.dataset.tipo]?b.dataset.tipo:"otro";
+      const nuevo={id:txUid("tx"),tipo,titulo:"",tramo:"",bid:"",segs:[{id:txUid("sg")}],r:{estado:"pendiente"},
+        ligas:[],costs:[],note:""};
+      if(!editar("añadir transporte",()=>{state.transportes.push(nuevo);},{render:false}))return;
+      txFiltro="";txAbierto.add(nuevo.id);txEditAbierto.add(nuevo.id);txRenderTodo();
+      setTimeout(()=>{
+        const row=document.querySelector(`#txList [data-txrow="${CSS.escape(nuevo.id)}"]`);
+        if(row&&row.scrollIntoView)row.scrollIntoView({behavior:"smooth",block:"start"});
+        const f=document.querySelector(`#txList [data-tx="${CSS.escape(nuevo.id)}"][data-tk="de"]`);
+        if(f)try{f.focus({preventScroll:true});}catch(_){}
+      },60);
+      return;
+    }
+    if(a==="desdeitin"){
+      let n=0;
+      if(!editar("agregar los tramos del itinerario",()=>{n=txDesdeItinerario();},{render:false}))return;
+      txRenderTodo();
+      toast(n?`${n} transporte${n===1?"":"s"} nuevo${n===1?"":"s"}, uno por tramo`:"Todos los tramos ya tienen transporte",
+        {tipo:"ok",accion:n?{texto:"Deshacer",fn:undo}:undefined});
+      return;
+    }
+    if(!t)return;
+    if(a==="dup"){
+      const copia=JSON.parse(JSON.stringify(t));
+      copia.id=txUid("tx");copia.titulo=txTitulo(t)+" (copia)";
+      copia.segs=(copia.segs||[]).map(g=>({...g,id:txUid("sg")}));
+      copia.costs=(copia.costs||[]).map(c=>({...c,id:uid(),real:0}));
+      copia.ligas=[];                                    // un costo del itinerario se liga a un solo transporte
+      copia.r=Object.assign({},copia.r,{estado:"pendiente"});
+      ["conf","reservaNo","boleto"].forEach(k=>delete copia.r[k]);
+      if(!editar("duplicar transporte",()=>{
+        const i=state.transportes.indexOf(t);state.transportes.splice(i+1,0,copia);},{render:false}))return;
+      txAbierto.add(copia.id);txEditAbierto.add(copia.id);txRenderTodo();
+      toast("Duplicado: "+txTitulo(copia),{tipo:"ok"});
+      return;
+    }
+    if(a==="del"){
+      const nombre=txTitulo(t);
+      if(!editar("quitar transporte",()=>{state.transportes=state.transportes.filter(x=>x!==t);},{render:false}))return;
+      txRenderTodo();
+      toast("Quitado: "+nombre,{accion:{texto:"Deshacer",fn:undo}});
+      return;
+    }
+    const sgId=b.dataset.sg;
+    if(a==="addseg"){
+      editar("añadir tramo",()=>{
+        const u=t.segs[t.segs.length-1]||{};
+        const g={id:txUid("sg")};
+        if(u.a)g.de=u.a;
+        if(u.fechaLlega||u.fecha)g.fecha=u.fechaLlega||u.fecha;
+        if(u.zA||u.zDe)g.zDe=u.zA||u.zDe;
+        t.segs.push(g);
+      },{render:false});
+      txEditAbierto.add(t.id);renderTransportes();return;
+    }
+    if(a==="delseg"){
+      editar("quitar tramo",()=>{
+        if(t.segs.length>1)t.segs=t.segs.filter(g=>g.id!==sgId);
+        else t.segs=[{id:t.segs[0].id}];
+      },{render:false});
+      txRenderTodo();return;
+    }
+    if(a==="upseg"||a==="downseg"){
+      const i=t.segs.findIndex(g=>g.id===sgId),j=a==="upseg"?i-1:i+1;
+      if(i<0||j<0||j>=t.segs.length)return;
+      editar("mover tramo",()=>{const x=t.segs[i];t.segs[i]=t.segs[j];t.segs[j]=x;},{render:false});
+      renderTransportes();return;
+    }
+    if(a==="addcost"){
+      const c={id:uid(),label:"",est:0,real:0};
+      editar("añadir costo",()=>{t.costs.push(c);},{render:false});
+      txEditAbierto.add(t.id);renderTransportes();
+      const f=document.querySelector(`#txList [data-cc="${CSS.escape(c.id)}"][data-tk="label"]`);
+      if(f)try{f.focus();}catch(_){}
+      return;
+    }
+    if(a==="delcost"){
+      editar("quitar costo",()=>{t.costs=t.costs.filter(c=>c.id!==b.dataset.cc);},{render:false});
+      txRenderTodo();return;
+    }
+    if(a==="desligar"){
+      editar("desligar costo",()=>{t.ligas.splice(+b.dataset.li,1);},{render:false});
+      txRenderTodo();return;
+    }
+  });
+})();
+
+/* ---- En «Reservas»: la misma lista, para palomear ---- */
+function renderTxChecklist(el){
+  const lista=txOrdenados(),ed=puedeEditar();
+  let done=0,html=`<h4>Transportes</h4>`;
+  const grupos={};lista.forEach(t=>{(grupos[t.tipo]=grupos[t.tipo]||[]).push(t);});
+  Object.keys(TX_TIPOS).filter(k=>grupos[k]).forEach(k=>{
+    html+=`<div class="grp">${esc(TX_TIPOS[k].pl)}</div>`;
+    grupos[k].forEach(t=>{
+      const on=txHecho(t),rg=txRango(t),v=txVenta(t),id=esc(t.id);if(on)done++;
+      const sub=[rg?fmtDia(rg.ini):"",txNums(t),!on&&v&&!txPasado(t)?(v.abierta?"ya a la venta":"venta "+fmt(v.f)):""]
+        .filter(Boolean).join(" · ");
+      html+=`<div class="item ${on?"done":""}"><input type="checkbox" id="txck-${id}" data-txck="${id}" ${on?"checked":""}${ed?"":" disabled"}>
+        <label for="txck-${id}" style="flex:1;min-width:0">${esc(txTitulo(t))}${sub?`<span class="sub">${esc(sub)}</span>`:""}</label>
+        <button type="button" class="del" data-txver="${id}" title="Ver la ficha" aria-label="Ver la ficha">↗</button></div>`;
+    });
+  });
+  const total=lista.length,pct=total?Math.round(done/total*100):0;
+  html+=`<div class="progress"><i style="width:${pct}%"></i></div><div class="pcount">${done} / ${total} listo</div>`;
+  el.innerHTML=html;
+  el.querySelectorAll("[data-txck]").forEach(cb=>cb.addEventListener("change",()=>{
+    const t=txPorId(cb.dataset.txck);if(!t||!puedeEditar()){cb.checked=!cb.checked;return;}
+    t.r=t.r||{};t.r.estado=cb.checked?"reservado":"pendiente";
+    save();renderTransportes();renderSummary();txActualizarLineas();renderTxChecklist(el);
+  }));
+  el.querySelectorAll("[data-txver]").forEach(b=>b.addEventListener("click",()=>irATransporte(b.dataset.txver)));
+}
+
+/* ---- Para el PDF y el kit sin internet ---- */
+function pvTransportes(){
+  const lista=txOrdenados();if(!lista.length)return "";
+  let h=`<div class="pv-sec" id="pv-transportes"><h2>Transportes</h2><table class="pv-txt">`;
+  lista.forEach(t=>{
+    const T=txTipo(t),r=t.r||{},rg=txRango(t),g0=(t.segs||[])[0]||{};
+    const segs=(t.segs||[]).filter(g=>g.de||g.a||g.sale||g.num).map(g=>[g.num,
+      [g.de,horaTxt(g.sale)].filter(Boolean).join(" "),"→",[g.a,horaTxt(g.llega)].filter(Boolean).join(" "),
+      g.asiento?"· "+g.asiento:""].filter(Boolean).join(" ")).join("  |  ");
+    const datos=[txHecho(t)?"✅ "+T.hecho+(r.via?" en "+r.via:""):"⏳ "+T.falta,r.confirmar?"horario a confirmar":"",
+      r.conf?"confirmación "+r.conf:"",r.reservaNo?"pedido "+r.reservaNo:"",r.boleto?"boleto "+r.boleto:"",
+      r.tel?"tel. "+r.tel:"",r.encuentro?"encuentro: "+r.encuentro:""].filter(Boolean).join(" · ");
+    const vf=!txHecho(t)&&r.ventaAbre&&resFecha(r.ventaAbre);
+    h+=`<tr><td class="pv-t">${rg?esc(fmtDia(rg.ini)):"—"}${g0.sale?"<br>"+esc(horaTxt(g0.sale)):""}</td>
+      <td class="pv-act"><b>${esc(T.l)} · ${esc(txTitulo(t))}</b>${segs?`<div class="pv-note">${esc(segs)}</div>`:""}
+        <div class="pv-note">${esc(datos)}</div>
+        ${r.requisitos?`<div class="pv-note">${esc(r.requisitos)}</div>`:""}
+        ${r.direccionLocal?`<div class="pv-note">Para el chofer: ${esc(r.direccionLocal)}</div>`:""}
+        ${vf?`<div class="pv-note2">La venta abre el ${esc(fmtDia(vf))}</div>`:""}</td></tr>`;
+  });
+  return h+`</table></div>`;
+}
+
+/* ---- Semilla del viaje de China (nov 2026) ----
+   Todo lo que hay que comprar o reservar, sacado de las notas de cada
+   actividad, de los tramos y de la lista de esenciales. Los horarios son los
+   que trae el plan (los de mayo de 2027 se confirman al abrir la venta).
+   "ligas": [parada, actividad, qué costo] — el boleto que ya está en el
+   itinerario. "check": la palomita vieja de «Traslados» que equivale. */
+const TX_SEMILLA_2027=[
+  {tipo:"vuelo",titulo:"Guadalajara → Monterrey",tramo:"_arrive",
+   segs:[{de:"Guadalajara (GDL)",a:"Monterrey (MTY)",fecha:"2027-05-04",zDe:"-06:00"}],
+   r:{confirmar:"1",requisitos:"Es un boleto aparte del internacional: conecta con el Monterrey → Tokio de las 13:35. Si se retrasa, el internacional no los espera: mejor uno temprano",
+      equipaje:"Pregunten si las maletas se documentan hasta Hong Kong o hay que recogerlas en Monterrey"}},
+  {tipo:"vuelo",titulo:"Monterrey → Tokio → Hong Kong",tramo:"_arrive",check:"fl-intl-out",
+   segs:[{de:"Monterrey (MTY)",a:"Tokio · Narita (NRT)",fecha:"2027-05-04",sale:"13:35",zDe:"-06:00",fechaLlega:"2027-05-06",llega:"06:30",zA:"+09:00"},
+         {de:"Tokio · Narita (NRT)",a:"Hong Kong (HKG)",fecha:"2027-05-06",sale:"15:40",zDe:"+09:00",llega:"19:40",zA:"+08:00"}],
+   r:{requisitos:"Escala larga en Narita, de 6:30 a 15:40: el hotel del aeropuerto por horas va como costo de la escala, en el listón del vuelo en el itinerario",
+      equipaje:"Confirmen si las maletas van documentadas hasta Hong Kong"},
+   ligas:[["hk","hk-arrive",/vuelo/i]]},
+  {tipo:"tren",titulo:"Hong Kong → Yangshuo",tramo:"hk|yangshuo",check:"tr-hk-yangshuo",
+   segs:[{num:"G5626",de:"Hong Kong West Kowloon",termDe:"nivel B3, la frontera está dentro",a:"Shenzhen Norte (深圳北)",fecha:"2027-05-09",sale:"08:17",llega:"08:35",zDe:"+08:00"},
+         {num:"G2244",de:"Shenzhen Norte (深圳北)",termDe:"cambio rápido 便捷换乘",a:"Yangshuo (阳朔)",termA:"está en Xingping, a 28 km del hotel",fecha:"2027-05-09",sale:"09:25",llega:"12:21",zDe:"+08:00"}],
+   r:{via:"12306 o highspeed.mtr.com.hk",clase:"2a clase · 9,95 € + ~32,50 € por persona",ventaAbre:"2027-04-24",
+      desglose:"Los dos tramos juntos, en la misma reservación: 42,49 € por persona el viaje completo",
+      requisitos:"Boleto electrónico: se pasa con el pasaporte, no hay que recoger nada · lleguen a West Kowloon 90 min antes",
+      respaldo:"Si al abrir la venta cambió el número o la hora, la misma forma: un tramo corto a Shenzhen Norte y 40 min o más para el cambio. Si pierden el G2244, 12306 deja cambiarlo sin costo a otro tren del mismo día, en la ventanilla"},
+   ligas:[["yangshuo","ys-tren1",/G5626/],["yangshuo","ys-tren2",/G2244/]]},
+  {tipo:"traslado",titulo:"Estación de Yangshuo → Sugar House",tramo:"hk|yangshuo",bid:"yangshuo",
+   segs:[{num:"Coche del hotel",de:"Estación de Yangshuo (Xingping)",termDe:"a la salida, con letrero",a:"Yangshuo Sugar House",fecha:"2027-05-09",sale:"12:21",llega:"13:20",zDe:"+08:00"}],
+   r:{proveedor:"El hotel (Sugar House)",contacto:"Recepción, para pedirlo al reservar",tel:"+86 773 888 3999",
+      encuentro:"Salida de la estación de Yangshuo (Xingping), con un letrero",incluye:"28 km, ~45 min, con las maletas",
+      desglose:"Desde ¥400",direccionLocal:"阳朔糖舍度假酒店 · 广西桂林市阳朔县东岭路102号",
+      respaldo:"Taxi o DiDi ¥100-150, ~45 min (DiDi funciona en inglés y se paga con Alipay) · autobús oficial ¥20 por persona a Fengming y de ahí 4 km más"},
+   ligas:[["yangshuo","ys-aYangshuo",/./]]},
+  {tipo:"chofer",titulo:"Chofer todo el lunes: Xianggong, el Yulong y la balsa",bid:"yangshuo",
+   segs:[{num:"Chofer y coche todo el día",de:"Yangshuo Sugar House",
+          a:"Xianggong → Sugar House → Mountain Retreat → Jinlong Bridge → recogida en Jiuxian → Sugar House",
+          fecha:"2027-05-10",sale:"04:45",llega:"16:30",zDe:"+08:00"}],
+   r:{via:"El Sugar House al reservar (la frase está en «Para recepción»), o Trip.com / Klook",
+      contacto:"Lo más probable es que no hable inglés: agréguenlo en WeChat y escríbanle con el traductor",
+      tel:"+86 773 888 3999",encuentro:"Sugar House, 4:45 · se ven otra vez a las 9:30 en la puerta, a las 13:55 en la entrada del Retreat y a las 16:00 en el embarcadero de Jiuxian",
+      incluye:"Precio cerrado por todo el día, con gasolina, casetas y estacionamientos · el mismo coche y la misma persona de 4:45 a 16:30",
+      desglose:"~¥600-800 por el coche (presupuesto ¥800); empezar a las 4:45 puede subirlo",
+      direccionLocal:"相公山 · Yangshuo Mountain Retreat（高田镇凤楼村） · 金龙桥码头 · 旧县码头",
+      requisitos:"Denle a recepción la placa del coche la noche anterior: el Sugar House solo deja pasar la reja a coches registrados · mándenle al chofer el plan en chino por WeChat al apartarlo (va en las notas)",
+      respaldo:"Sin chofer no hay cómo: a Xianggong de madrugada no pasan coches y en Jiuxian, donde termina la balsa, tampoco"},
+   note:"<b>El plan para el chofer, en chino</b> (mándenselo por WeChat al apartarlo):<br>"+YS_CHOFER_PLAN,
+   ligas:[["yangshuo","ys-xg-ida",/chofer/i]]},
+  {tipo:"tren",titulo:"Yangshuo → Chengdu",tramo:"yangshuo|chengdu",check:"tr-yangshuo-chengdu",
+   segs:[{num:"G3886",de:"Yangshuo (阳朔)",a:"Chengdu South (成都南)",termA:"no hasta Chengdu East",fecha:"2027-05-11",sale:"08:34",llega:"14:09",zDe:"+08:00"}],
+   r:{clase:"2a clase · ¥508 por persona",ventaAbre:"2027-04-26",
+      requisitos:"Con pasaporte · directo, sin cambio de tren · son casi 6 h: suban con algo de comer",
+      respaldo:"D4284 7:24 → 16:23 a Chengdu East, desde la misma estación (salir del hotel a las 6:00) · por Guilin North: D1838 8:20 → 14:34 o G3740 11:04 → 17:12, con más de una hora de carretera"},
+   ligas:[["chengdu","cd-tren",/G3886/]]},
+  {tipo:"chofer",titulo:"Chofer todo el día: pandas, Qingcheng y Dujiangyan",bid:"chengdu",
+   segs:[{num:"Coche con chofer",de:"Hotel en Kuanzhai",a:"Pandas → Qingcheng → Dujiangyan → cena en Tongzilin → hotel",fecha:"2027-05-12",sale:"06:55",llega:"19:35",zDe:"+08:00"}],
+   r:{via:"Trip.com o Klook («Chengdu private car charter») o con el hotel",encuentro:"Lobby del hotel, 6:55",
+      incluye:"~13 h y ~200 km: los paquetes normales son de 10 h y 100 km, pidan el ajuste · que hable inglés",
+      desglose:"~¥1,300-1,800",direccionLocal:"成都大熊猫繁育研究基地 · 南大门",
+      requisitos:"Los boletos de los pandas van aparte: solo en línea y con nombre (WeChat o Trip.com, con pasaporte), boleto de la mañana"},
+   ligas:[["chengdu","cd-ir-pandas",/chofer/i]]},
+  {tipo:"tren",titulo:"Chengdu → Chongqing",tramo:"chengdu|chongqing",check:"tr-chengdu-chongqing",
+   segs:[{num:"G8607",de:"Chengdu East (成都东)",a:"Shapingba (沙坪坝)",termA:"la más cerca del centro",fecha:"2027-05-13",sale:"09:19",llega:"10:22",zDe:"+08:00"}],
+   r:{clase:"2a clase · ~¥100-160 por persona",ventaAbre:"2027-04-28",
+      requisitos:"Con pasaporte · compren hasta Shapingba: Chongqing Station está en obra hasta 2028",
+      respaldo:"G8609 9:25 → 10:27 a Shapingba, o G8605 8:17 → 9:37 (salir del hotel 7:15) · si ya opera la vía nueva Chengdu–Chongqing (~50 min, de Chengdu Station a Chongqing North), revísenla"},
+   ligas:[["chongqing","cq-tren",/G8607/]]},
+  {tipo:"traslado",titulo:"Pick-up en Shapingba → InterContinental",tramo:"chengdu|chongqing",bid:"chongqing",
+   segs:[{num:"Coche reservado",de:"Estación Shapingba (沙坪坝)",termDe:"a la salida del G8607",a:"InterContinental Chongqing Raffles City",fecha:"2027-05-13",sale:"10:22",llega:"11:07",zDe:"+08:00"}],
+   r:{via:"Trip.com o Klook («Chongqing railway station transfer») o con el hotel",contacto:"El hotel, si lo piden ahí",
+      tel:"+86 23 8988 8888",encuentro:"Salida del tren G8607 en Shapingba",desglose:"~¥150-250",
+      incluye:"~35 min · dejan las maletas en el hotel (el check-in es a las 15:00)",
+      direccionLocal:"重庆来福士洲际酒店 · 重庆市渝中区长江滨江路2号",
+      respaldo:"Metro línea 1 directo de Shapingba a Chaotianmen (~35 min), a 2 min del hotel, o la fila de taxis (出租车)"},
+   ligas:[["chongqing","cqd1-checkin",/pick/i]]},
+  {tipo:"tren",titulo:"Chongqing → Zhangjiajie",tramo:"chongqing|zjj",check:"tr-chongqing-zjj",
+   segs:[{num:"G2437",de:"Chongqing East (重庆东)",termDe:"no North ni West",a:"Zhangjiajie West (张家界西)",fecha:"2027-05-14",sale:"17:32",llega:"20:15",zDe:"+08:00"}],
+   r:{confirmar:"1",clase:"2a clase · ~¥250 por persona",ventaAbre:"2027-04-29",
+      requisitos:"Con pasaporte · hay datos de que este tren viene de Wanzhou: confirmen la hora de salida en Chongqing East al comprar",
+      respaldo:"G2435 15:07 → 17:55 (la tarde termina después de comer)"},
+   ligas:[["chongqing","zjj-tren",/G2437/]]},
+  {tipo:"traslado",titulo:"Zhangjiajie West → Hilton Garden Inn",tramo:"chongqing|zjj",bid:"zjj",
+   segs:[{num:"Coche del hotel",de:"Zhangjiajie West (张家界西)",termDe:"a la salida",a:"Hilton Garden Inn Zhangjiajie Tianmen Mountain",fecha:"2027-05-14",sale:"20:15",llega:"20:50",zDe:"+08:00"}],
+   r:{proveedor:"El hotel (Hilton Garden Inn)",tel:"+86 744 226 7777",
+      desglose:"Varios huéspedes cuentan que es gratis, pero Hilton no lo promete: que les confirmen si tiene costo",
+      requisitos:"Escríbanles antes con el tren (G2437) y la hora: la frase va en «Para recepción» del hotel",
+      direccionLocal:"张家界天门山希尔顿花园酒店 · 湖南省张家界市永定区机场路32号",
+      respaldo:"Taxi de la fila oficial a la salida, ~15-20 min (6-10 km, ~¥25-40): enséñenle la dirección"},
+   ligas:[["chongqing","zjjd0-wulingyuan",/./]]},
+  {tipo:"chofer",titulo:"Tour con chofer: Wulingyuan y el puente de cristal",bid:"zjj",
+   segs:[{num:"Tour privado con chofer",de:"Hilton Garden Inn Tianmen Mountain",a:"Bailong + Yuanjiajie + Tianzi y el puente de cristal · de regreso al hotel",fecha:"2027-05-15",sale:"06:30",llega:"17:45",zDe:"+08:00"}],
+   r:{encuentro:"Lobby del hotel, 6:30 (pidan la caja de desayuno la noche anterior)",incluye:"El parque está a ~1 h del hotel",
+      requisitos:"Boletos con pasaporte: parque ¥239; el puente de cristal, en línea"},
+   ligas:[["zjj","zjj-t1-pickup",/tour/i]]},
+  {tipo:"chofer",titulo:"Tour con chofer: Tianmen",bid:"zjj",
+   segs:[{num:"Tour privado con chofer, media jornada",de:"Hilton Garden Inn Tianmen Mountain",a:"Tianmen y de regreso al hotel",fecha:"2027-05-16",sale:"07:40",llega:"13:00",zDe:"+08:00"}],
+   r:{encuentro:"Lobby del hotel, 7:40",incluye:"El cuarto se queda hasta las 14:00 (salida tardía de la tarifa): regresan por las maletas"},
+   ligas:[["zjj","xa0-tianmen-ir",/tour/i]]},
+  {tipo:"vuelo",titulo:"Zhangjiajie → Xi'an",tramo:"zjj|xian",check:"tr-zjj-xian",
+   segs:[{de:"Zhangjiajie Hehua (DYG)",a:"Xi'an Xianyang (XIY)",fecha:"2027-05-16",zDe:"+08:00"}],
+   r:{confirmar:"1",proveedor:"Sichuan, Eastern o Tianjin Airlines: son los que vuelan directo",
+      requisitos:"Es lo primero que hay que resolver: hay pocos directos y no hay un horario confiable para el domingo en la tarde. Búsquenlo en Trip.com para el domingo 16. Del hotel al aeropuerto son ~5 min: el plan sale a las 14:40 y llega a Xi'an ~18:15",
+      respaldo:"Si solo hay uno al mediodía, Tianmen no cabe ese día · el tren directo son 9 h 48: no sirve"},
+   ligas:[["zjj","xa-arrive",/vuelo/i]]},
+  {tipo:"chofer",titulo:"Guía y coche: Xi'an",bid:"xian",
+   segs:[{num:"Guía privado con coche y chofer",de:"HUALUXE Xi'an Tanghua (Qujiang)",termDe:"a pie a la Gran Pagoda, ahí los espera el coche",a:"Gran Mezquita → Barrio Musulmán → Torres del Tambor y la Campana → hotel",fecha:"2027-05-17",sale:"08:25",llega:"14:40",zDe:"+08:00"}],
+   r:{encuentro:"Lobby del HUALUXE, 8:25",desglose:"~¥1,200-1,400 los dos con coche; entradas y comida aparte",
+      incluye:"~6 h · la muralla ya NO va con el guía (la hacen ustedes al atardecer): pidan el ajuste de precio",
+      requisitos:"Que sean el mismo guía y coche el martes, para Terracota"},
+   ligas:[["xian","xa1-guia",/gu[ií]a/i]]},
+  {tipo:"chofer",titulo:"Coche a Terracota y a Xi'an Norte, con las maletas",tramo:"xian|beijing",bid:"xian",
+   segs:[{num:"Coche exclusivo con chofer y el guía",de:"HUALUXE Xi'an Tanghua, con check-out",a:"Terracota → Lishan Yuan → estación Xi'an Norte (西安北站)",fecha:"2027-05-18",sale:"07:30",llega:"14:50",zDe:"+08:00"}],
+   r:{encuentro:"Lobby del HUALUXE, 7:30",incluye:"Las maletas van en la cajuela todo el día y el coche los deja en la estación: no regresan al hotel",
+      direccionLocal:"西安北站",
+      requisitos:"Díganle claro al chofer: Xi'an NORTE (西安北站), no la estación vieja del centro (西安站) · Terracota: reserva con pasaporte 7 días antes (mar 11 may), franja 8:30-9:30 · pasaportes y lo de valor, siempre con ustedes"},
+   ligas:[["xian","xa-terracota",/chofer/i]]},
+  {tipo:"tren",titulo:"Xi'an → Pekín",tramo:"xian|beijing",check:"tr-xian-beijing",
+   segs:[{num:"G (el más rápido de 15:00 a 16:00)",de:"Xi'an Norte (西安北)",a:"Pekín Oeste (北京西)",termA:"no Fengtai ni Qinghe",fecha:"2027-05-18",sale:"15:30",llega:"19:50",zDe:"+08:00"}],
+   r:{confirmar:"1",clase:"2a clase · ~¥515 por persona",ventaAbre:"2027-05-03",
+      requisitos:"Con pasaporte · los rápidos hacen ~4 h 10-4 h 30 y solo paran en Zhengzhou Este y Shijiazhuang",
+      respaldo:"Hay ~40 trenes al día y los horarios publicados no cuadran entre sí: confírmenlo al comprar"},
+   ligas:[["xian","bj-arrive",/tren/i]]},
+  {tipo:"chofer",titulo:"Guía y coche: Top 3 de Pekín",bid:"beijing",
+   segs:[{num:"Tour privado en español, con coche",de:"Happy Dragon Imperial Garden Courtyard (演乐胡同50号)",a:"Templo del Cielo → Tiananmen y la Ciudad Prohibida → Palacio de Verano → hotel",fecha:"2027-05-19",sale:"08:00",llega:"18:15",zDe:"+08:00"}],
+   r:{via:"Civitatis",encuentro:"Lobby del hotel, 8:00",desglose:"~US$250 por grupo",
+      requisitos:"Ciudad Prohibida y Tiananmen: boleto y reserva con pasaporte; la venta de la Ciudad Prohibida abre a las 20:00 de Pekín siete días antes (mié 12 may): que lo saque el guía · denle a Civitatis la dirección del hotel"},
+   ligas:[["beijing","pk1-guia",/tour/i]]},
+  {tipo:"chofer",titulo:"Guía y coche: Gran Muralla de Mutianyu",bid:"beijing",
+   segs:[{num:"Guía y coche privado, día completo",de:"Happy Dragon Imperial Garden Courtyard",a:"Mutianyu (慕田峪), ~70 km · de regreso a Pekín",fecha:"2027-05-20",sale:"07:45",llega:"17:15",zDe:"+08:00"}],
+   r:{via:"Civitatis",encuentro:"Lobby del hotel, 7:45",incluye:"~1 h 25 por trayecto",direccionLocal:"慕田峪长城",
+      requisitos:"Recotícenlo: el precio era el del coche de la mañana del viernes y ahora es día completo con guía"},
+   ligas:[["beijing","pk2-guia",/gu[ií]a/i]]},
+  {tipo:"chofer",titulo:"Guía y coche: Pekín y la estación, con las maletas",tramo:"beijing|shanghai",bid:"beijing",
+   segs:[{num:"Guía y coche privado, media jornada",de:"Happy Dragon Imperial Garden Courtyard, con check-out",a:"Templo de los Lamas → hutongs y Torre del Tambor → Wangfujing → estación Pekín Sur (北京南站)",fecha:"2027-05-21",sale:"08:15",llega:"14:10",zDe:"+08:00"}],
+   r:{via:"Civitatis",encuentro:"Lobby del hotel, 8:15, con las maletas",
+      incluye:"Las maletas se quedan en la cajuela; el coche los deja directo en la estación",direccionLocal:"北京南站",
+      requisitos:"Recotícenlo: era «Contrastes de Pekín», de día completo; ahora son cuatro paradas y media jornada. Pásenle este orden a la agencia"},
+   ligas:[["beijing","pk3-salida",/gu[ií]a/i]]},
+  {tipo:"tren",titulo:"Pekín → Shanghái",tramo:"beijing|shanghai",check:"tr-beijing-shanghai",
+   segs:[{num:"G17",de:"Pekín Sur (北京南)",a:"Shanghái Hongqiao (上海虹桥)",termA:"no la estación de Shanghái",fecha:"2027-05-21",sale:"15:00",llega:"19:34",zDe:"+08:00"}],
+   r:{confirmar:"1",clase:"2a clase ~¥660 por persona · para 4 h 30, primera o business (商务座) es un buen gusto",ventaAbre:"2027-05-06",
+      requisitos:"Con pasaporte · cenen en el tren: hay vagón comedor y se pide al asiento con la app 12306",
+      respaldo:"El G21 de las 14:00 es demasiado temprano para la mañana de tour"},
+   ligas:[["beijing","sh-arrive",/tren/i]]},
+  {tipo:"chofer",titulo:"Guía y coche: Shanghái histórico",bid:"shanghai",
+   segs:[{num:"Tour privado con guía y coche",de:"H+ Hotel, Pudong (潍坊西路90号)",a:"Ciudad Vieja → Concesión Francesa → Tianzifang → el Bund → hotel",fecha:"2027-05-23",sale:"08:30",llega:"16:30",zDe:"+08:00"}],
+   r:{via:"Civitatis",encuentro:"Lobby del H+, 8:30",desglose:"~€200 por grupo",requisitos:"Confirmen si incluye las entradas"},
+   ligas:[["shanghai","sh2h-guia",/tour/i]]},
+  {tipo:"vuelo",titulo:"Shanghái → Osaka Kansai",tramo:"shanghai|kyoto",check:"tr-shanghai-kyoto",
+   segs:[{num:"9C6575",de:"Shanghái Pudong (PVG)",termDe:"T2",a:"Osaka Kansai (KIX)",termA:"T2 · sin tren: shuttle gratis a la T1, ~7 min",fecha:"2027-05-24",sale:"08:05",zDe:"+08:00",llega:"11:20",zA:"+09:00"}],
+   r:{confirmar:"1",proveedor:"Spring Airlines (bajo costo)",clase:"Bajo costo: sin comida ni bebida; a bordo se paga en efectivo o QR chino",
+      equipaje:"COMPREN EL DOCUMENTADO por internet al comprar: en el mostrador cuesta mucho más. Revisen los kilos impresos en el boleto; el de mano lo pesan (7 kg)",
+      requisitos:"Visit Japan Web con su QR antes de aterrizar · salen del hotel a las 5:30 a la T2 de Pudong",
+      respaldo:"La mayoría de las fuentes dicen 8:05; alguna lista el mismo vuelo a las 8:10: confírmenlo al comprar"},
+   ligas:[["kyoto","ky-arrive",/vuelo|equipaje/i]]},
+  {tipo:"tren",titulo:"Kansai → Kioto (JR Haruka)",tramo:"shanghai|kyoto",
+   segs:[{num:"JR Haruka",de:"Aeropuerto de Kansai (T1)",a:"Kioto",termA:"andén 30, apartado al sur: caminen a la salida central (Karasuma)",fecha:"2027-05-24",sale:"12:20",llega:"13:40",zDe:"+09:00",asiento:"lado derecho saliendo del aeropuerto"}],
+   r:{proveedor:"JR West",clase:"Asiento reservado",via:"En línea (sale más barato) o el combo ICOCA & HARUKA en la taquilla de la T1",
+      respaldo:"Sale cada ~30 min: si se atrasan en migración, toman el siguiente"},
+   ligas:[["kyoto","ky0-haruka",/haruka/i]]},
+  {tipo:"tren",titulo:"Kioto → Tokio",tramo:"kyoto|tokyo",check:"tr-kyoto-tokyo",
+   segs:[{num:"Shinkansen Nozomi",de:"Kioto",a:"Tokio",fecha:"2027-05-26",sale:"12:30",llega:"14:45",zDe:"+09:00",asiento:"asiento E: el Fuji ~45 min antes de llegar"}],
+   r:{proveedor:"JR Central (Tokaido Shinkansen)",clase:"Asiento reservado · ~¥14,400 por persona",respaldo:"Sale uno cada ~10 min"},
+   ligas:[["tokyo","tk-arrive",/shinkansen|nozomi/i]]},
+  {tipo:"vuelo",titulo:"Tokio → Ciudad de México",tramo:"_depart",check:"fl-intl-ret",
+   segs:[{de:"Tokio (Narita NRT o Haneda HND)",a:"Ciudad de México (MEX)",fecha:"2027-05-29",sale:"09:35",zDe:"+09:00",llega:"07:10",zA:"-06:00"}],
+   r:{confirmar:"1",requisitos:"Confirmen de qué aeropuerto sale: a Narita salen del hotel a las 5:30 (~70-80 min); a Haneda, a las 6:30 · lleven las compras en la maleta de mano, para la devolución de impuestos en el aeropuerto"}}
+];
+function migrarTransportesV1(s){
+  if(s.txSeedV1)return;
+  s.txSeedV1=true;
+  if(!s.bases||!s.bases.hk||s.transportes.length)return;     // solo el viaje de China, y sin pisar nada
+  const checks=s.checks||{};
+  TX_SEMILLA_2027.forEach(x=>{
+    const t=limpiarTx({tipo:x.tipo,titulo:x.titulo,tramo:x.tramo||"",bid:x.bid||"",segs:x.segs,r:x.r||{},note:x.note||""});
+    if(!t)return;
+    (x.ligas||[]).forEach(([bid,cid,re])=>{
+      const st=s.bases[bid],a=st&&(st.catalog||[]).find(y=>y.cid===cid);
+      (a&&a.costs||[]).filter(c=>re.test(c.label||"")).forEach(c=>{
+        if(!c.id)c.id=uid();
+        t.ligas.push({bid,cid,ccid:c.id,label:c.label||""});
+      });
+    });
+    if(x.check&&checks[x.check])t.r.estado="reservado";      // lo que ya habían palomeado en «Traslados»
+    s.transportes.push(t);
+  });
+}
+
 function lodgingAutoActivo(st){
   return (st.budget||{}).lodgingAuto!==false && hotelesElegidos(st).length>0;
 }
@@ -11045,6 +12273,7 @@ function baseTotals(st){const ac=baseActCosts(st),bg=st.budget||{};
 function tripTotals(){const g=state.budget||{};let est=+g.flightsEst||0,real=+g.flightsReal||0;
   activeBases().forEach(o=>{const t=baseTotals(o.st);est+=t.est;real+=t.real;});
   const tr=tramosTotales();est+=tr.est;real+=tr.real;      // vuelos/trenes y sus escalas
+  const tx=txTotales();est+=tx.est;real+=tx.real;          // transportes con costo propio
   return{est,real};}
 /* Nombre legible de un tramo para el presupuesto. */
 function legNombre(key){
@@ -11086,10 +12315,13 @@ function renderSummary(){
     {n:air,l:air===1?"vuelo":"vuelos"}];
   const hs={t:0,r:0};
   active.forEach(o=>hotelesDeParada(o.st).forEach(h=>{hs.t++;if(h.reserva&&h.reserva.estado==="reservado")hs.r++;}));
-  chips.push({n:hs.t?hs.r+" / "+hs.t:"—",l:"hoteles reservados",cls:"link",go:"hotelsSection"});
+  const txl=state.transportes||[];
+  chips.push({n:txl.length?txl.filter(txHecho).length+" / "+txl.length:"—",l:"transportes listos",cls:"link",
+    go:"transportSection",tt:"Ver los transportes"});
+  chips.push({n:hs.t?hs.r+" / "+hs.t:"—",l:"hoteles reservados",cls:"link",go:"hotelsSection",tt:"Ver los hoteles"});
   const el=document.getElementById("summary");
   el.innerHTML=chips.map(c=>
-    `<div class="chip ${c.cls||''}"${c.go?` data-goto="${c.go}" role="button" tabindex="0" title="Ver los hoteles"`:""}><div class="n">${c.n}</div><div class="l">${c.l}</div></div>`).join("");
+    `<div class="chip ${c.cls||''}"${c.go?` data-goto="${c.go}" role="button" tabindex="0" title="${esc(c.tt||"Ver")}"`:""}><div class="n">${c.n}</div><div class="l">${c.l}</div></div>`).join("");
   el.querySelectorAll("[data-goto]").forEach(c=>{
     const ir=()=>{const t=document.getElementById(c.dataset.goto);if(t)t.scrollIntoView({behavior:"smooth",block:"start"});};
     c.addEventListener("click",ir);
@@ -11232,7 +12464,7 @@ function renderCards(){
       <div class="card ${on?'':'off'}">
         <div class="card-head" data-act="expand" data-bid="${b.id}">
           <div class="seal">${on?seq:'·'}</div>
-          <div class="titlecol"><h3>${resaltar(esc(b.name))}</h3><div class="region">${resaltar(esc(b.region))}</div>${on?hotelLineaHTML(b.id,st):""}
+          <div class="titlecol"><h3>${resaltar(esc(b.name))}</h3><div class="region">${resaltar(esc(b.region))}</div>${on?hotelLineaHTML(b.id,st)+txParadaLineaHTML(b.id):""}
             ${coinc&&coinc.total&&!st.expanded?`<div class="region" style="color:var(--jade)">${
               [coinc.actividades.length?coinc.actividades.length+" actividad"+(coinc.actividades.length===1?"":"es"):"",
                coinc.lugares.length?coinc.lugares.length+" lugar"+(coinc.lugares.length===1?"":"es"):""]
@@ -11311,6 +12543,7 @@ function renderCards(){
   }
   wireCardEvents();
   renderHospedaje();
+  renderTransportes();
   aplicarDestacado();
 }
 function makeRibbon(html){const rib=document.createElement("div");rib.className="leg";
@@ -11423,6 +12656,7 @@ function xferRibbonHTML(key,type,mode,detail,estTime){
         <button class="addbtn" data-act="addescala" ${k}>＋ Añadir escala</button>
       </div>
     </details>
+    ${txLineaHTML(key)}
   </div>`;
 }
 /* Cuánto se espera en una escala, si están las dos horas. */
@@ -11558,6 +12792,7 @@ function wireRTE(raiz){
   raiz.querySelectorAll(".rte-wrap").forEach(w=>{
     const ed=w.querySelector(".rte");if(!ed)return;
     const destino=()=>{
+      if(w.dataset.rtekind==="tx")return txPorId(w.dataset.item);
       if(w.dataset.rtekind==="leg"||w.dataset.rtekind==="escala"){
         const L=legDe(w.dataset.key);
         if(w.dataset.rtekind==="leg")return L;
@@ -11622,7 +12857,7 @@ function wireRTE(raiz){
       const limpio=limpiarHTML(ed.innerHTML);
       if(antes!==null&&antes!==limpio){
         o.note=antes;pushUndo("editar nota");o.note=limpio;   // un solo paso de deshacer por edición
-        save();renderCards();
+        save();if(w.dataset.rtekind!=="tx")renderCards();   // la nota de un transporte no cambia nada más
       }else sincronizar();
       antes=null;
     });
@@ -12334,6 +13569,8 @@ function wireCardEvents(){
       if(a==="delsel"){quitarSeleccion(el.dataset.bid,+el.dataset.day);return;}
       if(a==="cancelsel"){limpiarSeleccion();renderCards();return;}
       if(a==="verhotel"){irAHoteles(bid);return;}
+      if(a==="vertx"){const sp=e.target.closest&&e.target.closest("[data-txid]");
+        irATransporte(sp?sp.dataset.txid:el.dataset.item);return;}
       if(a==="tab"){st.tab=el.dataset.tab;limpiarSeleccion();save();renderCards();return;}
       if(a==="day"){st.day=+el.dataset.day;limpiarSeleccion();save();renderCards();return;}
       if(a==="additem"){
@@ -12714,6 +13951,8 @@ function armarImpresion(){
       `${fmt(vueloVuelta())} · sale ${V.sale}, llega ${V.llega} el mismo día`);
   }
 
+  h+=pvTransportes();
+
   // presupuesto, en su propia hoja
   h+=`<div class="pv-sec"><h2>Presupuesto estimado</h2><table class="pv-tot">`;
   let gran=0;
@@ -12725,6 +13964,8 @@ function armarImpresion(){
     +(L.costs||[]).reduce((a,c)=>a+(+c.est||0),0)
     +(L.escalas||[]).reduce((a,e)=>a+(e.costs||[]).reduce((x,c)=>x+(+c.est||0),0),0),0);
   if(tramos){gran+=tramos;h+=`<tr><td>Tramos y escalas</td><td>${esc(fmtMoney(tramos))}</td></tr>`;}
+  const txp=txTotales().est;
+  if(txp){gran+=txp;h+=`<tr><td>Transportes comprados aparte</td><td>${esc(fmtMoney(txp))}</td></tr>`;}
   h+=`<tr class="big"><td>Total</td><td>${esc(fmtMoney(gran))}</td></tr></table>`;
 
   // pendientes de la lista de esenciales (la tuya, con lo que hayas editado)
@@ -12823,7 +14064,9 @@ function renderEsenciales(){
   });
 }
 function renderChecklists(){
-  renderChecklist(document.getElementById("transportCard"),"Traslados",buildTransportItems());
+  const tc=document.getElementById("transportCard");
+  if((state.transportes||[]).length)renderTxChecklist(tc);
+  else renderChecklist(tc,"Traslados",buildTransportItems());
   renderEsenciales();
 }
 
@@ -12900,6 +14143,21 @@ function renderBudget(){
           <span class="bsub">presup. <b style="color:var(--ink)">${fmtMoney(e)}</b> · real <b style="color:var(--ink)">${fmtMoney(r)}</b></span></div>
           ${filas}
           <div class="bline"><span class="usage">Se editan en cada tramo del itinerario, junto a sus escalas.</span></div></div>`;
+      })()}
+      ${(()=>{
+        const conCosto=(state.transportes||[]).filter(t=>sumaCostos(t.costs,"est")||sumaCostos(t.costs,"real"));
+        if(!conCosto.length)return "";
+        let e=0,r=0;
+        const filas=conCosto.map(t=>{
+          const pe=sumaCostos(t.costs,"est"),pr=sumaCostos(t.costs,"real");e+=pe;r+=pr;
+          return `<div class="bline"><span class="blabel">${txTipo(t).ic} ${esc(txTitulo(t))}</span>
+            <span class="ro">${fmtMoney(pe)}</span><span class="ro">${fmtMoney(pr)}</span></div>`;
+        }).join("");
+        return `<div class="bblock"><div class="bh"><span class="bn">Transportes comprados aparte</span>
+          <span class="bsub">presup. <b style="color:var(--ink)">${fmtMoney(e)}</b> · real <b style="color:var(--ink)">${fmtMoney(r)}</b></span></div>
+          ${filas}
+          <div class="bline"><span class="usage">Se editan en la sección Transportes. Los boletos ligados a una actividad del
+            itinerario cuentan en su parada, no aquí.</span></div></div>`;
       })()}
       <div class="bglobal" style="border-bottom:0;border-top:2px solid var(--line);margin-top:4px">
         <span class="blabel" style="flex:1;font-weight:600;color:var(--ink)">TOTAL</span>
