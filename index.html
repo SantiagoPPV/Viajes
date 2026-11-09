@@ -1047,7 +1047,7 @@
 /* ===================== Constantes ===================== */
 /* Sello de versión: sirve para saber, desde cualquier computadora, si el
    navegador está mostrando la versión publicada o una vieja guardada en caché. */
-const APP_VERSION="v50 · 7 nov 2026 · Kit sin internet: tarjetas de taxi y recepción";
+const APP_VERSION="v51 · 9 nov 2026 · Zhangjiajie y Pekín, acomodados a los hoteles nuevos";
 /* ===================== RUTA DEL VIAJE · EDITA AQUÍ =====================
    Este bloque es el único lugar donde vive la ruta. Para cambiarla:
      1. Mueve, quita o agrega renglones en ROUTE: el orden de la lista es el
@@ -3895,6 +3895,7 @@ function normalizeTripState(s){
   migrarHotelesJapon(s);     // Tokio reservado (Celestine Ginza) y los enlaces de cada hotel
   migrarPekinZjjHoteles(s);  // Pekín (Happy Dragon, Dongsi) y Zhangjiajie (Hilton Garden Inn) reservados
   migrarKitDirecciones(s);   // nombres en chino validados (Shanghái tenía otro)
+  migrarItinerarioHotelesV51(s); // Zhangjiajie y Pekín, acomodados a los hoteles nuevos
   purgarRetiradas(s);        // y al final: lo que se quitó a propósito no vuelve nunca
   return s;
 }
@@ -9324,14 +9325,18 @@ const KIT_HOTELES={
     es:{nombre:"Hilton Garden Inn Zhangjiajie Tianmen Mountain",dir:"No. 32 Jichang Road (avenida del aeropuerto), Yongding",extra:"cerca de la montaña Tianmen"},
     amap:"张家界天门山希尔顿花园酒店",apple:"张家界天门山希尔顿花园酒店",google:"Hilton Garden Inn Zhangjiajie Tianmen Mountain",
     recepcion:[
-      ["（出发前发给酒店）我们5月14日（周五）晚上8:15坐G2437次高铁到张家界西站，两位客人，请安排免费接站，谢谢！",
-       "(Para mandarlo ANTES de llegar, por mensaje o correo.) Llegamos el viernes 14 a las 20:15 a Zhangjiajie West en el tren G2437, dos personas: ¿nos mandan el traslado gratis desde la estación?"],
+      ["（出发前发给酒店）我们5月14日（周五）晚上8:15坐G2437次高铁到张家界西站，两位客人。请问酒店可以安排接站吗？需要付费吗？谢谢！",
+       "(Para mandarlo ANTES de llegar, por mensaje o correo.) Llegamos el viernes 14 a las 20:15 a Zhangjiajie West en el tren G2437, dos personas. ¿El hotel nos puede recoger en la estación? ¿Tiene costo?"],
       ["5月15日（周六）早上6:30旅游团来酒店接我们，那时餐厅还没开门，可以帮我们准备两份打包早餐吗？",
        "El sábado 15 a las 6:30 nos recoge el tour, antes de que abra el comedor: ¿nos preparan dos desayunos para llevar?"],
-      ["5月16日（周日）早上我们退房，请把行李寄存到下午2:15。",
-       "El domingo 16 hacemos check-out en la mañana: ¿nos guardan el equipaje hasta las 14:15?"],
-      ["下午2:40请安排免费送机，去张家界荷花机场。",
-       "A las 14:40, ¿nos llevan al aeropuerto de Zhangjiajie (Hehua) en el traslado gratis?"]]},
+      ["5月15日（周六）晚上7:00，请帮我们叫一辆出租车去天门山索道附近，我们去吃土家菜。",
+       "El sábado 15 a las 19:00, ¿nos piden un taxi a la zona del teleférico de Tianmen? Vamos a cenar comida tujia."],
+      ["我们的房价包含延迟退房到下午2点。5月16日（周日）早上我们去天门山，下午1点回来洗澡收拾，2点退房。请帮我们确认，谢谢。",
+       "Nuestra tarifa incluye salida tardía hasta las 14:00. El domingo 16 vamos a Tianmen en la mañana, regresamos a las 13:00 a bañarnos y entregamos el cuarto a las 14:00: ¿nos lo confirman?"],
+      ["退房后我们想在酒店餐厅吃午饭（下午2:00到2:40），那时餐厅营业吗？行李可以先放在前台吗？",
+       "Después del check-out queremos comer en el restaurante del hotel, de 14:00 a 14:40: ¿está abierto a esa hora? ¿Nos guardan las maletas en recepción mientras?"],
+      ["5月16日（周日）下午2:40，可以送我们去张家界荷花机场吗？如果酒店没有送机服务，请帮我们叫一辆出租车。",
+       "El domingo 16 a las 14:40, ¿nos llevan al aeropuerto de Zhangjiajie (Hehua)? Si el hotel no tiene traslado, ¿nos piden un taxi?"]]},
   xian:{re:/hualuxe|华邑/i,lang:"zh-Hans",zona:"china",
     nombre:"西安唐华华邑酒店",dir:"陕西省西安市雁塔区曲江新区雁引路40号",extra:"（大雁塔附近）",tel:"029-8799 0000",telIntl:"+86 29 8799 0000",
     es:{nombre:"HUALUXE Xi'an Tanghua",dir:"No. 40 Yanyin Road, Qujiang",extra:"cerca de la Gran Pagoda del Ganso Salvaje"},
@@ -9349,12 +9354,16 @@ const KIT_HOTELES={
     amap:"北京市东城区演乐胡同50号",apple:"北京市东城区演乐胡同50号",google:"50 Yanle Hutong, Dongcheng, Beijing",
     nota:"El nombre del hotel en chino es larguísimo: lo que vale para el taxi es la dirección (演乐胡同50号). El teléfono es un celular: si se pierden en el hutong, llamen.",
     recepcion:[
-      ["（出发前发给酒店）我们5月18日（周二）晚上大约8:30从北京西站打车过来。如果车进不了胡同，麻烦派人到胡同口接我们，谢谢！",
-       "(Para mandarlo ANTES de llegar.) Llegamos el martes 18 hacia las 20:30, en taxi desde Pekín Oeste. Si el coche no puede entrar al hutong, ¿podrían mandar a alguien a la entrada del callejón?"],
-      ["5月19日（周三）早上8:00和20日（周四）早上7:45，导游的车来酒店接我们。车可以停在哪里？",
-       "El miércoles 19 a las 8:00 y el jueves 20 a las 7:45 nos recoge el coche del guía: ¿dónde se puede parar?"],
+      ["（出发前发给酒店）我们5月18日（周二）晚上大约9:00从北京西站打车过来。如果车进不了胡同，麻烦派人到胡同口接我们，谢谢！",
+       "(Para mandarlo ANTES de llegar.) Llegamos el martes 18 hacia las 21:00, en taxi desde Pekín Oeste. Si el coche no puede entrar al hutong, ¿podrían mandar a alguien a la entrada del callejón?"],
+      ["5月18日（周二）晚上9点，请帮我们叫一辆出租车去簋街吃饭。",
+       "El martes 18 a las 21:00, ¿nos piden un taxi a Guijie (簋街), la calle de la comida nocturna?"],
+      ["5月19日（周三）早上8:00、20日（周四）早上7:45和21日（周五）早上8:15，导游的车来酒店接我们（周五我们退房，带行李）。车可以停在哪里？",
+       "El miércoles 19 a las 8:00, el jueves 20 a las 7:45 y el viernes 21 a las 8:15 (ese día ya con check-out y maletas) nos recoge el coche del guía: ¿dónde se puede parar?"],
       ["5月19日晚上7:05，请帮我们叫一辆出租车去前门大街。",
        "El miércoles 19 a las 19:05, ¿nos piden un taxi a la calle peatonal de Qianmen?"],
+      ["5月20日（周四）晚上7:15，请帮我们叫一辆出租车去沙滩北街23号的TRB餐厅（在智珠寺里）。",
+       "El jueves 20 a las 19:15, ¿nos piden un taxi al restaurante TRB Hutong (沙滩北街23号, dentro del templo Zhizhu)?"],
       ["附近有好的早餐店吗？",
        "¿Hay un buen lugar para desayunar cerca?"]]},
   shanghai:{re:/h\+ hotel|潍坊西路|weifang/i,lang:"zh-Hans",zona:"china",
@@ -9638,6 +9647,421 @@ function migrarKitDirecciones(s){
   fija("shanghai",/h\+ hotel|潍坊西路|weifang/i,"上海陆家嘴H+酒店 · 上海市浦东新区潍坊西路90号");
   fija("chengdu",/chuanxing|川行/i,"川行隐里酒店（成都宽窄巷子店） · 四川省成都市金牛区十二桥路19号1栋");
   s.kitDirV1=true;
+}
+/* ---- Los itinerarios, acomodados a los hoteles nuevos (v51) ----
+   Con los comprobantes de Zhangjiajie y Pekín cambiaron los dos hoteles, y se
+   revisó cada actividad del viernes 14 al viernes 21 contra la ubicación nueva.
+   · Zhangjiajie (Hilton Garden Inn, sobre la avenida del aeropuerto): el
+     domingo ya no hay check-out temprano. La tarifa trae salida hasta las 14:00
+     y el día se acomodó para usarla: Tianmen 8:00-13:00, hotel (baño, maletas y
+     salida) 13:00-14:00, comida en el hotel y aeropuerto a las 14:40. La cena
+     tujia del sábado ya tiene lugar (junto al teleférico de Tianmen, ~10 min) y
+     taxi. El traslado gratis del hotel no lo promete la página de Hilton (lo
+     cuentan huéspedes): se pide y se confirma.
+   · Pekín (Yanle Hutong, Dongsi): la llegada del martes cuenta la salida y la
+     fila de taxis de Pekín Oeste (hotel ~21:00), y Guijie queda a ~2.5 km. El
+     miércoles el pato de Siji Minfu es con número, no con reserva, y los
+     recintos del Palacio de Verano cierran a las 18:00 (última entrada 17:30).
+     El jueves hay taxi antes del TRB (沙滩北街23号, ~3 km). Y el viernes se
+     reordena: la Torre del Tambor abre a las 9:30 —a las 8:35 estaba cerrada—,
+     así que primero el Templo de los Lamas a las 9:00 (derecho al norte por la
+     avenida del hotel), luego hutongs y la torre para el toque de las 11:00, y
+     de ahí al sur: Wangfujing, comida y Pekín Sur.
+   Las cenas que ahora son en taxi incluyen el traslado en su ficha (sin huecos
+   en el día) y su costo de ida y vuelta. */
+const ITIN_V51={
+  zjj:{
+    "g-breakfast":[null,
+      "<b>Viene incluido</b> en la reserva del Hilton Garden Inn, para 2, el sábado 15 y el domingo 16.<br>"+
+      "<b>Sábado:</b> el tour los recoge a las <b>6:30</b>, antes de que abra el comedor. <b>Pidan la caja para "+
+      "llevar la noche del viernes</b>, al hacer check-in: ya está pagada.<br>"+
+      "<b>Domingo 7:00</b>, aquí sí sentados, antes de que los recojan para Tianmen a las <b>7:40</b>: bajen ya "+
+      "con la mochila lista. Desayunen fuerte: Tianmen son cinco horas de teleférico, escaleras y los 999 "+
+      "escalones, y arriba la comida es cara y mala.<br>"+
+      "<i>Por eso este desayuno ya no cuenta en el presupuesto.</i>",null],
+    "zjj-t1-regreso":[null,
+      "<b>16:45 · ~1 h de regreso</b> del Gran Cañón al Hilton Garden Inn, en la ciudad. El camino de montaña es "+
+      "de curvas: si alguno se marea, adelante y mirando al frente.<br>"+
+      "<b>Llegan ~17:45 reventados</b> — hoy caminaron Yuanjiajie, Tianzi y el puente de cristal. Por eso la cena "+
+      "es hasta las 19:00, y a 10 min del hotel.<br>"+
+      "<i>Confirmen con el chofer la hora de mañana: el tour de Tianmen los recoge a las 7:40.</i>",null],
+    "g-rest":[null,
+      "<b>17:45 · hora y cuarto en el hotel, y hace falta.</b> Hoy fueron el elevador Bailong, Yuanjiajie, "+
+      "Tianzi y el puente de cristal: es el día de más piernas de todo el viaje.<br>"+
+      "<b>Aprovechen para lo práctico:</b> cargar baterías y el power bank (mañana en Tianmen no hay dónde), "+
+      "bajar las fotos y dejar lista la mochila chica para Tianmen.<br>"+
+      "<b>Mañana no hay check-out temprano:</b> su tarifa trae salida hasta las 14:00, así que regresan de "+
+      "Tianmen a bañarse y a cerrar maletas. Dejen la maleta medio hecha desde hoy.<br>"+
+      "<b>A las 19:00 salen a cenar en taxi:</b> la frase para pedirlo está en «Para recepción».<br>"+
+      "<i>Un baño de agua caliente en las piernas hace más por mañana que cualquier otra cosa.</i>",75],
+    "zjj-tujia":[null,
+      "<b>19:00 · ~10 min en taxi (~¥15)</b> al centro, a la estación del <b>teleférico de Tianmen</b> "+
+      "(天门山索道, sobre 大庸中路), que es donde están las casas de cocina tujia de la ciudad. Dos con buenas "+
+      "reseñas, a pasos del teleférico: <b>寨嫂当家·湘西土家菜（天门山索道店）</b>, abierta de 9:30 a 21:30, y "+
+      "<b>印象老灶台三下锅（天门山索道店）</b>. Búsquenlas en Amap antes de salir para confirmar que siguen "+
+      "abiertas; ~¥45-80 por persona.<br>"+
+      "<b>Cocina tujia, que es la razón de cenar fuera y no en el hotel.</b> Los tujia son el pueblo de estas "+
+      "montañas y su comida no se parece a nada de lo que van a comer en el resto del viaje: ahumado, agrio y "+
+      "picante de Hunan.<br>"+
+      "<b>Qué pedir, en orden de importancia:</b><ul>"+
+      "<li><b>三下锅 (sānxiàguō)</b> — el plato de Zhangjiajie. Una olla seca que se cocina en la mesa, con "+
+      "carne, tofu y verduras. Pídanla <b>seca</b> (干锅), que es como la comen aquí, no en caldo.</li>"+
+      "<li><b>土家腊肉 (làròu)</b> — tocino curado y ahumado al fuego de leña, salado y hondo. Con arroz "+
+      "blanco.</li>"+
+      "<li><b>岩耳炖鸡</b> — caldo de pollo con el hongo de roca que crece en estos acantilados. Suave, para "+
+      "equilibrar el picante.</li>"+
+      "<li><b>合渣 (hézhā)</b> — soya molida con verduras verdes. Es el plato de diario tujia y calma la "+
+      "boca.</li></ul>"+
+      "<b>El picante va en serio.</b> Esto es Hunan, no Sichuan: no adormece, quema. Digan <b>«微辣» (wēi "+
+      "là)</b> = poco picante, o <b>«不辣» (bú là)</b> = sin picante. Aun así va a picar.<br>"+
+      "De postre o de botana, 葛根粉 (gégēnfěn): una gelatina de raíz de kudzu, dulce, muy de aquí.<br>"+
+      "<b>~20:30 · taxi de regreso</b>, otros 10 min. Mañana el tour pasa a las 7:40, y el teleférico de "+
+      "Tianmen sale de esta misma zona: ya lo verán de noche.<br>"+
+      "<i>La calle Xibu (溪布街), que sale en todas las guías para cenar tujia, está en Wulingyuan, a ~1 h de su "+
+      "hotel: no les queda.</i>",105],
+    "zjj-towers":[null,
+      "<b>Ahora sí les queda:</b> el hotel está en la ciudad, y las torres están en el centro, a unos minutos en "+
+      "taxi de donde cenan el sábado. Se ven de noche, iluminadas.<br>"+
+      "<i>No está en el plan porque el sábado es el día más cansado del viaje y el domingo los recogen a las "+
+      "7:40 para Tianmen. Si después de la cena tujia les sobran ganas, es la opción.</i>",null],
+    "xa0-tianmen-ir":["El tour a Tianmen (el cuarto se queda hasta las 14:00)",
+      "<b>7:40 · los recoge el tour</b>: el teleférico de Tianmen sale de la misma ciudad, a <b>~2.3 km del "+
+      "hotel</b> (5-10 min). Llegan a la apertura de las 8:00.<br>"+
+      "<b>Hoy NO hagan check-out en la mañana.</b> Su tarifa trae <b>salida tardía hasta las 14:00</b> y el día "+
+      "se acomodó para usarla: regresan de Tianmen a las 13:00, se bañan después de los 999 escalones, cierran "+
+      "maletas y entregan el cuarto a las 14:00.<br>"+
+      "<b>Llévense solo la mochila chica:</b> pasaportes (el boleto de Tianmen va con pasaporte), agua, chamarra "+
+      "ligera y el power bank.<br>"+
+      "<i>Al bajar a desayunar, confirmen en recepción la salida a las 14:00 y el traslado al aeropuerto de las "+
+      "14:40: las dos frases están en «Para recepción».</i>",null],
+    "xa0-tianmen":[null,
+      "<b>8:00-13:00 · Tianmen (天门山)</b>, la montaña con un hueco de lado a lado:"+
+      "<ul><li>El <b>teleférico</b> sale de la misma ciudad y sube por encima de los techos.</li>"+
+      "<li>La <b>Puerta del Cielo</b> (天门洞), el arco natural de 131 m, con sus 999 escalones o las escaleras "+
+      "eléctricas por dentro del cerro.</li>"+
+      "<li>Las <b>pasarelas de vidrio</b> pegadas al risco (¥5 de cubrezapatos).</li>"+
+      "<li>La carretera de las <b>99 curvas</b>, en el autobús del parque.</li></ul>"+
+      "<b>⚠ El tramo de arriba del teleférico está cerrado por obras desde noviembre de 2025:</b> hoy se sube "+
+      "combinando teleférico, autobús y escaleras eléctricas (rutas A, B o C, ~¥278). Si para mayo ya reabrió, "+
+      "mejor. El tour sabe la ruta del día.<br>"+
+      "<b>¿Vale la pena?</b> Sí, es la otra cara de Zhangjiajie: menos pilares y más vacío.<br>"+
+      "<b>A las 12:30 empiecen a bajar:</b> a las 13:00 el tour los deja en el hotel, que es donde se bañan y "+
+      "entregan el cuarto. Si van atrasados, que el guía priorice la Puerta del Cielo y las pasarelas.<br>"+
+      "<i>8:00-19:00, entrada hasta las 16:00. Es domingo: entren con el primer grupo, a las 8:00.</i>",300],
+    "xa0-maletas":["De vuelta al hotel: baño, maletas y check-out a las 14:00",
+      "<b>13:00 · el tour los deja en el hotel</b> (~10 min de Tianmen). Una hora para bañarse, cerrar maletas y "+
+      "<b>entregar el cuarto a las 14:00</b>, que es su salida tardía.<br>"+
+      "<b>Revisen el cuarto antes de bajar:</b> cargadores, adaptadores, el cajón de la mesa de noche y el baño "+
+      "son lo que siempre se queda.<br>"+
+      "<b>Al aeropuerto, a las 14:40:</b> varios huéspedes cuentan que el hotel los llevó gratis, pero la página "+
+      "de Hilton no lo promete: confírmenlo en la mañana. Si no, taxi; el aeropuerto está a ~1 km (5 min, "+
+      "~¥10-15).<br>"+
+      "<b>El vuelo a Xi'an todavía está <u>a confirmar</u></b> y hay pocos al día: revisen el estatus antes de "+
+      "salir del hotel.<br>"+
+      "<i>Pasaportes fuera: en China los piden en el check-in y otra vez en seguridad.</i>",60],
+    "xa0-comida":["Comida en el hotel, antes del aeropuerto",
+      "<b>14:00 · con el cuarto ya entregado</b>, coman en el restaurante del hotel; las maletas se quedan en "+
+      "recepción. Nada de cruzar la ciudad: a las 14:40 salen al aeropuerto.<br>"+
+      "<b>Confirmen en la mañana</b> que el restaurante sirve comida a esa hora. Si no, que recepción les "+
+      "recomiende algo a pie sobre la misma avenida.<br>"+
+      "<b>Última comida en Hunan:</b> si no alcanzaron el 三下锅 anoche, pregunten si lo tienen. Si no, 米粉 "+
+      "(fideos de arroz), que es lo rápido y seguro.<br>"+
+      "<i>El aeropuerto está a 5 min, pero el check-in de equipaje cierra 45 min antes del vuelo: que no se "+
+      "alargue.</i>",40],
+    "xa-arrive":[null,
+      "<b>14:40 · ~5 min del hotel al aeropuerto de Zhangjiajie (DYG)</b>, que está a ~1 km, y vuelo de la tarde "+
+      "a Xi'an (XIY), ~1 h 45. Llegarían ~18:15.<br>"+
+      "<b>⚠ Este vuelo es lo primero que hay que resolver:</b> de Zhangjiajie a Xi'an hay pocos directos "+
+      "(Sichuan, Eastern, Tianjin) y no encontré un horario confiable para el domingo en la tarde. Búsquenlo en "+
+      "Trip.com para el domingo 16. Si solo hay uno al mediodía, Tianmen no cabe ese día.<br>"+
+      "<i>El tren directo no sirve: son 9 h 48.</i>",null]
+  },
+  xian:{
+    "xa2-pekin-hotel":[null,
+      "<b>19:50 · llegan a Pekín Oeste</b>, que es enorme: del andén a la salida son 10-15 min. Sigan los "+
+      "letreros de <b>出租车 (Taxi)</b> a la fila oficial —en la noche puede tardar 15-30 min— o pidan DiDi desde "+
+      "el tren, al punto de recogida que marque la app. No acepten a los que se acercan a ofrecer.<br>"+
+      "<b>~12-14 km, 30-40 min</b> al hotel, en Dongsi (~¥50). Calculen llegar <b>~21:00</b>.<br>"+
+      "<b>Para el chofer:</b> <b>"+BJ_DIR2+"</b>. Es un hotel de patio dentro de un hutong: si el coche no "+
+      "entra, los deja en la boca del callejón y son unos minutos a pie con las maletas. Llamen al hotel para que "+
+      "salga alguien: <b>+86-18501084521</b>.<br>"+
+      "<b>Check-in desde las 14:00</b>, así que a esta hora el cuarto ya está listo.<br>"+
+      "<i>Desde el tren, mándenle un mensaje al hotel con la hora a la que llegan: la frase está en «Para "+
+      "recepción».</i>",70],
+    "xa2-cena":["Cena tardía en Guijie (簋街)",
+      "<b>21:00 · dejan las maletas y salen:</b> ~10 min en taxi (~¥15) a <b>Guijie (簋街)</b>, ~2.5 km al "+
+      "norte del hotel, sobre Dongzhimen Nei Dajie (东直门内大街). Es la calle de comida nocturna de Pekín: "+
+      "faroles rojos y restaurantes abiertos hasta las 2-4 de la mañana. A esta hora está en su mejor "+
+      "momento.<br>"+
+      "<b>Qué comer:</b> la especialidad es el <b>cangrejo de río picante (麻辣小龙虾)</b>, y la casa más famosa "+
+      "es <b>Hu Da (胡大饭馆)</b>, con varias sucursales en la misma calle. Hay fila, pero avanza. Si no quieren "+
+      "picante, hay hot pot, brochetas y cocina de casa en toda la calle.<br>"+
+      "<b>~22:15 · taxi de regreso</b>, otros 10 min.<br>"+
+      "<b>Si llegan muertos:</b> cenen en el tren (hay vagón comedor y comida al asiento por la app 12306) y "+
+      "directo a dormir.<br>"+
+      "<i>Que no se alargue: mañana es el primer día completo de Pekín y el guía pasa a las 8:00.</i>",90]
+  },
+  beijing:{
+    "bj-duck":[null,null,130],
+    "pk1-a-verano":[null,
+      "<b>14:15 · ~45 min</b> al noroeste, ~20 km. Con tráfico pueden ser 60: duerman en el coche, que la mañana "+
+      "fue larga.<br>"+
+      "<b>Lo que conviene pedirle al guía al llegar:</b> entrar por la <b>Puerta Este (东宫门)</b>, que es donde "+
+      "empieza el recorrido lógico, caminar el <b>Corredor Largo</b> —728 m de galería cubierta con cada viga "+
+      "pintada a mano, ninguna escena repetida— hasta el Barco de Mármol, y si les sobra ánimo, cruzar el lago "+
+      "Kunming en barca en vez de rodearlo a pie.<br>"+
+      "<b>Los recintos de adentro</b> —la Torre de la Fragancia del Buda y Suzhou Jie— <b>cierran a las 18:00 y "+
+      "dejan de entrar a las 17:30</b>, aunque el parque siga abierto hasta más tarde: la Torre va antes de las "+
+      "17:00.<br>"+
+      "<i>Es el jardín imperial de verano: lo que se ve hoy lo reconstruyó Cixí en 1888 con dinero que era para "+
+      "la marina. Pregúntenle al guía por esa historia.</i>",null],
+    "pk1-verano":[null,
+      "El jardín imperial de verano de los Qing, junto al lago Kunming: el más grande y mejor conservado de China "+
+      "(UNESCO). La emperatriz viuda Cixi lo reconstruyó a finales del siglo XIX.<br>"+
+      "Recorrido: el <b>Corredor Largo</b> (728 m de pasillo techado con miles de pinturas) → la <b>Torre de la "+
+      "Fragancia del Buda</b> en la Colina de la Longevidad (la mejor vista del lago) → el <b>Barco de "+
+      "Mármol</b> → y si da tiempo, el barco por el lago hasta el Puente de los 17 Arcos.<br>"+
+      "Pidan el boleto combinado (incluye la Torre). <b>En temporada alta los recintos de adentro abren de 8:00 "+
+      "a 18:00 y dejan de entrar a las 17:30</b>: suban a la Torre antes de las 17:00. El parque cierra más "+
+      "tarde.<br>"+
+      "<i>Los recintos cierran los lunes; hoy es miércoles.</i>",null],
+    "pk1-regreso":[null,
+      "<b>17:15 · ~1 h de regreso</b> al hotel, en los hutongs de Dongsi, ~20 km cruzando la ciudad entera en "+
+      "plena hora pico. Puede estirarse a 70 min.<br>"+
+      "<b>Usen el camino para dos cosas:</b><ul>"+
+      "<li><b>El pato.</b> Siji Minfu no reserva: que el guía saque número desde el coche, en su mini-programa de "+
+      "WeChat o en 大众点评, para cerca de las 19:30. Si escogieron Quanjude o Da Dong, que sí reservan, "+
+      "confirmen por teléfono.</li>"+
+      "<li><b>La hora de mañana</b> con el guía: los recoge a las 7:45 para la muralla.</li></ul>"+
+      "<i>Aquí termina el tour del día. Si les gustó, la propina se da ahora, no mañana — mañana es otro "+
+      "servicio.</i>",null],
+    "pk2-descanso":[null,
+      "<b>17:15 · dos horas, después de la muralla.</b> Hoy fueron 4 h 30 arriba, sobre escalones irregulares: "+
+      "las piernas lo van a resentir mañana más que hoy.<br>"+
+      "<b>Agua caliente en las piernas</b> y pies en alto media hora. Hace más que cualquier otra cosa.<br>"+
+      "<b>Para la cena, ojo con la ropa:</b> el TRB Hutong es de mantel largo, dentro de un patio junto al "+
+      "antiguo templo. <b>Nada de shorts, tenis de montaña ni sandalias</b> — vayan arreglados. Y confirmen la "+
+      "reserva de las 19:30 desde aquí: <b>a las 19:15 salen en taxi</b> (la frase para pedirlo está en «Para "+
+      "recepción»).<br>"+
+      "<i>Dejen también la maleta avanzada: mañana hacen check-out antes de salir y el día termina en la "+
+      "estación, no en el hotel.</i>",120],
+    "pk2-cena":[null,
+      "Su cena especial de Pekín: cocina europea de autor dentro de un templo de la dinastía Ming, junto a la "+
+      "Ciudad Prohibida. De los restaurantes más reconocidos de la ciudad: <b>reserven</b> (+86 10 8400 2232) y "+
+      "pidan mesa en el patio.<br>"+
+      "<b>19:15 · ~3 km al oeste, 10-15 min en taxi</b> (~¥20), para la mesa de las 19:30. Para el chofer: "+
+      "<b>东城区沙滩北街23号 智珠寺</b> — el restaurante está dentro del templo Zhizhu, cerca de la esquina "+
+      "noreste de la Ciudad Prohibida.<br>"+
+      "<i>Al terminar, que el restaurante les pida el taxi de regreso.</i>",135],
+    "pk2-vuelta":[null,
+      "<b>21:30 · 10-15 min</b> del TRB de vuelta al hotel, en Dongsi.<br>"+
+      "<b>Dejen la maleta HECHA esta noche.</b> Mañana hacen check-out a las 8:15 y las maletas se van en la "+
+      "cajuela todo el día: <u>no vuelven al cuarto</u>. Lo que se quede, se quedó.<br>"+
+      "<b>Antes de dormir:</b> pasaportes y los códigos QR del tren a Shanghái a la mano, y revisen el cajón de "+
+      "la mesa de noche y el baño, que es donde siempre se olvida algo.<br>"+
+      "<i>Mañana es el día más suave de Pekín: desayuno a las 7:30, media jornada y tren.</i>",null],
+    "pk3-salida":[null,
+      "<b>8:15 · check-out y las maletas a la cajuela</b>, donde se quedan todo el día: no vuelven al hotel, el "+
+      "coche los deja directo en la estación.<br>"+
+      "<b>Antes eran las 6:15 y a correr a la muralla.</b> Hoy se puede desayunar como gente.<br>"+
+      "<b>El orden lo ponen los horarios:</b> el Templo de los Lamas abre a las 9:00 y la Torre del Tambor hasta "+
+      "las 9:30, con toques de tambor a las 10:00 y a las 11:00. Así que primero suben al norte, al templo —está "+
+      "derecho por la misma avenida del hotel—; luego cruzan al oeste, a los hutongs y a la torre para el toque "+
+      "de las 11:00, y de ahí bajan al sur: Wangfujing, comida y Pekín Sur. Nada de regresar sobre los "+
+      "pasos.<br>"+
+      "<b>⚠ El precio es estimado.</b> Este tour era «Contrastes de Pekín», de día completo con seis paradas; "+
+      "ahora son cuatro y media jornada. Pidan la cotización nueva y pásenle a la agencia este orden.<br>"+
+      "<i>Pasaportes y los códigos QR del tren, a la mano desde ya.</i>",null],
+    "pk2-a-lama":["Coche del hotel al Templo de los Lamas",
+      "<b>8:35 · ~20 min</b>, ~4 km al norte, derecho por la avenida Dongsi (东四) hasta Yonghegong. Llegan con "+
+      "la apertura de las 9:00, antes que los grupos.<br>"+
+      "<b>Lo que hay que saber antes de entrar:</b> el Yonghegong no es un museo, es un <b>templo vivo</b>. Hay "+
+      "gente rezando de verdad.<ul>"+
+      "<li>En la entrada <b>regalan incienso</b> (tres varitas). Se encienden, se sostienen con las dos manos y "+
+      "se hace una venia hacia los cuatro puntos antes de clavarlas.</li>"+
+      "<li><b>Nada de fotos dentro de los salones.</b> Afuera sí.</li>"+
+      "<li>No señalen a las estatuas con el dedo ni den la espalda al Buda al salir de un salón.</li></ul>"+
+      "<b>Guarden fuerzas para el último salón:</b> ahí está el <b>Maitreya de 18 metros, tallado en un solo "+
+      "tronco de sándalo blanco</b> traído del Tíbet. Hay que echar la cabeza para atrás. Es lo que la gente "+
+      "recuerda de Pekín.<br>"+
+      "<i>Era el palacio de un príncipe que llegó a emperador; por eso tiene tejas amarillas, que son de uso "+
+      "imperial, cosa única en un templo.</i>",25],
+    "pk2-lama":[null,
+      "<b>9:00-9:50 · con la apertura</b>, antes de que lleguen los grupos.<br>"+
+      "El templo budista tibetano más importante fuera del Tíbet, y vivo: hay monjes y la gente quema incienso en "+
+      "los patios. Fue la casa del príncipe que se volvió el emperador Yongzheng.<br>"+
+      "Lo imperdible, en el último pabellón: el <b>Buda Maitreya de 18 m tallado en un solo tronco de "+
+      "sándalo</b>, que está en el libro de los Récords Guinness.<br>"+
+      "Hombros y rodillas cubiertos; no se toman fotos dentro de los salones. Abre a las 9:00 (en temporada alta "+
+      "hasta las 17:00, última entrada 16:30), ~¥25 c/u.<br>"+
+      "<b>⚠ Reserva:</b> una guía de 2026 dice que ya solo se entra con reserva y hora, en el mini-programa "+
+      "oficial y con el pasaporte físico; abre ~7 días antes (viernes 14 de mayo) y las mañanas se agotan. Otras "+
+      "fuentes dicen que todavía se compra en taquilla. No se arriesguen: que el guía saque la franja de las "+
+      "9:00.",50],
+    "pk3-a-tambor":["Coche del Templo de los Lamas a los hutongs de Shichahai",
+      "<b>9:50 · ~15 min</b>, ~3 km al oeste por Gulou Dongdajie (鼓楼东大街), hasta la plaza entre la Torre del "+
+      "Tambor y la de la Campana, de donde salen los rickshaws.<br>"+
+      "<i>Díganle al guía que el rickshaw termine al pie de la Torre del Tambor a las 10:50: el toque de "+
+      "tambores es a las 11:00.</i>",15],
+    "bj-hutong":[null,
+      "<b>10:05 · 45 min en rickshaw</b> por los hutongs de Shichahai (什刹海): los callejones de casas con patio "+
+      "(siheyuan) del Pekín antiguo. Los de alrededor de las torres y del lago Houhai son de los mejor "+
+      "conservados.<br>"+
+      "El rickshaw recorre los callejones, pasa por el Puente de Plata (银锭桥) junto al lago y suele parar en un "+
+      "patio con una familia que vive ahí. Va incluido en el tour.<br>"+
+      "<i>Pidan la ruta corta, que termine al pie de la Torre del Tambor a las 10:50. Si la visita a la casa se "+
+      "alarga, se corta eso, no el toque de tambores.</i>",45],
+    "pk2-tambor":[null,
+      "<b>10:50 · para el toque de las 11:00.</b> La torre que marcaba la hora de Pekín con tambores desde el "+
+      "siglo XIII (la de hoy es Ming), en el extremo norte del eje central, frente a la Torre de la Campana. Se "+
+      "suben <b>69 escalones muy empinados</b> y arriba están los 25 tambores y la vista de los techos grises de "+
+      "los hutongs.<br>"+
+      "<b>El toque de tambores dura ~15 min</b>, a las 10:00, 11:00, 13:00, 14:00, 15:00 y 16:00 (en temporada "+
+      "alta, también a las 17:00). Suban unos minutos antes para agarrar lugar.<br>"+
+      "<b>Abre a las 9:30</b> (9:30-17:30 en temporada alta): por eso ya no va a primera hora. A las 8:35, como "+
+      "estaba antes, la encontraban cerrada.<br>"+
+      "<i>Boleto ~¥20 c/u (¥30 con la Campana). Confirmen los horarios en la cuenta oficial de WeChat "+
+      "北京钟鼓楼.</i>",40],
+    "pk2-a-centro":["Coche de la Torre del Tambor a Wangfujing",
+      "<b>11:30 · ~20 min</b>, ~5 km al sur, por el costado de Jingshan y de la Ciudad Prohibida. Van bajando "+
+      "hacia la estación: esta es la última parada antes de comer.<br>"+
+      "<b>Aprovechen para revisar la cajuela de reojo</b> — las maletas llevan ahí desde las 8:15 y no vuelven a "+
+      "abrirla hasta Pekín Sur.<br>"+
+      "<i>Si deciden saltarse Wangfujing (lean su ficha, el callejón de antojitos ya no existe), díganselo al guía "+
+      "ahora y úsenlos en comer con calma.</i>",20],
+    "pk3-wangfujing":[null,
+      "<b>11:50 · cuarenta minutos, y les debo una advertencia.</b><br>"+
+      "<b>El callejón de antojitos ya no existe.</b> El famoso 王府井小吃街 —el de los escorpiones en palito y "+
+      "las fotos— <b>cerró en marzo de 2020</b> y no volvió. Lo que queda hoy es una calle peatonal de centros "+
+      "comerciales, tiendas de marca y souvenirs. Si lo que les contaron era lo de los puestos, eso ya no "+
+      "está.<br>"+
+      "<b>Lo que sí vale el rato:</b> es la calle comercial histórica de Pekín, arranca a un costado de la Ciudad "+
+      "Prohibida y tiene la librería de idiomas extranjeros y la tienda de té Wuyutai. Para comprar lo último "+
+      "antes del tren, sirve.<br>"+
+      "<i>Si prefieren saltársela y darle esos 40 min a comer con calma, díganle al guía. Lo de los puestos de "+
+      "comida, hoy está en Guijie (簋街) y en Xianyukou, no aquí.</i>",40],
+    "pk3-comida-wf":[null,
+      "<b>12:30 · última comida en Pekín, con una hora.</b> Aquí sí hay de dónde escoger: los pisos de "+
+      "restaurantes de los centros comerciales de Wangfujing (APM, Wangfu Central) son sólidos, con aire y con "+
+      "baños limpios, que a estas alturas del día importa.<br>"+
+      "<b>Que no se alargue:</b> a las 13:30 salen a la estación. El tren a Shanghái es a las 15:00 y en China el "+
+      "andén cierra unos minutos antes de la salida — no es como un avión, no esperan a nadie.<br>"+
+      "<i>Compren agua y algo de picar para el tren: son 4 h 35 hasta Hongqiao.</i>",60]
+  }
+};
+/* El día, en el orden y a la hora nuevos. Solo se mueven las tarjetas que siguen
+   en el día (si quitaron una, no vuelve); las marcadas «nueva» se agregan. Lo que
+   el día tenga además se queda, al final. */
+const ITIN_V51_DIAS=[
+  ["zjj",1,[["zjj-t1-pickup","06:30"],["zjj-avatar","07:30"],["zjj-t1-comida","13:30"],["zjj-glass","14:15"],
+    ["zjj-t1-regreso",null],["g-rest",null],["zjj-tujia","19:00"]]],
+  ["zjj",2,[["g-breakfast","07:00"],["xa0-tianmen-ir","07:40"],["xa0-tianmen","08:00"],["xa0-maletas","13:00"],
+    ["xa0-comida","14:00"],["xa-arrive","14:40"],["xa-checkin",null],["xa0-cena","20:00"]]],
+  ["xian",2,[["g-breakfast","06:50"],["xa2-salida","07:30"],["xa-terracota",null],["xa-shuttle",null],
+    ["xa-lishan",null],["xa-lintong-comida",null],["xa2-estacion",null],["xa2-anden",null],["bj-arrive","15:30"],
+    ["xa2-pekin-hotel",null],["xa2-cena","21:00"]]],
+  ["beijing",1,[["g-breakfast","07:15"],["pk1-guia","08:00"],["bj-temple","08:25"],["pk1-a-tiananmen","09:45"],
+    ["pk2-teatro","10:00"],["bj-forbidden","10:20"],["pk1-comida","13:20"],["pk1-a-verano","14:15"],
+    ["pk1-verano","15:00"],["pk1-regreso","17:15"],["pk1-descanso","18:15"],["bj-duck","19:05"],
+    ["bj-qianmen","21:15"]]],
+  ["beijing",2,[["g-breakfast","07:00"],["pk2-guia","07:45"],["pk2-subida","09:10"],["bj-wall","09:35"],
+    ["pk2-tobogan","14:05"],["pk3-comida","14:30"],["pk2-a-hotel","15:45"],["pk2-descanso","17:15"],
+    ["pk2-cena","19:15"],["pk2-vuelta","21:30"]]],
+  ["beijing",3,[["g-breakfast","07:30"],["pk3-salida","08:15"],["pk2-a-lama","08:35"],["pk2-lama","09:00"],
+    ["pk3-a-tambor","09:50","nueva"],["bj-hutong","10:05"],["pk2-tambor","10:50"],["pk2-a-centro","11:30"],
+    ["pk3-wangfujing","11:50"],["pk3-comida-wf","12:30"],["pk3-estacion","13:30"],["pk3-anden","14:10"],
+    ["sh-arrive","15:00"],["sh0-hotel",null],["pk3-bund",null],["pk3-vuelta",null]]]
+];
+/* Costos nuevos por los traslados que antes eran a pie (¥ a ~2.70) y etiquetas que cambian. */
+const ITIN_V51_COSTOS=[
+  ["zjj","zjj-tujia","Taxis hotel ↔ centro, ida y vuelta (2)",80],
+  ["zjj","xa-arrive","Taxi hotel → aeropuerto, si el hotel no los lleva (2)",40],
+  ["xian","xa2-cena","Taxis hotel ↔ Guijie, ida y vuelta (2)",80],
+  ["beijing","bj-duck","Taxis hotel ↔ Qianmen, ida y vuelta (2)",160],
+  ["beijing","pk2-cena","Taxis hotel ↔ TRB, ida y vuelta (2)",110]
+];
+function acomodarDia(st,dia,spec){
+  if(!st||!st.schedule||!Array.isArray(st.catalog))return false;
+  const viejo=Array.isArray(st.schedule[dia])?st.schedule[dia]:[];
+  const usados=new Set(),nuevo=[];
+  spec.forEach(([cid,hora,nueva])=>{
+    if(!st.catalog.some(x=>x.cid===cid))return;
+    let it=viejo.find(i=>i&&i.ref===cid&&!usados.has(i));
+    if(!it){if(!nueva)return;it={id:uid(),ref:cid,fixed:null};}
+    usados.add(it);it.fixed=hora||null;nuevo.push(it);
+  });
+  viejo.forEach(i=>{if(i&&!usados.has(i))nuevo.push(i);});
+  st.schedule[dia]=nuevo;
+  return true;
+}
+function migrarItinerarioHotelesV51(s){
+  if(s.itinHotelV51)return;
+  const B=s.bases||{};
+  // la ficha nueva del viernes en Pekín
+  const bj=B.beijing;
+  if(bj&&Array.isArray(bj.catalog)&&!bj.catalog.some(x=>x.cid==="pk3-a-tambor"))
+    bj.catalog.push({cid:"pk3-a-tambor",name:"",type:"transfer",dur:15,note:"",src:"",costs:[]});
+  // notas, nombres y duraciones
+  Object.entries(ITIN_V51).forEach(([bid,fichas])=>{
+    const st=B[bid];if(!st||!Array.isArray(st.catalog))return;
+    Object.entries(fichas).forEach(([cid,[nombre,nota,dur]])=>{
+      const a=st.catalog.find(x=>x.cid===cid);if(!a)return;
+      if(nombre)a.name=nombre;if(nota)a.note=nota;if(dur)a.dur=dur;
+    });
+  });
+  // el viernes 14 (llegada a Zhangjiajie) vive donde esté ese día: Chongqing o Zhangjiajie
+  [B.chongqing,B.zjj].forEach(st=>{
+    if(!st||!Array.isArray(st.catalog))return;
+    const ar=st.catalog.find(x=>x.cid==="zjj-arrive");
+    if(ar&&ar.note)ar.note=ar.note.replace("porque llegan a Wulingyuan ~21:20.",
+      "porque llegan al hotel hasta ~20:50 y mañana el tour pasa a las 6:30.");
+    const w=st.catalog.find(x=>x.cid==="zjjd0-wulingyuan");
+    if(w)w.note="<b>20:15 · llegan a Zhangjiajie West</b> y de ahí al <b>Hilton Garden Inn Tianmen Mountain</b>, "+
+      "en la ciudad (机场路32号, sobre la avenida del aeropuerto).<br>"+
+      "<b>Lo ideal: que el hotel los recoja.</b> Varios huéspedes cuentan que el hotel los fue a buscar gratis a "+
+      "la estación, pero la página de Hilton no lo promete. Escríbanles antes con el tren (G2437) y la hora —la "+
+      "frase va en «Para recepción»— y que les confirmen si tiene costo.<br>"+
+      "<b>Si no:</b> taxi de la fila oficial a la salida, <b>~15-20 min</b> (6-10 km, ~¥25-40). Enséñenle la "+
+      "dirección escrita: <b>"+ZJJ_DIR+"</b>.<br>"+
+      "<b>Al hacer check-in pidan tres cosas:</b> la <b>caja de desayuno</b> para mañana (el tour sale 6:30, "+
+      "antes del comedor; el desayuno ya está pagado), que les confirmen la <b>salida tardía del domingo a las "+
+      "14:00</b> y que el tour los recoja aquí.<br>"+
+      "<i>El hotel está en la ciudad, no en Wulingyuan: Tianmen queda a ~2.3 km y el parque de los pilares a "+
+      "~1 h. Mañana se levantan temprano: directo a dormir.</i>";
+  });
+  // los días, en el orden y a la hora nuevos
+  ITIN_V51_DIAS.forEach(([bid,dia,spec])=>acomodarDia(B[bid],dia,spec));
+  // costos
+  const ficha=(bid,cid)=>{const st=B[bid];return st&&Array.isArray(st.catalog)&&st.catalog.find(x=>x.cid===cid);};
+  ITIN_V51_COSTOS.forEach(([bid,cid,label,est])=>{
+    const a=ficha(bid,cid);if(!a)return;
+    a.costs=Array.isArray(a.costs)?a.costs:[];
+    if(!a.costs.some(c=>c&&c.label===label))a.costs.push({id:uid(),label,est,real:0});
+  });
+  const etiqueta=(bid,cid,de,a)=>{const x=ficha(bid,cid);
+    (x&&Array.isArray(x.costs)?x.costs:[]).forEach(c=>{if(c&&c.label===de)c.label=a;});};
+  etiqueta("zjj","xa0-tianmen-ir","Tour privado con chofer, medio día y al aeropuerto (2, estimado)",
+    "Tour privado con chofer, medio día: hotel ↔ Tianmen (2, estimado)");
+  etiqueta("xian","xa2-cena","Cena ligera (2)","Cena en Guijie (2)");
+  // los dos hoteles: traslados y distancias
+  const hotel=(bid,re)=>{const st=B[bid];return st&&(st.hotels||[]).find(x=>re.test(x.name||""));};
+  const hz=hotel("zjj",/hilton garden/i);
+  if(hz&&hz.note)hz.note=hz.note.replace(
+    "<b>Traslados gratis:</b> según su ficha en Hilton, el hotel ofrece traslado al aeropuerto y a la estación. "+
+    "Escríbanles antes para que los recojan el viernes a las 20:15 en Zhangjiajie West y los lleven el domingo "+
+    "al aeropuerto.<br>",
+    "<b>Traslados:</b> varios huéspedes cuentan que el hotel los recogió gratis en la estación y los llevó al "+
+    "aeropuerto, pero la página de Hilton no lo promete. Escríbanles antes para confirmarlo (y si tiene costo): "+
+    "el viernes a las 20:15 en Zhangjiajie West y el domingo a las 14:40 al aeropuerto. Si no, taxi: la estación "+
+    "está a 6-10 km (~15-20 min) y el aeropuerto a ~1 km.<br>"+
+    "<b>El domingo se usa la salida tardía:</b> regresan de Tianmen a las 13:00, se bañan y entregan el cuarto a "+
+    "las 14:00.<br>");
+  const hb=hotel("beijing",/happy dragon/i);
+  if(hb&&hb.note)hb.note=hb.note.replace(
+    "el Templo de los Lamas a ~3 km y la calle de comida nocturna Guijie a ~1.5 km al norte.",
+    "el Templo de los Lamas a ~4 km al norte (derecho por la avenida Dongsi) y la calle de comida nocturna "+
+    "Guijie a ~2.5 km al norte.");
+  s.itinHotelV51=true;
 }
 /* Plantilla de un viaje NUEVO en blanco: una parada de ejemplo, sin mapa. */
 function freshBlankTrip(titulo){
